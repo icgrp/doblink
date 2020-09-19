@@ -8,7 +8,9 @@ Initially brainstorming.  To be refined to prioritize and set goals.
        * RV32I minimum
        * RV64 in tight footprint interesting/stretch goal options
        * privilege levels?
-          * for leaf version -- can do without
+          * for leaf version -- can do without (probably want to just have
+            the lowest, machine level and no space or complexity for the
+            higher levels)
 	      * for controller, may want
 	         * run linux?
 * single-cycle stream read, write (pure data case)
