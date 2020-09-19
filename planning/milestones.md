@@ -39,6 +39,7 @@ Then we'll need to think about sequencing and timing.
     * 6-hardware page rendering
 	* one-hardware, one softcore page design with DMA
 	* 6-softcore page rendering
+* Make build flow for applications	
 * overlay for larger benchmark set
     * add benchmarks from Rosetta Benchmark set (milestone for each)
 
