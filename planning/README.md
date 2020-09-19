@@ -4,7 +4,7 @@
 * [Learning](learning.md) -- Tutorials and things to explore
 * [Tools](tools.md) -- Tools to setup
 * [Goals and Requirements](goals.md)-- Place to collect (possible) goals  and requirements
-*[Milestones](milestones.md) -- Place to decompose into tasks and milestones; eventually order and estimate time targets
+* [Milestones](milestones.md) -- Place to decompose into tasks and milestones; eventually order and estimate time targets
 
 
   
