@@ -11,7 +11,8 @@
 
 
 ## Components to explore
-*     RV implementation
+
+* RV implementation
 	   * Probably don't want to use Rocket (see Guy talk on ORCA)
 	   * ORCA/Guy -- https://github.com/riscveval/orca-1
 	        * maybe a distribution of ORCA: https://riscv.org/wp-content/uploads/2016/01/Wed1200-2016-01-05-VectorBlox-ORCA-RISC-V-DEMO.pdf
