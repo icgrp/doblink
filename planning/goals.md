@@ -22,3 +22,5 @@ Initially brainstorming.  To be refined to prioritize and set goals.
 * open-source
 *  map with symbiflow
 * ability to port across broad-range of FPGAs?
+* run prflow/DIRC version of Rosetta benchmarks (all?) [potentially resized]
+
