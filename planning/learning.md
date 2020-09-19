@@ -15,12 +15,12 @@
 * RV implementation
   * Probably don't want to use Rocket (see Guy talk on ORCA)
 	  * ORCA/Guy -- https://github.com/riscveval/orca-1
-	        * maybe a distribution of ORCA: https://riscv.org/wp-content/uploads/2016/01/Wed1200-2016-01-05-VectorBlox-ORCA-RISC-V-DEMO.pdf
+	     * maybe a distribution of ORCA: https://riscv.org/wp-content/uploads/2016/01/Wed1200-2016-01-05-VectorBlox-ORCA-RISC-V-DEMO.pdf
 	 * Clifford Wolf https://github.com/cliffordwolf/picorv32
-	        * by yosys author, so probably works with symbiflow
+	     * by yosys author, so probably works with symbiflow
 	 * Vex https://github.com/SpinalHDL/VexRiscv
-	        * runs linux
-	        * known to work with Symbiflow
+	     * runs linux
+	     * known to work with Symbiflow
 * AXI
 * DRAM controller
 
