@@ -14,6 +14,7 @@ Initially brainstorming.  To be refined to prioritize and set goals.
 	      * for controller, may want
 	         * run linux?
 * single-cycle stream read, write (pure data case)
+   * [instructions](instructions.md)			 
    *   (nice to have full control case also single-cycle, but less important)
    *  ability to target one of multiple streams from native stream operation
    *    streams compatible with AXI-S, hls::stream()
