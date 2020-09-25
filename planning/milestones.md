@@ -12,7 +12,8 @@ Then we'll need to think about sequencing and timing.
    * compiler
    * RISCV hardware
    * run together
-* select RISCV core (or sequence of course) to use 
+* select RISCV core (or sequence of course) to use
+* serial (maybe comes with whatever core or SoC we start with, but probably need to see working...print debug info)   
 * add stream instruction to selected RISCV
    * start with data-only, single-stream version?
    * compiler integration

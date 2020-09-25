@@ -22,9 +22,14 @@
 	 * Vex https://github.com/SpinalHDL/VexRiscv
 	     * runs linux
 	     * known to work with Symbiflow
+		 * written in  unusual HDL? so maybe not easiest to work with
 * AXI
+     * ZipCPU https://github.com/ZipCPU/wb2axip
+        * used this summer (we fixed a few bugs, so get those)
 * DRAM controller
-
+	* liteDRAM https://github.com/enjoy-digital/litedram
+* UART
+    * ZipCPU https://github.com/ZipCPU/wbuart32
 
 
 
