@@ -14,7 +14,7 @@
 
 * RV implementation
   * Probably don't want to use Rocket (see Guy talk on ORCA)
-	  * ORCA/Guy -- https://github.com/riscveval/orca-1
+	  * ORCA/Guy Lemieux-- https://github.com/riscveval/orca-1
 	     * maybe a distribution of ORCA: https://riscv.org/wp-content/uploads/2016/01/Wed1200-2016-01-05-VectorBlox-ORCA-RISC-V-DEMO.pdf
 	 * Clifford Wolf https://github.com/cliffordwolf/picorv32
 	     * by yosys author, so probably works with symbiflow
@@ -23,6 +23,10 @@
 	     * runs linux
 	     * known to work with Symbiflow
 		 * written in  unusual HDL? so maybe not easiest to work with
+	 * PULP https://pulp-platform.org/implementation.html
+         * several cores here, including a PULPino (under microcontrollers)
+	     * heard good things about them, but from people who are doing ASICs
+		 * may have the problems Guy Lemieux complains about for not being FPGA-friendly
 * AXI
      * ZipCPU https://github.com/ZipCPU/wb2axip
         * used this summer (we fixed a few bugs, so get those)
