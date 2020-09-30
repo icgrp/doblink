@@ -4,4 +4,6 @@
 * Vitis 2019.2
 * openocd
 * Symbiflow
+  * https://symbiflow.github.io/
+  * https://github.com/SymbiFlow/symbiflow-arch-defs
 * RV compiler tools
