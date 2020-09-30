@@ -19,6 +19,7 @@
 	     * maybe a distribution of ORCA: https://riscv.org/wp-content/uploads/2016/01/Wed1200-2016-01-05-VectorBlox-ORCA-RISC-V-DEMO.pdf
 	 * Clifford Wolf https://github.com/cliffordwolf/picorv32
 	     * by yosys author, so probably works with symbiflow
+         * has version with integrated AXI interface 
 	     * Symbiflow Example: https://github.com/SymbiFlow/symbiflow-examples/tree/master/xc7/picosoc_demo
 	 * Vex https://github.com/SpinalHDL/VexRiscv
 	     * runs linux
