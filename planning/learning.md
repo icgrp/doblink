@@ -4,7 +4,8 @@
 
 * RV getting started
 	 *  https://riscv.org/wp-content/uploads/2015/02/riscv-intro-tutorial-hpca2015.pdf
-	 *   https://riscv.org/wp-content/uploads/2015/02/riscv-software-stack-tutorial-hpca2015.pdf
+	 *  https://riscv.org/wp-content/uploads/2015/02/riscv-software-stack-tutorial-hpca2015.pdf
+	 *  https://inst.eecs.berkeley.edu//~cs61c/fa17/img/riscvcard.pdf (2 page instruction reference)
 *	adding instruction to RV (these probably dated, but gives flavor, at least)
   	  *  https://www.youtube.com/watch?v=64nsYJJqNvI&feature=youtu.be
 	  * https://nitish2112.github.io/post/adding-instruction-riscv/
