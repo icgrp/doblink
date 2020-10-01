@@ -31,6 +31,7 @@
 		 * may have the problems Guy Lemieux complains about for not being FPGA-friendly
 * AXI
      * ZipCPU https://github.com/ZipCPU/wb2axip
+     	* Axi-lite Crossbar https://github.com/ZipCPU/wb2axip/blob/master/rtl/axilxbar.v
         * used this summer (we fixed a few bugs, so get those)
 * DRAM controller
 	* liteDRAM https://github.com/enjoy-digital/litedram
