@@ -25,6 +25,7 @@ Then we'll need to think about sequencing and timing.
    * raw/header version
        * use to configure leaf interfaces
    * expand to multiple stream version
+   * DIRC-compatible stream API
 * DMA
    * integrate MM2S with DRAM controller
    * integrate S2MM
