@@ -35,7 +35,7 @@
 ### We need to use the following options:
 
 - `--sysroot=/usr/local/opt/riscv-gnu-toolchain` Tell clang where to find the RISCV gcc installation. Replace this path with yours.
-- `-fuse-ld=lld` Tell clang to use the LLVM linker (lld) rather than the system default.
+- `-fuse-ld=lld` Tell clang to use the LLVM linker (lld) rather than the default. It will actually not default to the system linker but to the ld found in the sysroot specified, i.e. the gcc toolchain linker. This would be _okay_ but if we're using LLVM, I think we should use LLVM throughout and not depend on gcc except for the  runtimes/libraries.
 - `-mno-relax` Got complaints saying to add this
 - `--target=riscv32-unknown-unknown-elf` and `-march=rv32i` Specify the target. These options play together in ways I don't fully understand yet, and can be edited to get different subtargets I believe.
 
