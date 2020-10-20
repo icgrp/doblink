@@ -40,8 +40,10 @@
 - `--target=riscv32-unknown-unknown-elf` and `-march=rv32i` Specify the target. These options play together in ways I don't fully understand yet, and can be edited to get different subtargets I believe.
 
 ```
-$ clang --sysroot=/usr/local/opt/riscv-gnu-toolchain -fuse-ld=lld -mno-relax --target=riscv32-unknown-unknown-elf -march=rv32i test.c
+$ /Users/tzvi/Dropbox/Dropbox_Documents/Upenn/ESE450/LLVM/install/bin/clang-11 --sysroot=/usr/local/opt/riscv-gnu-toolchain -fuse-ld=lld -mno-relax --target=riscv32-unknown-unknown-elf -march=rv32i test.c
 ```
+
+Note that you can set your PATH to have `/Users/tzvi/Dropbox/Dropbox_Documents/Upenn/ESE450/LLVM/install/bin/` in it, but be careful if you already have a system clang installed; that's why I kept it explicit here.
 
 ## Verify it Works
 
