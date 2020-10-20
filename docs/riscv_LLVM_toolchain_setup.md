@@ -10,7 +10,7 @@
 
   - ` git checkout llvmorg-11.0.0`
 
-- Build LLVM, clang, and lld for RISCV targets.
+- Build LLVM, clang, and ~~lld~~ for RISCV targets.
 
   - See https://llvm.org/docs/GettingStarted.html for details and different options that you can use. I used:
 
@@ -18,7 +18,7 @@
   $ cd llvm-project
   $ mkdir build
   $ cd build
-  $ cmake -DLLVM_ENABLE_PROJECTS='clang;lld' -DCMAKE_INSTALL_PREFIX=/Users/tzvi/Dropbox/Dropbox_Documents/Upenn/ESE450/LLVM/install -DLLVM_TARGETS_TO_BUILD="RISCV" -DLLVM_OPTIMIZED_TABLEGEN=On -G "Unix Makefiles" ../llvm
+  $ cmake -DLLVM_ENABLE_PROJECTS='clang' -DCMAKE_INSTALL_PREFIX=/Users/tzvi/Dropbox/Dropbox_Documents/Upenn/ESE450/LLVM/install -DLLVM_TARGETS_TO_BUILD="RISCV" -DLLVM_OPTIMIZED_TABLEGEN=On -G "Unix Makefiles" ../llvm
   $ make -j8
   ```
 
@@ -26,7 +26,7 @@
 
 ## Get the gcc RISCV toolchain
 
-### We won't be using gcc to compile our code, but this is the easiest way to provide clang with the necessary RISCV C headers, runtime & standard libraries to link with.
+### ~~We won't be using gcc to compile our code, but~~ We will use the gcc linker, and this is also the easiest way to provide clang with the necessary RISCV C headers, runtime & standard libraries to link with.
 
 - Follow instructions at https://github.com/riscv/homebrew-riscv (MacOS) or https://github.com/riscv/riscv-gnu-toolchain (Linux). Be sure to use the multilib flag to get support for 32-bit targets.
 
@@ -35,12 +35,13 @@
 ### We need to use the following options:
 
 - `--sysroot=/usr/local/opt/riscv-gnu-toolchain` Tell clang where to find the RISCV gcc installation. Replace this path with yours.
-- `-fuse-ld=lld` Tell clang to use the LLVM linker (lld) rather than the default. It will actually not default to the system linker but to the ld found in the sysroot specified, i.e. the gcc toolchain linker. This would be _okay_ but if we're using LLVM, I think we should use LLVM throughout and not depend on gcc except for the  runtimes/libraries.
-- `-mno-relax` Got complaints saying to add this
+- ~~`-fuse-ld=lld` Tell clang to use the LLVM linker (lld) rather than the default. It will actually not default to the system linker but to the ld found in the sysroot specified, i.e. the gcc toolchain linker. This would be _okay_ but if we're using LLVM, I think we should use LLVM throughout and not depend on gcc except for the runtimes/libraries.~~ lld with no-relax actually seems to generate elf files that are no good, or at least that the gnu toolchain read-elf tool cannot read. Given this, it seems most reasonable to let the gnu toolchain do the linking. This should not affect our ability to use LLVM to implement compiling the new instruction, and also does not affect our ability to switch back to lld in the future.
+
+- ~~`-mno-relax` Got complaints saying to add this as lld does not support "relocation R_RISCV_ALIGN requires unimplemented linker relaxation"~~
 - `--target=riscv32-unknown-unknown-elf` and `-march=rv32i` Specify the target. These options play together in ways I don't fully understand yet, and can be edited to get different subtargets I believe.
 
 ```
-$ /Users/tzvi/Dropbox/Dropbox_Documents/Upenn/ESE450/LLVM/install/bin/clang-11 --sysroot=/usr/local/opt/riscv-gnu-toolchain -fuse-ld=lld -mno-relax --target=riscv32-unknown-unknown-elf -march=rv32i test.c
+$ /Users/tzvi/Dropbox/Dropbox_Documents/Upenn/ESE450/LLVM/install/bin/clang-11 --sysroot=/usr/local/opt/riscv-gnu-toolchain --target=riscv32-unknown-unknown-elf -march=rv32i test.c
 ```
 
 Note that you can set your PATH to have `/Users/tzvi/Dropbox/Dropbox_Documents/Upenn/ESE450/LLVM/install/bin/` in it, but be careful if you already have a system clang installed; that's why I kept it explicit here.
