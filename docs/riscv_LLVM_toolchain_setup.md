@@ -51,3 +51,6 @@ Note that you can set your PATH to have `/Users/tzvi/Dropbox/Dropbox_Documents/U
 Appending the `-v` flag and experimenting with different permuations of the above options, as well as trying to compile just .s files, and also inspecting the generated assembly (`-S` option), can let you verify the right programs are getting called and the right locations included.
 
 You should then be able to follow examples here (https://riscv.org/wp-content/uploads/2015/02/riscv-software-stack-tutorial-hpca2015.pdf) or anywhere else however you want to verify this works.
+
+## TODO
+This requires some tweaking of the linking flags, depending on how multilib is setup. Tzvi has been developing on MacOS, but we should standardize on an OS and decide on which extensions of the base ISA we are using.
