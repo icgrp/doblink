@@ -13,7 +13,7 @@ build/gateware/nexys_video.bit: build/gateware/nexys_video.v
 
 firmware: firmware/firmware.bin
 
-firmware/firmware.bin: build
+firmware/firmware.bin: gateware
 	cd firmware && make all
 
 load: build/gateware/nexys_video.bit firmware/firmware.bin
