@@ -50,3 +50,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+controller/build/
+controller/prog/
+*__pycache__*

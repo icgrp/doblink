@@ -14,7 +14,7 @@ from migen import *
 from litex_boards.platforms import nexys_video
 
 from litex.soc.cores.clock import *
-from litex.soc.integration.soc_core import *
+from soc_core import *
 from litex.soc.integration.soc_sdram import *
 from litex.soc.integration.builder import *
 from litex.soc.interconnect import axi
@@ -52,12 +52,12 @@ class _CRG(Module):
 
 # BaseSoC ------------------------------------------------------------------------------------------
 
-class BaseSoC(SoCCore):
+class BaseSoC(RvpldSoCCore):
     def __init__(self, sys_clk_freq=int(100e6), with_ethernet=False, **kwargs):
         platform = nexys_video.Platform()
 
         # SoCCore ----------------------------------------------------------------------------------
-        SoCCore.__init__(self, platform, sys_clk_freq,
+        RvpldSoCCore.__init__(self, platform, sys_clk_freq,
             ident          = "LiteX SoC on Nexys Video",
             ident_version  = True,
             **kwargs)
@@ -90,15 +90,16 @@ class BaseSoC(SoCCore):
             self.add_csr("ethphy")
             self.add_ethernet(phy=self.ethphy)
 
+        # AXILite ----------------------------------------------------------------------------------
+        #axi_bus = axi.AXILiteInterface(data_width=32, address_width=32)
+        #wb_bus = wishbone.Interface()
+        #axi2wb = axi.AXILite2Wishbone(axi_bus, wb_bus)
+        #self.bus.add_master(master=wb_bus)
+        #platform.add_extension(axi_bus.get_ios("axi"))
+        #axi_pads = platform.request("axi")
+        #self.comb += axi_bus.connect_to_pads(axi_pads, mode="slave")
+        #self.add_csr("axi")
 
-        axi_bus = axi.AXILiteInterface(data_width=32, address_width=32)
-        wb_bus = wishbone.Interface()
-        axi2wb = axi.AXILite2Wishbone(axi_bus, wb_bus)
-        self.bus.add_master(master=wb_bus)
-        platform.add_extension(axi_bus.get_ios("axi"))
-        axi_pads = platform.request("axi")
-        self.comb += axi_bus.connect_to_pads(axi_pads, mode="slave")
-        self.add_csr("axi")
         # Leds -------------------------------------------------------------------------------------
         self.submodules.leds = LedChaser(
             pads         = platform.request_all("user_led"),
