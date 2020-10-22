@@ -20,6 +20,8 @@ from litex.soc.integration.builder import *
 from litex.soc.interconnect import axi
 from litex.soc.interconnect import wishbone
 from litex.soc.cores.led import LedChaser
+from litex.soc.integration.soc import SoCRegion
+from pld_axil import PldAXILiteInterface
 
 from litedram.modules import MT41K256M16
 from litedram.phy import s7ddrphy
@@ -63,7 +65,8 @@ class BaseSoC(RvpldSoCCore):
             **kwargs)
 
         # CRG --------------------------------------------------------------------------------------
-        self.submodules.crg = _CRG(platform, sys_clk_freq)
+        crg = _CRG(platform, sys_clk_freq)
+        self.submodules.crg = crg
 
         # DDR3 SDRAM -------------------------------------------------------------------------------
         if not self.integrated_main_ram_size:
@@ -90,21 +93,69 @@ class BaseSoC(RvpldSoCCore):
             self.add_csr("ethphy")
             self.add_ethernet(phy=self.ethphy)
 
-        # AXILite ----------------------------------------------------------------------------------
-        #axi_bus = axi.AXILiteInterface(data_width=32, address_width=32)
-        #wb_bus = wishbone.Interface()
-        #axi2wb = axi.AXILite2Wishbone(axi_bus, wb_bus)
-        #self.bus.add_master(master=wb_bus)
-        #platform.add_extension(axi_bus.get_ios("axi"))
-        #axi_pads = platform.request("axi")
-        #self.comb += axi_bus.connect_to_pads(axi_pads, mode="slave")
-        #self.add_csr("axi")
+        # AXILite2Led ------------------------------------------------------------------------------
+        axi_bus = PldAXILiteInterface(data_width=32, address_width=32)
+        axilite2bft_region = SoCRegion(origin=0x02000000, size=0x10000)
+        self.bus.add_slave(name="axilite2led", slave=axi_bus, region=axilite2bft_region)
+		#// Ports of Axi Slave Bus Interface S00_AXI
+		#input wire  s00_axi_aclk,
+		#input wire  s00_axi_aresetn,
+		#input wire [C_S00_AXI_ADDR_WIDTH-1 : 0] s00_axi_awaddr,
+		#input wire  s00_axi_awvalid,
+		#output wire  s00_axi_awready,
+		#input wire [C_S00_AXI_DATA_WIDTH-1 : 0] s00_axi_wdata,
+		#input wire  s00_axi_wvalid,
+		#output wire  s00_axi_wready,
+		#output wire [1 : 0] s00_axi_bresp,
+		#output wire  s00_axi_bvalid,
+		#input wire  s00_axi_bready,
+		#input wire [C_S00_AXI_ADDR_WIDTH-1 : 0] s00_axi_araddr,
+		#input wire  s00_axi_arvalid,
+		#output wire  s00_axi_arready,
+		#output wire [C_S00_AXI_DATA_WIDTH-1 : 0] s00_axi_rdata,
+		#output wire [1 : 0] s00_axi_rresp,
+		#output wire  s00_axi_rvalid,
+		#input wire  s00_axi_rready
+        LED = Signal(2, name="LED")
+        SW = Signal(2, name="SW")
 
+        axil_sigs = axi_bus.get_signals()
+        #from IPython import embed; embed()
+        self.specials += Instance("AxiLite2Led",
+                                  o_LED = LED,
+                                  i_SW = SW,
+                                  i_s00_axi_aclk = crg.cd_sys.clk,
+                                  i_s00_axi_aresetn = self.cpu.reset,
+                                  i_s00_axi_awaddr = axil_sigs['awaddr'],
+                                  i_s00_axi_awvalid = axil_sigs['awvalid'],
+                                  o_s00_axi_awready = axil_sigs['awready'],
+                                  i_s00_axi_wdata = axil_sigs['wdata'],
+                                  i_s00_axi_wstrb = axil_sigs['wstrb'],
+                                  i_s00_axi_wvalid = axil_sigs['wvalid'],
+                                  o_s00_axi_wready = axil_sigs['wready'],
+                                  o_s00_axi_bresp = axil_sigs['bresp'],
+                                  o_s00_axi_bvalid = axil_sigs['bvalid'],
+                                  o_s00_axi_bready = axil_sigs['bready'],
+                                  i_s00_axi_araddr = axil_sigs['araddr'],
+                                  i_s00_axi_arvalid = axil_sigs['arvalid'],
+                                  o_s00_axi_arready = axil_sigs['arready'],
+                                  o_s00_axi_rdata = axil_sigs['rdata'],
+                                  o_s00_axi_rresp = axil_sigs['rresp'],
+                                  o_s00_axi_rvalid = axil_sigs['rvalid'],
+                                  i_s00_axi_rready = axil_sigs['rready']
+                                  )
+        platform.add_source('rtl/AxiLite2Led.v')
+
+        led_pads = platform.request_all("user_led")[0:1]
+        led_pads.eq(LED)
+
+        #sw_pads = platform.request("user_led", )
+        #sw_pads.eq(LED)
         # Leds -------------------------------------------------------------------------------------
-        self.submodules.leds = LedChaser(
-            pads         = platform.request_all("user_led"),
-            sys_clk_freq = sys_clk_freq)
-        self.add_csr("leds")
+        #self.submodules.leds = LedChaser(
+        #    pads         = platform.request_all("user_led"),
+        #    sys_clk_freq = sys_clk_freq)
+        #self.add_csr("leds")
 
 # Build --------------------------------------------------------------------------------------------
 
