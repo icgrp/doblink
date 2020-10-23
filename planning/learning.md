@@ -21,7 +21,8 @@
 	     * by yosys author, so probably works with symbiflow
          * has version with integrated AXI interface 
 	     * Symbiflow Example: https://github.com/SymbiFlow/symbiflow-examples/tree/master/xc7/picosoc_demo
-	 * Vex https://github.com/SpinalHDL/VexRiscv
+
+* Vex https://github.com/SpinalHDL/VexRiscv
 	     * runs linux
 	     * known to work with Symbiflow
 		 * written in  unusual HDL? so maybe not easiest to work with
@@ -38,6 +39,8 @@
 * UART
     * ZipCPU https://github.com/ZipCPU/wbuart32
 
+* BYU code to replace memory in a bitstream
+  * patch ram https://github.com/SymbiFlow/prjxray-bram-patch
 
 
 
