@@ -16,13 +16,14 @@ firmware: firmware/firmware.bin
 firmware/firmware.bin: gateware
 	cd firmware && make all
 
-load: build/gateware/nexys_video.bit firmware/firmware.bin
+load: build/gateware/nexys_video.bit
 	python3 ./rvpld-soc/nexys_video.py --cpu-type picorv32 --output-dir ./build --bus-standard axi-lite --load
 
 prog: firmware/firmware.bin
 	lxterm /dev/ttyUSB0 --kernel firmware/firmware.bin
 
 clean:
-	- rm -rf build
-	- rm -rf prog
-	- cd firmware && make clean
+	-@ cd firmware && (make clean 2> /dev/null || true)
+	-@ rm -rf csr.csv
+	-@ rm -rf build
+	-@ rm -rf prog

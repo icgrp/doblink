@@ -54,3 +54,5 @@ dkms.conf
 controller/build/
 controller/prog/
 *__pycache__*
+compile_commands.json
+*.clangd*
