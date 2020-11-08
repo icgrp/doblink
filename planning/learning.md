@@ -42,5 +42,9 @@
 * BYU code to replace memory in a bitstream
   * patch ram https://github.com/SymbiFlow/prjxray-bram-patch
 
+* ZyCAP -- Fast DMA load through ICAP port -- maybe can use for devices that do not have PCAP (non-Zynq devices)
+   * ZyCAP source https://github.com/warclab/zycap
+   * ZyCAP paper https://ieeexplore.ieee.org/document/6780588
+
 
 
