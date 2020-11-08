@@ -17,14 +17,16 @@ from litex.soc.cores.clock import *
 from soc_core import *
 from litex.soc.integration.soc_sdram import *
 from litex.soc.integration.builder import *
-from litex.soc.interconnect import axi
-from litex.soc.interconnect import wishbone
+from litex.soc.interconnect import axi, wishbone
+from litex.soc.interconnect.stream import SyncFIFO
 from litex.soc.cores.led import LedChaser
 from litex.soc.integration.soc import SoCRegion
-from pld_axil import PldAXILiteInterface
+from pld_axi import PldAXILiteInterface
+from axilite2led import AxiLite2Led
 
 from litedram.modules import MT41K256M16
 from litedram.phy import s7ddrphy
+from litedram.frontend.dma import LiteDRAMDMAReader, LiteDRAMDMAWriter
 
 from liteeth.phy.s7rgmii import LiteEthPHYRGMII
 
@@ -32,7 +34,7 @@ from liteeth.phy.s7rgmii import LiteEthPHYRGMII
 # CRG ----------------------------------------------------------------------------------------------
 
 class _CRG(Module):
-    def __init__(self, platform, sys_clk_freq, cpu_reset):
+    def __init__(self, platform, sys_clk_freq):
         self.clock_domains.cd_sys       = ClockDomain()
         self.clock_domains.cd_sys4x     = ClockDomain(reset_less=True)
         self.clock_domains.cd_sys4x_dqs = ClockDomain(reset_less=True)
@@ -42,14 +44,13 @@ class _CRG(Module):
         # # #
 
         self.submodules.pll = pll = S7MMCM(speedgrade=-1)
-        self.comb += pll.reset.eq(~cpu_reset)
+        self.comb += pll.reset.eq(~platform.request("cpu_reset"))
         pll.register_clkin(platform.request("clk100"), 100e6)
         pll.create_clkout(self.cd_sys,       sys_clk_freq)
         pll.create_clkout(self.cd_sys4x,     4*sys_clk_freq)
         pll.create_clkout(self.cd_sys4x_dqs, 4*sys_clk_freq, phase=90)
         pll.create_clkout(self.cd_clk200,    200e6)
         pll.create_clkout(self.cd_clk100,    100e6)
-
         self.submodules.idelayctrl = S7IDELAYCTRL(self.cd_clk200)
 
 # BaseSoC ------------------------------------------------------------------------------------------
@@ -65,9 +66,7 @@ class BaseSoC(RvpldSoCCore):
             **kwargs)
 
         # CRG --------------------------------------------------------------------------------------
-        cpu_reset = platform.request("cpu_reset")
-        crg = _CRG(platform, sys_clk_freq, cpu_reset)
-        self.submodules.crg = crg
+        self.submodules.crg = _CRG(platform, sys_clk_freq)
 
         # DDR3 SDRAM -------------------------------------------------------------------------------
         if not self.integrated_main_ram_size:
@@ -95,49 +94,35 @@ class BaseSoC(RvpldSoCCore):
             self.add_ethernet(phy=self.ethphy)
 
         # AXILite2Led ------------------------------------------------------------------------------
-        axi_bus = PldAXILiteInterface(data_width=32, address_width=32)
-        axilite2bft_region = SoCRegion(origin=0x02000000, size=0x10000)
-        self.bus.add_slave(name="axilite2led", slave=axi_bus, region=axilite2bft_region)
-        LED = Signal(2, name="LED")
-        SW = Signal(2, name="SW")
+        rst = ~self.crg.cd_sys.rst
+        clk = self.crg.cd_sys.clk
+        axilite2led = AxiLite2Led(clk, rst, platform)
+        axilite2led_region = SoCRegion(origin=0x02000000, size=0x10000)
+        self.bus.add_slave(name="axilite2led", slave=axilite2led.bus, region=axilite2led_region)
 
-        axil_sigs = axi_bus.get_signals()
-        self.specials += Instance("AxiLite2Led",
-                                  o_LED = LED,
-                                  i_SW = SW,
-                                  i_s00_axi_aclk = crg.cd_sys.clk,
-                                  i_s00_axi_aresetn = cpu_reset,
-                                  i_s00_axi_awaddr = axil_sigs['awaddr'],
-                                  i_s00_axi_awvalid = axil_sigs['awvalid'],
-                                  o_s00_axi_awready = axil_sigs['awready'],
-                                  i_s00_axi_wdata = axil_sigs['wdata'],
-                                  i_s00_axi_wstrb = axil_sigs['wstrb'],
-                                  i_s00_axi_wvalid = axil_sigs['wvalid'],
-                                  o_s00_axi_wready = axil_sigs['wready'],
-                                  o_s00_axi_bresp = axil_sigs['bresp'],
-                                  o_s00_axi_bvalid = axil_sigs['bvalid'],
-                                  o_s00_axi_bready = axil_sigs['bready'],
-                                  i_s00_axi_araddr = axil_sigs['araddr'],
-                                  i_s00_axi_arvalid = axil_sigs['arvalid'],
-                                  o_s00_axi_arready = axil_sigs['arready'],
-                                  o_s00_axi_rdata = axil_sigs['rdata'],
-                                  o_s00_axi_rresp = axil_sigs['rresp'],
-                                  o_s00_axi_rvalid = axil_sigs['rvalid'],
-                                  i_s00_axi_rready = axil_sigs['rready']
-                                  )
-        platform.add_source('rtl/AxiLite2Led.v')
+        axilite2led.add_axi_lite_to_led()
 
-        #led_pads = Cat([platform.request("user_led", 0), platform.request("user_led", 1)])
-        #self.comb += led_pads.eq(LED)
-
-        #reset_pad = platform.request("user_led", 7)
-        #self.comb += reset_pad.eq(cpu_reset)
-
-        led_pads = platform.request_all("user_led")
-        self.comb += led_pads.eq(axil_sigs['awaddr'])
+        led_pads = Cat([platform.request("user_led", 0), platform.request("user_led", 1)])
+        self.comb += led_pads.eq(axilite2led.led)
 
         sw_pads = Cat([platform.request("user_sw", 0), platform.request("user_sw", 1)])
-        self.comb += sw_pads.eq(SW)
+        self.comb += axilite2led.sw.eq(sw_pads)
+
+        # mm2s -------------------------------------------------------------------------------------
+        self.submodules.mm2s = mm2s = LiteDRAMDMAReader(self.sdram.crossbar.get_port(), 1)
+        mm2s.add_csr()
+        self.add_csr("mm2s")
+
+        # s2mm -------------------------------------------------------------------------------------
+        self.submodules.s2mm = s2mm = LiteDRAMDMAWriter(self.sdram.crossbar.get_port(), 1)
+        s2mm.add_csr()
+        self.add_csr("s2mm")
+
+        # sync fifo -------------------------------------------------------------------------------
+        self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 32)], 16)
+        self.comb += sync_fifo.sink.connect(mm2s.source)
+        self.comb += s2mm.sink.connect(sync_fifo.source)
+
         # Leds -------------------------------------------------------------------------------------
         #self.submodules.leds = LedChaser(
         #    pads         = platform.request_all("user_led"),

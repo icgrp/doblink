@@ -1,4 +1,5 @@
 #include "stdint.h"
+#include "system.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,80 +13,11 @@
 #define LED AXILITE2LED_BASE+16
 #define SW  AXILITE2LED_BASE+8
 
-static char *readstr(void)
-{
-	char c[2];
-	static char s[64];
-	static int ptr = 0;
-
-	if(readchar_nonblock()) {
-		c[0] = readchar();
-		c[1] = 0;
-		switch(c[0]) {
-			case 0x7f:
-			case 0x08:
-				if(ptr > 0) {
-					ptr--;
-					putsnonl("\x08 \x08");
-				}
-				break;
-			case 0x07:
-				break;
-			case '\r':
-			case '\n':
-				s[ptr] = 0x00;
-				putsnonl("\n");
-				ptr = 0;
-				return s;
-			default:
-				if(ptr >= (sizeof(s) - 1))
-					break;
-				putsnonl(c);
-				s[ptr] = c[0];
-				ptr++;
-				break;
-		}
-	}
-
-	return NULL;
-}
-
-static char *get_token(char **str)
-{
-	char *c, *d;
-
-	c = (char *)strchr(*str, ' ');
-	if(c == NULL) {
-		d = *str;
-		*str = *str+strlen(*str);
-		return d;
-	}
-	*c = 0;
-	d = *str;
-	*str = c+1;
-	return d;
-}
-
-static void prompt(void)
-{
-	printf("RUNTIME>");
-}
-
-static void help(void)
-{
-	puts("Available commands:");
-	puts("help                            - this command");
-	puts("reboot                          - reboot CPU");
-	puts("led                             - led test");
-}
-
-static void reboot(void)
-{
+static void reboot(void) {
 	ctrl_reset_write(1);
 }
 
-static void led_test(void)
-{
+static void led_test(void) {
 	int i;
 	for(i=0; i<256; i++) {
 		//leds_out_write(i);
@@ -109,36 +41,60 @@ static uint32_t axi_sw_read(void) {
   return *(volatile uint32_t *)Addr;
 }
 
-static void axi_led_test(void)
-{
+static void axi_led_test(void) {
   axi_led_write(0xffffffff);
-  //printf("1: %#08x\n", axi_led_read());
-  //busy_wait(100);
-  //axi_led_write(0x00000000);
-  //printf("0: %#08x\n", axi_led_read());
+  busy_wait(200);
+  axi_led_write(0x00000000);
+  busy_wait(200);
 }
 
-static void axi_sw_test(void)
-{
+static void axi_sw_test(void) {
   printf("%#08x\n", axi_sw_read());
   busy_wait(100);
 }
 
-static void console_service(void)
-{
-	char *str;
-	char *token;
+volatile uint32_t RxBufferPtr[16] __attribute__((aligned(16)));
+volatile uint32_t TxBufferPtr[16] __attribute__((aligned(16)));
 
-	str = readstr();
-	if(str == NULL) return;
-	token = get_token(&str);
-	if(strcmp(token, "help") == 0)
-		help();
-	else if(strcmp(token, "reboot") == 0)
-		reboot();
-	else if(strcmp(token, "led") == 0)
-		led_test();
-	prompt();
+static void dma_test(void) {
+  for(int i = 0; i < 16; i++) {
+    TxBufferPtr[i] = i;
+  }
+
+  for(int i = 0; i < 16; i++) {
+    RxBufferPtr[i] = 0;
+  }
+
+  flush_cpu_dcache();
+  flush_l2_cache();
+
+  mm2s_base_write((uint32_t) &TxBufferPtr);
+  mm2s_length_write(16);
+  mm2s_start_write(1);
+  while (!mm2s_done_read()) {
+    printf("Waiting for mm2s to finish\n");
+  }
+
+  s2mm_base_write((uint32_t) &RxBufferPtr);
+  s2mm_length_write(16);
+  s2mm_start_write(1);
+  while(!s2mm_done_read()) {
+    printf("Waiting for s2mm to finish\n");
+  }
+
+  int matching = 1;
+  for (int i = 0; i < 16; i++) {
+    if (RxBufferPtr[i] != i) {
+      printf("Data mismatch at i=%d, expected=%d, actual=%d\n", i, i, RxBufferPtr[i]);
+      matching = 0;
+    }
+  }
+
+  if (!matching) {
+    printf("TEST FAILED\n");
+  } else {
+    printf("TEST PASSED\n");
+  }
 }
 
 int main(void)
@@ -149,15 +105,10 @@ int main(void)
 #endif
 	uart_init();
 
-	puts("\nLab004 - CPU testing software built "__DATE__" "__TIME__"\n");
-	help();
-	prompt();
+	puts("\nrvpld - CPU testing software built "__DATE__" "__TIME__"\n");
 
 	printf("led_test...\n");
-	while(1) {
-    //led_test();
-    axi_led_test();
-	}
+  dma_test();
 
 	return 0;
 }
