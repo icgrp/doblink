@@ -27,9 +27,12 @@ from axilite2led import AxiLite2Led
 from litedram.modules import MT41K256M16
 from litedram.phy import s7ddrphy
 from litedram.frontend.dma import LiteDRAMDMAReader, LiteDRAMDMAWriter
+from litescope import LiteScopeAnalyzer
+from litex.soc.cores import uart
 
 from liteeth.phy.s7rgmii import LiteEthPHYRGMII
 
+DEBUG = True
 
 # CRG ----------------------------------------------------------------------------------------------
 
@@ -91,7 +94,10 @@ class BaseSoC(RvpldSoCCore):
                 clock_pads = self.platform.request("eth_clocks"),
                 pads       = self.platform.request("eth"))
             self.add_csr("ethphy")
-            self.add_ethernet(phy=self.ethphy)
+            self.add_etherbone(
+                phy=self.ethphy,
+                ip_address = "192.168.1.50"
+            )
 
         # AXILite2Led ------------------------------------------------------------------------------
         rst = ~self.crg.cd_sys.rst
@@ -109,19 +115,32 @@ class BaseSoC(RvpldSoCCore):
         self.comb += axilite2led.sw.eq(sw_pads)
 
         # mm2s -------------------------------------------------------------------------------------
-        self.submodules.mm2s = mm2s = LiteDRAMDMAReader(self.sdram.crossbar.get_port(), 1)
+        self.submodules.mm2s = mm2s = LiteDRAMDMAReader(self.sdram.crossbar.get_port(), fifo_buffered=True)
         mm2s.add_csr()
         self.add_csr("mm2s")
 
         # s2mm -------------------------------------------------------------------------------------
-        self.submodules.s2mm = s2mm = LiteDRAMDMAWriter(self.sdram.crossbar.get_port(), 1)
+        self.submodules.s2mm = s2mm = LiteDRAMDMAWriter(self.sdram.crossbar.get_port(), fifo_buffered=True)
         s2mm.add_csr()
         self.add_csr("s2mm")
 
         # sync fifo -------------------------------------------------------------------------------
-        self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 32)], 16)
-        self.comb += sync_fifo.sink.connect(mm2s.source)
-        self.comb += s2mm.sink.connect(sync_fifo.source)
+        self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 100, True)
+        self.comb += mm2s.source.connect(sync_fifo.sink)
+        self.comb += sync_fifo.source.connect(s2mm.sink)
+
+        if DEBUG:
+            analyzer_signals = [mm2s.source, sync_fifo.level, mm2s.rsv_level, mm2s.sink, mm2s.port.cmd, mm2s.port.rdata]
+            self.submodules.analyzer = LiteScopeAnalyzer(analyzer_signals,
+                                                         depth = 2048,
+                                                         clock_domain = "sys",
+                                                         csr_csv = "analyzer.csv")
+            self.add_csr("analyzer")
+
+        #level_pads = Cat([platform.request("user_led", 2), platform.request("user_led", 3), \
+        #                    platform.request("user_led", 4), platform.request("user_led", 5), \
+        #                    platform.request("user_led", 6)])
+        #self.comb += level_pads.eq(sync_fifo.level)
 
         # Leds -------------------------------------------------------------------------------------
         #self.submodules.leds = LedChaser(

@@ -56,3 +56,6 @@ controller/prog/
 *__pycache__*
 compile_commands.json
 *.clangd*
+analyzer.csv
+csr.csv
+dump.vcd
