@@ -1,0 +1,24 @@
+PHONY:all
+
+all:
+	script_gen.py
+	qsub_main.sh
+
+clean:
+	rm -rf ./leaf*
+	rm -rf ./run*
+	rm -rf ./qsub*
+	rm -rf ./syn*
+	rm -rf ./vivado*
+	rm -rf ./main.shrm -rf ./main.sh
+	rm -rf ./*.dcp
+clean_all:
+	rm -rf ./leaf*
+	rm -rf ./run*
+	rm -rf ./qsub*
+	rm -rf ./syn*
+	rm -rf ./uti*
+	rm -rf ./vivado*
+	rm -rf ./main.shrm -rf ./main.sh
+	rm -rf ./*.dcp
+	rm -rf ./report*

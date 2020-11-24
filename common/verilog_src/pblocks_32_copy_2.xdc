@@ -1,0 +1,15 @@
+create_pblock pblock_axi
+add_cells_to_pblock [get_pblocks pblock_axi] [get_cells -quiet [list floorplan_static_i/axi_leaf]]
+resize_pblock [get_pblocks pblock_axi] -add {CLOCKREGION_X1Y0:CLOCKREGION_X1Y2}
+create_pblock pblock_bft
+add_cells_to_pblock [get_pblocks pblock_bft] [get_cells -quiet [list floorplan_static_i/bft_leaf/bft_0 floorplan_static_i/bft_leaf/rst_ps8_0_99M1 floorplan_static_i/bft_leaf/rst_ps8_0_99M3]]
+resize_pblock [get_pblocks pblock_bft] -add {CLOCKREGION_X1Y3:CLOCKREGION_X1Y6}
+
+
+create_pblock pblock_leaf_2
+add_cells_to_pblock [get_pblocks pblock_leaf_2] [get_cells -quiet [list floorplan_static_i/bft_leaf/leaf_empty_10 floorplan_static_i/bft_leaf/leaf_empty_11 floorplan_static_i/bft_leaf/leaf_empty_12 floorplan_static_i/bft_leaf/leaf_empty_13 floorplan_static_i/bft_leaf/leaf_empty_14 floorplan_static_i/bft_leaf/leaf_empty_15 floorplan_static_i/bft_leaf/leaf_empty_2 floorplan_static_i/bft_leaf/leaf_empty_3 floorplan_static_i/bft_leaf/leaf_empty_4 floorplan_static_i/bft_leaf/leaf_empty_5 floorplan_static_i/bft_leaf/leaf_empty_6 floorplan_static_i/bft_leaf/leaf_empty_7 floorplan_static_i/bft_leaf/leaf_empty_8 floorplan_static_i/bft_leaf/leaf_empty_9 floorplan_static_i/bft_leaf/rst_ps8_0_99M4 floorplan_static_i/bft_leaf/rst_ps8_0_99M5]]
+resize_pblock [get_pblocks pblock_leaf_2] -add {CLOCKREGION_X0Y3:CLOCKREGION_X0Y6}
+create_pblock pblock_leaf_1
+add_cells_to_pblock [get_pblocks pblock_leaf_1] [get_cells -quiet [list floorplan_static_i/bft_leaf/leaf_empty_16 floorplan_static_i/bft_leaf/leaf_empty_17 floorplan_static_i/bft_leaf/leaf_empty_18 floorplan_static_i/bft_leaf/leaf_empty_19 floorplan_static_i/bft_leaf/leaf_empty_20 floorplan_static_i/bft_leaf/leaf_empty_21 floorplan_static_i/bft_leaf/leaf_empty_22 floorplan_static_i/bft_leaf/leaf_empty_23 floorplan_static_i/bft_leaf/leaf_empty_24 floorplan_static_i/bft_leaf/leaf_empty_25 floorplan_static_i/bft_leaf/leaf_empty_26 floorplan_static_i/bft_leaf/leaf_empty_27 floorplan_static_i/bft_leaf/leaf_empty_28 floorplan_static_i/bft_leaf/leaf_empty_29 floorplan_static_i/bft_leaf/leaf_empty_30 floorplan_static_i/bft_leaf/leaf_empty_31 floorplan_static_i/bft_leaf/rst_ps8_0_99M6 floorplan_static_i/bft_leaf/rst_ps8_0_99M7]]
+resize_pblock [get_pblocks pblock_leaf_1] -add {CLOCKREGION_X2Y3:CLOCKREGION_X3Y6}
+

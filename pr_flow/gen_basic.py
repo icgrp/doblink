@@ -1,0 +1,633 @@
+# -*- coding: utf-8 -*-
+
+
+import os
+import subprocess
+import xml.etree.ElementTree
+import re
+import commands
+
+class _shell:
+  def __init__(self, prflow_params):
+    self.prflow_params = prflow_params
+
+  # return the qsub command according to the input parameters
+  def return_qsub_command_str(self, shell_file='./qsub_run', hold_jid='NONE', name='NONE', q='70s', email='qsub@qsub.com', MEM='2G', node_num='1'):
+    return ('qsub -N '+name + ' -q ' + q + ' -hold_jid ' + hold_jid + ' -m abe -M ' + email + ' -l mem='+MEM + ' -pe onenode '+node_num + '  -cwd '+ shell_file)
+
+  def get_file_name(self, file_dir):
+  # return a file list under a file_dir
+    for root, dirs, files in os.walk(file_dir):
+      return files
+
+  def replace_lines(self, filename, modification_dict):
+  # change the string(key of modification_dict) to
+  # target string (value of modification_dict)
+    try:
+      file_in =  open(filename, 'r')
+      file_out = open(filename+'tmp', 'w')
+      for line in file_in:
+        find_target = False
+        for key, value in modification_dict.items():
+          if line.replace(key, '') != line:
+            file_out.write(value+'\n')
+            find_target = True
+            break
+        if find_target == False:
+          file_out.write(line)
+      file_out.close()
+      file_in.close()
+      os.system('mv '+filename+'tmp '+filename)
+    except:
+      print "Modification for "+filename+" failed!"
+
+  def add_lines(self, filename, anchor, lines_list):
+  # add more lines in a file according to
+  # some anchor string
+    try:
+      file_in =  open(filename, 'r')
+      file_out = open(filename+'tmp', 'w')
+      for line in file_in:
+        if line.replace(anchor, '') != line:
+          file_out.write('\n'.join(lines_list)+'\n')
+        file_out.write(line)
+      file_out.close()
+      file_in.close()
+      os.system('mv '+filename+'tmp '+filename)
+    except:
+      print "Adding more line in "+filename+" failed!"
+
+  def write_lines(self, filename, lines_list, executable=False, write_or_add='w'):
+    try:
+      file_out = open(filename, write_or_add)
+      file_out.write('\n'.join(lines_list)+'\n')
+      file_out.close()
+      if executable == True:
+         os.system('chmod +x ' + filename)
+    except:
+      print "Writing "+filename+" failed!"
+
+  def re_mkdir(self, dir_name):
+     os.system('rm -rf ' + dir_name)
+     os.system('mkdir -p ' + dir_name)
+
+  def cp_dir(self, src_dir, dst_dir):
+     os.system('cp -rf '+src_dir+' '+dst_dir)
+
+  def return_run_sh_list(self, vivado_dir, tcl_file):
+    return ([
+      '#!/bin/bash -e',
+      'source ' + vivado_dir,
+      'vivado -mode batch -source ' + tcl_file,
+      ''])
+
+  def return_run_hls_sh_list(self, vivado_dir, tcl_file):
+    return ([
+      '#!/bin/bash -e',
+      'source ' + vivado_dir,
+      'vivado_hls -f ' + tcl_file,
+      ''])
+
+
+  def return_main_sh_list(self, run_file='run.sh'):
+    return ([
+      '#!/bin/bash -e',
+      './' + run_file,
+      ''])
+
+  def return_qsub_scan_sh_list(self, scan_dir, run_shell='qsub_run.sh', hold_prefix='hls_', name_prefix='mono_bft_'):
+    return ([
+      '#!/bin/bash -e',
+      'source ' + self.prflow_params['qsub_Xilinx_dir'],
+      'emailAddr="' + self.prflow_params['email'] + '"',
+      'file_list=\'dummy\'',
+      'for file in $(ls '+scan_dir+')',
+      'do',
+      '  if [ "$file" != "synth_1" ]; then',
+      '    file_list=$file_list\','+name_prefix+'\'$file',
+      '    cd \''+scan_dir+'/\'$file',
+      '    qsub  -hold_jid '+hold_prefix+'$file -N '+name_prefix+'$file -q ' + self.prflow_params['qsub_grid'] + ' -m abe -M $emailAddr -l mem=8G  -cwd ./'+run_shell,
+      '    cd -',
+      '  fi',
+      'done',
+      ''])
+
+
+
+class _verilog:
+  def __init__(self, prflow_params):
+    self.prflow_params = prflow_params
+    pass
+
+  def return_page_v_list(self, 
+                         page_num, 
+                         fun_name,
+                         input_num,
+                         output_num,
+                         for_syn=False,
+                         PAYLOAD_BITS=None,
+                         PACKET_BITS=None,
+                         NUM_LEAF_BITS=None,
+                         NUM_PORT_BITS=None,
+                         NUM_ADDR_BITS=None,
+                         NUM_BRAM_ADDR_BITS=None,
+                         FREESPACE_UPDATE_SIZE=None
+                         ):
+    PAYLOAD_BITS=self.prflow_params['payload_bits'] if PAYLOAD_BITS == None else PAYLOAD_BITS
+    PACKET_BITS=self.prflow_params['packet_bits'] if PACKET_BITS == None else PACKET_BITS
+    NUM_LEAF_BITS=self.prflow_params['addr_bits'] if NUM_LEAF_BITS == None  else NUM_LEAF_BITS
+    NUM_PORT_BITS=self.prflow_params['port_bits'] if NUM_PORT_BITS == None  else NUM_PORT_BITS
+    NUM_ADDR_BITS=self.prflow_params['bram_addr_bits'] if NUM_ADDR_BITS == None else NUM_ADDR_BITS
+    NUM_BRAM_ADDR_BITS=self.prflow_params['bram_addr_bits'] if NUM_BRAM_ADDR_BITS == None else NUM_BRAM_ADDR_BITS
+    FREESPACE_UPDATE_SIZE=self.prflow_params['freespace'] if FREESPACE_UPDATE_SIZE == None  else FREESPACE_UPDATE_SIZE
+ 
+    lines_list = []
+    lines_list.append('`timescale 1ns / 1ps')
+    if for_syn:
+      lines_list.append('module leaf(')
+    else:
+      lines_list.append('module leaf_'+str(page_num)+'(')
+
+    lines_list.append('    input wire clk_bft,')
+    lines_list.append('    input wire clk_user,')
+    lines_list.append('    input wire ['+str(PACKET_BITS)+'-1 : 0] din_leaf_bft2interface,')
+    lines_list.append('    output wire ['+str(PACKET_BITS)+'-1 : 0] dout_leaf_interface2bft,')
+    lines_list.append('    input wire resend,')
+    lines_list.append('    input wire reset_bft,')
+    lines_list.append('    input wire ap_start,')
+    lines_list.append('    input wire reset')
+    lines_list.append('    );')
+    lines_list.append('')
+   
+    dout_list = []
+    val_out_list = [] 
+    ack_out_list = []
+    for i in range(int(input_num),0,-1): 
+      lines_list.append('    wire ['+str(PAYLOAD_BITS)+'-1 :0] dout_leaf_interface2user_'+str(i)+';')
+      lines_list.append('    wire vld_interface2user_'+str(i)+';')
+      lines_list.append('    wire ack_user2interface_'+str(i)+';')
+      dout_list.append('dout_leaf_interface2user_'+str(i))
+      val_out_list.append('vld_interface2user_'+str(i))
+      ack_out_list.append('ack_user2interface_'+str(i))
+    dout_str='{'+','.join(dout_list)+'}'
+    val_out_str='{'+','.join(val_out_list)+'}'
+    ack_out_str='{'+','.join(ack_out_list)+'}'
+
+    din_list = []
+    val_in_list = [] 
+    ack_in_list = []
+    for i in range(int(output_num),0,-1): 
+      lines_list.append('    wire ['+str(PAYLOAD_BITS)+'-1 :0] din_leaf_user2interface_'+str(i)+';')
+      lines_list.append('    wire vld_user2interface_'+str(i)+';')
+      lines_list.append('    wire ack_interface2user_'+str(i)+';')
+      din_list.append('din_leaf_user2interface_'+str(i))
+      val_in_list.append('vld_user2interface_'+str(i))
+      ack_in_list.append('ack_interface2user_'+str(i))
+    din_str='{'+','.join(din_list)+'}'
+    val_in_str='{'+','.join(val_in_list)+'}'
+    ack_in_str='{'+','.join(ack_in_list)+'}'
+
+
+
+    lines_list.append('    ')
+    lines_list.append('    leaf_interface #(')
+    lines_list.append('        .PACKET_BITS('+str(PACKET_BITS)+' ),')
+    lines_list.append('        .PAYLOAD_BITS('+str(PAYLOAD_BITS)+' ), ')
+    lines_list.append('        .NUM_LEAF_BITS('+str(NUM_LEAF_BITS)+'),')
+    lines_list.append('        .NUM_PORT_BITS('+str(NUM_PORT_BITS)+'),')
+    lines_list.append('        .NUM_ADDR_BITS('+str(NUM_ADDR_BITS)+'),')
+    lines_list.append('        .NUM_IN_PORTS('+str(input_num)+'), ')
+    lines_list.append('        .NUM_OUT_PORTS('+str(output_num)+'),')
+    lines_list.append('        .NUM_BRAM_ADDR_BITS('+str(NUM_BRAM_ADDR_BITS)+'),')
+    lines_list.append('        .FREESPACE_UPDATE_SIZE('+str(FREESPACE_UPDATE_SIZE)+')')
+    lines_list.append('    )leaf_interface_inst(')
+    lines_list.append('        .clk_bft(clk_bft),')
+    lines_list.append('        .clk_user(clk_user),')
+    lines_list.append('        .reset(reset),')
+    lines_list.append('        .reset_bft(reset_bft),')
+    lines_list.append('        .din_leaf_bft2interface(din_leaf_bft2interface),')
+    lines_list.append('        .dout_leaf_interface2bft(dout_leaf_interface2bft),')
+    lines_list.append('        .resend(resend),')
+    lines_list.append('        .dout_leaf_interface2user('+dout_str+'),')
+    lines_list.append('        .vld_interface2user('+val_out_str+'),')
+    lines_list.append('        .ack_user2interface('+ack_out_str+'),')
+    lines_list.append('        .ack_interface2user('+ack_in_str+'),')
+    lines_list.append('        .vld_user2interface('+val_in_str+'),')
+    lines_list.append('        .din_leaf_user2interface('+din_str+')')
+    lines_list.append('    );')
+    lines_list.append('    ')
+    lines_list.append('    '+fun_name+' '+fun_name+'_inst(')
+    lines_list.append('        .ap_clk(clk_user),')
+    lines_list.append('        .ap_start(ap_start),')
+    lines_list.append('        .ap_done(),')
+    lines_list.append('        .ap_idle(),')
+    lines_list.append('        .ap_ready(),')
+    for i in range(int(input_num),0,-1): 
+      lines_list.append('        .Input_'+str(i)+'_V_V(dout_leaf_interface2user_'+str(i)+'),')
+      lines_list.append('        .Input_'+str(i)+'_V_V_ap_vld(vld_interface2user_'+str(i)+'),')
+      lines_list.append('        .Input_'+str(i)+'_V_V_ap_ack(ack_user2interface_'+str(i)+'),')
+    for i in range(int(output_num),0,-1): 
+      lines_list.append('        .Output_'+str(i)+'_V_V(din_leaf_user2interface_'+str(i)+'),')
+      lines_list.append('        .Output_'+str(i)+'_V_V_ap_vld(vld_user2interface_'+str(i)+'),')
+      lines_list.append('        .Output_'+str(i)+'_V_V_ap_ack(ack_interface2user_'+str(i)+'),')
+    lines_list.append('        .ap_rst(reset)')
+    lines_list.append('        );  ')
+    lines_list.append('    ')
+    lines_list.append('endmodule')
+
+    return lines_list
+
+class _tcl:
+  def __init__(self, prflow_params):
+    self.prflow_params = prflow_params
+
+  def return_delete_bd_objs_tcl_str(self, obj_name):
+    return('delete_bd_objs  [get_bd_cells '+obj_name+']')
+
+  def return_change_parameter_tcl_str(self, cell_name, par_name, par_value):
+    return('set_property -dict [list CONFIG.'+par_name+' {'+str(par_value)+'}] [get_bd_cells '+cell_name+']')
+
+  def return_connect_bd_net_tcl_str(self, src_pin, dest_pin):
+    return('connect_bd_net [get_bd_pins '+src_pin + '] [get_bd_pins '+dest_pin+']')
+
+  def return_create_bd_cell_tcl_str(self, obj_name, inst_name, obj_type='ip'):
+    return('create_bd_cell -type '+obj_type+' -vlnv '+obj_name+' ' + inst_name)
+
+  def return_connect_bd_stream_tcl_list(self, src_name, dest_name, src_port_name='', dest_port_name=''):
+    return([
+      'connect_bd_net [get_bd_pins /'+src_name+'/'+src_port_name+'dout] [get_bd_pins /'+dest_name+'/'+dest_port_name+'din]',
+      'connect_bd_net [get_bd_pins /'+src_name+'/'+src_port_name+'val_out] [get_bd_pins /'+dest_name+'/'+dest_port_name+'val_in]',
+      'connect_bd_net [get_bd_pins /'+src_name+'/'+src_port_name+'ready_upward] [get_bd_pins /'+dest_name+'/'+dest_port_name+'ready_downward]',
+      ''])
+
+  def return_syn2bits_tcl_list(self, prj_dir='./prj/', prj_name = 'floorplan_static'):
+    return ([
+      'open_project '+prj_dir+prj_name+'.xpr',
+      'reset_run synth_1',
+      'launch_runs synth_1',
+      'wait_on_run synth_1',
+      'launch_runs impl_1 -to_step write_bitstream',
+      'wait_on_run impl_1',
+      'file mkdir '+prj_dir+prj_name+'.sdk',
+      'file copy -force '+prj_dir+prj_name\
+        +'.runs/impl_1/'+prj_name+'_wrapper.sysdef '+prj_dir+prj_name+'.sdk/'+prj_name+'_wrapper.hdf ',
+      ''])
+
+  def return_syn2dcp_tcl_list(self, prj_dir='./prj/', prj_name = 'floorplan_static.xpr'):
+    threads_num = commands.getoutput("nproc")
+    return ([
+      'open_project '+prj_dir+prj_name,
+      'reset_run synth_1',
+      'launch_runs synth_1 -jobs '+str(threads_num),
+      'wait_on_run synth_1',
+      'open_run synth_1 -name synth_1',
+      'write_checkpoint -force floorplan_static.dcp',
+      ''])
+
+
+  def return_ip_page_tcl_list(self, fun_name, fun_num, file_list):
+    lines_list = ['create_project floorplan_static ./prj -part '+self.prflow_params['part']]
+    for file_name in file_list:
+      lines_list.append('add_files -norecurse '+file_name)
+     
+    lines_list.extend([
+     'set dir "../../../F002_hls_'+self.prflow_params['benchmark_name']  + '/' + fun_name + '_prj/' + fun_name + '/syn/verilog"',
+      'set contents [glob -nocomplain -directory $dir *]',
+      'foreach item $contents {',
+      '  if { [regexp {.*\.tcl} $item] } {',
+      '    source $item',
+      '  } else {',
+      '    add_files -norecurse $item',
+      '  }',
+      '}',
+      'set_param general.maxThreads  8',
+      'set_property XPM_LIBRARIES {XPM_CDC XPM_MEMORY XPM_FIFO} [current_project]',
+      'add_files  -norecurse ./leaf_'+str(fun_num)+'.v',
+      'ipx::package_project -root_dir ./prj/floorplan_static.srcs/sources_1 -vendor user.org -library user -taxonomy /UserIP',
+      'set_property core_revision 2 [ipx::current_core]',
+      'ipx::create_xgui_files [ipx::current_core]',
+      'ipx::update_checksums [ipx::current_core]',
+      'ipx::save_core [ipx::current_core]',
+      'set_property  ip_repo_paths  ./prj/floorplan_static.srcs/sources_1 [current_project]',
+      'update_ip_catalog',
+      ''])
+      
+    return lines_list
+
+  def return_syn_page_tcl_list(self, fun_name,  file_list):
+    #lines_list = ['create_project floorplan_static ./prj -part '+self.prflow_params['part']]
+    lines_list = []
+    for file_name in file_list:
+      lines_list.append('add_files -norecurse '+file_name)
+ 
+    lines_list.extend([
+      'set dir "../../F002_hls_'+self.prflow_params['benchmark_name']  + '/' + fun_name + '_prj/' + fun_name + '/syn/verilog"',
+      'set contents [glob -nocomplain -directory $dir *]',
+      'foreach item $contents {',
+      '  if { [regexp {.*\.tcl} $item] } {',
+      '    source $item',
+      '  } else {',
+      '    add_files -norecurse $item',
+      '  }',
+      '}',
+      'set_param general.maxThreads  8',
+      'set_property XPM_LIBRARIES {XPM_CDC XPM_MEMORY XPM_FIFO} [current_project]',
+      'set logFileId [open ./runLog_'+fun_name+'.log "a"]',
+      'set start_time [clock seconds]',
+      'set_param general.maxThreads  8 ',
+      'synth_design -top leaf -part '+self.prflow_params['part']+' -mode out_of_context',
+      'write_checkpoint -force page_netlist.dcp',
+      'set end_time [clock seconds]',
+      'set total_seconds [expr $end_time - $start_time]',
+      'puts $logFileId "syn: $total_seconds seconds"',
+      'report_utilization -hierarchical > utilization.rpt',
+      ''])
+     
+    return lines_list
+
+  def get_file_name(self, file_dir):                                            
+    for root, dirs, files in os.walk(file_dir):                                 
+      return files  
+
+  def return_hls_tcl_list(self, fun_name):
+    lines_list = []
+    lines_list.append('set logFileId [open ./runLog' + fun_name + '.log "a"]')
+    lines_list.append('set_param general.maxThreads ' + self.prflow_params['maxThreads'] + ' ')
+    lines_list.append('set start_time [clock seconds]')                     
+    lines_list.append('open_project ' + fun_name + '_prj')                  
+    lines_list.append('set_top ' + fun_name + '')                           
+    lines_list.append('add_files ../../input_src/' + self.prflow_params['benchmark_name'] + '/operators/' + fun_name + '.cc')
+    lines_list.append('add_files ../../input_src/' + self.prflow_params['benchmark_name'] + '/host/typedefs.h')
+    lines_list.append('open_solution "' +fun_name +'"')                     
+    lines_list.append('set_part {'+self.prflow_params['part']+'}')          
+    lines_list.append('create_clock -period '+self.prflow_params['clk_user']+' -name default')
+    lines_list.append('#source "./Rendering_hls/colorFB/directives.tcl"')   
+    lines_list.append('#csim_design')                                       
+    lines_list.append('csynth_design')                                      
+    lines_list.append('#cosim_design -trace_level all -tool xsim')          
+    #if(fun_name == self.prflow_params['mono_function']):                      
+    #  lines_list.append('export_design -rtl verilog -format ip_catalog')    
+    #else:                                                                     
+    lines_list.append('#export_design -rtl verilog -format ip_catalog')   
+                                                                              
+    lines_list.append('set end_time [clock seconds]')                       
+    lines_list.append('set total_seconds [expr $end_time - $start_time]')   
+    lines_list.append('puts $logFileId "hls: $total_seconds seconds"')      
+    lines_list.append('')                                                     
+    lines_list.append('exit')                                               
+
+    return lines_list
+
+  def return_hls_prj_list(self, fun_name):
+    lines_list = []
+    #generate project files for each function                                 
+    #the reason is that one vivado project can only have on active hardware function
+    #to be implemented                                                        
+    lines_list.append('<project xmlns="com.autoesl.autopilot.project" name="' + fun_name + '_prj" top="'+ fun_name + '">')
+    lines_list.append('    <includePaths/>')
+    lines_list.append('    <libraryPaths/>')
+    lines_list.append('    <Simulation>')
+    lines_list.append('        <SimFlow askAgain="false" name="csim" csimMode="0" lastCsimMode="0"/>')
+    lines_list.append('    </Simulation>')
+    lines_list.append('    <files>')
+
+    #capture all the files under operator dirctory
+    lines_list.append('        <file name="../../input_src/' + self.prflow_params['benchmark_name'] + '/operators/' + fun_name + '.cc " sc="0" tb="false" cflags=""/>')
+    lines_list.append('        <file name="../../input_src/' + self.prflow_params['benchmark_name'] + '/host/typedefs.h" sc="0" tb="false" cflags=""/>')
+    lines_list.append('    </files> ')
+    lines_list.append('    <solutions>')
+    lines_list.append('        <solution name="' + fun_name + '" status="active"/>')
+    lines_list.append('    </solutions>')
+    lines_list.append('</project>')
+
+    return lines_list
+
+  def return_impl_tcl_list(self, fun_name, num, IsNet=False):
+    lines_list = []
+    lines_list.append('set logFileId [open ./runLogImpl_'+fun_name+'.log "w"]')
+    #lines_list.append('set_param general.maxThreads ' + self.prflow_params['maxThreads'] + ' ')
+    lines_list.append('set_param general.maxThreads 2 ')
+    lines_list.append('')
+    lines_list.append('#####################')
+    lines_list.append('## read_checkpoint ##')
+    lines_list.append('#####################')
+    lines_list.append('set start_time [clock seconds]')
+    lines_list.append('open_checkpoint ../../F001_static_' + self.prflow_params['nl'] + '_leaves/big_static_routed_' + self.prflow_params['nl'] + '.dcp')
+    if IsNet:
+      lines_list.append("update_design -cell floorplan_static_i/net" + str(num) + "/inst -black_box")
+      lines_list.append("read_checkpoint -cell floorplan_static_i/net" + str(num) + "/inst ../../F003_syn_" + self.prflow_params['benchmark_name'] + '/net' + str(num) + "/net" + str(num) + "_netlist.dcp")
+    else:
+      lines_list.append("update_design -cell floorplan_static_i/leaf_empty_" + str(num) + "/inst -black_box")
+      lines_list.append("read_checkpoint -cell floorplan_static_i/leaf_empty_" + str(num) + "/inst ../../F003_syn_" + self.prflow_params['benchmark_name'] + '/' + fun_name + "/page_netlist.dcp")
+ 
+    lines_list.append("set end_time [clock seconds]")
+    lines_list.append("set total_seconds [expr $end_time - $start_time]")
+    lines_list.append('puts $logFileId "read_checkpoint: $total_seconds seconds"')
+    lines_list.append("")
+    lines_list.append("")
+
+    lines_list.append("####################")
+    lines_list.append("## implementation ##")
+    lines_list.append("####################")
+    lines_list.append("set start_time [clock seconds]")
+    lines_list.append("#reset_timing ")
+    lines_list.append("opt_design ")
+    lines_list.append("set end_time [clock seconds]")
+    lines_list.append("set total_seconds [expr $end_time - $start_time]")
+    lines_list.append('puts $logFileId "opt: $total_seconds seconds"')
+    lines_list.append("write_checkpoint  -force  "+ fun_name + "_opt.dcp")
+    lines_list.append("")
+
+    lines_list.append("set start_time [clock seconds]")
+    if self.prflow_params['PR_mode'] == 'quick':
+      lines_list.append("place_design -directive Quick ")
+    else:
+      lines_list.append("place_design  ")
+
+    lines_list.append("set end_time [clock seconds]")
+    lines_list.append("set total_seconds [expr $end_time - $start_time]")
+    lines_list.append('puts $logFileId "place: $total_seconds seconds"')
+    lines_list.append("write_checkpoint  -force  "+fun_name + "_placed.dcp")
+    lines_list.append("")
+
+    lines_list.append("set start_time [clock seconds]")
+    if self.prflow_params['PR_mode'] == 'quick':
+      lines_list.append("route_design -directive Quick ")
+    else:
+      lines_list.append("route_design  ")
+          
+    lines_list.append("set end_time [clock seconds]")
+    lines_list.append("set total_seconds [expr $end_time - $start_time]")
+    lines_list.append('puts $logFileId "route: $total_seconds seconds"')
+    lines_list.append("write_checkpoint -force   " + fun_name + "_routed.dcp")
+    lines_list.append("")
+    lines_list.append("")
+
+    lines_list.append("###############")
+    lines_list.append("## bitstream ##")
+    lines_list.append("###############")
+    lines_list.append("set_param bitstream.enablePR 2341")
+    lines_list.append("set start_time [clock seconds]")
+    if IsNet:
+      lines_list.append("write_bitstream  -force  -cell floorplan_static_i/net" + str(num) + "/inst ../../F005_bits_"+self.prflow_params['benchmark_name']+"/net_" + str(num) + "")
+    else:
+      lines_list.append("write_bitstream  -force  -cell floorplan_static_i/leaf_empty_" + str(num) + "/inst ../../F005_bits_"+self.prflow_params['benchmark_name']+"/leaf_" + str(num) + "")
+    lines_list.append("set end_time [clock seconds]")
+    lines_list.append("set total_seconds [expr $end_time - $start_time]")
+    lines_list.append('puts $logFileId "bit_gen: $total_seconds seconds"')
+    if IsNet:
+      lines_list.append('report_utilization -pblocks ' + fun_name + ' > utilization.rpt')
+    else:
+      lines_list.append('report_utilization -pblocks p_' + str(num) + ' > utilization.rpt')
+    lines_list.append('report_timing_summary > timing.rpt')
+    return lines_list
+
+
+
+
+
+
+  def return_mk_overlay_tcl_list(self):
+    lines_list = []
+    lines_list.append('set logFileId [open ./runLog_impl_big_static_' + str(self.prflow_params['nl']) + '.log "w"]')
+    lines_list.append('')
+    lines_list.append('#####################')
+    lines_list.append('## read_checkpoint ##')
+    lines_list.append('#####################')
+    lines_list.append('set start_time [clock seconds]')
+    lines_list.append('open_checkpoint ./floorplan_static.dcp')
+    for i in range(3, int(self.prflow_params['nl'])):
+      lines_list.append('read_checkpoint -cell floorplan_static_i/leaf_empty_' + str(i) + '/inst ./dummy_repo/user_kernel/page_netlist.dcp')
+    lines_list.append('set end_time [clock seconds]')
+    lines_list.append('set total_seconds [expr $end_time - $start_time]')
+    lines_list.append('puts $logFileId "read_checkpoint: $total_seconds seconds"')
+    lines_list.append('')
+    lines_list.append('####################')
+    lines_list.append('## implementation ##')
+    lines_list.append('####################')
+    lines_list.append('set start_time [clock seconds]')
+    lines_list.append('opt_design')
+    lines_list.append('set end_time [clock seconds]')
+    lines_list.append('set total_seconds [expr $end_time - $start_time]')
+    lines_list.append('puts $logFileId "opt: $total_seconds seconds"')
+    lines_list.append('set start_time [clock seconds]')
+    lines_list.append('place_design')
+    lines_list.append('set end_time [clock seconds]')
+    lines_list.append('set total_seconds [expr $end_time - $start_time]')
+    lines_list.append('puts $logFileId "place: $total_seconds seconds"')
+    lines_list.append('# write_hwdef -force pr_test_wrapper.hwdef')
+    lines_list.append('write_checkpoint -force init_placed_' + str(self.prflow_params['nl']) + '.dcp')
+    lines_list.append('set start_time [clock seconds]')
+    lines_list.append('route_design')
+    lines_list.append('set end_time [clock seconds]')
+    lines_list.append('set total_seconds [expr $end_time - $start_time]')
+    lines_list.append('puts $logFileId "route: $total_seconds seconds"')
+    lines_list.append('write_checkpoint -force init_routed_' + str(self.prflow_params['nl']) + '.dcp')
+    lines_list.append('set_param bitstream.enablePR 2341')
+    lines_list.append('write_bitstream -force -no_partial_bitfile  ./main.bit')
+    lines_list.append('report_timing_summary > timing.rpt')
+    lines_list.append('#############################################')
+    lines_list.append('## create static design with no bft pblock ##')
+    lines_list.append('#############################################')
+    lines_list.append('')
+    lines_list.append('set start_time [clock seconds]')
+    lines_list.append('update_design -cell floorplan_static_i/axi_leaf -black_box')
+    lines_list.append('update_design -cell floorplan_static_i/bft_01 -black_box')
+    lines_list.append('update_design -cell floorplan_static_i/bft_10 -black_box')
+    lines_list.append('update_design -cell floorplan_static_i/bft_11 -black_box')
+    for i in range(3, int(self.prflow_params['nl'])):
+      lines_list.append('update_design -cell floorplan_static_i/leaf_empty_' + str(i) + '/inst -black_box')
+
+    lines_list.append('#############################################')
+    lines_list.append('## Only after empty all modules out, can   ##')
+    lines_list.append('## you add -buffer_ports                   ##')
+    lines_list.append('#############################################')
+ 
+    lines_list.append('update_design -cell floorplan_static_i/axi_leaf -buffer_ports')
+    lines_list.append('update_design -cell floorplan_static_i/bft_01 -buffer_ports')
+    lines_list.append('update_design -cell floorplan_static_i/bft_10 -buffer_ports')
+    lines_list.append('update_design -cell floorplan_static_i/bft_11 -buffer_ports')
+    for i in range(3, int(self.prflow_params['nl'])):
+      lines_list.append('update_design -cell floorplan_static_i/leaf_empty_' + str(i) + '/inst -buffer_ports')
+
+    lines_list.append('lock_design -level routing')
+    lines_list.append('write_checkpoint -force big_static_routed_' + str(self.prflow_params['nl']) + '.dcp')
+    lines_list.append('close_design')
+    lines_list.append('set end_time [clock seconds]')
+    lines_list.append('set total_seconds [expr $end_time - $start_time]')
+    lines_list.append('puts $logFileId "update, black_box: $total_seconds seconds"')
+    lines_list.append('# set start_time [clock seconds]')
+    lines_list.append('# set end_time [clock seconds]')
+    lines_list.append('# set total_seconds [expr $end_time - $start_time]')
+    lines_list.append('# puts $logFileId "write bitstream: $total_seconds seconds"')
+
+    return lines_list
+
+  # tcl command function end
+  ######################################################################################################################################################
+
+
+
+class gen_basic:
+  def __init__(self, prflow_params):
+    self.shell = _shell(prflow_params)
+    self.verilog = _verilog(prflow_params)
+    self.tcl = _tcl(prflow_params)
+    self.prflow_params = prflow_params
+    self.bft_dir = self.prflow_params['workspace']+'/F000_bft_gen'
+    #self.overlay_dir = self.prflow_params['workspace']+'/F001_overlay_' + self.prflow_params['nl'] + '_leaves'
+    self.overlay_dir = self.prflow_params['workspace']+'/F001_overlay'
+    self.hls_dir = self.prflow_params['workspace']+'/F002_hls_'+self.prflow_params['benchmark_name']
+    self.syn_dir = self.prflow_params['workspace']+'/F003_syn_'+self.prflow_params['benchmark_name']
+    self.pr_dir = self.prflow_params['workspace']+'/F004_pr_'+self.prflow_params['benchmark_name']
+    self.mono_bft_dir = self.prflow_params['workspace']+'/F007_mono_bft_'+self.prflow_params['benchmark_name']
+    self.hls_dir = self.prflow_params['workspace']+'/F002_hls_'+self.prflow_params['benchmark_name']
+    self.net_list = ['1', '1', '1', '1', '1', '2', '2', '2',
+                     '2', '2', '2', '0', '3', '3', '3', '3',
+                     '3', '3', '4', '4', '4', '4', '4', '4',
+                     '5', '5', '5', '5', '5', '5', '5', '5']
+
+
+
+
+
+  ######################################################################################################################################################
+  # help functions start
+  def print_params(self):
+    print self.prflow_params
+
+  def print_list(self, in_list):
+    for num, value in enumerate(in_list):
+      print str(num)+'\t'+str(value)
+
+  def print_dict(self, in_dict):
+    for key, value in in_dict.items():
+      print str(key)+'->'+str(value)
+
+  def has_pattern(self, in_str, pattern_str):
+    if in_str.replace(pattern_str, '') == in_str:
+      return False
+    else:
+      return True
+
+  # help functions end
+  ######################################################################################################################################################
+
+if __name__ == '__main__':
+  modification_dict = {'parameter PAYLOAD_BITS0': 'parameter PAYLOAD_BITS0 = a,',
+                       'parameter PORT_NUM_IN0': 'parameter PORT_NUM_IN0 = b,',
+                       'parameter PORT_NUM_OUT0': 'parameter PORT_NUM_OUT0 = c,'}
+  filename='net0.v'
+  inst = gen_basic()
+  inst.replace_lines(filename, modification_dict)
+  lines_list = ['hell',
+   'you',
+   'are',
+   'every',
+   'thing']
+
+  inst.add_lines(filename, 'input clk', lines_list)
+  inst.write_lines('net1.txt',  lines_list)
+
+
+

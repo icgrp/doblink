@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <spec name = "bft_regen"          value = "1" />
+  <spec name = "static_regen"       value = "1" />
+  <spec name = "hls_regen"          value = "0" />
+  <spec name = "leaf_syn_regen"     value = "0" />
+  <spec name = "leaf_impl_regen"    value = "0" />
+  <spec name = "bit_gen_regen"      value = "0" />
+  <spec name = "platform_regen"     value = "0" />
+  <spec name = "mono_bft_regen"     value = "0" />
+  <spec name = "mono_regen"         value = "0" />
+  <spec name = "config_regen"       value = "1" />
+  <spec name = "qsub_grid"          value = "70s" />
+  <spec name = "maxThreads"         value = "8" />
+  <spec name = "qsub_Nodes"         value = "10" />
+  <spec name = "MEM"                value = "2G" />
+  <spec name = "PR_mode"            value = "noquick" />
+  <clock name = 'clk_bft' period = "3.3" />
+  <clock name = 'clk_user' period = "4" />
+
+
+
+  <spec name = "mono_function"               value = "DigitRec_mono" />
+
+
+  <!--functions to be synthesized-->
+  <function name = "update_knn1" inputs = "1" outputs = "1" page = "Function3"  ramtype = "block"/>
+  <function name = "update_knn2" inputs = "1" outputs = "1" page = "Function4"  ramtype = "block"/>
+  <function name = "update_knn3" inputs = "1" outputs = "1" page = "Function5"  ramtype = "block"/>
+  <function name = "update_knn4" inputs = "1" outputs = "1" page = "Function6"  ramtype = "block"/>
+  <function name = "update_knn5" inputs = "1" outputs = "1" page = "Function7"  ramtype = "block"/>
+  <function name = "update_knn6" inputs = "1" outputs = "1" page = "Function8"  ramtype = "block"/>
+  <function name = "update_knn7" inputs = "1" outputs = "1" page = "Function9"  ramtype = "block"/>
+  <function name = "update_knn8" inputs = "1" outputs = "1" page = "Function10"  ramtype = "block"/>
+  <function name = "update_knn9" inputs = "1" outputs = "1" page = "Function11"  ramtype = "block"/>
+  <function name = "update_knn10" inputs = "1" outputs = "1" page = "Function12"  ramtype = "block"/>
+  <function name = "update_knn11" inputs = "1" outputs = "1" page = "Function13"  ramtype = "block"/>
+  <function name = "update_knn12" inputs = "1" outputs = "1" page = "Function14"  ramtype = "block"/>
+  <function name = "update_knn13" inputs = "1" outputs = "1" page = "Function15"  ramtype = "block"/>
+  <function name = "update_knn14" inputs = "1" outputs = "1" page = "Function16"  ramtype = "block"/>
+  <function name = "update_knn15" inputs = "1" outputs = "1" page = "Function17"  ramtype = "block"/>
+  <function name = "update_knn16" inputs = "1" outputs = "1" page = "Function18"  ramtype = "block"/>
+  <function name = "update_knn17" inputs = "1" outputs = "1" page = "Function19"  ramtype = "block"/>
+  <function name = "update_knn18" inputs = "1" outputs = "1" page = "Function20"  ramtype = "block"/>
+  <function name = "update_knn19" inputs = "1" outputs = "1" page = "Function21"  ramtype = "block"/>
+  <function name = "update_knn20" inputs = "1" outputs = "1" page = "Function22"  ramtype = "block"/>
+
+
+
+
+
+
+
+
+  <!--functions connections-->
+  <link source = "DMA.0" destination = "update_knn1.0" />
+  <link source = "update_knn1.0" destination = "update_knn2.0" />
+  <link source = "update_knn2.0" destination = "update_knn3.0" />
+  <link source = "update_knn3.0" destination = "update_knn4.0" />
+  <link source = "update_knn4.0" destination = "update_knn5.0" />
+  <link source = "update_knn5.0" destination = "update_knn6.0" />
+  <link source = "update_knn6.0" destination = "update_knn7.0" />
+  <link source = "update_knn7.0" destination = "update_knn8.0" />
+  <link source = "update_knn8.0" destination = "update_knn9.0" />
+  <link source = "update_knn9.0" destination = "update_knn10.0" />
+  <link source = "update_knn10.0" destination = "update_knn11.0" />
+  <link source = "update_knn11.0" destination = "update_knn12.0" />
+  <link source = "update_knn12.0" destination = "update_knn13.0" />
+  <link source = "update_knn13.0" destination = "update_knn14.0" />
+  <link source = "update_knn14.0" destination = "update_knn15.0" />
+  <link source = "update_knn15.0" destination = "update_knn16.0" />
+  <link source = "update_knn16.0" destination = "update_knn17.0" />
+  <link source = "update_knn17.0" destination = "update_knn18.0" />
+  <link source = "update_knn18.0" destination = "dirc.0" />
+  <link source = "dirc.0" destination = "update_knn20.0" />
+  <link source = "update_knn20.0" destination = "DMA.0" />
+
+
+
+</configuration>

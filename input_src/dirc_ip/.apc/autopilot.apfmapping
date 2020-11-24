@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
+  <source>
+    <originFiles name="circ_read_many.cpp" path="/home/ylxiao/ws_183/F200526/DIRC/pl_ps_streams/hardware/hls_code/circ_read_many.cpp"/>
+    <originFiles name="circ_write_many.cpp" path="/home/ylxiao/ws_183/F200526/DIRC/pl_ps_streams/hardware/hls_code/circ_write_many.cpp"/>
+  </source>
+  <testbench/>
+</autopilotfilemapping:AutoPilotFileMapping>
