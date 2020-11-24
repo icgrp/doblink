@@ -13,3 +13,4 @@ void outer_product1(//gradient_t gradient[MAX_HEIGHT][MAX_WIDTH],
 		pr_flow::stream & Output_1
 #endif
 		);
+#pragma map_target=HW page_num=page_11

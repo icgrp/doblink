@@ -11,3 +11,4 @@ void gradient_xyz_calc(//input_t frame[MAX_HEIGHT][MAX_WIDTH],
 		pr_flow::stream & Output_3
 #endif
 		);
+#pragma map_target=HW page_num=page_10

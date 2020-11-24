@@ -9,3 +9,4 @@ void tensor_weight_x1(
 		pr_flow::stream & Output_2
 #endif
 );
+#pragma map_target=HW page_num=page_14

@@ -12,3 +12,4 @@ void outer_product2(//gradient_t gradient[MAX_HEIGHT][MAX_WIDTH],
 #endif
 			);
 
+#pragma map_target=HW page_num=page_12

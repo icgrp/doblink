@@ -11,6 +11,13 @@ class _shell:
   def __init__(self, prflow_params):
     self.prflow_params = prflow_params
 
+  def file_to_list(self, file_name):
+    file_list = []
+    file_in = open(file_name, 'r')
+    for line in file_in:
+      file_list.append(line.replace('\n',''))
+    return file_list
+
   # return the qsub command according to the input parameters
   def return_qsub_command_str(self, shell_file='./qsub_run', hold_jid='NONE', name='NONE', q='70s', email='qsub@qsub.com', MEM='2G', node_num='1'):
     return ('qsub -N '+name + ' -q ' + q + ' -hold_jid ' + hold_jid + ' -m abe -M ' + email + ' -l mem='+MEM + ' -pe onenode '+node_num + '  -cwd '+ shell_file)
@@ -70,6 +77,10 @@ class _shell:
   def re_mkdir(self, dir_name):
      os.system('rm -rf ' + dir_name)
      os.system('mkdir -p ' + dir_name)
+
+  def mkdir(self, dir_name):
+     os.system('mkdir -p ' + dir_name)
+
 
   def cp_dir(self, src_dir, dst_dir):
      os.system('cp -rf '+src_dir+' '+dst_dir)

@@ -15,7 +15,6 @@ class hls(gen_basic):
 
   # create one directory for each page 
   def create_page(self, fun_name):
-    print self.hls_dir+'/'+fun_name+'_prj'
     self.shell.re_mkdir(self.hls_dir+'/'+fun_name+'_prj')
     self.shell.re_mkdir(self.hls_dir+'/'+fun_name+'_prj/'+fun_name)
         
@@ -59,14 +58,13 @@ class hls(gen_basic):
 
   def run(self, operator):
     # mk work directory
-    #if self.prflow_params['hls_regen']=='1':
-    #self.shell.re_mkdir(self.hls_dir)
+    if self.prflow_params['hls_regen']=='1':
+      self.shell.mkdir(self.hls_dir)
     
     # generate shell files for qsub run and local run
     self.create_shell_file() 
 
     # create ip directories for all the pages
-    print "create pate"
     self.create_page(operator)
 
     

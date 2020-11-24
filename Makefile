@@ -12,16 +12,15 @@ ws_syn=$(ws)/F003_syn_$(prj_name)
 operators_dir=./input_src/$(prj_name)/operators
 operators_src=$(wildcard $(operators_dir)/*.cc)
 operators=$(basename $(notdir $(wildcard $(operators_dir)/*.cc)))
-#operators_hls_targets=$(foreach n, $(operators), $(ws_hls)/$(n)_prj/$(n)/syn/verilog/$(n).v)
-
-operators_hls_targets=$(foreach n, $(operators), $(ws_hls)/$(n)_prj)
+operators_hls_targets=$(foreach n, $(operators), $(ws_hls)/runLog$(n).log)
+operators_syn_targets=$(foreach n, $(operators), $(ws_syn)/$(n)/page_netlist.dcp)
 
 
 
 
 #all: $(ws_overlay)/overlay.dcp 
-all: $(operators_hls_targets) 
-	echo $(operators_hls_targets) 
+#all: $(operators_hls_targets) 
+all: $(operators_syn_targets) 
 
 
 # Overlay Generation
@@ -33,14 +32,25 @@ $(ws_overlay)/src $(ws_overlay)/dirc_ip: common/verilog_src/*
 
 
 
+# Out-of-Context Synthesis from Verilog to post-synthesis DCP
+$(operators_syn_targets):$(ws_syn)/%/page_netlist.dcp:$(ws_hls)/runLog%.log
+	python pr_flow.py $(prj_name) -syn -op $(subst runLog, ,$(basename $(notdir $<)))
+	cd $(ws_syn)/$(subst runLog,,$(basename $(notdir $<))) && ./qsub_run.sh
+
+
+
+
+
+
+
+
+
+
 # High-Level-Synthesis from C to Verilog
-$(operators_hls_targets):$(ws_hls)/%_prj:$(operators_dir)/%.cc
+$(operators_hls_targets):$(ws_hls)/runLog%.log:$(operators_dir)/%.cc
 	python pr_flow.py $(prj_name) -hls -op $(basename $(notdir $<))
 	cd $(ws_hls) && ./qsub_run_$(basename $(notdir $<)).sh
 
-
-
-# Out-of-Context Synthesis from Verilog to post-synthesis DCP
 
 
 
@@ -67,4 +77,4 @@ report:
 
 clean:
 
-	rm -rf ./workspace/F002*
+	rm -rf ./workspace/F003*

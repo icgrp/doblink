@@ -7,3 +7,4 @@ void gradient_weight_y_2(//pixel_t gradient_x[MAX_HEIGHT][MAX_WIDTH],
 		pr_flow::stream & Output_1
 #endif
 		);
+#pragma map_target=HW page_num=page_8

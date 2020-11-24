@@ -47,8 +47,6 @@
   <clock name = 'clk_bft' period = "3.3" />
   <clock name = 'clk_user' period = "4" />
 
-  <function name = "gradient_xyz_calc"        inputs = "1" outputs = "3" page = "Function8"  ramtype = "block"/>
-  <function name = "gradient_weight_y_1"      inputs = "1" outputs = "1" page = "Function9" ramtype = "block" />
  
 
 
