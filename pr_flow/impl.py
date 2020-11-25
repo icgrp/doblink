@@ -3,22 +3,15 @@
 import os  
 import subprocess
 from gen_basic import gen_basic
+import re
 
-
-class gen_impl_leaf_files(gen_basic):
+class impl(gen_basic):
 
   # create one directory for each page 
-  def create_page(self):
-    for fun_num, fun_name in enumerate(self.prflow_params['syn_fun_list']):
-      if fun_name != 'user_kernel':
-        page_num = self.prflow_params['page_list'][fun_num].replace('Function','')
-        input_num = self.prflow_params['input_num_list'][fun_num]
-        output_num = self.prflow_params['output_num_list'][fun_num]
-        num_bram_addr_bits =int(self.prflow_params['bram_addr_bits'])
-
-        self.shell.re_mkdir(self.pr_dir+'/page_'+str(page_num))
-        self.shell.write_lines(self.pr_dir+'/page_'+str(page_num)+'/impl_'+fun_name+'.tcl', self.tcl.return_impl_tcl_list(fun_name, page_num, False))
-        self.shell.write_lines(self.pr_dir+'/page_'+str(page_num)+'/qsub_run.sh', self.shell.return_run_sh_list(self.prflow_params['qsub_Xilinx_dir'], 'impl_'+fun_name+'.tcl'), True)
+  def create_page(self, operator, page_num):
+    self.shell.re_mkdir(self.pr_dir+'/'+operator)
+    self.shell.write_lines(self.pr_dir+'/'+operator+'/impl_'+operator+'.tcl', self.tcl.return_impl_tcl_list(operator, page_num, False))
+    self.shell.write_lines(self.pr_dir+'/'+operator+'/qsub_run.sh', self.shell.return_run_sh_list(self.prflow_params['qsub_Xilinx_dir'], 'impl_'+operator+'.tcl'), True)
 
 
   # main.sh will be used for local compilation
@@ -62,18 +55,19 @@ class gen_impl_leaf_files(gen_basic):
     self.shell.write_lines(self.pr_dir+'/main.sh', self.return_main_sh_list_local(), True)
     self.shell.write_lines(self.pr_dir+'/qsub_main.sh', self.return_qsub_main_sh_list_local(), True)
 
-
-
-  def run(self):
+  def run(self, operator):
     # mk work directory
-    if self.prflow_params['leaf_impl_regen']=='1':
-      self.shell.re_mkdir(self.pr_dir)
+    if self.prflow_params['gen_impl']==True:
+      print "gen_impl"
+      self.shell.mkdir(self.pr_dir)
     
     # generate shell files for qsub run and local run
     self.create_shell_file() 
 
     # create ip directories for all the pages
-    self.create_page()
+    HW, page_num = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'page_num') 
+    if HW==True:
+      self.create_page(operator, page_num)
 
 
     # go to the local mono_bft directory and run the qsub command

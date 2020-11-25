@@ -7,4 +7,4 @@ void tensor_weight_y1(
 		pr_flow::stream & Output_1
 #endif
 		);
-#pragma map_target=HW page_num=page_16
+#pragma map_target=HW page_num=16

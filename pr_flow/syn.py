@@ -77,25 +77,13 @@ class syn(gen_basic):
     self.shell.write_lines(self.syn_dir+'/main.sh', self.return_main_sh_list_local(), True)
     self.shell.write_lines(self.syn_dir+'/qsub_main.sh', self.return_qsub_main_sh_list_local(), True)
 
-  def find_map_target(self, src_list):
-    HW = False
-    page_num = 0
-    for line in src_list:
-      if(len(re.findall(r"map_target\s*=\s*HW", line)) > 0):
-        HW = True
-        page_num = re.findall(r"page_num\s*=\s*page_\d*", line)[0]
-        page_num = page_num.replace(' ', '')     
-        page_num = page_num.replace('page_num', '')     
-        page_num = page_num.replace('=', '')     
-        page_num = int(page_num.replace('page_', ''))
-    return HW, page_num
-     
+    
   #pragma map_target=HW page_num=page_17
   def return_map_target(self, operator):
     src_list = self.shell.file_to_list('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h')
     input_num = self.return_io_num('Input_', src_list)
     output_num = self.return_io_num('Output_', src_list)
-    HW, page_num = self.find_map_target(src_list)
+    HW, page_num = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'page_num')
     return HW, page_num, input_num, output_num
  
   def run(self, operator):

@@ -7,6 +7,9 @@ import xml.etree.ElementTree
 import re
 import commands
 
+
+
+
 class _shell:
   def __init__(self, prflow_params):
     self.prflow_params = prflow_params
@@ -124,7 +127,21 @@ class _shell:
       ''])
 
 
-
+class _pragma(_shell):
+  def return_pragma(self, file_name, pragma_name, pragma_object=''):
+    src_list = self.file_to_list(file_name)
+    if_exist = False
+    value = 0
+    for line in src_list:
+      if(line.replace("#pragma", "") != line):
+        if(len(re.findall(r""+pragma_name+"\s*=\s*\w*", line)) > 0):
+          if_exist = True
+          value = re.findall(r""+pragma_name+"\s*=\s*\w*", line)[0]
+          value = value.replace(' ', '')
+          value = value.replace(pragma_name, '')
+          value = value.replace('=', '')
+    return if_exist, value 
+ 
 class _verilog:
   def __init__(self, prflow_params):
     self.prflow_params = prflow_params
@@ -423,7 +440,7 @@ class _tcl:
     lines_list.append('## read_checkpoint ##')
     lines_list.append('#####################')
     lines_list.append('set start_time [clock seconds]')
-    lines_list.append('open_checkpoint ../../F001_static_' + self.prflow_params['nl'] + '_leaves/big_static_routed_' + self.prflow_params['nl'] + '.dcp')
+    lines_list.append('open_checkpoint ../../F001_overlay/overlay.dcp')
     if IsNet:
       lines_list.append("update_design -cell floorplan_static_i/net" + str(num) + "/inst -black_box")
       lines_list.append("read_checkpoint -cell floorplan_static_i/net" + str(num) + "/inst ../../F003_syn_" + self.prflow_params['benchmark_name'] + '/net' + str(num) + "/net" + str(num) + "_netlist.dcp")
@@ -451,26 +468,30 @@ class _tcl:
 
     lines_list.append("set start_time [clock seconds]")
     if self.prflow_params['PR_mode'] == 'quick':
-      lines_list.append("place_design -directive Quick ")
+      lines_list.append("if { [catch {place_design -directive Quick } errmsg] } {")
     else:
-      lines_list.append("place_design  ")
+      lines_list.append("if { [catch {place_design} errmsg] } {")
+    lines_list.append("  puts $logFileId \"place: 1000000000 failed!\"")
+    lines_list.append("}")
 
     lines_list.append("set end_time [clock seconds]")
     lines_list.append("set total_seconds [expr $end_time - $start_time]")
     lines_list.append('puts $logFileId "place: $total_seconds seconds"')
-    lines_list.append("write_checkpoint  -force  "+fun_name + "_placed.dcp")
+    lines_list.append("write_checkpoint  -force  page_placed.dcp")
     lines_list.append("")
 
     lines_list.append("set start_time [clock seconds]")
     if self.prflow_params['PR_mode'] == 'quick':
-      lines_list.append("route_design -directive Quick ")
+      lines_list.append("if { [catch {route_design -directive Quick } errmsg] } {")
     else:
-      lines_list.append("route_design  ")
+      lines_list.append("if { [catch {route_design  } errmsg] } {")
+    lines_list.append("  puts $logFileId \"routing: 1000000000 failed!\"")
+    lines_list.append("}")
           
     lines_list.append("set end_time [clock seconds]")
     lines_list.append("set total_seconds [expr $end_time - $start_time]")
     lines_list.append('puts $logFileId "route: $total_seconds seconds"')
-    lines_list.append("write_checkpoint -force   " + fun_name + "_routed.dcp")
+    lines_list.append("write_checkpoint -force   page_routed.dcp")
     lines_list.append("")
     lines_list.append("")
 
@@ -482,7 +503,7 @@ class _tcl:
     if IsNet:
       lines_list.append("write_bitstream  -force  -cell floorplan_static_i/net" + str(num) + "/inst ../../F005_bits_"+self.prflow_params['benchmark_name']+"/net_" + str(num) + "")
     else:
-      lines_list.append("write_bitstream  -force  -cell floorplan_static_i/leaf_empty_" + str(num) + "/inst ../../F005_bits_"+self.prflow_params['benchmark_name']+"/leaf_" + str(num) + "")
+      lines_list.append("write_bitstream  -force  -cell floorplan_static_i/leaf_empty_" + str(num) + "/inst ../../F005_bits_"+self.prflow_params['benchmark_name']+'/'+fun_name)
     lines_list.append("set end_time [clock seconds]")
     lines_list.append("set total_seconds [expr $end_time - $start_time]")
     lines_list.append('puts $logFileId "bit_gen: $total_seconds seconds"')
@@ -562,7 +583,7 @@ class _tcl:
       lines_list.append('update_design -cell floorplan_static_i/leaf_empty_' + str(i) + '/inst -buffer_ports')
 
     lines_list.append('lock_design -level routing')
-    lines_list.append('write_checkpoint -force big_static_routed_' + str(self.prflow_params['nl']) + '.dcp')
+    lines_list.append('write_checkpoint -force overlay.dcp')
     lines_list.append('close_design')
     lines_list.append('set end_time [clock seconds]')
     lines_list.append('set total_seconds [expr $end_time - $start_time]')
@@ -574,6 +595,30 @@ class _tcl:
 
     return lines_list
 
+  def return_download_bit_tcl_list(self, operators):
+    lines_list = []
+    lines_list.append('open_hw')
+    lines_list.append('connect_hw_server')
+    lines_list.append('open_hw_target')
+    lines_list.append('current_hw_device [get_hw_devices '+self.prflow_params['device']+']')
+    lines_list.append('set_property PROBES.FILE {} [get_hw_devices '+self.prflow_params['device']+']')
+    lines_list.append('set_property FULL_PROBES.FILE {} [get_hw_devices '+self.prflow_params['device']+']')
+    lines_list.append('set_property PROGRAM.FILE {../F001_overlay/main.bit} [get_hw_devices '+self.prflow_params['device']+']')
+    lines_list.append('program_hw_devices [get_hw_devices '+self.prflow_params['device']+']')
+    lines_list.append('refresh_hw_device [lindex [get_hw_devices '+self.prflow_params['device']+'] 0]\n')
+    for operator in operators:
+      lines_list.append('set_property PROBES.FILE {} [get_hw_devices '+self.prflow_params['device']+']')
+      lines_list.append('set_property FULL_PROBES.FILE {} [get_hw_devices '+self.prflow_params['device']+']')
+      lines_list.append('set_property PROGRAM.FILE {./'+ operator + '.bit} [get_hw_devices '+self.prflow_params['device']+']')
+      lines_list.append('program_hw_devices [get_hw_devices '+self.prflow_params['device']+']')
+      lines_list.append('refresh_hw_device [lindex [get_hw_devices '+self.prflow_params['device']+'] 0]\n')
+    
+    return lines_list 
+ 
+
+
+
+
   # tcl command function end
   ######################################################################################################################################################
 
@@ -582,6 +627,7 @@ class _tcl:
 class gen_basic:
   def __init__(self, prflow_params):
     self.shell = _shell(prflow_params)
+    self.pragma = _pragma(prflow_params)
     self.verilog = _verilog(prflow_params)
     self.tcl = _tcl(prflow_params)
     self.prflow_params = prflow_params
@@ -590,7 +636,8 @@ class gen_basic:
     self.overlay_dir = self.prflow_params['workspace']+'/F001_overlay'
     self.hls_dir = self.prflow_params['workspace']+'/F002_hls_'+self.prflow_params['benchmark_name']
     self.syn_dir = self.prflow_params['workspace']+'/F003_syn_'+self.prflow_params['benchmark_name']
-    self.pr_dir = self.prflow_params['workspace']+'/F004_pr_'+self.prflow_params['benchmark_name']
+    self.pr_dir = self.prflow_params['workspace']+'/F004_impl_'+self.prflow_params['benchmark_name']
+    self.bit_dir = self.prflow_params['workspace']+'/F005_bits_'+self.prflow_params['benchmark_name']
     self.mono_bft_dir = self.prflow_params['workspace']+'/F007_mono_bft_'+self.prflow_params['benchmark_name']
     self.hls_dir = self.prflow_params['workspace']+'/F002_hls_'+self.prflow_params['benchmark_name']
     self.net_list = ['1', '1', '1', '1', '1', '2', '2', '2',
