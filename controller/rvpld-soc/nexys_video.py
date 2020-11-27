@@ -32,7 +32,7 @@ from litex.soc.cores import uart
 
 from liteeth.phy.s7rgmii import LiteEthPHYRGMII
 
-DEBUG = True
+DEBUG = False
 
 # CRG ----------------------------------------------------------------------------------------------
 
@@ -102,7 +102,7 @@ class BaseSoC(RvpldSoCCore):
         # AXILite2Led ------------------------------------------------------------------------------
         rst = ~self.crg.cd_sys.rst
         clk = self.crg.cd_sys.clk
-        axilite2led = AxiLite2Led(clk, rst, platform)
+        self.submodules.axilite2led = axilite2led = AxiLite2Led(clk, rst, platform)
         axilite2led_region = SoCRegion(origin=0x02000000, size=0x10000)
         self.bus.add_slave(name="axilite2led", slave=axilite2led.bus, region=axilite2led_region)
 
@@ -115,17 +115,17 @@ class BaseSoC(RvpldSoCCore):
         self.comb += axilite2led.sw.eq(sw_pads)
 
         # mm2s -------------------------------------------------------------------------------------
-        self.submodules.mm2s = mm2s = LiteDRAMDMAReader(self.sdram.crossbar.get_port(), fifo_buffered=True)
+        self.submodules.mm2s = mm2s = LiteDRAMDMAReader(self.sdram.crossbar.get_port())
         mm2s.add_csr()
         self.add_csr("mm2s")
 
         # s2mm -------------------------------------------------------------------------------------
-        self.submodules.s2mm = s2mm = LiteDRAMDMAWriter(self.sdram.crossbar.get_port(), fifo_buffered=True)
+        self.submodules.s2mm = s2mm = LiteDRAMDMAWriter(self.sdram.crossbar.get_port())
         s2mm.add_csr()
         self.add_csr("s2mm")
 
         # sync fifo -------------------------------------------------------------------------------
-        self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 100, True)
+        self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 25, True)
         self.comb += mm2s.source.connect(sync_fifo.sink)
         self.comb += sync_fifo.source.connect(s2mm.sink)
 

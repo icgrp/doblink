@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdint.h>
 
 #include <irq.h>
 #include <uart.h>
@@ -127,45 +126,52 @@ static void axi_sw_test(void) {
   busy_wait(100);
 }
 
-static volatile uint32_t TxBufferPtr[100]  __attribute__((aligned(16)));
-static volatile uint32_t RxBufferPtr[100]  __attribute__((aligned(16)));
+#define LEN 16
+
+static volatile uint32_t TxBufferPtr[LEN]  __attribute__((aligned(16)));
+static volatile uint32_t RxBufferPtr[LEN]  __attribute__((aligned(16)));
 
 static void dma_test(void) {
 
-  for(int i = 0; i < 100; i++) {
+  for(int i = 0; i < LEN; i++) {
     TxBufferPtr[i] = i+1;
-  }
-
-  for(int i = 0; i < 100; i++) {
-    RxBufferPtr[i] = 0;
   }
 
   flush_l2_cache();
 
+  //for(int i = 0; i < LEN; i++) {
+  //  RxBufferPtr[i] = 0;
+  //}
+
+  //flush_l2_cache();
+  
   printf("TxBufferPtr = %#8X\n", (uint32_t)TxBufferPtr);
   printf("RxBufferPtr = %#8X\n", (uint32_t)RxBufferPtr);
 
   mm2s_base_write((uint32_t)TxBufferPtr);
-  mm2s_length_write(25);
+  mm2s_length_write(4 * LEN);
   mm2s_start_write(1);
+  //printf("first_val=%d, last_val=%d\n", *TxBufferPtr, *(TxBufferPtr + 99));
   printf("Waiting for mm2s to finish\n");
-  while (!mm2s_done_read());
+  //while (!mm2s_done_read());
 
   busy_wait(1000);
 
   s2mm_base_write((uint32_t) RxBufferPtr);
-  s2mm_length_write(25);
+  s2mm_length_write(4 * LEN);
   s2mm_start_write(1);
   printf("Waiting for s2mm to finish\n");
-  while(!s2mm_done_read());
+  //while(!s2mm_done_read());
 
   busy_wait(1000);
 
   int matching = 1;
-  for (int i = 0; i < 100; i++) {
+  for (int i = 0; i < LEN; i++) {
     if (RxBufferPtr[i] != TxBufferPtr[i]) {
       printf("Data mismatch at i=%d, expected=%d, actual=%d\n", i, TxBufferPtr[i], RxBufferPtr[i]);
       matching = 0;
+    } else {
+      printf("Data match at i=%d, expected=%d, actual=%d\n", i, TxBufferPtr[i], RxBufferPtr[i]);
     }
   }
 
@@ -201,11 +207,13 @@ int main(void)
 
 	puts("\nrvpld - CPU testing software built "__DATE__" "__TIME__"\n");
 
-	printf("led_test...\n");
+  printf("DMA test\n");
   dma_test();
 
+	printf("led_test...\n");
+
   while(1) {
-   console_service(); 
+    axi_led_test();
   }
 
 	return 0;
