@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
   <!--specifications for pr_flow tool-->
-  <spec name = "Xilinx_dir"         value = "/opt/Xilinx/SDx/2018.2/settings64.sh" />
+  <spec name = "Xilinx_dir"         value = "/scratch/unsafe/SDSoC/SDx/2018.2/settings64.sh" />
   <spec name = "board" value = "zcu102" />
   <!--spec name = "board"              value = "u96" -->
   <spec name = "part" value = "xczu9eg-ffvb1156-2-e" />
@@ -11,7 +11,7 @@
   <spec name = "p"                  value = "0.5" />
   <spec name = "pks"                value = "49" />
   <spec name = "nl"                 value = "32" />
-  <!-- spec name = "qsub_Xilinx_dir" value = "/scratch/safe/SDSoC/SDx/2018.3/settings64.sh" -->
+  <!-- spec name = "qsub_Xilinx_dir" value = "/scratch/unsafe/SDSoC/SDx/2018.3/settings64.sh" -->
   <spec name = "qsub_Xilinx_dir"    value = "/opt/Xilinx/SDx/2018.2/settings64.sh" />
   <spec name = "email"              value = "youemail@seas.upenn.edu" />
   <spec name = "bft_regen"          value = "1" />

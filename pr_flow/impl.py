@@ -60,6 +60,7 @@ class impl(gen_basic):
     if self.prflow_params['gen_impl']==True:
       print "gen_impl"
       self.shell.mkdir(self.pr_dir)
+      self.shell.mkdir(self.bit_dir)
     
     # generate shell files for qsub run and local run
     self.create_shell_file() 

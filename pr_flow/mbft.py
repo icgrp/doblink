@@ -2,11 +2,13 @@ import os
 import subprocess
 from gen_basic import gen_basic
 
-class gen_mono_bft(gen_basic):
+class mbft(gen_basic):
 
   # modify the project_syn2gen
   # replace the empty pages with real pages
   def return_syn2gen_tcl_list_local(self):
+    file_list = self.shell.get_file_name('input_src/'+self.pr_flow_params['benchmark_name']+'/operators]')
+    print file_list 
     # map of reset source for each pages
     # distributed resetting is good for timing
     net_list = self.net_list
@@ -150,7 +152,7 @@ class gen_mono_bft(gen_basic):
   #                                       |_ qsub_project_syn2bits.sh <- project_syn2bits.tcl
   #                                       |_ qsub_project_sdk <- project_xsdk_dma.tcl
    
-    self.shell.cp_dir(self.static_dir + '/project_syn2gen.tcl', self.mono_bft_dir+'/project_syn2gen.tcl')
+    self.shell.cp_dir(self.overlay_dir + '/project_syn2gen.tcl', self.mono_bft_dir+'/project_syn2gen.tcl')
     self.shell.add_lines(self.mono_bft_dir+'/project_syn2gen.tcl', '# Create address segments', self.return_syn2gen_tcl_list_local())
     self.shell.write_lines(self.mono_bft_dir+'/project_syn2bits.tcl', self.tcl.return_syn2bits_tcl_list(), False)
     replace_dict={'set Benchmark_name': "set Benchmark_name " + self.prflow_params['benchmark_name']}
@@ -173,18 +175,18 @@ class gen_mono_bft(gen_basic):
 
   def run(self):
     # mk work directory
-    if self.prflow_params['mono_bft_regen']=='1':
+    if self.prflow_params['gen_mono_bft']==True:
       self.shell.re_mkdir(self.mono_bft_dir)
     
     # copy the hld/xdc files from static dirctory
-    self.shell.cp_dir(self.static_dir + '/src ', self.mono_bft_dir)
+    self.shell.cp_dir(self.overlay_dir + '/src ', self.mono_bft_dir)
 
     # copy the hld/xdc files from static dirctory
-    self.shell.cp_dir(self.static_dir + '/dirc_ip ', self.mono_bft_dir)
+    self.shell.cp_dir(self.overlay_dir + '/dirc_ip ', self.mono_bft_dir)
 
 
     # copy the xsdk tcl to local directory
-    self.shell.cp_dir('./input_files/script_src/project_xsdk_core.tcl ', self.mono_bft_dir)
+    self.shell.cp_dir('./common/script_src/project_xsdk_core.tcl ', self.mono_bft_dir)
 
     # enable the logic inside paage, so that vivado can 
     # implement it
@@ -197,13 +199,13 @@ class gen_mono_bft(gen_basic):
     self.create_shell_file() 
 
     # create ip directories for all the pages
-    self.create_ip()
+    # self.create_ip()
     
     # go to the local mono_bft directory and run the qsub command
-    os.chdir(self.mono_bft_dir)
-    if self.prflow_params['run_qsub']:
-      os.system('./qsub_main.sh')
-    os.chdir('../../')
+    # os.chdir(self.mono_bft_dir)
+    # if self.prflow_params['run_qsub']:
+    #  os.system('./qsub_main.sh')
+    # os.chdir('../../')
 
 
  
