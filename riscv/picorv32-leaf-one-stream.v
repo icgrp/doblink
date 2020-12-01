@@ -153,7 +153,7 @@ module picorv32 #(
 	parameter [31:0] PROGADDR_IRQ = 32'h 0000_0010,
 	parameter [31:0] STACKADDR = 32'h ffff_ffff,
 	// Stream Parameter (number of streams)
-	parameter 	     STREAMS = 1,
+	parameter 	     STREAMS = 1
 ) (
 	input clk, resetn,
 	output reg trap,
