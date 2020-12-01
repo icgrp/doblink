@@ -289,12 +289,13 @@ class _tcl:
       ''])
 
   def return_syn2bits_tcl_list(self, jobs=8, prj_dir='./prj/', prj_name = 'floorplan_static'):
+    threads_num = commands.getoutput("nproc")
     return ([
       'open_project '+prj_dir+prj_name+'.xpr',
       'reset_run synth_1',
-      'launch_runs synth_1 -jobs '+str(jobs),
+      'launch_runs synth_1 -jobs '+str(threads_num),
       'wait_on_run synth_1',
-      'launch_runs impl_1 -to_step write_bitstream -jobs '+str(jobs),
+      'launch_runs impl_1 -to_step write_bitstream -jobs '+str(threads_num),
       'wait_on_run impl_1',
       'file mkdir '+prj_dir+prj_name+'.sdk',
       'file copy -force '+prj_dir+prj_name\
