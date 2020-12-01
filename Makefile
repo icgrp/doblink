@@ -69,13 +69,11 @@ $(operators_ip_targets):$(ws_mbft)/ip_repo/%/prj/floorplan_static.xpr:$(ws_hls)/
 	cd $(ws_mbft)/ip_repo/$(subst runLog,,$(basename $(notdir $<))) && ./qsub_run.sh
 
 
-
-
 # Overlay Generation
 $(ws_overlay)/overlay.dcp: $(ws_overlay)/src $(ws_overlay)/dirc_ip 
 	cd $(ws_overlay) && ./main.sh
 
-$(ws_overlay)/src $(ws_overlay)/dirc_ip: common/verilog_src/*
+$(ws_overlay)/src $(ws_overlay)/dirc_ip: common/verilog_src/* common/dirc_ip/* common/script_src/project_syn_gen_zcu102.tcl
 	python2 pr_flow.py $(prj_name) -g
 
 
@@ -100,5 +98,5 @@ report:
 	 python2 ./pr_flow/gen_report.py optical_flow
 
 clean:
-	rm -rf ./workspace/F007*
+	rm -rf ./workspace
 

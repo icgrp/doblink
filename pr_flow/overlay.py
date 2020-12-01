@@ -40,7 +40,6 @@ class overlay(gen_basic):
     lines_list = []
     lines_list.append('#!/bin/bash -e')
     lines_list.append('source '+self.prflow_params['Xilinx_dir'])
-    print 'source '+self.prflow_params['Xilinx_dir']
     # compile the dummy logic for each page
     lines_list.append('cd ./dummy_repo/user_kernel')
     lines_list.append('./run.sh')
@@ -112,6 +111,7 @@ class overlay(gen_basic):
 
   def run(self):
     # make work directory
+    self.shell.mkdir(self.prflow_params['workspace'])
     self.shell.re_mkdir(self.overlay_dir)
     
     # copy the hld/xdc files from input source directory
@@ -123,10 +123,10 @@ class overlay(gen_basic):
 
     self.create_place_holder()
 
-    if self.prflow_params['run_qsub']:
-        os.chdir(self.overlay_dir)
-        os.system('./qsub_main.sh')
-        os.chdir('../../')
+    #if self.prflow_params['run_qsub']:
+    #    os.chdir(self.overlay_dir)
+    #    os.system('./qsub_main.sh')
+    #    os.chdir('../../')
 
 
 
