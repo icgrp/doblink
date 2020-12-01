@@ -63,5 +63,6 @@ dump.vcd
 
 #RISC-V toolchain binaries
 riscv/compiler/gnu/riscv64-*/
+riscv/compiler/gnu/riscv64-*
 
 .DS_Store
