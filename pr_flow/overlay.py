@@ -11,8 +11,8 @@ class overlay(gen_basic):
   # create dummy directory for each empty block
   def create_place_holder(self):
     fun_name = 'user_kernel'
-    self.shell.re_mkdir(self.overlay_dir+'/dummy_repo')
-    self.shell.re_mkdir(self.overlay_dir+'/dummy_repo/'+fun_name)
+    self.shell.mkdir(self.overlay_dir+'/dummy_repo')
+    self.shell.mkdir(self.overlay_dir+'/dummy_repo/'+fun_name)
     file_list = [
                   '../../src/Config_Controls.v',
                   '../../src/converge_ctrl.v',
@@ -112,7 +112,7 @@ class overlay(gen_basic):
 
   def run(self):
     # make work directory
-    self.shell.re_mkdir(self.overlay_dir)
+    self.shell.mkdir(self.overlay_dir)
     
     # copy the hld/xdc files from input source directory
     self.shell.cp_dir('./common/verilog_src', self.overlay_dir+'/src')

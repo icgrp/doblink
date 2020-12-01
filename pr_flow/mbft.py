@@ -7,8 +7,10 @@ class mbft(gen_basic):
   # modify the project_syn2gen
   # replace the empty pages with real pages
   def return_syn2gen_tcl_list_local(self):
-    file_list = self.shell.get_file_name('input_src/'+self.pr_flow_params['benchmark_name']+'/operators]')
-    print file_list 
+    print ('input_src/'+self.prflow_params['benchmark_name']+'/operators')
+    file_list = self.shell.get_file_name('input_src/'+self.prflow_params['benchmark_name']+'/operators')
+    header_file_list = filter(lambda x: x.replace(".h","")!=x, file_list)
+    operator_list =[(i.replace(".h","")) for i in header_file_list] 
     # map of reset source for each pages
     # distributed resetting is good for timing
     net_list = self.net_list
@@ -16,44 +18,43 @@ class mbft(gen_basic):
     lines_list.append('set_property  ip_repo_paths  {./ip_repo ./dirc_ip} [current_project]\n')
     lines_list.append('update_ip_catalog\n')
     # remove empty ip, add real IP and connect the wires
-    for fun_num, fun_name in enumerate(self.prflow_params['syn_fun_list']):
-      if fun_name != 'user_kernel':
-        page_num = self.prflow_params['page_list'][fun_num].replace('Function','')
-        lines_list.append(self.tcl.return_create_bd_cell_tcl_str('user.org:user:leaf_' + page_num + ':1.0', 'leaf' + page_num ))
-        lines_list.append(self.tcl.return_delete_bd_objs_tcl_str('leaf_empty_' + page_num))
-        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf'+page_num+'/clk_bft', '/zynq_ultra_ps_e_0/pl_clk1'))
-        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf'+page_num+'/clk_user', '/zynq_ultra_ps_e_0/pl_clk0'))
-        if (int(page_num)<8):
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/ap_start', 'axi_leaf/dout'))       
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset_bft', 'rst_ps8_0_99M4/peripheral_reset'))
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset', 'axi_leaf/peripheral_reset'))
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/dout_leaf_interface2bft', 'axi_leaf/leaf_'+str(page_num)+'_in'))
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/din_leaf_bft2interface', 'axi_leaf/leaf_'+str(page_num)+'_out'))
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/resend', 'axi_leaf/resend_'+str(page_num)))
+    for fun_name in operator_list:
+      HW, page_num = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+fun_name+'.h', 'page_num')
+      lines_list.append(self.tcl.return_create_bd_cell_tcl_str('user.org:user:leaf_' + page_num + ':1.0', 'leaf' + page_num ))
+      lines_list.append(self.tcl.return_delete_bd_objs_tcl_str('leaf_empty_' + page_num))
+      lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf'+page_num+'/clk_bft', '/zynq_ultra_ps_e_0/pl_clk1'))
+      lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf'+page_num+'/clk_user', '/zynq_ultra_ps_e_0/pl_clk0'))
+      if (int(page_num)<8):
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/ap_start', 'axi_leaf/dout'))       
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset_bft', 'rst_ps8_0_99M4/peripheral_reset'))
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset', 'axi_leaf/peripheral_reset'))
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/dout_leaf_interface2bft', 'axi_leaf/leaf_'+str(page_num)+'_in'))
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/din_leaf_bft2interface', 'axi_leaf/leaf_'+str(page_num)+'_out'))
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/resend', 'axi_leaf/resend_'+str(page_num)))
 
-        elif (int(page_num)<16):
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/ap_start', 'bft_01/dout'))       
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset_bft', 'rst_ps8_0_99M5/peripheral_reset'))
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset', 'axi_leaf/peripheral_reset'))
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/dout_leaf_interface2bft', 'bft_01/leaf_'+str(int(page_num)-8)+'_in'))
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/din_leaf_bft2interface', 'bft_01/leaf_'+str(int(page_num)-8)+'_out'))
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/resend', 'bft_01/resend_'+str(int(page_num)-8)))
+      elif (int(page_num)<16):
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/ap_start', 'bft_01/dout'))       
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset_bft', 'rst_ps8_0_99M5/peripheral_reset'))
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset', 'axi_leaf/peripheral_reset'))
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/dout_leaf_interface2bft', 'bft_01/leaf_'+str(int(page_num)-8)+'_in'))
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/din_leaf_bft2interface', 'bft_01/leaf_'+str(int(page_num)-8)+'_out'))
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/resend', 'bft_01/resend_'+str(int(page_num)-8)))
 
-        elif (int(page_num)<24):
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/ap_start', 'bft_10/dout'))       
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset_bft', 'rst_ps8_0_99M6/peripheral_reset'))
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset', 'axi_leaf/peripheral_reset'))
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/dout_leaf_interface2bft', 'bft_10/leaf_'+str(int(page_num)-16)+'_in'))
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/din_leaf_bft2interface', 'bft_10/leaf_'+str(int(page_num)-16)+'_out'))
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/resend', 'bft_10/resend_'+str(int(page_num)-16)))
+      elif (int(page_num)<24):
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/ap_start', 'bft_10/dout'))       
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset_bft', 'rst_ps8_0_99M6/peripheral_reset'))
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset', 'axi_leaf/peripheral_reset'))
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/dout_leaf_interface2bft', 'bft_10/leaf_'+str(int(page_num)-16)+'_in'))
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/din_leaf_bft2interface', 'bft_10/leaf_'+str(int(page_num)-16)+'_out'))
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/resend', 'bft_10/resend_'+str(int(page_num)-16)))
 
-        else:
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/ap_start', 'bft_11/dout'))       
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset_bft', 'rst_ps8_0_99M7/peripheral_reset'))
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset', 'axi_leaf/peripheral_reset'))
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/dout_leaf_interface2bft', 'bft_11/leaf_'+str(int(page_num)-24)+'_in'))
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/din_leaf_bft2interface', 'bft_11/leaf_'+str(int(page_num)-24)+'_out'))
-          lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/resend', 'bft_11/resend_'+str(int(page_num)-24)))
+      else:
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/ap_start', 'bft_11/dout'))       
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset_bft', 'rst_ps8_0_99M7/peripheral_reset'))
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset', 'axi_leaf/peripheral_reset'))
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/dout_leaf_interface2bft', 'bft_11/leaf_'+str(int(page_num)-24)+'_in'))
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/din_leaf_bft2interface', 'bft_11/leaf_'+str(int(page_num)-24)+'_out'))
+        lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/resend', 'bft_11/resend_'+str(int(page_num)-24)))
 
   
     return lines_list
@@ -154,7 +155,7 @@ class mbft(gen_basic):
    
     self.shell.cp_dir(self.overlay_dir + '/project_syn2gen.tcl', self.mono_bft_dir+'/project_syn2gen.tcl')
     self.shell.add_lines(self.mono_bft_dir+'/project_syn2gen.tcl', '# Create address segments', self.return_syn2gen_tcl_list_local())
-    self.shell.write_lines(self.mono_bft_dir+'/project_syn2bits.tcl', self.tcl.return_syn2bits_tcl_list(), False)
+    self.shell.write_lines(self.mono_bft_dir+'/project_syn2bits.tcl', self.tcl.return_syn2bits_tcl_list(self.prflow_params['maxJobs']), False)
     replace_dict={'set Benchmark_name': "set Benchmark_name " + self.prflow_params['benchmark_name']}
     self.shell.replace_lines(self.mono_bft_dir+'/project_xsdk_core.tcl', replace_dict)
     self.shell.write_lines(self.mono_bft_dir+'/main.sh', self.return_main_sh_list_local(), True)
@@ -176,7 +177,7 @@ class mbft(gen_basic):
   def run(self):
     # mk work directory
     if self.prflow_params['gen_mono_bft']==True:
-      self.shell.re_mkdir(self.mono_bft_dir)
+      self.shell.mkdir(self.mono_bft_dir)
     
     # copy the hld/xdc files from static dirctory
     self.shell.cp_dir(self.overlay_dir + '/src ', self.mono_bft_dir)

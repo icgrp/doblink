@@ -288,13 +288,13 @@ class _tcl:
       'connect_bd_net [get_bd_pins /'+src_name+'/'+src_port_name+'ready_upward] [get_bd_pins /'+dest_name+'/'+dest_port_name+'ready_downward]',
       ''])
 
-  def return_syn2bits_tcl_list(self, prj_dir='./prj/', prj_name = 'floorplan_static'):
+  def return_syn2bits_tcl_list(self, jobs=8, prj_dir='./prj/', prj_name = 'floorplan_static'):
     return ([
       'open_project '+prj_dir+prj_name+'.xpr',
       'reset_run synth_1',
-      'launch_runs synth_1',
+      'launch_runs synth_1 -jobs '+str(jobs),
       'wait_on_run synth_1',
-      'launch_runs impl_1 -to_step write_bitstream',
+      'launch_runs impl_1 -to_step write_bitstream -jobs '+str(jobs),
       'wait_on_run impl_1',
       'file mkdir '+prj_dir+prj_name+'.sdk',
       'file copy -force '+prj_dir+prj_name\

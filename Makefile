@@ -25,13 +25,13 @@ download_target=$(ws_bit)/download.tcl
 
 
 
-#all: $(ws_overlay)/overlay.dcp 
+all: $(ws_overlay)/overlay.dcp 
 #all: $(operators_hls_targets) 
 #all: $(operators_syn_targets) 
 #all: $(operators_bit_targets) 
 #all: $(download_target)
-all: $(mono_bft_target)
-$all: $(operators_ip_targets)
+#all: $(mono_bft_target)
+#all: $(operators_ip_targets)
 
 
 
@@ -60,10 +60,11 @@ $(operators_hls_targets):$(ws_hls)/runLog%.log:$(operators_dir)/%.cc
 
 $(mono_bft_target): $(ws_overlay)/src $(ws_overlay)/dirc_ip $(operators_ip_targets)
 	python2 pr_flow.py $(prj_name) -mbft
-	# cd $(ws_mbft) && ./main.sh
+	cd $(ws_mbft) && ./main.sh
 
 
 $(operators_ip_targets):$(ws_mbft)/ip_repo/%/prj/floorplan_static.xpr:$(ws_hls)/runLog%.log
+	echo $@
 	python2 pr_flow.py $(prj_name) -ip -op $(subst runLog,,$(basename $(notdir $<)))
 	cd $(ws_mbft)/ip_repo/$(subst runLog,,$(basename $(notdir $<))) && ./qsub_run.sh
 

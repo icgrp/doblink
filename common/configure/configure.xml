@@ -26,6 +26,7 @@
   <spec name = "config_regen"       value = "1" />
   <spec name = "qsub_grid"          value = "70s" />
   <spec name = "maxThreads"         value = "8" />
+  <spec name = "maxJobs"            value = "32" />
   <spec name = "qsub_Nodes"         value = "10" />
   <spec name = "MEM"                value = "2G" />
   <spec name = "PR_mode"            value = "noquick" />

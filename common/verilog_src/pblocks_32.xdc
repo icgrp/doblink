@@ -272,10 +272,10 @@ set_property SNAPPING_MODE ON [get_pblocks p_13]
 
 create_pblock pblock_bft_00
 add_cells_to_pblock [get_pblocks pblock_bft_00] [get_cells -quiet [list floorplan_static_i/axi_leaf]]
-resize_pblock [get_pblocks pblock_bft_00] -add {SLICE_X52Y0:SLICE_X57Y59 SLICE_X36Y0:SLICE_X51Y239 SLICE_X29Y180:SLICE_X35Y239}
+resize_pblock [get_pblocks pblock_bft_00] -add {SLICE_X52Y0:SLICE_X60Y59 SLICE_X36Y0:SLICE_X51Y239 SLICE_X29Y180:SLICE_X35Y239}
 resize_pblock [get_pblocks pblock_bft_00] -add {DSP48E2_X10Y0:DSP48E2_X11Y23 DSP48E2_X7Y0:DSP48E2_X9Y95 DSP48E2_X6Y72:DSP48E2_X6Y95}
-resize_pblock [get_pblocks pblock_bft_00] -add {RAMB18_X4Y95:RAMB18_X6Y0}
-resize_pblock [get_pblocks pblock_bft_00] -add {RAMB36_X4Y47:RAMB36_X6Y0}
+resize_pblock [get_pblocks pblock_bft_00] -add {RAMB18_X7Y0:RAMB18_X7Y23 RAMB18_X5Y0:RAMB18_X6Y95 RAMB18_X4Y72:RAMB18_X4Y95}
+resize_pblock [get_pblocks pblock_bft_00] -add {RAMB36_X7Y0:RAMB36_X7Y11 RAMB36_X5Y0:RAMB36_X6Y47 RAMB36_X4Y36:RAMB36_X4Y47}
 set_property SNAPPING_MODE ON [get_pblocks pblock_bft_00]
 
 
@@ -393,6 +393,7 @@ set_property HD.RECONFIGURABLE true [get_cells floorplan_static_i/bft_11]
 
 set_property DONT_TOUCH true [get_cells floorplan_static_i/bft_center]
 set_property HD.RECONFIGURABLE true [get_cells floorplan_static_i/bft_center]
+
 
 
 
