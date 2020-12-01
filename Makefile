@@ -25,7 +25,7 @@ download_target=$(ws_bit)/download.tcl
 
 
 
-all: $(ws_overlay)/overlay.dcp 
+#all: $(ws_overlay)/overlay.dcp  
 #all: $(operators_hls_targets) 
 #all: $(operators_syn_targets) 
 #all: $(operators_bit_targets) 
@@ -33,7 +33,7 @@ all: $(ws_overlay)/overlay.dcp
 #all: $(mono_bft_target)
 #all: $(operators_ip_targets)
 
-
+all: $(download_target) $(mono_bft_target)
 
 $(download_target): $(operators_bit_targets)
 	python2 pr_flow.py $(prj_name) -bit -op '$(basename $(notdir $^))'

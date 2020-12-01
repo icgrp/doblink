@@ -112,7 +112,7 @@ class overlay(gen_basic):
 
   def run(self):
     # make work directory
-    self.shell.mkdir(self.overlay_dir)
+    self.shell.re_mkdir(self.overlay_dir)
     
     # copy the hld/xdc files from input source directory
     self.shell.cp_dir('./common/verilog_src', self.overlay_dir+'/src')

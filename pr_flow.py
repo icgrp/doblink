@@ -55,8 +55,8 @@ if __name__ == '__main__':
 
   # When the input command is with '-g' arguments, the workspace will be regenerated!
   if prflow_params['gen_overlay'] == True:
-    os.system('rm -rf '+prflow_params['workspace'])
-    os.system('mkdir '+prflow_params['workspace'])
+    os.system('rm -rf '+prflow_params['workspace']+'/F001_overlay')
+    os.system('mkdir '+prflow_params['workspace']+'/F001_overlay')
     overlay_inst = overlay.overlay(prflow_params)
     overlay_inst.run()
 
