@@ -86,7 +86,8 @@ module picorv32 #(
 	parameter [31:0] PROGADDR_IRQ = 32'h 0000_0010,
 	parameter [31:0] STACKADDR = 32'h ffff_ffff,
 	// Stream Parameter (number of streams)
-	parameter 	     STREAMS = 1,
+	//TODO specify width
+	parameter 	     STREAMS = 1
 ) (
 	input clk, resetn,
 	output reg trap,
@@ -148,11 +149,18 @@ module picorv32 #(
 	output reg [35:0] trace_data,
 
     // Stream Interface
-    input              stream_empty[STREAMS-1:0]],
-    input              stream_full[STREAMS-1:0],
-	output reg         stream_out_valid[STREAMS-1:0],
-    input       [31:0] stream_data_in[STREAMS-1:0],
-    output reg  [31:0] stream_data_out[STREAMS-1:0]
+	//TODO assuming 1 stream for now
+    // input              stream_empty[STREAMS-1:0],
+    // input              stream_full[STREAMS-1:0],
+	// output reg         stream_out_valid[STREAMS-1:0],
+    // input       [31:0] stream_data_in[STREAMS-1:0],
+    // output reg  [31:0] stream_data_out[STREAMS-1:0]
+	input              stream_empty,
+    input              stream_full,
+	output reg         stream_out_valid,
+    input       [31:0] stream_data_in,
+    output reg  [31:0] stream_data_out
+
 );
 	localparam integer irq_timer = 0;
 	localparam integer irq_ebreak = 1;
@@ -1945,7 +1953,9 @@ module picorv32 #(
 
 			// Stream States
             cpu_state_streamr: begin
-                if (stream_empty[reg_op1]) begin
+				//TODO assuming only 1 stream
+                // if (stream_empty[reg_op1]) begin
+				if (stream_empty) begin	
                     cpu_state <= cpu_state_streamr;
                 end else begin
                     reg_out <= stream_data_in[reg_op1];
@@ -1957,11 +1967,15 @@ module picorv32 #(
                 end
             end
             cpu_state_streamw: begin
-                if (stream_full[reg_op1]) begin
+				//TODO assuming only 1 stream
+                // if (stream_full[reg_op1]) begin
+				if (stream_full) begin
                     cpu_state <= cpu_state_streamw;
                 end else begin
                     stream_data_out[reg_op1] <= reg_op2;
-					stream_out_valid[reg_op1] <= 1;
+				//TODO assuming only 1 stream
+					// stream_out_valid[reg_op1] <= 1;
+					stream_out_valid <= 1;
                     cpu_state <= cpu_state_fetch;
 					mem_do_rinst <= mem_do_prefetch;
 					decoder_trigger <= 1;
