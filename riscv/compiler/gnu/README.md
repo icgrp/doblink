@@ -9,7 +9,8 @@ Specifically they are
 - riscv-binutils/include/opcode/riscv-opc.h (Line 24)
 - riscv-binutils/opcodes/riscv-opc.c (Line 202)
 
-(Note these were generated as per instructions [here](https://nitish2112.github.io/post/adding-instruction-riscv/))
+(Note these were generated with the riscv-opcodes tool as per instructions [here](https://nitish2112.github.io/post/adding-instruction-riscv/)
+with the opcodes file found in this directory)
 
 You can then compile for newlib targets, with multilib enabled as per the instructions there.
 
