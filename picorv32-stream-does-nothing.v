@@ -212,7 +212,7 @@ module picorv32 #(
 
 	// Trace Interface
 	output reg        trace_valid,
-	output reg [35:0] trace_data,
+	output reg [35:0] trace_data
 );
 
     // Stream Interface
