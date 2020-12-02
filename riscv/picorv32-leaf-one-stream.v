@@ -218,7 +218,6 @@ module picorv32 #(
     // Stream Interface
     wire              stream_empty;
     wire              stream_full;
-	reg         	  stream_out_valid;
     wire       [31:0] stream_data_in;
     reg        [31:0] stream_data_out;
 	reg 			  rinc, winc;
@@ -229,7 +228,7 @@ module picorv32 #(
 		.rdata  (stream_data_in  ),
 		.wfull  (stream_full     ),
 		.rempty (stream_empty    ),
-		.wdata  (stream_out_valid),
+		.wdata  (stream_data_out ),
 		.winc   (winc            ),
 		.rinc   (rinc            )
 	);
@@ -1666,7 +1665,6 @@ module picorv32 #(
 					end
 				end
 				// Stream Set Output Invalid
-				stream_out_valid <= 0;
 				winc <= 0;
 				rinc <= 0;
 			end
@@ -2027,11 +2025,14 @@ module picorv32 #(
 
 			// Stream States
             cpu_state_streamr: begin
-                if (stream_empty) begin
+                if (stream_empty && !rinc) begin
                     cpu_state <= cpu_state_streamr;
-                end else begin
-                    reg_out <= stream_data_in;
+                end else if (!rinc) begin
 					rinc <= 1;
+					cpu_state <= cpu_state_streamr;
+				end else begin
+                    reg_out <= stream_data_in;
+					rinc <= 0;
 					latched_store <= 1;
                     cpu_state <= cpu_state_fetch;
 					mem_do_rinst <= mem_do_prefetch;
@@ -2044,7 +2045,6 @@ module picorv32 #(
                     cpu_state <= cpu_state_streamw;
                 end else begin
                     stream_data_out <= reg_op2;
-					stream_out_valid <= 1;
 					winc <= 1;
                     cpu_state <= cpu_state_fetch;
 					mem_do_rinst <= mem_do_prefetch;
