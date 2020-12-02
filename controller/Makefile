@@ -24,7 +24,7 @@ build/gateware/nexys_video.bit: ./rvpld-soc/nexys_video.py ./rvpld-soc/soc_core.
 
 firmware: firmware/firmware.bin
 
-firmware/firmware.bin: gateware
+firmware/firmware.bin: firmware/main.c
 	cd firmware && make all
 
 load: build/gateware/nexys_video.bit

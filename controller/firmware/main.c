@@ -13,11 +13,6 @@
 #define LED AXILITE2LED_BASE+16
 #define SW  AXILITE2LED_BASE+8
 
-typedef struct b128 {
-  uint64_t a;
-  uint64_t b;
-} b128_t;
-
 static char *readstr(void)
 {
 	char c[2];
@@ -150,18 +145,15 @@ static void dma_test(void) {
   mm2s_base_write((uint32_t)TxBufferPtr);
   mm2s_length_write(4 * LEN);
   mm2s_start_write(1);
-  //printf("first_val=%d, last_val=%d\n", *TxBufferPtr, *(TxBufferPtr + 99));
-  printf("Waiting for mm2s to finish\n");
-  //while (!mm2s_done_read());
 
-  //flush_l2_cache();
   s2mm_base_write((uint32_t) RxBufferPtr);
   s2mm_length_write(4 * LEN);
   s2mm_start_write(1);
-  printf("Waiting for s2mm to finish\n");
-  //while(!s2mm_done_read());
+  printf("Waiting for DMA to finish\n");
+  while(!s2mm_done_read());
+  printf("DMA done\n");
 
-  busy_wait(1000);
+  //busy_wait(1000);
 
   flush_l2_cache();
   int matching = 1;
