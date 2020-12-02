@@ -2040,8 +2040,8 @@ module picorv32 #(
                 // end
 				cpu_state <= cpu_state_fetch;
 				mem_do_rinst <= mem_do_prefetch;
-				decoder_trigger <= 1;
-				decoder_pseudo_trigger <= 1;
+				// decoder_trigger <= 1;
+				// decoder_pseudo_trigger <= 1;
             end
             cpu_state_streamw: begin
             //     if (stream_full) begin
@@ -2057,8 +2057,8 @@ module picorv32 #(
             //     end
 				cpu_state <= cpu_state_fetch;
 				mem_do_rinst <= mem_do_prefetch;
-				decoder_trigger <= 1;
-				decoder_pseudo_trigger <= 1;
+				// decoder_trigger <= 1;
+				// decoder_pseudo_trigger <= 1;
             end
 		endcase
 

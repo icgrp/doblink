@@ -2035,8 +2035,8 @@ module picorv32 #(
 					latched_store <= 1;
                     cpu_state <= cpu_state_fetch;
 					mem_do_rinst <= mem_do_prefetch;
-					decoder_trigger <= 1;
-					decoder_pseudo_trigger <= 1;
+					// decoder_trigger <= 1;
+					// decoder_pseudo_trigger <= 1;
                 end
             end
             cpu_state_streamw: begin
@@ -2048,8 +2048,8 @@ module picorv32 #(
 					winc <= 1;
                     cpu_state <= cpu_state_fetch;
 					mem_do_rinst <= mem_do_prefetch;
-					decoder_trigger <= 1;
-					decoder_pseudo_trigger <= 1;
+					// decoder_trigger <= 1;
+					// decoder_pseudo_trigger <= 1;
                 end
             end
 		endcase
