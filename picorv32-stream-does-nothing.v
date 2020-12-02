@@ -1172,8 +1172,8 @@ module picorv32 #(
 			instr_timer   <= mem_rdata_q[6:0] == 7'b0001011 && mem_rdata_q[31:25] == 7'b0000101 && ENABLE_IRQ && ENABLE_IRQ_TIMER;
 
             // Stream Instructions
-            instr_streamr <= mem_rdata_q[6:0] == 7'b0001011 && mem_rdata_q[31:25] == 7'b0000000 && mem_rdata_q[14:12] == 3'b001; // Add Opcode here
-            instr_streamw <= mem_rdata_q[6:0] == 7'b0001011 && mem_rdata_q[31:25] == 7'b0000000 && mem_rdata_q[14:12] == 3'b000; // Add Opcode here
+            instr_streamr <= mem_rdata_q[6:0] == 7'b0001011 && mem_rdata_q[31:25] == 7'b1111111 && mem_rdata_q[14:12] == 3'b001; // Add Opcode here
+            instr_streamw <= mem_rdata_q[6:0] == 7'b0001011 && mem_rdata_q[31:25] == 7'b1111111 && mem_rdata_q[14:12] == 3'b000; // Add Opcode here
 
 			is_slli_srli_srai <= is_alu_reg_imm && |{
 				mem_rdata_q[14:12] == 3'b001 && mem_rdata_q[31:25] == 7'b0000000,
