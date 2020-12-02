@@ -126,10 +126,10 @@ static void axi_sw_test(void) {
   busy_wait(100);
 }
 
-#define LEN 16
+#define LEN 1000
 
-static volatile uint32_t TxBufferPtr[LEN]  __attribute__((aligned(16)));
-static volatile uint32_t RxBufferPtr[LEN]  __attribute__((aligned(16)));
+volatile uint32_t TxBufferPtr[LEN]  __attribute__((aligned(16)));
+volatile uint32_t RxBufferPtr[LEN]  __attribute__((aligned(16)));
 
 static void dma_test(void) {
 
@@ -137,13 +137,12 @@ static void dma_test(void) {
     TxBufferPtr[i] = i+1;
   }
 
-  flush_l2_cache();
-
   //for(int i = 0; i < LEN; i++) {
   //  RxBufferPtr[i] = 0;
   //}
 
-  //flush_l2_cache();
+  //flush_cpu_dcache();
+  flush_l2_cache();
   
   printf("TxBufferPtr = %#8X\n", (uint32_t)TxBufferPtr);
   printf("RxBufferPtr = %#8X\n", (uint32_t)RxBufferPtr);
@@ -155,8 +154,7 @@ static void dma_test(void) {
   printf("Waiting for mm2s to finish\n");
   //while (!mm2s_done_read());
 
-  busy_wait(1000);
-
+  //flush_l2_cache();
   s2mm_base_write((uint32_t) RxBufferPtr);
   s2mm_length_write(4 * LEN);
   s2mm_start_write(1);
@@ -165,13 +163,14 @@ static void dma_test(void) {
 
   busy_wait(1000);
 
+  flush_l2_cache();
   int matching = 1;
   for (int i = 0; i < LEN; i++) {
     if (RxBufferPtr[i] != TxBufferPtr[i]) {
       printf("Data mismatch at i=%d, expected=%d, actual=%d\n", i, TxBufferPtr[i], RxBufferPtr[i]);
       matching = 0;
     } else {
-      printf("Data match at i=%d, expected=%d, actual=%d\n", i, TxBufferPtr[i], RxBufferPtr[i]);
+      //printf("Data match at i=%d, expected=%d, actual=%d\n", i, TxBufferPtr[i], RxBufferPtr[i]);
     }
   }
 

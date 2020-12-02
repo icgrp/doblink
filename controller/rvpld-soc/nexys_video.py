@@ -125,7 +125,7 @@ class BaseSoC(RvpldSoCCore):
         self.add_csr("s2mm")
 
         # sync fifo -------------------------------------------------------------------------------
-        self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 25, True)
+        self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 400, True)
         self.comb += mm2s.source.connect(sync_fifo.sink)
         self.comb += sync_fifo.source.connect(s2mm.sink)
 

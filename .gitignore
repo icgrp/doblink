@@ -66,3 +66,5 @@ riscv/compiler/gnu/riscv64-*/
 riscv/compiler/gnu/riscv64-*
 
 .DS_Store
+*.jou
+vivado.log
