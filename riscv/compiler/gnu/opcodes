@@ -21,8 +21,8 @@ jal     rd jimm20                          6..2=0x1b 1..0=3
 lui     rd imm20 6..2=0x0D 1..0=3
 auipc   rd imm20 6..2=0x05 1..0=3
 
-strmw   rd rs1 rs2 31..25=0 14..12=0 6..2=0x02 1..0=3
-strmr   rd rs1 rs2 31..25=0 14..12=1 6..2=0x02 1..0=3
+strmw   rd rs1 rs2 31..25=0x7F 14..12=0 6..2=0x02 1..0=3
+strmr   rd rs1 rs2 31..25=0x7F 14..12=1 6..2=0x02 1..0=3
 
 addi    rd rs1 imm12           14..12=0 6..2=0x04 1..0=3
 slli    rd rs1 31..26=0  shamt 14..12=1 6..2=0x04 1..0=3
