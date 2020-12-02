@@ -33,7 +33,7 @@ download_target=$(ws_bit)/download.tcl
 #all: $(mono_bft_target)
 #all: $(operators_ip_targets)
 
-all: $(download_target) $(mono_bft_target)
+all: $(download_target) 
 
 $(download_target): $(operators_bit_targets)
 	python2 pr_flow.py $(prj_name) -bit -op '$(basename $(notdir $^))'

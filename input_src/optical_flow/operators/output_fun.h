@@ -9,4 +9,4 @@ void output_fun(
 		pr_flow::stream & Output_1
 #endif
 );
-#pragma map_target=HW page_num=21
+#pragma map_target=HW page_num=22
