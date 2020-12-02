@@ -121,7 +121,7 @@ static void axi_sw_test(void) {
   busy_wait(100);
 }
 
-#define LEN 1000
+#define LEN 10000
 
 volatile uint32_t TxBufferPtr[LEN]  __attribute__((aligned(16)));
 volatile uint32_t RxBufferPtr[LEN]  __attribute__((aligned(16)));
@@ -132,9 +132,9 @@ static void dma_test(void) {
     TxBufferPtr[i] = i+1;
   }
 
-  //for(int i = 0; i < LEN; i++) {
-  //  RxBufferPtr[i] = 0;
-  //}
+  for(int i = 0; i < LEN; i++) {
+    RxBufferPtr[i] = 0;
+  }
 
   //flush_cpu_dcache();
   flush_l2_cache();

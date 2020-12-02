@@ -1,9 +1,7 @@
 #DEBUG=TRUE
 
-CPU=picorv32
+CPU=vexriscv
 BUS=axi-lite
-
-DEBUG_ARGS=--l2-size 8192
 
 ifdef DEBUG
 	DEBUG_ARGS=--with-ethernet --csr-csv csr.csv
