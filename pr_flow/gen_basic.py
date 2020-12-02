@@ -529,7 +529,7 @@ class _tcl:
     lines_list.append('#####################')
     lines_list.append('set start_time [clock seconds]')
     lines_list.append('open_checkpoint ./floorplan_static.dcp')
-    for i in range(3, int(self.prflow_params['nl'])):
+    for i in range(2, int(self.prflow_params['nl'])):
       lines_list.append('read_checkpoint -cell floorplan_static_i/leaf_empty_' + str(i) + '/inst ./dummy_repo/user_kernel/page_netlist.dcp')
     lines_list.append('set end_time [clock seconds]')
     lines_list.append('set total_seconds [expr $end_time - $start_time]')
@@ -568,7 +568,7 @@ class _tcl:
     lines_list.append('update_design -cell floorplan_static_i/bft_01 -black_box')
     lines_list.append('update_design -cell floorplan_static_i/bft_10 -black_box')
     lines_list.append('update_design -cell floorplan_static_i/bft_11 -black_box')
-    for i in range(3, int(self.prflow_params['nl'])):
+    for i in range(2, int(self.prflow_params['nl'])):
       lines_list.append('update_design -cell floorplan_static_i/leaf_empty_' + str(i) + '/inst -black_box')
 
     lines_list.append('#############################################')
@@ -580,7 +580,7 @@ class _tcl:
     lines_list.append('update_design -cell floorplan_static_i/bft_01 -buffer_ports')
     lines_list.append('update_design -cell floorplan_static_i/bft_10 -buffer_ports')
     lines_list.append('update_design -cell floorplan_static_i/bft_11 -buffer_ports')
-    for i in range(3, int(self.prflow_params['nl'])):
+    for i in range(2, int(self.prflow_params['nl'])):
       lines_list.append('update_design -cell floorplan_static_i/leaf_empty_' + str(i) + '/inst -buffer_ports')
 
     lines_list.append('lock_design -level routing')
