@@ -9,4 +9,4 @@ void flow_calc_1(
 		pr_flow::stream & Output_1
 #endif
 		);
-#pragma map_target = HW page_num = 20
+#pragma map_target = HW page_num = 2

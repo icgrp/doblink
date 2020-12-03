@@ -20,7 +20,7 @@ operators_syn_targets=$(foreach n, $(operators), $(ws_syn)/$(n)/page_netlist.dcp
 operators_impl_targets=$(foreach n, $(operators), $(ws_impl)/$(n)/page_routed.dcp)
 operators_bit_targets=$(foreach n, $(operators), $(ws_bit)/$(n).bit)
 operators_ip_targets=$(foreach n, $(operators), $(ws_mbft)/ip_repo/$(n)/prj/floorplan_static.xpr)
-mono_bft_target=$(ws_mbft)/prj/floorplan_static.run/impl/floorplan_static.bit
+mono_bft_target=$(ws_mbft)/prj/floorplan_static.runs/impl_1/floorplan_static_wrapper.bit
 download_target=$(ws_bit)/download.tcl
 
 
@@ -33,7 +33,7 @@ download_target=$(ws_bit)/download.tcl
 #all: $(mono_bft_target)
 #all: $(operators_ip_targets)
 
-all: $(download_target) 
+all: $(download_target) $(mono_bft_target) 
 
 $(download_target): $(operators_bit_targets)
 	python2 pr_flow.py $(prj_name) -bit -op '$(basename $(notdir $^))'
@@ -57,12 +57,12 @@ $(operators_hls_targets):$(ws_hls)/runLog%.log:$(operators_dir)/%.cc
 	cd $(ws_hls) && ./qsub_run_$(basename $(notdir $<)).sh
 
 
-
+# prepare the logic equivalent monolithic project 
 $(mono_bft_target): $(ws_overlay)/src $(ws_overlay)/dirc_ip $(operators_ip_targets)
 	python2 pr_flow.py $(prj_name) -mbft
 	cd $(ws_mbft) && ./main.sh
 
-
+# prepare the ip package for monolithic project
 $(operators_ip_targets):$(ws_mbft)/ip_repo/%/prj/floorplan_static.xpr:$(ws_hls)/runLog%.log
 	echo $@
 	python2 pr_flow.py $(prj_name) -ip -op $(subst runLog,,$(basename $(notdir $<)))

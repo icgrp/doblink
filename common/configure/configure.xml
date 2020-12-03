@@ -12,7 +12,7 @@
   <spec name = "pks"                value = "49" />
   <spec name = "nl"                 value = "32" />
   <!-- spec name = "qsub_Xilinx_dir" value = "/scratch/unsafe/SDSoC/SDx/2018.3/settings64.sh" -->
-  <spec name = "qsub_Xilinx_dir"    value = "/opt/Xilinx/SDx/2018.2/settings64.sh" />
+  <spec name = "qsub_Xilinx_dir"    value = "/scratch/unsafe/SDSoC/SDx/2018.2/settings64.sh" />
   <spec name = "email"              value = "youemail@seas.upenn.edu" />
   <spec name = "bft_regen"          value = "1" />
   <spec name = "static_regen"       value = "1" />

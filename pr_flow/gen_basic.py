@@ -86,6 +86,7 @@ class _shell:
 
 
   def cp_dir(self, src_dir, dst_dir):
+     print ('cp -rf '+src_dir+' '+dst_dir)
      os.system('cp -rf '+src_dir+' '+dst_dir)
 
   def return_run_sh_list(self, vivado_dir, tcl_file):

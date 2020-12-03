@@ -44,8 +44,7 @@ class ip_repo(gen_basic):
 
   def run(self, operator):
     # mk work directory
-    if self.prflow_params['gen_mono_bft']==True:
-      self.shell.mkdir(self.mono_bft_dir)
+    self.shell.mkdir(self.mono_bft_dir)
     
     # copy the hld/xdc files from static dirctory
     self.shell.cp_dir(self.overlay_dir + '/src ', self.mono_bft_dir)
