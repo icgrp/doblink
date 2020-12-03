@@ -125,8 +125,6 @@ static void axi_sw_test(void) {
 #define SEND_LEN 9576
 #define RECV_LEN 16384
 
-volatile uint32_t TxBufferPtr[SEND_LEN]  __attribute__((aligned(16)));
-volatile uint32_t RxBufferPtr[RECV_LEN]  __attribute__((aligned(16)));
 
 static char frame_buffer_print[256][256];
 
@@ -137,6 +135,7 @@ static void check_results(uint32_t * output)
   for (int i = 0, j = 0, n = 0; n < 16384; n ++ )
   {
     uint32_t temp = output[n];
+    //printf("n = %d, val = %#X\n", n, temp);
 
     frame_buffer_print[i][j++] = (char) (temp & 0x000000ff);
     frame_buffer_print[i][j++] = (char) ((temp & 0x0000ff00) >> 8);
@@ -167,6 +166,9 @@ static void check_results(uint32_t * output)
   }
 }
 
+volatile uint32_t TxBufferPtr[SEND_LEN]  __attribute__((aligned(16)));
+volatile uint32_t RxBufferPtr[RECV_LEN]  __attribute__((aligned(16)));
+
 static void rendering_test(void) {
   for(int i = 0; i < SEND_LEN; i++) {
     TxBufferPtr[i] = input_data[i];
@@ -176,7 +178,6 @@ static void rendering_test(void) {
     RxBufferPtr[i] = 0;
   }
 
-  //flush_cpu_dcache();
   flush_l2_cache();
   
   printf("TxBufferPtr = %#8X\n", (uint32_t)TxBufferPtr);
@@ -185,13 +186,14 @@ static void rendering_test(void) {
   mm2s_base_write((uint32_t)TxBufferPtr);
   mm2s_length_write(4 * SEND_LEN);
   mm2s_start_write(1);
+  printf("Waiting for mm2s to finish\n");
+  while(!mm2s_done_read());
 
   s2mm_base_write((uint32_t) RxBufferPtr);
   s2mm_length_write(4 * RECV_LEN);
   s2mm_start_write(1);
-  printf("Waiting for DMA to finish\n");
-  //while(!s2mm_done_read());
-  busy_wait(1000);
+  printf("Waiting for s2mm to finish\n");
+  while(!s2mm_done_read());
   printf("DMA done\n");
 
   flush_l2_cache();

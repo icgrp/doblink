@@ -101,9 +101,10 @@ class BaseSoC(RvpldSoCCore):
             )
 
         # AXILite2Led ------------------------------------------------------------------------------
-        rst = ~self.crg.cd_sys.rst
+        rst = self.crg.cd_sys.rst
+        rstn = ~rst
         clk = self.crg.cd_sys.clk
-        self.submodules.axilite2led = axilite2led = AxiLite2Led(clk, rst, platform)
+        self.submodules.axilite2led = axilite2led = AxiLite2Led(clk, rstn, platform)
         axilite2led_region = SoCRegion(origin=0x02000000, size=0x10000)
         self.bus.add_slave(name="axilite2led", slave=axilite2led.bus, region=axilite2led_region)
 

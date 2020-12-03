@@ -12,7 +12,7 @@ class RenderingMono(Module):
         self.platform = platform
         source_sigs = self.source.get_signals()
         sink_sigs = self.sink.get_signals()
-        self.platform.add_source('rtl/rendering.v')
+        self.platform.add_source('rtl/rendering_mono/rendering.v')
         self.platform.add_source('rtl/rendering_mono/zculling_z_buffer_V_ram.dat')
         self.specials += Instance("rendering_mono",
                             i_ap_clk = self.clk,
