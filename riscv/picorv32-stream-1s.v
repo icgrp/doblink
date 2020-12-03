@@ -2025,20 +2025,21 @@ module picorv32 #(
 
 			// Stream States
             cpu_state_streamr: begin
-                if (stream_empty && !rinc) begin
-                    cpu_state <= cpu_state_streamr;
-                end else if (!rinc) begin
-					rinc <= 1;
-					cpu_state <= cpu_state_streamr;
-				end else begin
-                    reg_out <= 32'h00000001;//stream_data_in;
-					rinc <= 0;
-					latched_store <= 1;
-                    cpu_state <= cpu_state_fetch;
-					mem_do_rinst <= mem_do_prefetch;
-					// decoder_trigger <= 1;
-					// decoder_pseudo_trigger <= 1;
-                end
+                // if (stream_empty && !rinc) begin
+                //     cpu_state <= cpu_state_streamr;
+                // end else if (!rinc) begin
+				// 	rinc <= 1;
+				// 	cpu_state <= cpu_state_streamr;
+				// end else begin
+                //     reg_out <= 32'h00000001;//stream_data_in;
+				// 	rinc <= 0;
+				// 	latched_store <= 1;
+                //     cpu_state <= cpu_state_fetch;
+				// 	mem_do_rinst <= mem_do_prefetch;
+				// 	// decoder_trigger <= 1;
+				// 	// decoder_pseudo_trigger <= 1;
+                // end
+				cpu_state <= cpu_state_streamr;
             end
             cpu_state_streamw: begin
                 if (stream_full) begin
