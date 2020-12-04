@@ -22,6 +22,7 @@ operators_bit_targets=$(foreach n, $(operators), $(ws_bit)/$(n).bit)
 operators_ip_targets=$(foreach n, $(operators), $(ws_mbft)/ip_repo/$(n)/prj/floorplan_static.xpr)
 mono_bft_target=$(ws_mbft)/prj/floorplan_static.runs/impl_1/floorplan_static_wrapper.bit
 download_target=$(ws_bit)/download.tcl
+config_target=$(ws_mbft)/config.cpp 
 
 
 
@@ -33,7 +34,11 @@ download_target=$(ws_bit)/download.tcl
 #all: $(mono_bft_target)
 #all: $(operators_ip_targets)
 #all: $(download_target) $(mono_bft_target) 
-all: $(download_target) 
+all: $(config_target) 
+
+
+$(config_target): $(operators_bit_targets)
+	python2 pr_flow.py $(prj_name) -cfg -op '$(basename $(notdir $^))'
 
 $(download_target): $(operators_bit_targets)
 	python2 pr_flow.py $(prj_name) -bit -op '$(basename $(notdir $^))'

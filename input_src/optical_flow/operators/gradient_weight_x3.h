@@ -1,5 +1,5 @@
 
-void gradient_weight_x3(//gradient_t y_filt[MAX_HEIGHT][MAX_WIDTH],
+void gradient_weight_x3(
 		       hls::stream<databus_t> &Input_1,
 		       hls::stream<databus_t> &Output_1,
 		       hls::stream<databus_t> &Output_2);

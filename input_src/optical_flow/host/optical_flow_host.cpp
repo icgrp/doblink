@@ -13,11 +13,10 @@
 #include <string>
 #include <time.h>
 #include <sys/time.h>
-#include "optical_flow.h"
-// other headers
 #include "utils.h"
 #include "typedefs.h"
 #include "check_result.h"
+#include "top.h"
 #ifdef OCL
   // opencl harness headers
   #include "CLWorld.h"
@@ -31,7 +30,7 @@
   // sdsoc headers
   //#include "sds_lib.h"
   // hardware function declaration
-  #include "optical_flow.h"
+  #include "top.h"
 #endif
 #ifdef SW
   # include "../sw/optical_flow_sw.h"
@@ -194,7 +193,7 @@ int main(int argc, char ** argv)
 
     // run
     gettimeofday(&start, NULL);
-    optical_flow(frames, flo_out);
+    top(frames, flo_out);
     int num;
 	num = flo_out.read();
 	num = flo_out.read();

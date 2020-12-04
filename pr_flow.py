@@ -12,11 +12,10 @@ import pr_flow.impl as impl
 import pr_flow.bit as bit
 import pr_flow.ip_repo as ip_repo
 import pr_flow.mbft as mbft
-
+import pr_flow.config as config
 
 import pr_flow.gen_sdk as sdk
 import pr_flow.gen_mono_bft as mono_bft
-import pr_flow.gen_config as config
 import argparse
 import xml.etree.ElementTree
 
@@ -33,6 +32,7 @@ if __name__ == '__main__':
   parser.add_argument('-impl', '--gen_impl',    help="default: don't perform placement, routing and bitstream generation", action='store_true')
   parser.add_argument('-bit', '--gen_bits',    help="default: don't update the download.tcl file for loading bitstreams", action='store_true')
   parser.add_argument('-ip', '--gen_ip_repo',    help="default: don't generate ip_repo", action='store_true')
+  parser.add_argument('-cfg', '--gen_config',    help="generate the configuration packets for PSNoC", action='store_true')
   parser.add_argument('-mbft', '--gen_mono_bft',    help="default: don't generate monolithic BFT project", action='store_true')
   parser.add_argument('-op', '--operator',    type=str, default="no_func", help="choose which function to be regenrated")
 
@@ -49,6 +49,7 @@ if __name__ == '__main__':
   prflow_params['gen_bits'] = args.gen_bits
   prflow_params['gen_ip_repo'] = args.gen_ip_repo
   prflow_params['gen_mono_bft'] = args.gen_mono_bft
+  prflow_params['gen_config'] = args.gen_config
   prflow_params['input_file_name'] = input_file_name
   prflow_params['workspace'] = './workspace'
   operator = args.operator
@@ -84,6 +85,10 @@ if __name__ == '__main__':
     mbft_inst = mbft.mbft(prflow_params)
     mbft_inst.run()
 
+
+  if prflow_params['gen_config'] == True:
+    cfg_inst = config.config(prflow_params)
+    cfg_inst.run(operator)
 
 
 

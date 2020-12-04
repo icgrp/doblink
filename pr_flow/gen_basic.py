@@ -14,6 +14,12 @@ class _shell:
   def __init__(self, prflow_params):
     self.prflow_params = prflow_params
 
+  def have_target_string(self, string_in, target_string):
+    if string_in.replace(target_string, '') == string_in:
+      return False
+    else:
+      return True
+      
   def file_to_list(self, file_name):
     file_list = []
     file_in = open(file_name, 'r')
