@@ -20,7 +20,7 @@ class hls(gen_basic):
         
     self.shell.write_lines(self.hls_dir+'/'+fun_name+'_prj/vivado_hls.app', self.tcl.return_hls_prj_list(fun_name))
     self.shell.write_lines(self.hls_dir+'/'+fun_name+'_prj/'+fun_name+'/script.tcl', self.tcl.return_hls_tcl_list(fun_name))
-    self.shell.write_lines(self.hls_dir+'/qsub_run_'+fun_name+'.sh', self.shell.return_run_hls_sh_list(self.prflow_params['qsub_Xilinx_dir'], './'+fun_name+'_prj/'+fun_name+'/script.tcl'), True)
+    self.shell.write_lines(self.hls_dir+'/qsub_run_'+fun_name+'.sh', self.shell.return_run_hls_sh_list(self.prflow_params['Xilinx_dir'], './'+fun_name+'_prj/'+fun_name+'/script.tcl'), True)
 
   # main.sh will be used for local compilation
   def return_qsub_main_sh_list_local(self):

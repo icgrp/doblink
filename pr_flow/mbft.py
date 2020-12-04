@@ -137,7 +137,7 @@ class mbft(gen_basic):
         ]
         self.shell.write_lines(self.mono_bft_dir+'/ip_repo/'+fun_name+'/ip_page.tcl', self.tcl.return_ip_page_tcl_list(fun_name, page_num, file_list))
         self.shell.write_lines(self.mono_bft_dir+'/ip_repo/'+fun_name+'/run.sh',      self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'ip_page.tcl'), True)
-        self.shell.write_lines(self.mono_bft_dir+'/ip_repo/'+fun_name+'/qsub_run.sh', self.shell.return_run_sh_list(self.prflow_params['qsub_Xilinx_dir'], 'ip_page.tcl'), True)
+        self.shell.write_lines(self.mono_bft_dir+'/ip_repo/'+fun_name+'/qsub_run.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'ip_page.tcl'), True)
         self.shell.write_lines(self.mono_bft_dir+'/ip_repo/'+fun_name+'/leaf_'+str(page_num)+'.v', self.verilog.return_page_v_list(page_num, fun_name, input_num, output_num), True)
 
   def create_shell_file(self):
@@ -160,10 +160,10 @@ class mbft(gen_basic):
     self.shell.replace_lines(self.mono_bft_dir+'/project_xsdk_core.tcl', replace_dict)
     self.shell.write_lines(self.mono_bft_dir+'/main.sh', self.return_main_sh_list_local(), True)
     self.shell.write_lines(self.mono_bft_dir+'/qsub_main.sh', self.return_qsub_main_sh_list_local(), True)
-    self.shell.write_lines(self.mono_bft_dir+'/qsub_project_syn2gen.sh', self.shell.return_run_sh_list(self.prflow_params['qsub_Xilinx_dir'], 'project_syn2gen.tcl'), True)    
+    self.shell.write_lines(self.mono_bft_dir+'/qsub_project_syn2gen.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'project_syn2gen.tcl'), True)    
     self.shell.write_lines(self.mono_bft_dir+'/qsub_sub_syn.sh', self.return_sub_syn_sh_list_local(), True)
-    self.shell.write_lines(self.mono_bft_dir+'/qsub_project_syn2bits.sh', self.shell.return_run_sh_list(self.prflow_params['qsub_Xilinx_dir'], 'project_syn2bits.tcl'), True)    
-    self.shell.write_lines(self.mono_bft_dir+'/qsub_project_xsdk.sh', self.return_run_sdk_sh_list_local(self.prflow_params['qsub_Xilinx_dir'], 'project_xsdk_core.tcl'), True)    
+    self.shell.write_lines(self.mono_bft_dir+'/qsub_project_syn2bits.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'project_syn2bits.tcl'), True)    
+    self.shell.write_lines(self.mono_bft_dir+'/qsub_project_xsdk.sh', self.return_run_sdk_sh_list_local(self.prflow_params['Xilinx_dir'], 'project_xsdk_core.tcl'), True)    
 
 
   def uncomment_page_empty(self):
@@ -176,8 +176,8 @@ class mbft(gen_basic):
 
   def run(self):
     # mk work directory
-    if self.prflow_params['gen_mono_bft']==True:
-      self.shell.mkdir(self.mono_bft_dir)
+    os.system('rm -rf '+ self.mono_bft_dir + '/prj')
+    self.shell.mkdir(self.mono_bft_dir)
     
     # copy the hld/xdc files from static dirctory
     self.shell.cp_dir(self.overlay_dir + '/src ', self.mono_bft_dir)

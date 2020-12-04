@@ -19,7 +19,7 @@ class ip_repo(gen_basic):
     output_num = self.return_io_num('Output_', src_list)
     HW, page_num = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'page_num') 
     num_bram_addr_bits =int(self.prflow_params['bram_addr_bits'])
-    self.shell.mkdir(self.mono_bft_dir+'/ip_repo/'+operator)
+    self.shell.re_mkdir(self.mono_bft_dir+'/ip_repo/'+operator)
     file_list = [
               '../../src/Config_Controls.v',
               '../../src/converge_ctrl.v',
@@ -37,7 +37,7 @@ class ip_repo(gen_basic):
     ]
     self.shell.write_lines(self.mono_bft_dir+'/ip_repo/'+operator+'/ip_page.tcl', self.tcl.return_ip_page_tcl_list(operator, page_num, file_list))
     self.shell.write_lines(self.mono_bft_dir+'/ip_repo/'+operator+'/run.sh',      self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'ip_page.tcl'), True)
-    self.shell.write_lines(self.mono_bft_dir+'/ip_repo/'+operator+'/qsub_run.sh', self.shell.return_run_sh_list(self.prflow_params['qsub_Xilinx_dir'], 'ip_page.tcl'), True)
+    self.shell.write_lines(self.mono_bft_dir+'/ip_repo/'+operator+'/qsub_run.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'ip_page.tcl'), True)
     self.shell.write_lines(self.mono_bft_dir+'/ip_repo/'+operator+'/leaf_'+str(page_num)+'.v', self.verilog.return_page_v_list(page_num, operator, input_num, output_num), True)
 
 

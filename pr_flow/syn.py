@@ -36,7 +36,7 @@ class syn(gen_basic):
       './leaf.v'
     ]
     self.shell.write_lines(self.syn_dir+'/'+operator+'/syn_page.tcl', self.tcl.return_syn_page_tcl_list(operator, file_list))
-    self.shell.write_lines(self.syn_dir+'/'+operator+'/qsub_run.sh', self.shell.return_run_sh_list(self.prflow_params['qsub_Xilinx_dir'], 'syn_page.tcl'), True)
+    self.shell.write_lines(self.syn_dir+'/'+operator+'/qsub_run.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'syn_page.tcl'), True)
     self.shell.write_lines(self.syn_dir+'/'+operator+'/leaf.v', self.verilog.return_page_v_list(page_num, operator, input_num, output_num, True), False)
 
 

@@ -31,7 +31,7 @@ class overlay(gen_basic):
                 ]
     self.shell.write_lines(self.overlay_dir+'/dummy_repo/'+fun_name+'/dummy.tcl', self.tcl.return_syn_page_tcl_list(fun_name, file_list))
     self.shell.write_lines(self.overlay_dir+'/dummy_repo/'+fun_name+'/run.sh',      self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'dummy.tcl'), True)
-    self.shell.write_lines(self.overlay_dir+'/dummy_repo/'+fun_name+'/qsub_run.sh', self.shell.return_run_sh_list(self.prflow_params['qsub_Xilinx_dir'], 'dummy.tcl'), True)
+    self.shell.write_lines(self.overlay_dir+'/dummy_repo/'+fun_name+'/qsub_run.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'dummy.tcl'), True)
     self.shell.write_lines(self.overlay_dir+'/dummy_repo/'+fun_name+'/'+'leaf.v', self.verilog.return_page_v_list(0, fun_name, 1, 1, True))
 
 
@@ -102,10 +102,10 @@ class overlay(gen_basic):
 
     self.shell.write_lines(self.overlay_dir+'/main.sh', self.return_main_sh_list_local(), True)
     self.shell.write_lines(self.overlay_dir+'/qsub_main.sh', self.return_qsub_main_sh_list_local(), True)
-    self.shell.write_lines(self.overlay_dir+'/qsub_project_syn2gen.sh', self.shell.return_run_sh_list(self.prflow_params['qsub_Xilinx_dir'], 'project_syn2gen.tcl'), True)
+    self.shell.write_lines(self.overlay_dir+'/qsub_project_syn2gen.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'project_syn2gen.tcl'), True)
     self.shell.write_lines(self.overlay_dir+'/qsub_sub_syn.sh', self.return_sub_syn_sh_list_local(), True)
-    self.shell.write_lines(self.overlay_dir+'/qsub_project_syn2dcp.sh', self.shell.return_run_sh_list(self.prflow_params['qsub_Xilinx_dir'], 'project_syn2dcp.tcl'), True)
-    self.shell.write_lines(self.overlay_dir+'/qsub_mk_overlay.sh', self.shell.return_run_sh_list(self.prflow_params['qsub_Xilinx_dir'], 'mk_overlay.tcl'), True)
+    self.shell.write_lines(self.overlay_dir+'/qsub_project_syn2dcp.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'project_syn2dcp.tcl'), True)
+    self.shell.write_lines(self.overlay_dir+'/qsub_mk_overlay.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'mk_overlay.tcl'), True)
 
 
 

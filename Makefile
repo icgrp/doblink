@@ -13,7 +13,7 @@ ws_bit=$(ws)/F005_bits_$(prj_name)
 ws_mbft=$(ws)/F007_mono_bft_$(prj_name)
 
 operators_dir=./input_src/$(prj_name)/operators
-operators_src=$(wildcard $(operators_dir)/*.cc)
+operators_src=$(wildcard $(operators_dir)/*.cpp)
 operators=$(basename $(notdir $(operators_src)))
 operators_hls_targets=$(foreach n, $(operators), $(ws_hls)/runLog$(n).log)
 operators_syn_targets=$(foreach n, $(operators), $(ws_syn)/$(n)/page_netlist.dcp)
@@ -32,8 +32,8 @@ download_target=$(ws_bit)/download.tcl
 #all: $(download_target)
 #all: $(mono_bft_target)
 #all: $(operators_ip_targets)
-
-all: $(download_target) $(mono_bft_target) 
+#all: $(download_target) $(mono_bft_target) 
+all: $(download_target) 
 
 $(download_target): $(operators_bit_targets)
 	python2 pr_flow.py $(prj_name) -bit -op '$(basename $(notdir $^))'
@@ -52,7 +52,7 @@ $(operators_syn_targets):$(ws_syn)/%/page_netlist.dcp:$(ws_hls)/runLog%.log
 
 
 # High-Level-Synthesis from C to Verilog
-$(operators_hls_targets):$(ws_hls)/runLog%.log:$(operators_dir)/%.cc
+$(operators_hls_targets):$(ws_hls)/runLog%.log:$(operators_dir)/%.cpp $(operators_dir)/%.h
 	python2 pr_flow.py $(prj_name) -hls -op $(basename $(notdir $<))
 	cd $(ws_hls) && ./qsub_run_$(basename $(notdir $<)).sh
 

@@ -113,7 +113,7 @@ class _shell:
   def return_qsub_scan_sh_list(self, scan_dir, run_shell='qsub_run.sh', hold_prefix='hls_', name_prefix='mono_bft_'):
     return ([
       '#!/bin/bash -e',
-      'source ' + self.prflow_params['qsub_Xilinx_dir'],
+      'source ' + self.prflow_params['Xilinx_dir'],
       'emailAddr="' + self.prflow_params['email'] + '"',
       'file_list=\'dummy\'',
       'for file in $(ls '+scan_dir+')',
@@ -386,7 +386,7 @@ class _tcl:
     lines_list.append('set start_time [clock seconds]')                     
     lines_list.append('open_project ' + fun_name + '_prj')                  
     lines_list.append('set_top ' + fun_name + '')                           
-    lines_list.append('add_files ../../input_src/' + self.prflow_params['benchmark_name'] + '/operators/' + fun_name + '.cc')
+    lines_list.append('add_files ../../input_src/' + self.prflow_params['benchmark_name'] + '/operators/' + fun_name + '.cpp')
     lines_list.append('add_files ../../input_src/' + self.prflow_params['benchmark_name'] + '/host/typedefs.h')
     lines_list.append('open_solution "' +fun_name +'"')                     
     lines_list.append('set_part {'+self.prflow_params['part']+'}')          
@@ -422,7 +422,7 @@ class _tcl:
     lines_list.append('    <files>')
 
     #capture all the files under operator dirctory
-    lines_list.append('        <file name="../../input_src/' + self.prflow_params['benchmark_name'] + '/operators/' + fun_name + '.cc " sc="0" tb="false" cflags=""/>')
+    lines_list.append('        <file name="../../input_src/' + self.prflow_params['benchmark_name'] + '/operators/' + fun_name + '.cpp " sc="0" tb="false" cflags=""/>')
     lines_list.append('        <file name="../../input_src/' + self.prflow_params['benchmark_name'] + '/host/typedefs.h" sc="0" tb="false" cflags=""/>')
     lines_list.append('    </files> ')
     lines_list.append('    <solutions>')

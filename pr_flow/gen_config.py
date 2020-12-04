@@ -1,25 +1,23 @@
-### config_gen: generate the config.c and config.h files for PrFlow
+### config_gen: generate the config_<benchmark_name>.cpp and config_<benchmark.h files for PrFlow
 # Created by: Yuanlong Xiao (yuanlongxiao24@gmail.com)
 #         at: University of Pennsylvania
 #         in: 2018       
            
 #
 # The big picture:
-#
 # config_gen will generate files by using different parameters
-#
 # How it works (in a nutshell):
-#
 # Run command "python config_gen.py"
-#
 # [1] D. Park, Y. Xiao and A. DeHon, "Case for Acceleration of FPGA Compilation using Partial Reconfiguration", FPL2018
-#
+# [2] Y. Xiao,  D. Park, A. Butt, H. Giesen, Z. Han, R. Ding, N. Magnezi, R. Rubin and A. DeHon. "Reducing FPGA compile time with separate compilation for FPGA building blocks", FPT2019
+# [3] Y. Xiao, S. Ahmed and A. DeHon. "Fast Linking of Separately-Compiled FPGA Blockswithout a NoC", FPT2020
 
 
 # This module contains classes needed by config_gen.py 
 import xml.etree.ElementTree
 import time
-
+from gen_basic import gen_basic
+import re
 class debug_func:
   """ This class can print list and dict decently. """
   def __init__(self):
@@ -373,14 +371,12 @@ class c_source_gen:
 
 
 
-class auto_config:
-  """ This class generates the config.c and config.h files. """
-  def __init__(self, prflow_params):
+class config(gen_basic):
+  # def __init__(self, prflow_params):
   # Initialize the specs
-    self.prflow_params = prflow_params
-    self.source_file_name = './output/config.c'
-    self.header_file_name = './output/config.h'
-  def generate(self):
+  #  self.prflow_params = prflow_params
+
+  def run(self):
     #define the parameters for interface
     packet_bits = int(self.prflow_params['packet_bits'])
     leaf_num = int(self.prflow_params['nl'])
@@ -394,44 +390,50 @@ class auto_config:
     payload_bits = int(self.prflow_params['payload_bits'])
     bram_addr = int(self.prflow_params['bram_addr'])
     freespace = 2**bram_addr_bits - 1
-    #we got 16 ports, port 0 is to configure the output ports regs
-    #port 1 is to configure the input ports regs
-    #input ports: 2-8
-    #output prots: 9-15
+
+    # we have 16 ports; port 0 is to configure the output ports regs
+    # port 1 is to configure the input ports regs
+    # input ports: 2-8
+    # output prots: 9-15
     input_port_offset = int(self.prflow_params['input_port_offset'])
     output_port_offset = int(self.prflow_params['output_port_offset'])
 
     #define hte paramters for input and output files
-    func_conn_filename = self.prflow_params['input_file_name']
     output_source_file_name = self.prflow_params['workspace']+'/F007_mono_bft_'+self.prflow_params['benchmark_name']+'/config_'+self.prflow_params['benchmark_name']+'.cc'
     output_header_file_name = self.prflow_params['workspace']+'/F007_mono_bft_'+self.prflow_params['benchmark_name']+'/config_'+self.prflow_params['benchmark_name']+'.h'
 
     # Record start time
     total_start_time = time.time()
 
-
     # Create debug instance to print list and dict
     debug_inst = debug_func()
 
-    #Create this instance to generate c program files
+    # Create this instance to generate c program files
     c_gen_inst = c_source_gen(output_source_file_name, output_header_file_name)
 
-    #Create this instance to parse the conncetion between the C functions
+    # Create this instance to parse the conncetion between the C functions
     conn_parser_inst = conn_parser(func_conn_filename)
 
-    #Create this instance to parse the hardware mapping of C functions
+    # Create this instance to parse the hardware mapping of C functions
     loc_parser_inst = loc_parser(int(self.prflow_params['nl']))
 
-    #This instance is to do some bits calculation of the packets sent and received by ARM
+    # This instance is to do some bits calculation of the packets sent and received by ARM
     packets_gen_inst = packets_gen(self.prflow_params, packet_bits, addr_bits, port_bits, bram_addr_bits, payload_bits, bram_addr, freespace, input_port_offset, output_port_offset)
 
-    #use the physical locations (leaf location and port numbers) to represend the packet
+
+
+
+    # Use the physical locations (leaf location and port numbers) to represend the packet
     packets_gen_inst.generate_packets_of_loc(conn_parser_inst, loc_parser_inst.func_loc_dict)
-    #convert the packets represent by the physical locations to HEX format
+    # convert the packets represent by the physical locations to HEX format
     packets_gen_inst.generate_packet_of_num()
 
     #generate config.c and config.h files
-    c_gen_inst.generate(packets_gen_inst.init_pkt_arm2leaf_num_list, packets_gen_inst.ack_pkt_arm2leaf_num_dict, packets_gen_inst.ack_pkt_leaf2arm_num_dict, packets_gen_inst.data_pkt_arm2leaf_num_dict, self.prflow_params['board'])
+    c_gen_inst.generate(packets_gen_inst.init_pkt_arm2leaf_num_list, \
+                        packets_gen_inst.ack_pkt_arm2leaf_num_dict, \
+                        packets_gen_inst.ack_pkt_leaf2arm_num_dict, \
+                        packets_gen_inst.data_pkt_arm2leaf_num_dict, \
+                        self.prflow_params['board'])
 	
     # Record end time
     total_end_time = time.time()
@@ -442,11 +444,3 @@ class auto_config:
     print "Config_gen completed!"
     print "Total time elapsed: " + str(total_hours_elapsed) + " hours " + str(total_minutes_elapsed) + " minutes " + str(total_seconds_elapsed) + " seconds\n" 
 
-    #print packets_gen_inst.ack_pkt_arm2leaf_loc_dict
-    #print packets_gen_inst.ack_pkt_leaf2arm_loc_dict
-    #print packets_gen_inst.data_pkt_arm2leaf_loc_dict
-    #print packets_gen_inst.init_pkt_arm2leaf_num_list
-    #debug_inst.print_dict_hex(packets_gen_inst.ack_pkt_arm2leaf_loc_dict)
-    #debug_inst.print_dict_hex(packets_gen_inst.ack_pkt_leaf2arm_loc_dict)
-    #debug_inst.print_dict_hex(packets_gen_inst.data_pkt_arm2leaf_loc_dict)
-    #debug_inst.print_list_hex(packets_gen_inst.init_pkt_arm2leaf_num_list)

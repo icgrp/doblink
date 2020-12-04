@@ -11,7 +11,7 @@ class impl(gen_basic):
   def create_page(self, operator, page_num):
     self.shell.re_mkdir(self.pr_dir+'/'+operator)
     self.shell.write_lines(self.pr_dir+'/'+operator+'/impl_'+operator+'.tcl', self.tcl.return_impl_tcl_list(operator, page_num, False))
-    self.shell.write_lines(self.pr_dir+'/'+operator+'/qsub_run.sh', self.shell.return_run_sh_list(self.prflow_params['qsub_Xilinx_dir'], 'impl_'+operator+'.tcl'), True)
+    self.shell.write_lines(self.pr_dir+'/'+operator+'/qsub_run.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'impl_'+operator+'.tcl'), True)
 
 
   # main.sh will be used for local compilation
