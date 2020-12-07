@@ -231,10 +231,8 @@ int dma_inst::WR2TxBuffer()
 	TxPacket = Packet;
 
 	for(i = 0; i < 446464; i ++) {
-		TxPacket[i*4]   = data_in[2*i];
-		TxPacket[i*4+1] = data_in[2*i+1];
-		TxPacket[i*4+2] = 0;
-		TxPacket[i*4+3] = 0;
+		TxPacket[i*2]   = data_in[2*i];
+		TxPacket[i*2+1] = data_in[2*i+1];
 	}
 
 	/* Flush the SrcBuffer before the DMA transfer, in case the Data Cache
@@ -427,7 +425,7 @@ int dma_inst::CheckData(void)
 	for(i = 1; i < 892929; i++) {
 		if(RxPacket[i+3] != expected[i]){
 			err_cnt++;
-			//printf("i= %d Rx = %x, Ex = %x\n", i, RxPacket[i], expected[i]);
+			printf("i= %d Rx = %x, Ex = %x\n", i, RxPacket[i+3], expected[i]);
 		}
 
 	}

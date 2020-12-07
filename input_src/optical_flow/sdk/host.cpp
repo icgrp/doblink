@@ -8,6 +8,8 @@
 */
 #include "dma_driver.h"
 #include "typedefs.h"
+#include "config_optical_flow.h"
+
 
 #define SLV_REG0 XPAR_AXI_LEAF_AXILITE2BFT_V2_0_0_BASEADDR+0
 #define SLV_REG1 XPAR_AXI_LEAF_AXILITE2BFT_V2_0_0_BASEADDR+4
@@ -19,11 +21,14 @@
 #define SLV_REG7 XPAR_AXI_LEAF_AXILITE2BFT_V2_0_0_BASEADDR+28
 
 
+
 int main(void)
 {
 	int Status;
+	init_regs();
+	printf("Initialization Completed\n\r");
 
-	Xil_Out32(SLV_REG4, 1);
+	Xil_Out32(SLV_REG6, 1);
 	dma_inst dma1(DMA_DEV_ID,
 			 RX_BD_SPACE_HIGH,
 			 RX_BD_SPACE_BASE,

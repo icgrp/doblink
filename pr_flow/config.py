@@ -124,9 +124,10 @@ class config(gen_basic):
     return connection_list
 
 
-  def gen_config_cpp_h_file(self, page_num_dict, connection_list):
+  def return_config_packet_list_local(self, page_num_dict, connection_list):
+    packet_list = []
     for str_value in connection_list:
-      print str_value
+      packet_list.append('//'+str_value)
       str_list = str_value.split('->')
       [src_operator, src_output] = str_list[0].split('.')
       [dest_operator, dest_input] = str_list[1].split('.')
@@ -140,10 +141,11 @@ class config(gen_basic):
       src_page_packet = src_page_packet + (src_port  << self.config_port_offset)
       src_page_packet = src_page_packet + (dest_page << self.dest_page_offset)
       src_page_packet = src_page_packet + (dest_port << self.dest_port_offset)
-      src_page_packet = src_page_packet + (self.freespace << self.freespace_offset)
+      src_page_packet = src_page_packet + ((2**self.bram_addr_bits-1) << self.freespace_offset)
       value_low  =  (src_page_packet      ) & 0xffffffff
       value_high =  (src_page_packet >> 32) & 0xffffffff
-      print 'src_page_packet: ', str(hex(value_high)).replace('L', ''), str(hex(value_low)).replace('L', '') 
+      #print 'src_page_packet: ', str(hex(value_high)).replace('L', ''), str(hex(value_low)).replace('L', '') 
+      packet_list.append("  write_to_fifo(" + str(hex(value_high)).replace('L', '') + ', ' + str(hex(value_low)).replace('L', '') + ", &ctrl_reg);")
 
       dest_page_packet =                    (dest_page  << self.page_addr_offset)
       dest_page_packet = dest_page_packet + (        1  << self.port_offset)
@@ -152,22 +154,40 @@ class config(gen_basic):
       dest_page_packet = dest_page_packet + (src_port   << self.src_port_offset)
       value_low  =  (dest_page_packet      ) & 0xffffffff
       value_high =  (dest_page_packet >> 32) & 0xffffffff
-      print 'src_page_packet: ', str(hex(value_high)).replace('L', ''), str(hex(value_low)).replace('L', '') 
+      #print 'src_page_packet: ', str(hex(value_high)).replace('L', ''), str(hex(value_low)).replace('L', '') 
+      packet_list.append("  write_to_fifo(" + str(hex(value_high)).replace('L', '') + ', ' + str(hex(value_low)).replace('L', '') + ", &ctrl_reg);")
+
+    return packet_list
+
+  def return_run_sdk_sh_list_local(self, vivado_dir, tcl_file):
+    return ([
+      '#!/bin/bash -e',
+      'source ' + vivado_dir,
+      'xsdk -batch -source ' + tcl_file,
+      ''])
 
 
  
   def run(self, operators):
+    self.shell.re_mkdir(self.sdk_dir+'/')
+    self.shell.re_mkdir(self.sdk_dir+'/cpp_src')
+    self.shell.cp_dir('./common/driver_src/config.cpp', self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.cpp')
+    self.shell.cp_dir(self.mono_bft_dir+'/prj/floorplan_static.sdk/floorplan_static_wrapper.hdf', self.sdk_dir)
+    self.shell.cp_dir('./common/driver_src/config.h', self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.h')
+    self.shell.cp_dir('./common/script_src/project_xsdk_core.tcl', self.sdk_dir)
+    self.shell.cp_dir('./input_src/'+self.prflow_params['benchmark_name']+'/sdk/*', self.sdk_dir+'/cpp_src')
+
     page_num_dict = self.return_page_num_dict_local(operators)
     operator_arg_dict = self.return_operator_io_argument_dict_local(operators)
     operator_var_dict = self.return_operator_inst_dict_local(operators)
-    #print ''
-    #self.print_dict(page_num_dict)
-    #print ''
-    #self.print_dict(operator_arg_dict)
-    #print ''
-    #self.print_dict(operator_var_dict)
     connection_list=self.return_operator_connect_list_local(operator_arg_dict, operator_var_dict)
-    self.gen_config_cpp_h_file(page_num_dict, connection_list)
-    self.print_dict(page_num_dict)
+    packet_list = self.return_config_packet_list_local(page_num_dict, connection_list)
+    self.shell.add_lines(self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.cpp', '//packet anchor', packet_list) 
 
+    replace_dict={'set Benchmark_name': "set Benchmark_name " + self.prflow_params['benchmark_name']}
+    self.shell.replace_lines(self.sdk_dir+'/project_xsdk_core.tcl', replace_dict)
+
+    self.shell.write_lines(self.sdk_dir+'/run_project_xsdk.sh', self.return_run_sdk_sh_list_local(self.prflow_params['Xilinx_dir'], 'project_xsdk_core.tcl'), True)    
+    self.shell.write_lines(self.sdk_dir+'/main.sh', self.shell.return_main_sh_list('run_project_xsdk.sh'), True)
+    
 

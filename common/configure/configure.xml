@@ -36,7 +36,7 @@
   <spec name = "bram_addr_bits"     value = "7" />
   <spec name = "payload_bits"       value = "32" />
   <spec name = "bram_addr"          value = "0" />
-  <spec name = "freespace"          value = "127" />
+  <spec name = "freespace"          value = "64" />
   <spec name = "input_port_base"    value = "2" />
   <spec name = "output_port_base"   value = "9" />
   <spec name = "min_net"            value = "0" />

@@ -647,7 +647,7 @@ class gen_basic:
     self.pr_dir = self.prflow_params['workspace']+'/F004_impl_'+self.prflow_params['benchmark_name']
     self.bit_dir = self.prflow_params['workspace']+'/F005_bits_'+self.prflow_params['benchmark_name']
     self.mono_bft_dir = self.prflow_params['workspace']+'/F007_mono_bft_'+self.prflow_params['benchmark_name']
-    self.hls_dir = self.prflow_params['workspace']+'/F002_hls_'+self.prflow_params['benchmark_name']
+    self.sdk_dir = self.prflow_params['workspace']+'/F008_sdk_'+self.prflow_params['benchmark_name']
     self.net_list = ['1', '1', '1', '1', '1', '2', '2', '2',
                      '2', '2', '2', '0', '3', '3', '3', '3',
                      '3', '3', '4', '4', '4', '4', '4', '4',

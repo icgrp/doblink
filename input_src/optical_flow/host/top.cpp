@@ -241,7 +241,7 @@ void data_gen(
 	int i;
 	for (i=0; i<446464; i++)
 	{
-#pragma HLS pipeline II=4
+#pragma HLS pipeline II=2
 		bit128 tmp;
 		tmp(127,96) = input_data[i*4];
 		tmp(95,64) = input_data[i*4+1];
