@@ -1,5 +1,6 @@
 #include "../host/typedefs.h"
 
+
 static int check_clockwise( Triangle_2D triangle_2d )
 {
   int cw;
