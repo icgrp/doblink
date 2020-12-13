@@ -1,5 +1,6 @@
 
-prj_name=optical_flow
+#prj_name=optical_flow
+prj_name=rendering
 
 
 src=./common/verilog_src
@@ -66,6 +67,7 @@ $(operators_hls_targets):$(ws_hls)/runLog%.log:$(operators_dir)/%.cpp $(operator
 	python2 pr_flow.py $(prj_name) -hls -op $(basename $(notdir $<))
 	cd $(ws_hls) && ./qsub_run_$(basename $(notdir $<)).sh
 
+mono_prj: $(mono_bft_target)
 
 # prepare the logic equivalent monolithic project 
 $(mono_bft_target): $(ws_overlay)/src $(ws_overlay)/dirc_ip $(operators_ip_targets)

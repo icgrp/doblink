@@ -84,16 +84,19 @@ class config(gen_basic):
     file_list = self.shell.file_to_list('./input_src/'+self.prflow_params['benchmark_name']+'/host/top.cpp')
     for operator in operator_list:
       arguments_list = [] 
-      inst_valid = False # Ture if function definition begins
+      
+      # 1 when detect the start of operation instantiation
+      # 2 when detect the end of operation instantiation
+      inst_cnt = 0 
       inst_str = ''
       for line in file_list:
-        if self.shell.have_target_string(line, operator+'('): inst_valid = True
-        if inst_valid: 
+        if self.shell.have_target_string(line, operator+'('): inst_cnt = inst_cnt + 1
+        if inst_cnt == 1: 
           line_str=re.sub('\s+', '', line)
           line_str=re.sub('\t+', '', line_str)
           line_str=re.sub('//.*', '', line_str)
           inst_str=inst_str+line_str
-        if self.shell.have_target_string(line, ')'): inst_valid = False
+        if self.shell.have_target_string(line, ')') and inst_cnt == 1: inst_cnt = 2
       inst_str = inst_str.replace(operator+'(','')
       inst_str = inst_str.replace(');','')
       var_str_list = inst_str.split(',')

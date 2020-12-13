@@ -11,16 +11,6 @@
 
 #include "../host/typedefs.h"
 
-//#pragma SDS data access_pattern(input:SEQUENTIAL, output:SEQUENTIAL)
-void rendering (
-		  hls::stream<ap_uint<32> > & Input_1,
-		  hls::stream<ap_uint<32> > & Output_1
-		);
-
-void rendering_mono (
-		  hls::stream<ap_uint<128> > & Input_1,
-		  hls::stream<ap_uint<128> > & Output_1
-		);
 
 void top (
 		  hls::stream<ap_uint<32> > & Input_1,

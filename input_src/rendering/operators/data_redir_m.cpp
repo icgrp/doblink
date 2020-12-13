@@ -1,38 +1,30 @@
 #include "../host/typedefs.h"
 
 
-static int check_clockwise( Triangle_2D triangle_2d )
-{
-  int cw;
 
-  cw = (triangle_2d.x2 - triangle_2d.x0) * (triangle_2d.y1 - triangle_2d.y0)
-       - (triangle_2d.y2 - triangle_2d.y0) * (triangle_2d.x1 - triangle_2d.x0);
-
-  return cw;
-
-}
-
-// swap (x0, y0) (x1, y1) of a Triangle_2D
-static void clockwise_vertices( Triangle_2D *triangle_2d )
+// find the max from 3 integers
+static unsigned char find_max_new( unsigned char in0, unsigned char in1, unsigned char in2 )
 {
 
-  bit8 tmp_x, tmp_y;
+  if (in0 > in1)
+  {
+    if (in0 > in2)
+    	return in0;
 
-  tmp_x = triangle_2d->x0;
-  tmp_y = triangle_2d->y0;
-
-  triangle_2d->x0 = triangle_2d->x1;
-  triangle_2d->y0 = triangle_2d->y1;
-
-  triangle_2d->x1 = tmp_x;
-  triangle_2d->y1 = tmp_y;
-
+    else
+    	return in2;
+  }
+  else
+  {
+    if (in1 > in2)
+    	return in1;
+    else
+    	return in2;
+  }
 }
-
-
 
 // find the min from 3 integers
-static bit8 find_min( bit8 in0, bit8 in1, bit8 in2 )
+static unsigned char find_min_new( unsigned char in0, unsigned char in1, unsigned char in2 )
 {
   if (in0 < in1)
   {
@@ -51,348 +43,6 @@ static bit8 find_min( bit8 in0, bit8 in1, bit8 in2 )
 }
 
 
-// find the max from 3 integers
-static bit8 find_max( bit8 in0, bit8 in1, bit8 in2 )
-{
-  if (in0 > in1)
-  {
-    if (in0 > in2)
-      return in0;
-    else
-      return in2;
-  }
-  else
-  {
-    if (in1 > in2)
-      return in1;
-    else
-      return in2;
-  }
-}
-
-
-// project a 3D triangle to a 2D triangle
-void projection_odd_m (
-		bit32 input_lo,
-		bit32 input_mi,
-		bit32 input_hi,
-		Triangle_2D *triangle_2d
-		)
-{
-  #pragma HLS INLINE off
-  Triangle_3D triangle_3d;
-  // Setting camera to (0,0,-1), the canvas at z=0 plane
-  // The 3D model lies in z>0 space
-  // The coordinate on canvas is proportional to the corresponding coordinate
-  // on space
-
-    bit2 angle = 0;
-    triangle_3d.x0 = input_lo( 7,  0);
-    triangle_3d.y0 = input_lo(15,  8);
-    triangle_3d.z0 = input_lo(23, 16);
-    triangle_3d.x1 = input_lo(31, 24);
-    triangle_3d.y1 = input_mi( 7,  0);
-    triangle_3d.z1 = input_mi(15,  8);
-    triangle_3d.x2 = input_mi(23, 16);
-    triangle_3d.y2 = input_mi(31, 24);
-    triangle_3d.z2 = input_hi( 7,  0);
-
-  if(angle == 0)
-  {
-    triangle_2d->x0 = triangle_3d.x0;
-    triangle_2d->y0 = triangle_3d.y0;
-    triangle_2d->x1 = triangle_3d.x1;
-    triangle_2d->y1 = triangle_3d.y1;
-    triangle_2d->x2 = triangle_3d.x2;
-    triangle_2d->y2 = triangle_3d.y2;
-    triangle_2d->z  = triangle_3d.z0 / 3 + triangle_3d.z1 / 3 + triangle_3d.z2 / 3;
-  }
-
-  else if(angle == 1)
-  {
-    triangle_2d->x0 = triangle_3d.x0;
-    triangle_2d->y0 = triangle_3d.z0;
-    triangle_2d->x1 = triangle_3d.x1;
-    triangle_2d->y1 = triangle_3d.z1;
-    triangle_2d->x2 = triangle_3d.x2;
-    triangle_2d->y2 = triangle_3d.z2;
-    triangle_2d->z  = triangle_3d.y0 / 3 + triangle_3d.y1 / 3 + triangle_3d.y2 / 3;
-  }
-
-  else if(angle == 2)
-  {
-    triangle_2d->x0 = triangle_3d.z0;
-    triangle_2d->y0 = triangle_3d.y0;
-    triangle_2d->x1 = triangle_3d.z1;
-    triangle_2d->y1 = triangle_3d.y1;
-    triangle_2d->x2 = triangle_3d.z2;
-    triangle_2d->y2 = triangle_3d.y2;
-    triangle_2d->z  = triangle_3d.x0 / 3 + triangle_3d.x1 / 3 + triangle_3d.x2 / 3;
-  }
-
-}
-
-// project a 3D triangle to a 2D triangle
-void projection_even_m (
-		bit32 input_lo,
-		bit32 input_mi,
-		bit32 input_hi,
-		Triangle_2D *triangle_2d
-		)
-{
-  #pragma HLS INLINE off
-  Triangle_3D triangle_3d;
-  // Setting camera to (0,0,-1), the canvas at z=0 plane
-  // The 3D model lies in z>0 space
-  // The coordinate on canvas is proportional to the corresponding coordinate
-  // on space
-
-
-    bit2 angle = 0;
-    triangle_3d.x0 = input_lo( 7,  0);
-    triangle_3d.y0 = input_lo(15,  8);
-    triangle_3d.z0 = input_lo(23, 16);
-    triangle_3d.x1 = input_lo(31, 24);
-    triangle_3d.y1 = input_mi( 7,  0);
-    triangle_3d.z1 = input_mi(15,  8);
-    triangle_3d.x2 = input_mi(23, 16);
-    triangle_3d.y2 = input_mi(31, 24);
-    triangle_3d.z2 = input_hi( 7,  0);
-
-  if(angle == 0)
-  {
-    triangle_2d->x0 = triangle_3d.x0;
-    triangle_2d->y0 = triangle_3d.y0;
-    triangle_2d->x1 = triangle_3d.x1;
-    triangle_2d->y1 = triangle_3d.y1;
-    triangle_2d->x2 = triangle_3d.x2;
-    triangle_2d->y2 = triangle_3d.y2;
-    triangle_2d->z  = triangle_3d.z0 / 3 + triangle_3d.z1 / 3 + triangle_3d.z2 / 3;
-  }
-
-  else if(angle == 1)
-  {
-    triangle_2d->x0 = triangle_3d.x0;
-    triangle_2d->y0 = triangle_3d.z0;
-    triangle_2d->x1 = triangle_3d.x1;
-    triangle_2d->y1 = triangle_3d.z1;
-    triangle_2d->x2 = triangle_3d.x2;
-    triangle_2d->y2 = triangle_3d.z2;
-    triangle_2d->z  = triangle_3d.y0 / 3 + triangle_3d.y1 / 3 + triangle_3d.y2 / 3;
-  }
-
-  else if(angle == 2)
-  {
-    triangle_2d->x0 = triangle_3d.z0;
-    triangle_2d->y0 = triangle_3d.y0;
-    triangle_2d->x1 = triangle_3d.z1;
-    triangle_2d->y1 = triangle_3d.y1;
-    triangle_2d->x2 = triangle_3d.z2;
-    triangle_2d->y2 = triangle_3d.y2;
-    triangle_2d->z  = triangle_3d.x0 / 3 + triangle_3d.x1 / 3 + triangle_3d.x2 / 3;
-  }
-}
-
-
-// calculate bounding box for a 2D triangle
-void rasterization1_odd_m (
-		Triangle_2D triangle_2d,
-		hls::stream<ap_uint<32> > & Output_1)
-{
-	Triangle_2D triangle_2d_same;
-	static bit8 max_min[5]={0, 0, 0, 0, 0};
-	static bit16 max_index[1]={0};
-
-
-  #pragma HLS INLINE off
-  // clockwise the vertices of input 2d triangle
-  if ( check_clockwise( triangle_2d ) == 0 ){
-	bit32 tmp;
-	tmp(7,0) = 1;
-	tmp(15, 8) = triangle_2d_same.x0;
-	tmp(23,16) = triangle_2d_same.y0;
-	tmp(31,24) = triangle_2d_same.x1;
-	Output_1.write(tmp);
-
-	tmp(7,0) = triangle_2d_same.y1;
-	tmp(15, 8) = triangle_2d_same.x2;
-	tmp(23,16) = triangle_2d_same.y2;
-	tmp(31,24) = triangle_2d_same.z;
-	Output_1.write(tmp);
-
-	tmp(15,0) = max_index[0];
-	tmp(23,16) = max_min[0];
-	tmp(31,24) = max_min[1];
-	Output_1.write(tmp);
-
-	tmp(7,0) = max_min[2];
-	tmp(15, 8) = max_min[3];
-	tmp(23,16) = max_min[4];
-	tmp(31,24) = 0;
-	Output_1.write(tmp);
-#ifdef PROFILE
-  data_redir_m_out_1+=4;
-#endif
-
-    return;
-  }
-  if ( check_clockwise( triangle_2d ) < 0 )
-    clockwise_vertices( &triangle_2d );
-
-
-
-
-  // copy the same 2D triangle
-  triangle_2d_same.x0 = triangle_2d.x0;
-  triangle_2d_same.y0 = triangle_2d.y0;
-  triangle_2d_same.x1 = triangle_2d.x1;
-  triangle_2d_same.y1 = triangle_2d.y1;
-  triangle_2d_same.x2 = triangle_2d.x2;
-  triangle_2d_same.y2 = triangle_2d.y2;
-  triangle_2d_same.z  = triangle_2d.z ;
-
-  // find the rectangle bounds of 2D triangles
-  max_min[0] = find_min( triangle_2d.x0, triangle_2d.x1, triangle_2d.x2 );
-  max_min[1] = find_max( triangle_2d.x0, triangle_2d.x1, triangle_2d.x2 );
-  max_min[2] = find_min( triangle_2d.y0, triangle_2d.y1, triangle_2d.y2 );
-  max_min[3] = find_max( triangle_2d.y0, triangle_2d.y1, triangle_2d.y2 );
-  max_min[4] = max_min[1] - max_min[0];
-
-  // calculate index for searching pixels
-  max_index[0] = (max_min[1] - max_min[0]) * (max_min[3] - max_min[2]);
-  bit32 tmp;
-
-  tmp(7,0) = 0;
-  tmp(15,8) = triangle_2d_same.x0;
-  tmp(23,16) = triangle_2d_same.y0;
-  tmp(31,24) = triangle_2d_same.x1;
-  Output_1.write(tmp);
-
-  tmp(7,0) = triangle_2d_same.y1;
-  tmp(15,8) = triangle_2d_same.x2;
-  tmp(23,16) = triangle_2d_same.y2;
-  tmp(31,24) = triangle_2d_same.z;
-  Output_1.write(tmp);
-
-  tmp(15,0) = max_index[0];
-  tmp(23,16) = max_min[0];
-  tmp(31,24) = max_min[1];
-  Output_1.write(tmp);
-
-  tmp(7,0) = max_min[2];
-  tmp(15,8) = max_min[3];
-  tmp(23, 16) = max_min[4];
-  tmp(31, 24) = 0;
-  Output_1.write(tmp);
-#ifdef PROFILE
-  data_redir_m_out_1+=4;
-#endif
-  return;
-}
-
-
-
-
-
-
-
-// calculate bounding box for a 2D triangle
-void rasterization1_even_m (
-		Triangle_2D triangle_2d,
-		hls::stream<ap_uint<32> > & Output_1)
-{
-	Triangle_2D triangle_2d_same;
-	static bit8 max_min[5]={0, 0, 0, 0, 0};
-	static bit16 max_index[1]={0};
-
-
-
-
-  #pragma HLS INLINE off
-  // clockwise the vertices of input 2d triangle
-  if ( check_clockwise( triangle_2d ) == 0 ){
-	  bit32 tmp;
-		tmp(7,0) = 1;
-		tmp(15, 8) = triangle_2d_same.x0;
-		tmp(23,16) = triangle_2d_same.y0;
-		tmp(31,24) = triangle_2d_same.x1;
-		Output_1.write(tmp);
-
-		tmp(7,0) = triangle_2d_same.y1;
-		tmp(15, 8) = triangle_2d_same.x2;
-		tmp(23,16) = triangle_2d_same.y2;
-		tmp(31,24) = triangle_2d_same.z;
-		Output_1.write(tmp);
-
-		tmp(15,0) = max_index[0];
-		tmp(23,16) = max_min[0];
-		tmp(31,24) = max_min[1];
-		Output_1.write(tmp);
-
-		tmp(7,0) = max_min[2];
-		tmp(15, 8) = max_min[3];
-		tmp(23,16) = max_min[4];
-		tmp(31,24) = 0;
-		Output_1.write(tmp);
-#ifdef PROFILE
-  data_redir_m_out_2+=4;
-#endif
-
-    return;
-  }
-  if ( check_clockwise( triangle_2d ) < 0 )
-    clockwise_vertices( &triangle_2d );
-
-
-
-
-  // copy the same 2D triangle
-  triangle_2d_same.x0 = triangle_2d.x0;
-  triangle_2d_same.y0 = triangle_2d.y0;
-  triangle_2d_same.x1 = triangle_2d.x1;
-  triangle_2d_same.y1 = triangle_2d.y1;
-  triangle_2d_same.x2 = triangle_2d.x2;
-  triangle_2d_same.y2 = triangle_2d.y2;
-  triangle_2d_same.z  = triangle_2d.z ;
-
-  // find the rectangle bounds of 2D triangles
-  max_min[0] = find_min( triangle_2d.x0, triangle_2d.x1, triangle_2d.x2 );
-  max_min[1] = find_max( triangle_2d.x0, triangle_2d.x1, triangle_2d.x2 );
-  max_min[2] = find_min( triangle_2d.y0, triangle_2d.y1, triangle_2d.y2 );
-  max_min[3] = find_max( triangle_2d.y0, triangle_2d.y1, triangle_2d.y2 );
-  max_min[4] = max_min[1] - max_min[0];
-
-  // calculate index for searching pixels
-  max_index[0] = (max_min[1] - max_min[0]) * (max_min[3] - max_min[2]);
-    bit32 tmp;
-	tmp(7,0) = 0;
-	tmp(15, 8) = triangle_2d_same.x0;
-	tmp(23,16) = triangle_2d_same.y0;
-	tmp(31,24) = triangle_2d_same.x1;
-	Output_1.write(tmp);
-
-	tmp(7,0) = triangle_2d_same.y1;
-	tmp(15, 8) = triangle_2d_same.x2;
-	tmp(23,16) = triangle_2d_same.y2;
-	tmp(31,24) = triangle_2d_same.z;
-	Output_1.write(tmp);
-
-	tmp(15,0) = max_index[0];
-	tmp(23,16) = max_min[0];
-	tmp(31,24) = max_min[1];
-	Output_1.write(tmp);
-
-	tmp(7,0) = max_min[2];
-	tmp(15, 8) = max_min[3];
-	tmp(23,16) = max_min[4];
-	tmp(31,24) = 0;
-	Output_1.write(tmp);
-#ifdef PROFILE
-  data_redir_m_out_2+=4;
-#endif
-  return;
-}
-
 
 
 void data_redir_m (
@@ -401,59 +51,207 @@ void data_redir_m (
 		hls::stream<ap_uint<32> > & Output_2
 		)
 {
-#pragma HLS INTERFACE ap_hs port=Input_1
-#pragma HLS INTERFACE ap_hs port=Output_1
-#pragma HLS INTERFACE ap_hs port=Output_2
+  unsigned int input_lo;
+  unsigned int input_mi;
+  unsigned int input_hi;
 
-  bit32 input_lo;
-  bit32 input_mi;
-  bit32 input_hi;
-  bit128 input_tmp;
+  unsigned int out_tmp1;
+  unsigned int out_tmp2;
+  unsigned int out_tmp3;
+  unsigned int out_tmp4;
 
-  hls::stream<ap_uint<32> > Output_1_1;
-  hls::stream<ap_uint<32> > Output_2_2;
-  Triangle_2D triangle_2ds_1;
-  Triangle_2D triangle_2ds_2;
-
-
-#ifdef PROFILE
-  data_redir_m_in_1+=3;
-#endif
-
-
-  input_lo = Input_1.read();
-  input_mi = Input_1.read();
-  input_hi = Input_1.read();
-  projection_odd_m (
-  		input_lo,
-  		input_mi,
-  		input_hi,
-		&triangle_2ds_1);
-
-  rasterization1_odd_m (
-		triangle_2ds_1,
-    	Output_1);
+  unsigned char triangle_2d_x0;
+  unsigned char triangle_2d_y0;
+  unsigned char triangle_2d_z0;
+  unsigned char triangle_2d_x1;
+  unsigned char triangle_2d_y1;
+  unsigned char triangle_2d_z1;
+  unsigned char triangle_2d_x2;
+  unsigned char triangle_2d_y2;
+  unsigned char triangle_2d_z2;
+  unsigned char triangle_2d_z;
+  unsigned int tmp;
 
 
+  static int parity=0;
 
-#ifdef PROFILE
-  data_redir_m_in_1+=3;
-#endif
+  int cw;
+  static unsigned char max_min[5]={0, 0, 0, 0, 0};
+  static int max_index[1]={0};
 
   input_lo = Input_1.read();
   input_mi = Input_1.read();
   input_hi = Input_1.read();
-  projection_even_m (
-  		input_lo,
-  		input_mi,
-  		input_hi,
-		&triangle_2ds_2);
+  printf("%08x\n", input_lo);
+  printf("%08x\n", input_mi);
+  printf("%08x\n", input_hi);
+  //input_lo = read_word1();
+  //input_mi = read_word1();
+  //input_hi = read_word1();
+
+  triangle_2d_x0 = (unsigned char)((input_lo      ) & 0xff);
+  triangle_2d_y0 = (unsigned char)((input_lo >> 8 ) & 0xff);
+  triangle_2d_z0 = (unsigned char)((input_lo >> 16) & 0xff);
+  triangle_2d_x1 = (unsigned char)((input_lo >> 24) & 0xff);
+  triangle_2d_y1 = (unsigned char)((input_mi      ) & 0xff);
+  triangle_2d_z1 = (unsigned char)((input_mi >> 8 ) & 0xff);
+  triangle_2d_x2 = (unsigned char)((input_mi >> 16) & 0xff);
+  triangle_2d_y2 = (unsigned char)((input_mi >> 24) & 0xff);
+  triangle_2d_z2 = (unsigned char)((input_hi      ) & 0xff);
 
 
-  rasterization1_even_m (
-		triangle_2ds_2,
-  		Output_2);
+
+  triangle_2d_z = triangle_2d_z0 / 3 + triangle_2d_z1 / 3 + triangle_2d_z2 / 3;
+
+
+  cw = (triangle_2d_x2 - triangle_2d_x0) * (triangle_2d_y1 - triangle_2d_y0)
+       - (triangle_2d_y2 - triangle_2d_y0) * (triangle_2d_x1 - triangle_2d_x0);
+
+
+  if(cw == 0 ){
+    tmp = 1;
+    tmp = tmp + (((unsigned int)triangle_2d_x0) << 8);
+    tmp = tmp + (((unsigned int)triangle_2d_y0) << 16);
+    tmp = tmp + (((unsigned int)triangle_2d_x1) << 24);
+    //write_word1(tmp);
+    out_tmp1=tmp;
+    //Output_1.write(tmp);
+
+    tmp = (unsigned int) triangle_2d_y1;
+    tmp = tmp + (((unsigned int)triangle_2d_x2) << 8);
+    tmp = tmp + (((unsigned int)triangle_2d_y2) << 16);
+    tmp = tmp + (((unsigned int)triangle_2d_z)  << 24);
+    //write_word1(tmp);
+    out_tmp2=tmp;
+    //Output_1.write(tmp);
+
+    tmp = (unsigned int) max_index[0];
+    tmp = tmp + (((unsigned int)max_min[0]) << 16);
+    tmp = tmp + (((unsigned int)max_min[1]) << 24);
+    //write_word1(tmp);
+    out_tmp3=tmp;
+    //Output_1.write(tmp);
+
+    tmp =  (unsigned int)max_min[2];
+    tmp = tmp + (((unsigned int)max_min[3]) << 8);
+    tmp = tmp + (((unsigned int)max_min[4]) << 16);
+    //tmp(31,24) = 0;
+    //write_word1(tmp);
+    out_tmp4=tmp;
+    //Output_1.write(tmp);
+
+
+    if(parity==0){
+    	Output_1.write(out_tmp1);
+    	Output_1.write(out_tmp2);
+    	Output_1.write(out_tmp3);
+    	Output_1.write(out_tmp4);
+    	printf("out1: %08x\n", out_tmp1);
+    	printf("out1: %08x\n", out_tmp2);
+    	printf("out1: %08x\n", out_tmp3);
+    	printf("out1: %08x\n", out_tmp4);
+    	parity = 1;
+    }else{
+    	Output_2.write(out_tmp1);
+    	Output_2.write(out_tmp2);
+    	Output_2.write(out_tmp3);
+    	Output_2.write(out_tmp4);
+    	printf("out2: %08x\n", out_tmp1);
+    	printf("out2: %08x\n", out_tmp2);
+    	printf("out2: %08x\n", out_tmp3);
+    	printf("out2: %08x\n", out_tmp4);
+    	parity = 0;
+    }
+
+    return;
+  }
+
+
+  if ( cw < 0 )
+  {
+    unsigned char tmp_x, tmp_y;
+
+    tmp_x = triangle_2d_x0;
+    tmp_y = triangle_2d_y0;
+
+    triangle_2d_x0 = triangle_2d_x1;
+    triangle_2d_y0 = triangle_2d_y1;
+
+    triangle_2d_x1 = tmp_x;
+    triangle_2d_y1 = tmp_y;
+
+  }
+
+
+  // find the rectangle bounds of 2D triangles
+  max_min[0] = find_min_new( triangle_2d_x0, triangle_2d_x1, triangle_2d_x2 );
+  max_min[1] = find_max_new( triangle_2d_x0, triangle_2d_x1, triangle_2d_x2 );
+  max_min[2] = find_min_new( triangle_2d_y0, triangle_2d_y1, triangle_2d_y2 );
+  max_min[3] = find_max_new( triangle_2d_y0, triangle_2d_y1, triangle_2d_y2 );
+  max_min[4] = max_min[1] - max_min[0];
+
+
+
+
+
+  // calculate index for searching pixels
+  max_index[0] = (max_min[1] - max_min[0]) * (max_min[3] - max_min[2]);
+
+  tmp = 0;
+  tmp = tmp + (((unsigned int)triangle_2d_x0) << 8);
+  tmp = tmp + (((unsigned int)triangle_2d_y0) << 16);
+  tmp = tmp + (((unsigned int)triangle_2d_x1) << 24);
+  //write_word1(tmp);
+  //Output_1.write(tmp);
+  out_tmp1=tmp;
+
+  tmp = (unsigned int) triangle_2d_y1;
+  tmp = tmp + (((unsigned int)triangle_2d_x2) << 8);
+  tmp = tmp + (((unsigned int)triangle_2d_y2) << 16);
+  tmp = tmp + (((unsigned int)triangle_2d_z) << 24);
+  //write_word1(tmp);
+  //Output_1.write(tmp);
+  out_tmp2=tmp;
+
+
+  tmp = (unsigned int)max_index[0];
+  tmp = tmp + (((unsigned int)max_min[0]) << 16);
+  tmp = tmp + (((unsigned int)max_min[1]) << 24);
+  //write_word1(tmp);
+  //Output_1.write(tmp);
+  out_tmp3=tmp;
+
+  tmp = (unsigned int) max_min[2];
+  tmp = tmp + (((unsigned int)max_min[3]) << 8);
+  tmp = tmp + (((unsigned int)max_min[4]) << 16);
+  //tmp= 0;
+  //write_word1(tmp);
+  //Output_1.write(tmp);
+  out_tmp4=tmp;
+
+
+  if(parity==0){
+  	Output_1.write(out_tmp1);
+  	Output_1.write(out_tmp2);
+  	Output_1.write(out_tmp3);
+  	Output_1.write(out_tmp4);
+    printf("out1: %08x\n", out_tmp1);
+    printf("out1: %08x\n", out_tmp2);
+    printf("out1: %08x\n", out_tmp3);
+    printf("out1: %08x\n", out_tmp4);
+  	parity = 1;
+  }else{
+  	Output_2.write(out_tmp1);
+  	Output_2.write(out_tmp2);
+  	Output_2.write(out_tmp3);
+  	Output_2.write(out_tmp4);
+    printf("out2: %08x\n", out_tmp1);
+    printf("out2: %08x\n", out_tmp2);
+    printf("out2: %08x\n", out_tmp3);
+    printf("out2: %08x\n", out_tmp4);
+  	parity = 0;
+  }
+  return;
 }
-
 
 
