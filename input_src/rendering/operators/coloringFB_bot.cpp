@@ -3,7 +3,7 @@
 
 
 // color the frame buffer
-void coloringFB_bot_m(
+void coloringFB_bot(
 		hls::stream<ap_uint<32> > & Input_1,
 		hls::stream<ap_uint<32> > & Output_1)
 

@@ -1,5 +1,5 @@
 
-void rasterization2_m (
+void rasterization2 (
 		hls::stream<ap_uint<32> > & Input_1,
 		hls::stream<ap_uint<32> > & Output_1,
 		hls::stream<ap_uint<32> > & Output_2
