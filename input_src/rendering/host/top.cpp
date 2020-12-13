@@ -120,7 +120,7 @@ void top (
 
     // five stages for processing each 3D triangle
 	data_redir_m(Input_1, Output_redir_odd, Output_redir_even);
-	data_redir_m(Input_1, Output_redir_odd, Output_redir_even);
+	//data_redir_m(Input_1, Output_redir_odd, Output_redir_even);
 
 
     rasterization2_m(Output_redir_odd, Output_r2_odd_top, Output_r2_odd_bot,
