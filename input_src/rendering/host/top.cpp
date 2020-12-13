@@ -7,12 +7,12 @@
 /*===============================================================*/
 
 #include "../host/typedefs.h"
-#include "../operators/data_redir.h"
-#include "../operators/rasterization2.h"
+#include "../operators/data_redir_m.h"
+#include "../operators/rasterization2_m.h"
 #include "../operators/zculling_top.h"
 #include "../operators/zculling_bot.h"
-#include "../operators/coloringFB_bot.h"
-#include "../operators/coloringFB_top.h"
+#include "../operators/coloringFB_bot_m.h"
+#include "../operators/coloringFB_top_m.h"
 
 
 //#define PROFILE
@@ -113,18 +113,32 @@ void top (
 
 
   // processing NUM_3D_TRI 3D triangles
-  TRIANGLES: for (bit16 i = 0; i < NUM_3D_TRI; i++)
+  TRIANGLES: for (bit16 i = 0; i < NUM_3D_TRI/2; i++)
   {
 
 
 
     // five stages for processing each 3D triangle
-	data_redir(Input_1, Output_redir_odd);
-    rasterization2(Output_redir_odd, Output_r2_odd_top, Output_r2_odd_bot);
-    zculling_top( Output_r2_odd_top, Output_zcu_top);
-    zculling_bot(Output_r2_odd_bot, Output_zcu_bot);
-    coloringFB_bot(Output_zcu_bot, Output_cfb_bot);
-    coloringFB_top(Output_zcu_top, Output_cfb_bot, Output_1);
+	data_redir_m(Input_1, Output_redir_odd, Output_redir_even);
+	data_redir_m(Input_1, Output_redir_odd, Output_redir_even);
+
+
+    rasterization2_m(Output_redir_odd, Output_r2_odd_top, Output_r2_odd_bot,
+    Output_redir_even, Output_r2_even_top, Output_r2_even_bot);
+
+    zculling_top( Output_r2_odd_top, Output_r2_even_top, Output_zcu_top);
+    zculling_bot(Output_r2_odd_bot, Output_r2_even_bot, Output_zcu_bot);
+    coloringFB_bot_m(Output_zcu_bot, Output_cfb_bot);
+    coloringFB_top_m(Output_zcu_top, Output_cfb_bot, Output_1);
+
+
+
+    zculling_top( Output_r2_odd_top, Output_r2_even_top, Output_zcu_top);
+    zculling_bot(Output_r2_odd_bot, Output_r2_even_bot, Output_zcu_bot);
+    coloringFB_bot_m(Output_zcu_bot, Output_cfb_bot);
+    coloringFB_top_m(Output_zcu_top, Output_cfb_bot, Output_1);
+
+
   }
 
   // output values: frame buffer

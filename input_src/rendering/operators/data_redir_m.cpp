@@ -489,13 +489,15 @@ void rasterization1 (
 }
 
 
-void data_redir (
+void data_redir_m (
 		hls::stream<ap_uint<32> > & Input_1,
-		hls::stream<ap_uint<32> > & Output_1
+		hls::stream<ap_uint<32> > & Output_1,
+		hls::stream<ap_uint<32> > & Output_2
 		)
 {
 #pragma HLS INTERFACE ap_hs port=Input_1
 #pragma HLS INTERFACE ap_hs port=Output_1
+#pragma HLS INTERFACE ap_hs port=Output_2
 
   bit32 input_lo;
   bit32 input_mi;
@@ -522,7 +524,13 @@ void data_redir (
   		input_mi,
   		input_hi,
 		&triangle_2ds_1);
-  rasterization1 (triangle_2ds_1, Output_1);
+  if(parity == 0){
+	  rasterization1 (triangle_2ds_1, Output_1);
+	  parity = 1;
+  }else{
+	  rasterization1 (triangle_2ds_1, Output_2);
+	  parity = 0;
+  }
 
 }
 
