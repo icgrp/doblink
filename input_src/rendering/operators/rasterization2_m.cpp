@@ -244,10 +244,7 @@ static void rasterization2_even (
 void rasterization2_m (
 		hls::stream<ap_uint<32> > & Input_1,
 		hls::stream<ap_uint<32> > & Output_1,
-		hls::stream<ap_uint<32> > & Output_2,
-
-		hls::stream<ap_uint<32> > & Output_3,
-		hls::stream<ap_uint<32> > & Output_4
+		hls::stream<ap_uint<32> > & Output_2
 		)
 {
 #pragma HLS INTERFACE ap_hs port=Input_1
@@ -260,12 +257,6 @@ void rasterization2_m (
 			Input_1,
 			Output_1,
 			Output_2);
-
-	rasterization2_odd(
-			Input_1,
-			Output_3,
-			Output_4);
-
 
 }
 

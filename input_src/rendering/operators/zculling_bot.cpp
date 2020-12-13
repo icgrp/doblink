@@ -6,7 +6,6 @@
 // filter hidden pixels
 void zculling_bot (
 		hls::stream<ap_uint<32> > & Input_1,
-		hls::stream<ap_uint<32> > & Input_2,
 		hls::stream<ap_uint<32> > & Output_1
 	  )
 {
@@ -22,18 +21,10 @@ void zculling_bot (
   bit32 in_tmp;
   bit32 out_tmp;
   static bit1 odd_even = 0;
-  if(odd_even == 0){
-	  size = Input_1.read();
+  size = Input_1.read();
 #ifdef PROFILE
 		zculling_bot_in_1++;
 #endif
-  }
-  else {
-	  size = Input_2.read();
-#ifdef PROFILE
-		zculling_bot_in_2++;
-#endif
-  }
 
 
   // initilize the z-buffer in rendering first triangle for an image
@@ -58,18 +49,10 @@ void zculling_bot (
   ZCULLING: for ( bit16 n = 0; n < size; n++ )
   {
 #pragma HLS PIPELINE II=1
-	if (odd_even == 0){
-		in_tmp = Input_1.read();
+	in_tmp = Input_1.read();
 #ifdef PROFILE
 		zculling_bot_in_1++;
 #endif
-	}
-	else{
-		in_tmp = Input_2.read();
-#ifdef PROFILE
-		zculling_bot_in_2++;
-#endif
-	}
 	fragment.x = in_tmp(7, 0);
 	fragment.y = in_tmp(15, 8);
 	fragment.z = in_tmp(23, 16);
