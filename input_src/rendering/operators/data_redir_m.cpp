@@ -1,7 +1,7 @@
 #include "../host/typedefs.h"
 
-
 /*
+
 // find the max from 3 integers
 static unsigned char find_max_new( unsigned char in0, unsigned char in1, unsigned char in2 )
 {
@@ -51,6 +51,9 @@ void data_redir_m (
 		hls::stream<ap_uint<32> > & Output_2
 		)
 {
+#pragma HLS INTERFACE ap_hs port=Input_1
+#pragma HLS INTERFACE ap_hs port=Output_1
+#pragma HLS INTERFACE ap_hs port=Output_2
   unsigned int input_lo;
   unsigned int input_mi;
   unsigned int input_hi;
@@ -82,9 +85,9 @@ void data_redir_m (
   input_lo = Input_1.read();
   input_mi = Input_1.read();
   input_hi = Input_1.read();
-  printf("%08x\n", input_lo);
-  printf("%08x\n", input_mi);
-  printf("%08x\n", input_hi);
+  //printf("%08x\n", input_lo);
+  //printf("%08x\n", input_mi);
+  //printf("%08x\n", input_hi);
   //input_lo = read_word1();
   //input_mi = read_word1();
   //input_hi = read_word1();
@@ -146,20 +149,20 @@ void data_redir_m (
     	Output_1.write(out_tmp2);
     	Output_1.write(out_tmp3);
     	Output_1.write(out_tmp4);
-    	printf("out1: %08x\n", out_tmp1);
-    	printf("out1: %08x\n", out_tmp2);
-    	printf("out1: %08x\n", out_tmp3);
-    	printf("out1: %08x\n", out_tmp4);
+    	//printf("out1: %08x\n", out_tmp1);
+    	//printf("out1: %08x\n", out_tmp2);
+    	//printf("out1: %08x\n", out_tmp3);
+    	//printf("out1: %08x\n", out_tmp4);
     	parity = 1;
     }else{
     	Output_2.write(out_tmp1);
     	Output_2.write(out_tmp2);
     	Output_2.write(out_tmp3);
     	Output_2.write(out_tmp4);
-    	printf("out2: %08x\n", out_tmp1);
-    	printf("out2: %08x\n", out_tmp2);
-    	printf("out2: %08x\n", out_tmp3);
-    	printf("out2: %08x\n", out_tmp4);
+    	//printf("out2: %08x\n", out_tmp1);
+    	//printf("out2: %08x\n", out_tmp2);
+    	//printf("out2: %08x\n", out_tmp3);
+    	//printf("out2: %08x\n", out_tmp4);
     	parity = 0;
     }
 
@@ -235,20 +238,20 @@ void data_redir_m (
   	Output_1.write(out_tmp2);
   	Output_1.write(out_tmp3);
   	Output_1.write(out_tmp4);
-    printf("out1: %08x\n", out_tmp1);
-    printf("out1: %08x\n", out_tmp2);
-    printf("out1: %08x\n", out_tmp3);
-    printf("out1: %08x\n", out_tmp4);
+    //printf("out1: %08x\n", out_tmp1);
+    //printf("out1: %08x\n", out_tmp2);
+    //printf("out1: %08x\n", out_tmp3);
+    //printf("out1: %08x\n", out_tmp4);
   	parity = 1;
   }else{
   	Output_2.write(out_tmp1);
   	Output_2.write(out_tmp2);
   	Output_2.write(out_tmp3);
   	Output_2.write(out_tmp4);
-    printf("out2: %08x\n", out_tmp1);
-    printf("out2: %08x\n", out_tmp2);
-    printf("out2: %08x\n", out_tmp3);
-    printf("out2: %08x\n", out_tmp4);
+    //printf("out2: %08x\n", out_tmp1);
+    //printf("out2: %08x\n", out_tmp2);
+    //printf("out2: %08x\n", out_tmp3);
+    //printf("out2: %08x\n", out_tmp4);
   	parity = 0;
   }
   return;
@@ -395,39 +398,51 @@ void projection(
 // calculate bounding box for a 2D triangle
 void rasterization1 (
 		Triangle_2D triangle_2d,
-		hls::stream<ap_uint<32> > & Output_1)
+		hls::stream<ap_uint<32> > & Output_1,
+		hls::stream<ap_uint<32> > & Output_2
+		)
 {
 	Triangle_2D triangle_2d_same;
 	static bit8 max_min[5]={0, 0, 0, 0, 0};
 	static bit16 max_index[1]={0};
-
+	bit32 tmp1, tmp2, tmp3, tmp4;
+	static int parity = 0;
 
   #pragma HLS INLINE off
   // clockwise the vertices of input 2d triangle
   if ( check_clockwise( triangle_2d ) == 0 ){
-	bit32 tmp;
-	tmp(7,0) = 1;
-	tmp(15, 8) = triangle_2d_same.x0;
-	tmp(23,16) = triangle_2d_same.y0;
-	tmp(31,24) = triangle_2d_same.x1;
-	Output_1.write(tmp);
 
-	tmp(7,0) = triangle_2d_same.y1;
-	tmp(15, 8) = triangle_2d_same.x2;
-	tmp(23,16) = triangle_2d_same.y2;
-	tmp(31,24) = triangle_2d_same.z;
-	Output_1.write(tmp);
+	tmp1(7,0) = 1;
+	tmp1(15, 8) = triangle_2d_same.x0;
+	tmp1(23,16) = triangle_2d_same.y0;
+	tmp1(31,24) = triangle_2d_same.x1;
 
-	tmp(15,0) = max_index[0];
-	tmp(23,16) = max_min[0];
-	tmp(31,24) = max_min[1];
-	Output_1.write(tmp);
+	tmp2(7,0) = triangle_2d_same.y1;
+	tmp2(15, 8) = triangle_2d_same.x2;
+	tmp2(23,16) = triangle_2d_same.y2;
+	tmp2(31,24) = triangle_2d_same.z;
 
-	tmp(7,0) = max_min[2];
-	tmp(15, 8) = max_min[3];
-	tmp(23,16) = max_min[4];
-	tmp(31,24) = 0;
-	Output_1.write(tmp);
+	tmp3(15,0) = max_index[0];
+	tmp3(23,16) = max_min[0];
+	tmp3(31,24) = max_min[1];
+
+	tmp4(7,0) = max_min[2];
+	tmp4(15, 8) = max_min[3];
+	tmp4(23,16) = max_min[4];
+	tmp4(31,24) = 0;
+	if(parity==0){
+		Output_1.write(tmp1);
+		Output_1.write(tmp2);
+		Output_1.write(tmp3);
+		Output_1.write(tmp4);
+		parity = 1;
+	}else{
+		Output_2.write(tmp1);
+		Output_2.write(tmp2);
+		Output_2.write(tmp3);
+		Output_2.write(tmp4);
+		parity = 0;
+	}
 #ifdef PROFILE
   data_redir_m_out_1+=4;
 #endif
@@ -458,30 +473,39 @@ void rasterization1 (
 
   // calculate index for searching pixels
   max_index[0] = (max_min[1] - max_min[0]) * (max_min[3] - max_min[2]);
-  bit32 tmp;
 
-  tmp(7,0) = 0;
-  tmp(15,8) = triangle_2d_same.x0;
-  tmp(23,16) = triangle_2d_same.y0;
-  tmp(31,24) = triangle_2d_same.x1;
-  Output_1.write(tmp);
+  tmp1(7,0) = 0;
+  tmp1(15,8) = triangle_2d_same.x0;
+  tmp1(23,16) = triangle_2d_same.y0;
+  tmp1(31,24) = triangle_2d_same.x1;
 
-  tmp(7,0) = triangle_2d_same.y1;
-  tmp(15,8) = triangle_2d_same.x2;
-  tmp(23,16) = triangle_2d_same.y2;
-  tmp(31,24) = triangle_2d_same.z;
-  Output_1.write(tmp);
+  tmp2(7,0) = triangle_2d_same.y1;
+  tmp2(15,8) = triangle_2d_same.x2;
+  tmp2(23,16) = triangle_2d_same.y2;
+  tmp2(31,24) = triangle_2d_same.z;
 
-  tmp(15,0) = max_index[0];
-  tmp(23,16) = max_min[0];
-  tmp(31,24) = max_min[1];
-  Output_1.write(tmp);
+  tmp3(15,0) = max_index[0];
+  tmp3(23,16) = max_min[0];
+  tmp3(31,24) = max_min[1];
 
-  tmp(7,0) = max_min[2];
-  tmp(15,8) = max_min[3];
-  tmp(23, 16) = max_min[4];
-  tmp(31, 24) = 0;
-  Output_1.write(tmp);
+  tmp4(7,0) = max_min[2];
+  tmp4(15,8) = max_min[3];
+  tmp4(23, 16) = max_min[4];
+  tmp4(31, 24) = 0;
+
+  if(parity==0){
+	Output_1.write(tmp1);
+	Output_1.write(tmp2);
+	Output_1.write(tmp3);
+	Output_1.write(tmp4);
+	parity = 1;
+  }else{
+	Output_2.write(tmp1);
+	Output_2.write(tmp2);
+	Output_2.write(tmp3);
+	Output_2.write(tmp4);
+	parity = 0;
+  }
 #ifdef PROFILE
   data_redir_m_out_1+=4;
 #endif
@@ -503,7 +527,6 @@ void data_redir_m (
   bit32 input_mi;
   bit32 input_hi;
   bit128 input_tmp;
-  static int parity = 0;
 
   hls::stream<ap_uint<32> > Output_1_1;
   hls::stream<ap_uint<32> > Output_2_2;
@@ -519,23 +542,8 @@ void data_redir_m (
   data_redir_m_in_1+=3;
 #endif
 
-  projection (
-  		input_lo,
-  		input_mi,
-  		input_hi,
-		&triangle_2ds_1);
-  if(parity == 0){
-	  rasterization1 (triangle_2ds_1, Output_1);
-	  parity = 1;
-  }else{
-	  rasterization1 (triangle_2ds_1, Output_2);
-	  parity = 0;
-  }
+  projection (input_lo,input_mi,input_hi,&triangle_2ds_1);
+  rasterization1 (triangle_2ds_1, Output_1, Output_2);
 
 }
-
-
-
-
-
 
