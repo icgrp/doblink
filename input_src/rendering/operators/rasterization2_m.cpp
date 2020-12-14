@@ -177,7 +177,7 @@ static void rasterization2_even (
 	unsigned char flag;
 	unsigned char max_min[5];
 	unsigned short max_index[1];
-	bit32 out_tmp;
+	unsigned int out_tmp;
 	CandidatePixel fragment[500];
 
 	bit32 tmp = Input_1.read();
@@ -245,11 +245,12 @@ static void rasterization2_even (
 #endif
   for(j=0; j<i; j++){
 #pragma HLS PIPELINE II=1
-	  out_tmp(7, 0) = fragment[j].x;
-	  out_tmp(15, 8) = fragment[j].y;
-	  y_tmp = (int) out_tmp(15, 8);
-	  out_tmp(23, 16) = fragment[j].z;
-	  out_tmp(31, 24) = fragment[j].color;
+
+	  out_tmp = fragment[j].x;
+	  out_tmp = out_tmp + (((unsigned int)fragment[j].y)<<8);
+	  y_tmp = (int) fragment[j].y;
+	  out_tmp = out_tmp + (((unsigned int)fragment[j].z)<<16);
+	  out_tmp = out_tmp + (((unsigned int)fragment[j].color)<<24);
 	  if(y_tmp > 127)
 	  {
 		  Output_1.write(out_tmp);
