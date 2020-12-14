@@ -57,40 +57,41 @@ static void rasterization2_odd (
 #pragma HLS INTERFACE ap_hs port=Output_1
 #pragma HLS INTERFACE ap_hs port=Output_2
   #pragma HLS INLINE off
-	unsigned int i, j;
-	unsigned int i_top = 0;
-	unsigned int i_bot = 0;
+	unsigned short i = 0;
+	unsigned short i_top = 0;
+	unsigned short i_bot = 0;
 	int y_tmp;
+	int j;
 	Triangle_2D_new triangle_2d_same;
 	unsigned char flag;
 	unsigned char max_min[5];
 	unsigned short max_index[1];
 	unsigned int out_tmp;
-	static CandidatePixel_new fragment[500];
+	CandidatePixel fragment[500];
 
 	unsigned int tmp = Input_1.read();
 	flag = (unsigned char) (tmp & 0x3);
-	triangle_2d_same.x0=(unsigned char) ((tmp >> 8 ) & 0xff);
+	triangle_2d_same.x0=(unsigned char) ((tmp >> 8)  & 0xff);
 	triangle_2d_same.y0=(unsigned char) ((tmp >> 16) & 0xff);
 	triangle_2d_same.x1=(unsigned char) ((tmp >> 24) & 0xff);
 
 	tmp = Input_1.read();
-	triangle_2d_same.y1=(unsigned char) ((tmp      ) & 0xff);
-	triangle_2d_same.x2=(unsigned char) ((tmp >> 8 ) & 0xff);
-	triangle_2d_same.y2=(unsigned char) ((tmp >> 16) & 0xff);
-	triangle_2d_same.z =(unsigned char) ((tmp >> 24) & 0xff);
+	triangle_2d_same.y1=(unsigned char) (tmp & 0xff);
+	triangle_2d_same.x2=(unsigned char) ((tmp >> 8)& 0xff);
+	triangle_2d_same.y2=(unsigned char) ((tmp >> 16)& 0xff);
+	triangle_2d_same.z= (unsigned char) ((tmp >> 24)& 0xff);
 
 	tmp = Input_1.read();
-	max_index[0]=(unsigned short) ((tmp ) & 0xffff);
-	max_min[0]=(unsigned char) ((tmp >> 16) & 0xff);
-	max_min[1]=(unsigned char) ((tmp >> 24) & 0xff);
+	max_index[0]=(unsigned short) (tmp & 0xffff);
+	max_min[0]=(unsigned char) ((tmp >> 16)& 0xff);
+	max_min[1]=(unsigned char) ((tmp >> 24)& 0xff);
 
 	tmp = Input_1.read();
-	max_min[2]=(unsigned char) ((tmp      ) & 0xff);
-	max_min[3]=(unsigned char) ((tmp >> 8 ) & 0xff);
-	max_min[4]=(unsigned char) ((tmp >> 16) & 0xff);
+	max_min[2]=(unsigned char) (tmp & 0xff);
+	max_min[3]=(unsigned char) ((tmp >> 8)& 0xff);
+	max_min[4]=(unsigned char) ((tmp >> 16)& 0xff);
 #ifdef PROFILE
-	rasterization2_m_in_1+=4;
+		rasterization2_m_in_2+=4;
 #endif
 
   // clockwise the vertices of input 2d triangle
@@ -99,19 +100,19 @@ static void rasterization2_odd (
 	  Output_1.write(i_top);
 	  Output_2.write(i_bot);
 #ifdef PROFILE
-		rasterization2_m_out_1++;
-		rasterization2_m_out_2++;
+		rasterization2_m_out_3++;
+		rasterization2_m_out_4++;
 #endif
     return;
   }
-  unsigned char color = 100;
+  bit8 color = 100;
 
 
-  RAST2: for (unsigned char k = 0; k < max_index[0]; k++ )
+  RAST2: for ( bit16 k = 0; k < max_index[0]; k++ )
   {
     #pragma HLS PIPELINE II=1
-    unsigned char x = max_min[0] + k%max_min[4];
-    unsigned char y = max_min[2] + k/max_min[4];
+    bit8 x = max_min[0] + k%max_min[4];
+    bit8 y = max_min[2] + k/max_min[4];
 
     if( pixel_in_triangle( x, y, triangle_2d_same ) )
     {
@@ -128,28 +129,29 @@ static void rasterization2_odd (
   Output_1.write(i_top);
   Output_2.write(i_bot);
 #ifdef PROFILE
-		rasterization2_m_out_1++;
-		rasterization2_m_out_2++;
+		rasterization2_m_out_3++;
+		rasterization2_m_out_4++;
 #endif
   for(j=0; j<i; j++){
 #pragma HLS PIPELINE II=1
-	  out_tmp = 0;
-	  out_tmp = out_tmp + fragment[j].x;
-	  out_tmp = out_tmp + (((unsigned int) fragment[j].y)<<8);
-	  y_tmp = (int) (out_tmp >> 8);
-	  out_tmp = out_tmp + (((unsigned int) fragment[j].z)<<16);
-	  out_tmp = out_tmp + (((unsigned int) fragment[j].color)<<24);
-	  if( y_tmp > 127){
+
+	  out_tmp = fragment[j].x;
+	  out_tmp = out_tmp + (((unsigned int)fragment[j].y)<<8);
+	  y_tmp = (int) fragment[j].y;
+	  out_tmp = out_tmp + (((unsigned int)fragment[j].z)<<16);
+	  out_tmp = out_tmp + (((unsigned int)fragment[j].color)<<24);
+	  if(y_tmp > 127)
+	  {
 		  Output_1.write(out_tmp);
 #ifdef PROFILE
-		rasterization2_m_out_1++;
+		rasterization2_m_out_3++;
 #endif
 	  }
 	  else
 	  {
 		  Output_2.write(out_tmp);
 #ifdef PROFILE
-		rasterization2_m_out_2++;
+		rasterization2_m_out_4++;
 #endif
 	  }
   }
@@ -180,27 +182,27 @@ static void rasterization2_even (
 	unsigned int out_tmp;
 	CandidatePixel fragment[500];
 
-	bit32 tmp = Input_1.read();
-	flag = (unsigned char) tmp(1,0);
-	triangle_2d_same.x0=tmp(15,8);
-	triangle_2d_same.y0=tmp(23,16);
-	triangle_2d_same.x1=tmp(31,24);
+	unsigned int tmp = Input_1.read();
+	flag = (unsigned char) (tmp & 0x3);
+	triangle_2d_same.x0=(unsigned char) ((tmp >> 8)  & 0xff);
+	triangle_2d_same.y0=(unsigned char) ((tmp >> 16) & 0xff);
+	triangle_2d_same.x1=(unsigned char) ((tmp >> 24) & 0xff);
 
 	tmp = Input_1.read();
-	triangle_2d_same.y1=tmp(7,0);
-	triangle_2d_same.x2=tmp(15,8);
-	triangle_2d_same.y2=tmp(23,16);
-	triangle_2d_same.z=tmp(31,24);
+	triangle_2d_same.y1=(unsigned char) (tmp & 0xff);
+	triangle_2d_same.x2=(unsigned char) ((tmp >> 8)& 0xff);
+	triangle_2d_same.y2=(unsigned char) ((tmp >> 16)& 0xff);
+	triangle_2d_same.z= (unsigned char) ((tmp >> 24)& 0xff);
 
 	tmp = Input_1.read();
-	max_index[0]=tmp(15,0);
-	max_min[0]=tmp(23,16);
-	max_min[1]=tmp(31,24);
+	max_index[0]=(unsigned short) (tmp & 0xffff);
+	max_min[0]=(unsigned char) ((tmp >> 16)& 0xff);
+	max_min[1]=(unsigned char) ((tmp >> 24)& 0xff);
 
 	tmp = Input_1.read();
-	max_min[2]=tmp(7,0);
-	max_min[3]=tmp(15,8);
-	max_min[4]=tmp(23, 16);
+	max_min[2]=(unsigned char) (tmp & 0xff);
+	max_min[3]=(unsigned char) ((tmp >> 8)& 0xff);
+	max_min[4]=(unsigned char) ((tmp >> 16)& 0xff);
 #ifdef PROFILE
 		rasterization2_m_in_2+=4;
 #endif
@@ -287,7 +289,7 @@ void rasterization2_m (
 #pragma HLS INTERFACE ap_hs port=Output_3
 #pragma HLS INTERFACE ap_hs port=Output_4
 
-	rasterization2_even(
+	rasterization2_odd(
 			Input_1,
 			Output_1,
 			Output_2);
