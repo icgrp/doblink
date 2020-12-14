@@ -168,20 +168,20 @@ static void rasterization2_even (
 #pragma HLS INTERFACE ap_hs port=Output_1
 #pragma HLS INTERFACE ap_hs port=Output_2
   #pragma HLS INLINE off
-	bit16 i = 0;
-	bit16 i_top = 0;
-	bit16 i_bot = 0;
+	unsigned short i = 0;
+	unsigned short i_top = 0;
+	unsigned short i_bot = 0;
 	int y_tmp;
 	int j;
 	Triangle_2D_new triangle_2d_same;
-	bit2 flag;
+	unsigned char flag;
 	bit8 max_min[5];
-	bit16 max_index[1];
+	unsigned short max_index[1];
 	bit32 out_tmp;
 	static CandidatePixel fragment[500];
 
 	bit32 tmp = Input_1.read();
-	flag = (bit2) tmp(1,0);
+	flag = (unsigned char) tmp(1,0);
 	triangle_2d_same.x0=tmp(15,8);
 	triangle_2d_same.y0=tmp(23,16);
 	triangle_2d_same.x1=tmp(31,24);
