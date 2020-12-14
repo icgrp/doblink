@@ -175,10 +175,10 @@ static void rasterization2_even (
 	int j;
 	Triangle_2D_new triangle_2d_same;
 	unsigned char flag;
-	bit8 max_min[5];
+	unsigned char max_min[5];
 	unsigned short max_index[1];
 	bit32 out_tmp;
-	static CandidatePixel fragment[500];
+	CandidatePixel fragment[500];
 
 	bit32 tmp = Input_1.read();
 	flag = (unsigned char) tmp(1,0);
