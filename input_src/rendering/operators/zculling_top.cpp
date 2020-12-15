@@ -77,10 +77,10 @@ void zculling_top (
 
 
   // pixel counter
-  bit16 pixel_cntr = 0;
+  unsigned short pixel_cntr = 0;
 
   // update z-buffer and pixels
-  ZCULLING: for ( bit16 n = 0; n < size; n++ )
+  ZCULLING: for ( unsigned short n = 0; n < size; n++ )
   {
 #pragma HLS PIPELINE II=1
 	if (odd_even == 0){
