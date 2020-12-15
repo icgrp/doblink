@@ -1,5 +1,12 @@
 #include "../host/typedefs.h"
 
+typedef struct
+{
+  unsigned char x;
+  unsigned char y;
+  unsigned char color;
+} Pixel_new;
+
 
 
 // color the frame buffer
@@ -12,10 +19,10 @@ void coloringFB_bot_m(
 #pragma HLS INTERFACE ap_hs port=Output_1
   #pragma HLS INLINE off
   int i,j;
-  static bit8 frame_buffer[MAX_X][MAX_Y/2];
-  Pixel pixels;
-  static bit16 counter=0;
-  bit16 size_pixels;
+  static unsigned char frame_buffer[MAX_X][MAX_Y/2];
+  Pixel_new pixels;
+  static unsigned short counter=0;
+  unsigned short size_pixels;
   bit32 in_tmp;
   size_pixels=Input_1.read();
 #ifdef PROFILE
@@ -26,16 +33,16 @@ void coloringFB_bot_m(
   if ( counter == 0 )
   {
     // initilize the framebuffer for a new image
-    COLORING_FB_INIT_ROW: for ( bit16 i = 0; i < MAX_X; i++)
+    COLORING_FB_INIT_ROW: for (i = 0; i < MAX_X; i++)
     {
       #pragma HLS PIPELINE II=1
-      COLORING_FB_INIT_COL: for ( bit16 j = 0; j < MAX_Y/2; j++)
+      COLORING_FB_INIT_COL: for (j = 0; j < MAX_Y/2; j++)
         frame_buffer[i][j] = 0;
     }
   }
 
   // update the framebuffer
-  COLORING_FB: for ( bit16 i = 0; i < size_pixels; i++)
+  COLORING_FB: for (i = 0; i < size_pixels; i++)
   {
     #pragma HLS PIPELINE II=1
 	 in_tmp = Input_1.read();
