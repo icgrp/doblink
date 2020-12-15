@@ -49,11 +49,13 @@ void zculling_top (
   static char odd_even = 0;
   if(odd_even == 0) {
 	  size = Input_1.read();
+	  //printf("in1: %08x\n", size);
 #ifdef PROFILE
 		zculling_top_in_1++;
 #endif
   } else {
 	  size = Input_2.read();
+	  //printf("in1: %08x\n", size);
 #ifdef PROFILE
 		zculling_top_in_2++;
 #endif
@@ -65,10 +67,10 @@ void zculling_top (
   static unsigned char z_buffer[MAX_X/2][MAX_Y];
   if (counter == 0)
   {
-    ZCULLING_INIT_ROW: for ( bit16 i = 0; i < MAX_X/2; i++)
+    ZCULLING_INIT_ROW: for (i = 0; i < MAX_X/2; i++)
     {
       #pragma HLS PIPELINE II=1
-      ZCULLING_INIT_COL: for ( bit16 j = 0; j < MAX_Y; j++)
+      ZCULLING_INIT_COL: for (j = 0; j < MAX_Y; j++)
       {
         z_buffer[i][j] = 255;
       }
@@ -85,12 +87,14 @@ void zculling_top (
 #pragma HLS PIPELINE II=1
 	if (odd_even == 0){
 		in_tmp = Input_1.read();
+		//printf("in1: %08x\n", in_tmp);
 #ifdef PROFILE
 		zculling_top_in_1++;
 #endif
 	}
 	else {
 		in_tmp = Input_2.read();
+		//printf("in2: %08x\n", in_tmp);
 #ifdef PROFILE
 		zculling_top_in_2++;
 #endif
@@ -111,6 +115,7 @@ void zculling_top (
   }
 
   Output_1.write(pixel_cntr);
+  //printf("out1: %08x\n", pixel_cntr);
 #ifdef PROFILE
 		zculling_top_out_1++;
 #endif
@@ -121,6 +126,7 @@ void zculling_top (
       out_tmp += (((unsigned int)pixels[j].color)<<16);
 	  //out_tmp += 0;
 	  Output_1.write(out_tmp);
+	  //printf("out1: %08x\n", out_tmp);
 #ifdef PROFILE
 		zculling_top_out_1++;
 #endif
