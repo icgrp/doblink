@@ -1,6 +1,31 @@
 #include "../host/typedefs.h"
 
+// struct: 2D triangle
+typedef struct
+{
+  unsigned char x0;
+  unsigned char y0;
+  unsigned char x1;
+  unsigned char y1;
+  unsigned char x2;
+  unsigned char y2;
+  unsigned char z;
+} Triangle_2D_new;
 
+typedef struct
+{
+  unsigned char x;
+  unsigned char y;
+  unsigned char z;
+  unsigned char color;
+} CandidatePixel_new;
+
+typedef struct
+{
+  unsigned char x;
+  unsigned char y;
+  unsigned char color;
+} Pixel_new;
 
 
 // filter hidden pixels
@@ -15,13 +40,13 @@ void zculling_bot (
 #pragma HLS INTERFACE ap_hs port=Output_1
   #pragma HLS INLINE off
   CandidatePixel fragment;
-  static bit16 counter=0;
+  static unsigned short counter=0;
   int i, j;
   Pixel pixels[500];
-  bit16 size;
+  unsigned short size;
   bit32 in_tmp;
   bit32 out_tmp;
-  static bit1 odd_even = 0;
+  static bool odd_even = 0;
   if(odd_even == 0){
 	  size = Input_1.read();
 #ifdef PROFILE
@@ -37,13 +62,13 @@ void zculling_bot (
 
 
   // initilize the z-buffer in rendering first triangle for an image
-  static bit8 z_buffer[MAX_X/2][MAX_Y];
+  static unsigned char z_buffer[MAX_X/2][MAX_Y];
   if (counter == 0)
   {
-    ZCULLING_INIT_ROW: for ( bit16 i = 0; i < MAX_X/2; i++)
+    ZCULLING_INIT_ROW: for (i = 0; i < MAX_X/2; i++)
     {
       #pragma HLS PIPELINE II=1
-      ZCULLING_INIT_COL: for ( bit16 j = 0; j < MAX_Y; j++)
+      ZCULLING_INIT_COL: for (j = 0; j < MAX_Y; j++)
       {
         z_buffer[i][j] = 255;
       }
@@ -52,10 +77,10 @@ void zculling_bot (
 
 
   // pixel counter
-  bit16 pixel_cntr = 0;
+  unsigned short pixel_cntr = 0;
 
   // update z-buffer and pixels
-  ZCULLING: for ( bit16 n = 0; n < size; n++ )
+  ZCULLING: for (unsigned short n = 0; n < size; n++ )
   {
 #pragma HLS PIPELINE II=1
 	if (odd_even == 0){
@@ -103,7 +128,7 @@ void zculling_bot (
 
 
   counter++;
-  odd_even = ~odd_even;
+  odd_even = odd_even==0 ? 1 : 0;
   if(counter==NUM_3D_TRI){counter=0;}
   return;
 }
