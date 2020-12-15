@@ -1,5 +1,25 @@
 #include "../host/typedefs.h"
 
+// struct: 2D triangle
+typedef struct
+{
+  unsigned char x0;
+  unsigned char y0;
+  unsigned char x1;
+  unsigned char y1;
+  unsigned char x2;
+  unsigned char y2;
+  unsigned char z;
+} Triangle_2D_new;
+
+typedef struct
+{
+  unsigned char x;
+  unsigned char y;
+  unsigned char z;
+  unsigned char color;
+} CandidatePixel_new;
+
 
 // filter hidden pixels
 void zculling_top (

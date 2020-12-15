@@ -67,26 +67,30 @@ static void rasterization2_odd (
 	unsigned char max_min[5];
 	unsigned short max_index[1];
 	unsigned int out_tmp;
-	CandidatePixel fragment[500];
+	CandidatePixel_new fragment[500];
 
 	unsigned int tmp = Input_1.read();
+	//printf("In1: %08x\n", tmp);
 	flag = (unsigned char) (tmp & 0x3);
 	triangle_2d_same.x0=(unsigned char) ((tmp >> 8)  & 0xff);
 	triangle_2d_same.y0=(unsigned char) ((tmp >> 16) & 0xff);
 	triangle_2d_same.x1=(unsigned char) ((tmp >> 24) & 0xff);
 
 	tmp = Input_1.read();
+	//printf("In1: %08x\n", tmp);
 	triangle_2d_same.y1=(unsigned char) (tmp & 0xff);
 	triangle_2d_same.x2=(unsigned char) ((tmp >> 8)& 0xff);
 	triangle_2d_same.y2=(unsigned char) ((tmp >> 16)& 0xff);
 	triangle_2d_same.z= (unsigned char) ((tmp >> 24)& 0xff);
 
 	tmp = Input_1.read();
+	//printf("In1: %08x\n", tmp);
 	max_index[0]=(unsigned short) (tmp & 0xffff);
 	max_min[0]=(unsigned char) ((tmp >> 16)& 0xff);
 	max_min[1]=(unsigned char) ((tmp >> 24)& 0xff);
 
 	tmp = Input_1.read();
+	//printf("In1: %08x\n", tmp);
 	max_min[2]=(unsigned char) (tmp & 0xff);
 	max_min[3]=(unsigned char) ((tmp >> 8)& 0xff);
 	max_min[4]=(unsigned char) ((tmp >> 16)& 0xff);
@@ -98,21 +102,23 @@ static void rasterization2_odd (
   if ( flag )
   {
 	  Output_1.write(i_top);
+	  //printf("out1: %08x\n", i_top);
 	  Output_2.write(i_bot);
+	  //printf("out2: %08x\n", i_bot);
 #ifdef PROFILE
 		rasterization2_m_out_3++;
 		rasterization2_m_out_4++;
 #endif
     return;
   }
-  bit8 color = 100;
+  unsigned char color = 100;
 
 
-  RAST2: for ( bit16 k = 0; k < max_index[0]; k++ )
+  RAST2: for ( unsigned short k = 0; k < max_index[0]; k++ )
   {
     #pragma HLS PIPELINE II=1
-    bit8 x = max_min[0] + k%max_min[4];
-    bit8 y = max_min[2] + k/max_min[4];
+	unsigned char x = max_min[0] + k%max_min[4];
+	unsigned char y = max_min[2] + k/max_min[4];
 
     if( pixel_in_triangle( x, y, triangle_2d_same ) )
     {
@@ -127,7 +133,9 @@ static void rasterization2_odd (
   }
 
   Output_1.write(i_top);
+  //printf("out1: %08x\n", i_top);
   Output_2.write(i_bot);
+  //printf("out2: %08x\n", i_bot);
 #ifdef PROFILE
 		rasterization2_m_out_3++;
 		rasterization2_m_out_4++;
@@ -143,6 +151,7 @@ static void rasterization2_odd (
 	  if(y_tmp > 127)
 	  {
 		  Output_1.write(out_tmp);
+		  //printf("out1: %08x\n", out_tmp);
 #ifdef PROFILE
 		rasterization2_m_out_3++;
 #endif
@@ -150,6 +159,7 @@ static void rasterization2_odd (
 	  else
 	  {
 		  Output_2.write(out_tmp);
+		  //printf("out2: %08x\n", out_tmp);
 #ifdef PROFILE
 		rasterization2_m_out_4++;
 #endif
@@ -180,7 +190,7 @@ static void rasterization2_even (
 	unsigned char max_min[5];
 	unsigned short max_index[1];
 	unsigned int out_tmp;
-	CandidatePixel fragment[500];
+	CandidatePixel_new fragment[500];
 
 	unsigned int tmp = Input_1.read();
 	flag = (unsigned char) (tmp & 0x3);
@@ -218,14 +228,14 @@ static void rasterization2_even (
 #endif
     return;
   }
-  bit8 color = 100;
+  unsigned char color = 100;
 
 
-  RAST2: for ( bit16 k = 0; k < max_index[0]; k++ )
+  RAST2: for (unsigned short k = 0; k < max_index[0]; k++ )
   {
     #pragma HLS PIPELINE II=1
-    bit8 x = max_min[0] + k%max_min[4];
-    bit8 y = max_min[2] + k/max_min[4];
+	unsigned char  x = max_min[0] + k%max_min[4];
+	unsigned char  y = max_min[2] + k/max_min[4];
 
     if( pixel_in_triangle( x, y, triangle_2d_same ) )
     {
