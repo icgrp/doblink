@@ -49,9 +49,9 @@ void coloringFB_bot_m(
 #ifdef PROFILE
   coloringFB_bot_m_in_1++;
 #endif
-	 pixels.x=in_tmp(7, 0);
-	 pixels.y=in_tmp(15, 8);
-	 pixels.color=in_tmp(23, 16);
+	 pixels.x=(in_tmp&0xff);
+	 pixels.y=(in_tmp>>8)&0xff;
+	 pixels.color=(in_tmp>>16)&0xff;
     frame_buffer[ pixels.x ][ pixels.y ] = pixels.color;
   }
 
