@@ -39,12 +39,12 @@ void zculling_bot (
 #pragma HLS INTERFACE ap_hs port=Input_2
 #pragma HLS INTERFACE ap_hs port=Output_1
   #pragma HLS INLINE off
-  CandidatePixel fragment;
+  CandidatePixel_new fragment;
   static unsigned short counter=0;
   int i, j;
-  Pixel pixels[500];
+  Pixel_new pixels[500];
   unsigned short size;
-  bit32 in_tmp;
+  unsigned int in_tmp;
   bit32 out_tmp;
   static bool odd_even = 0;
   if(odd_even == 0){
@@ -95,10 +95,10 @@ void zculling_bot (
 		zculling_bot_in_2++;
 #endif
 	}
-	fragment.x = in_tmp(7, 0);
-	fragment.y = in_tmp(15, 8);
-	fragment.z = in_tmp(23, 16);
-	fragment.color = in_tmp(31, 24);
+	fragment.x = (in_tmp&0xff);
+	fragment.y = (in_tmp>>8)&0xff;
+	fragment.z = (in_tmp>>16)&0xff;
+	fragment.color = (in_tmp>>24)&0xff;
     if( fragment.z < z_buffer[fragment.y][fragment.x] )
     {
 
