@@ -32,7 +32,7 @@ void zculling_top (
 #pragma HLS INTERFACE ap_hs port=Input_2
 #pragma HLS INTERFACE ap_hs port=Output_1
   #pragma HLS INLINE off
-  CandidatePixel fragment;
+  CandidatePixel_new fragment;
   static bit16 counter=0;
   int i, j;
   Pixel pixels[500];
