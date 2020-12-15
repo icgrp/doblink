@@ -45,7 +45,7 @@ void zculling_bot (
   Pixel_new pixels[500];
   unsigned short size;
   unsigned int in_tmp;
-  bit32 out_tmp;
+  unsigned int out_tmp;
   static bool odd_even = 0;
   if(odd_even == 0){
 	  size = Input_1.read();
@@ -116,10 +116,10 @@ void zculling_bot (
 #endif
   for(j=0; j<pixel_cntr; j++){
 #pragma HLS PIPELINE II=1
-	  out_tmp(7,  0) = pixels[j].x;
-      out_tmp(15, 8) = pixels[j].y;
-      out_tmp(23, 16) = pixels[j].color;
-	  out_tmp(31, 24) = 0;
+	  out_tmp = pixels[j].x;
+	  out_tmp += (((unsigned int)pixels[j].y)<<8);
+	  out_tmp += (((unsigned int)pixels[j].color)<<16);
+	  //out_tmp(31, 24) = 0;
 	  Output_1.write(out_tmp);
 #ifdef PROFILE
 		zculling_bot_out_1++;
