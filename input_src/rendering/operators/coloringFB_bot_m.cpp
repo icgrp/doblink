@@ -23,12 +23,12 @@ void coloringFB_bot_m(
   Pixel_new pixels;
   static unsigned short counter=0;
   unsigned short size_pixels;
-  bit32 in_tmp;
+  unsigned int in_tmp;
   size_pixels=Input_1.read();
 #ifdef PROFILE
   coloringFB_bot_m_in_1++;
 #endif
-  bit32 out_FB = 0;
+  unsigned int out_FB = 0;
 
   if ( counter == 0 )
   {
@@ -60,8 +60,10 @@ void coloringFB_bot_m(
 	  for (i=0; i<MAX_X; i++){
 		  for(j=0; j<MAX_Y/2; j+=4){
 #pragma HLS PIPELINE II=1
+			  out_FB = 0;
 			  for (int k=0; k<4; k++){
-				  out_FB( k*8+7,  k*8) = frame_buffer[i][j+k];
+				  out_FB += (((unsigned int)frame_buffer[i][j+k]) << 8*k);
+				  //out_FB( k*8+7,  k*8) = frame_buffer[i][j+k];
 			  }
 			  Output_1.write(out_FB);
 #ifdef PROFILE
