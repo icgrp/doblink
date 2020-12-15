@@ -20,6 +20,13 @@ typedef struct
   unsigned char color;
 } CandidatePixel_new;
 
+typedef struct
+{
+  unsigned char x;
+  unsigned char y;
+  unsigned char color;
+} Pixel_new;
+
 
 // filter hidden pixels
 void zculling_top (
@@ -33,13 +40,13 @@ void zculling_top (
 #pragma HLS INTERFACE ap_hs port=Output_1
   #pragma HLS INLINE off
   CandidatePixel_new fragment;
-  static bit16 counter=0;
+  static unsigned short counter=0;
   int i, j;
-  Pixel pixels[500];
-  bit16 size;
+  Pixel_new pixels[500];
+  unsigned short size;
   bit32 in_tmp;
   bit32 out_tmp;
-  static bit1 odd_even = 0;
+  static char odd_even = 0;
   if(odd_even == 0) {
 	  size = Input_1.read();
 #ifdef PROFILE
@@ -55,7 +62,7 @@ void zculling_top (
 
 
   // initilize the z-buffer in rendering first triangle for an image
-  static bit8 z_buffer[MAX_X/2][MAX_Y];
+  static unsigned char z_buffer[MAX_X/2][MAX_Y];
   if (counter == 0)
   {
     ZCULLING_INIT_ROW: for ( bit16 i = 0; i < MAX_X/2; i++)
@@ -121,7 +128,7 @@ void zculling_top (
 
 
   counter++;
-  odd_even = ~odd_even;
+  odd_even = odd_even==0 ? 1 : 0;
   if(counter==NUM_3D_TRI){counter=0;}
   return;
 }

@@ -20,6 +20,9 @@ typedef struct
   unsigned char color;
 } CandidatePixel_new;
 
+
+
+
 /*
 static bit1 pixel_in_triangle( bit8 x, bit8 y, Triangle_2D triangle_2d )
 {
