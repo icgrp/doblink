@@ -44,7 +44,7 @@ void zculling_top (
   int i, j;
   Pixel_new pixels[500];
   unsigned short size;
-  bit32 in_tmp;
+  unsigned int in_tmp;
   bit32 out_tmp;
   static char odd_even = 0;
   if(odd_even == 0) {
@@ -95,10 +95,10 @@ void zculling_top (
 		zculling_top_in_2++;
 #endif
 	}
-	fragment.x = in_tmp(7, 0);
-	fragment.y = in_tmp(15, 8);
-	fragment.z = in_tmp(23, 16);
-	fragment.color = in_tmp(31, 24);
+	fragment.x = (in_tmp&0xff);
+	fragment.y = (in_tmp>>8)&0xff;
+	fragment.z = (in_tmp>>16)&0xff;
+	fragment.color = (in_tmp>>24)&0xff;
     if( fragment.z < z_buffer[fragment.y-128][fragment.x] )
     {
 
