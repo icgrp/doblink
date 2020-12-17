@@ -30,7 +30,7 @@ class RenderingMono(Module):
     def connect_input(self, stream):
         assert isinstance(stream, Endpoint)
         if stream.payload.data.nbits != 32:
-            self.submodules.input_converter = input_converter = Converter(stream.payload.data.nbits, 32)
+            self.submodules.input_converter = input_converter = Converter(stream.payload.data.nbits, 32, reverse=True)
             self.comb += input_converter.source.connect(self.sink)
             self.comb += stream.connect(input_converter.sink)
         else:
@@ -39,7 +39,7 @@ class RenderingMono(Module):
     def connect_output(self, stream):
         assert isinstance(stream, Endpoint)
         if stream.payload.data.nbits != 32:
-            self.submodules.output_converter = output_converter = Converter(32, stream.payload.data.nbits)
+            self.submodules.output_converter = output_converter = Converter(32, stream.payload.data.nbits, reverse=True)
             self.comb += output_converter.source.connect(stream)
             self.comb += self.source.connect(output_converter.sink)
         else:
