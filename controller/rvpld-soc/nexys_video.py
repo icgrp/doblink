@@ -23,6 +23,7 @@ from litex.soc.cores.led import LedChaser
 from litex.soc.integration.soc import SoCRegion
 from pld_axi import PldAXILiteInterface
 from axilite2led import AxiLite2Led
+from rendering_mono import RenderingMono
 
 from litedram.modules import MT41K256M16
 from litedram.phy import s7ddrphy
@@ -100,9 +101,10 @@ class BaseSoC(RvpldSoCCore):
             )
 
         # AXILite2Led ------------------------------------------------------------------------------
-        rst = ~self.crg.cd_sys.rst
+        rst = self.crg.cd_sys.rst
+        rstn = ~rst
         clk = self.crg.cd_sys.clk
-        self.submodules.axilite2led = axilite2led = AxiLite2Led(clk, rst, platform)
+        self.submodules.axilite2led = axilite2led = AxiLite2Led(clk, rstn, platform)
         axilite2led_region = SoCRegion(origin=0x02000000, size=0x10000)
         self.bus.add_slave(name="axilite2led", slave=axilite2led.bus, region=axilite2led_region)
 
@@ -125,9 +127,11 @@ class BaseSoC(RvpldSoCCore):
         self.add_csr("s2mm")
 
         # sync fifo -------------------------------------------------------------------------------
-        self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 400, True)
-        self.comb += mm2s.source.connect(sync_fifo.sink)
-        self.comb += sync_fifo.source.connect(s2mm.sink)
+        #self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 400, True)
+
+        self.submodules.rendering = rendering = RenderingMono(clk, rst, platform)
+        rendering.connect_input(mm2s.source)
+        rendering.connect_output(s2mm.sink)
 
         if DEBUG:
             analyzer_signals = [mm2s.source, sync_fifo.level, mm2s.rsv_level, mm2s.sink, mm2s.port.cmd, mm2s.port.rdata]
