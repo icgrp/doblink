@@ -13,8 +13,10 @@ class RenderingMono(Module):
         source_sigs = self.source.get_signals()
         sink_sigs = self.sink.get_signals()
         self.platform.add_source('rtl/rendering_mono/rendering.v')
-        self.platform.add_source('rtl/rendering_mono/zculling_z_buffer_V_ram.dat')
-        self.specials += Instance("rendering_mono",
+        self.platform.add_source('rtl/rendering_mono/zculling_top_z_buibs_ram.dat')
+        self.platform.add_source('rtl/rendering_mono/rasterization2_odbkb_ram.dat')
+        self.platform.add_source('rtl/rendering_mono/coloringFB_bot_m_mb6_ram.dat')
+        self.specials += Instance("rendering_m",
                             i_ap_clk = self.clk,
                             i_ap_rst = self.rst,
                             i_ap_start = 1,
