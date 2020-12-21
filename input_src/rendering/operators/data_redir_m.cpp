@@ -1,6 +1,6 @@
 #include "../host/typedefs.h"
 
-/*
+
 
 // find the max from 3 integers
 static unsigned char find_max_new( unsigned char in0, unsigned char in1, unsigned char in2 )
@@ -165,103 +165,101 @@ void data_redir_m (
     	//printf("out2: %08x\n", out_tmp4);
     	parity = 0;
     }
-
-    return;
-  }
-
-
-  if ( cw < 0 )
-  {
-    unsigned char tmp_x, tmp_y;
-
-    tmp_x = triangle_2d_x0;
-    tmp_y = triangle_2d_y0;
-
-    triangle_2d_x0 = triangle_2d_x1;
-    triangle_2d_y0 = triangle_2d_y1;
-
-    triangle_2d_x1 = tmp_x;
-    triangle_2d_y1 = tmp_y;
-
-  }
-
-
-  // find the rectangle bounds of 2D triangles
-  max_min[0] = find_min_new( triangle_2d_x0, triangle_2d_x1, triangle_2d_x2 );
-  max_min[1] = find_max_new( triangle_2d_x0, triangle_2d_x1, triangle_2d_x2 );
-  max_min[2] = find_min_new( triangle_2d_y0, triangle_2d_y1, triangle_2d_y2 );
-  max_min[3] = find_max_new( triangle_2d_y0, triangle_2d_y1, triangle_2d_y2 );
-  max_min[4] = max_min[1] - max_min[0];
-
-
-
-
-
-  // calculate index for searching pixels
-  max_index[0] = (max_min[1] - max_min[0]) * (max_min[3] - max_min[2]);
-
-  tmp = 0;
-  tmp = tmp + (((unsigned int)triangle_2d_x0) << 8);
-  tmp = tmp + (((unsigned int)triangle_2d_y0) << 16);
-  tmp = tmp + (((unsigned int)triangle_2d_x1) << 24);
-  //write_word1(tmp);
-  //Output_1.write(tmp);
-  out_tmp1=tmp;
-
-  tmp = (unsigned int) triangle_2d_y1;
-  tmp = tmp + (((unsigned int)triangle_2d_x2) << 8);
-  tmp = tmp + (((unsigned int)triangle_2d_y2) << 16);
-  tmp = tmp + (((unsigned int)triangle_2d_z) << 24);
-  //write_word1(tmp);
-  //Output_1.write(tmp);
-  out_tmp2=tmp;
-
-
-  tmp = (unsigned int)max_index[0];
-  tmp = tmp + (((unsigned int)max_min[0]) << 16);
-  tmp = tmp + (((unsigned int)max_min[1]) << 24);
-  //write_word1(tmp);
-  //Output_1.write(tmp);
-  out_tmp3=tmp;
-
-  tmp = (unsigned int) max_min[2];
-  tmp = tmp + (((unsigned int)max_min[3]) << 8);
-  tmp = tmp + (((unsigned int)max_min[4]) << 16);
-  //tmp= 0;
-  //write_word1(tmp);
-  //Output_1.write(tmp);
-  out_tmp4=tmp;
-
-
-  if(parity==0){
-  	Output_1.write(out_tmp1);
-  	Output_1.write(out_tmp2);
-  	Output_1.write(out_tmp3);
-  	Output_1.write(out_tmp4);
-    //printf("out1: %08x\n", out_tmp1);
-    //printf("out1: %08x\n", out_tmp2);
-    //printf("out1: %08x\n", out_tmp3);
-    //printf("out1: %08x\n", out_tmp4);
-  	parity = 1;
   }else{
-  	Output_2.write(out_tmp1);
-  	Output_2.write(out_tmp2);
-  	Output_2.write(out_tmp3);
-  	Output_2.write(out_tmp4);
-    //printf("out2: %08x\n", out_tmp1);
-    //printf("out2: %08x\n", out_tmp2);
-    //printf("out2: %08x\n", out_tmp3);
-    //printf("out2: %08x\n", out_tmp4);
-  	parity = 0;
+
+
+	  if ( cw < 0 )
+	  {
+		unsigned char tmp_x, tmp_y;
+
+		tmp_x = triangle_2d_x0;
+		tmp_y = triangle_2d_y0;
+
+		triangle_2d_x0 = triangle_2d_x1;
+		triangle_2d_y0 = triangle_2d_y1;
+
+		triangle_2d_x1 = tmp_x;
+		triangle_2d_y1 = tmp_y;
+
+	  }
+
+
+	  // find the rectangle bounds of 2D triangles
+	  max_min[0] = find_min_new( triangle_2d_x0, triangle_2d_x1, triangle_2d_x2 );
+	  max_min[1] = find_max_new( triangle_2d_x0, triangle_2d_x1, triangle_2d_x2 );
+	  max_min[2] = find_min_new( triangle_2d_y0, triangle_2d_y1, triangle_2d_y2 );
+	  max_min[3] = find_max_new( triangle_2d_y0, triangle_2d_y1, triangle_2d_y2 );
+	  max_min[4] = max_min[1] - max_min[0];
+
+
+
+
+
+	  // calculate index for searching pixels
+	  max_index[0] = (max_min[1] - max_min[0]) * (max_min[3] - max_min[2]);
+
+	  tmp = 0;
+	  tmp = tmp + (((unsigned int)triangle_2d_x0) << 8);
+	  tmp = tmp + (((unsigned int)triangle_2d_y0) << 16);
+	  tmp = tmp + (((unsigned int)triangle_2d_x1) << 24);
+	  //write_word1(tmp);
+	  //Output_1.write(tmp);
+	  out_tmp1=tmp;
+
+	  tmp = (unsigned int) triangle_2d_y1;
+	  tmp = tmp + (((unsigned int)triangle_2d_x2) << 8);
+	  tmp = tmp + (((unsigned int)triangle_2d_y2) << 16);
+	  tmp = tmp + (((unsigned int)triangle_2d_z) << 24);
+	  //write_word1(tmp);
+	  //Output_1.write(tmp);
+	  out_tmp2=tmp;
+
+
+	  tmp = (unsigned int)max_index[0];
+	  tmp = tmp + (((unsigned int)max_min[0]) << 16);
+	  tmp = tmp + (((unsigned int)max_min[1]) << 24);
+	  //write_word1(tmp);
+	  //Output_1.write(tmp);
+	  out_tmp3=tmp;
+
+	  tmp = (unsigned int) max_min[2];
+	  tmp = tmp + (((unsigned int)max_min[3]) << 8);
+	  tmp = tmp + (((unsigned int)max_min[4]) << 16);
+	  //tmp= 0;
+	  //write_word1(tmp);
+	  //Output_1.write(tmp);
+	  out_tmp4=tmp;
+
+
+	  if(parity==0){
+		Output_1.write(out_tmp1);
+		Output_1.write(out_tmp2);
+		Output_1.write(out_tmp3);
+		Output_1.write(out_tmp4);
+		//printf("out1: %08x\n", out_tmp1);
+		//printf("out1: %08x\n", out_tmp2);
+		//printf("out1: %08x\n", out_tmp3);
+		//printf("out1: %08x\n", out_tmp4);
+		parity = 1;
+	  }else{
+		Output_2.write(out_tmp1);
+		Output_2.write(out_tmp2);
+		Output_2.write(out_tmp3);
+		Output_2.write(out_tmp4);
+		//printf("out2: %08x\n", out_tmp1);
+		//printf("out2: %08x\n", out_tmp2);
+		//printf("out2: %08x\n", out_tmp3);
+		//printf("out2: %08x\n", out_tmp4);
+		parity = 0;
+	  }
   }
-  return;
 }
 
-*/
 
 
 
 
+/*
 static int check_clockwise( Triangle_2D triangle_2d )
 {
   int cw;
@@ -546,4 +544,4 @@ void data_redir_m (
   rasterization1 (triangle_2ds_1, Output_1, Output_2);
 
 }
-
+*/
