@@ -9,7 +9,7 @@
 #ifndef __TYPEDEFS_H__
 #define __TYPEDEFS_H__
 #include <hls_stream.h>
-#include <ap_int.h>
+#include "ap_int.h"
 // resolution 256x256
 const int MAX_X = 256;
 const int MAX_Y = 256;
@@ -28,7 +28,6 @@ const int NUM_3D_TRI = 3192;
 
 #ifndef SW
   // hls header
-  #include "ap_int.h"
   // specialized datatypes
   typedef ap_uint<1> bit1;
   typedef ap_uint<2> bit2;

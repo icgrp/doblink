@@ -21,5 +21,9 @@ void data_gen(
 		  hls::stream<ap_uint<32> > & Output_1
 		);
 
+void data_gen_1(
+		  hls::stream<ap_uint<32> > & Output_1
+		);
+
 #endif
 

@@ -113,11 +113,10 @@ void top (
 
 
   // processing NUM_3D_TRI 3D triangles
-  TRIANGLES: for (bit16 i = 0; i < NUM_3D_TRI/2; i++)
+  TRIANGLES: for (int i = 0; i < NUM_3D_TRI/2; i++)
   {
 
-
-
+	  //printf("i=%d\n", i);
     // five stages for processing each 3D triangle
 	data_redir_m(Input_1, Output_redir_odd, Output_redir_even);
 	data_redir_m(Input_1, Output_redir_odd, Output_redir_even);
@@ -182,18 +181,18 @@ void pseudo_riscv(
 	ap_uint<32> in1;
 	ap_uint<32> out1;
 	in1 = 0;
-	in1 += Input_1.read();
-	in1 += Input_1.read();
-	in1 += Input_1.read();
+	int tmp = 0;
+	in1 = in1 + Input_1.read();
+	in1 = in1 + Input_1.read();
 	Output_1.write(in1);
 	Output_1.write(in1);
 	Output_1.write(in1);
 	Output_1.write(in1);
 
 	in1 = 0;
-	in1 += Input_1.read();
-	in1 += Input_1.read();
-	in1 += Input_1.read();
+	in1 = in1 + Input_1.read();
+	in1 = in1 + Input_1.read();
+	in1 = in1 + Input_1.read();
 	Output_2.write(in1);
 	Output_2.write(in1);
 	Output_2.write(in1);
@@ -224,7 +223,6 @@ void converter(
 	Output_1.write(out1);
 
 }
-
 
 void data_gen(
 		  hls::stream<ap_uint<32> > & Output_1
@@ -257,6 +255,19 @@ void data_gen(
         input_tmp(31,  8)  = 0;
         Output_1.write(input_tmp);
     }
+}
+
+
+void data_gen_1(
+		  hls::stream<ap_uint<32> > & Output_1
+		)
+{
+#pragma HLS INTERFACE ap_hs port=Output_1
+#include "/home/ylxiao/ws_201/HLS/rendering/data_gen.h"
+	for(int i=0; i<9576; i++){
+#pragma HLS PIPELINE
+		Output_1.write(data_gen_data[i]);
+	}
 }
 
 #define USER_WIDTH 64

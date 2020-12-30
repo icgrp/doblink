@@ -41,6 +41,7 @@ config_target=$(ws_mbft)/config.cpp
 all: $(download_target)
 
 
+config: $(config_target)
 
 $(config_target): $(operators_src)
 	python2 pr_flow.py $(prj_name) -cfg -op '$(basename $(notdir $^))'

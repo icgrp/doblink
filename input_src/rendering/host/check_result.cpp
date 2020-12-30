@@ -22,11 +22,15 @@ void check_results(bit8 output[MAX_X][MAX_Y])
     for (int i = 0, j = 0, n = 0; n < NUM_FB; n ++ )
     {
       bit32 temp = output[n];
-
-      frame_buffer_print[i][j++] = temp(7,0);
-      frame_buffer_print[i][j++] = temp(15,8);
-      frame_buffer_print[i][j++] = temp(23,16);
-      frame_buffer_print[i][j++] = temp(31,24);
+      unsigned char char_tmp;
+      char_tmp = temp(7,0);
+      frame_buffer_print[i][j++] = char_tmp;
+      char_tmp = temp(15,8);
+	  frame_buffer_print[i][j++] = char_tmp;
+	  char_tmp = temp(23,16);
+	  frame_buffer_print[i][j++] = char_tmp;
+	  char_tmp = temp(31,24);
+	  frame_buffer_print[i][j++] = char_tmp;
       if(j == MAX_Y)
       {
         i++;

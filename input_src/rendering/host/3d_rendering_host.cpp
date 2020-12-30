@@ -151,7 +151,7 @@ int main(int argc, char ** argv)
         //Input_1.write(input_tmp);
     }
 
-    data_gen(Input_1);
+    data_gen_1(Input_1);
 
     // run hardware function and time it
 
@@ -169,7 +169,7 @@ int main(int argc, char ** argv)
     for ( int i = 0; i < NUM_FB; i++)
     {
       tmp = Output_1.read();
-      output[i]= tmp(31, 0);
+      output[i]= tmp;
     }
 
   #endif
