@@ -432,20 +432,20 @@ void rasterization1 (
 		Output_1.write(tmp2);
 		Output_1.write(tmp3);
 		Output_1.write(tmp4);
-		printf("out1: %08x\n", (unsigned int)tmp1);
-		printf("out1: %08x\n", (unsigned int)tmp2);
-		printf("out1: %08x\n", (unsigned int)tmp3);
-		printf("out1: %08x\n", (unsigned int)tmp4);
+		//printf("out1: %08x\n", (unsigned int)tmp1);
+		//printf("out1: %08x\n", (unsigned int)tmp2);
+		//printf("out1: %08x\n", (unsigned int)tmp3);
+		//printf("out1: %08x\n", (unsigned int)tmp4);
 		parity = 1;
 	}else{
 		Output_2.write(tmp1);
 		Output_2.write(tmp2);
 		Output_2.write(tmp3);
 		Output_2.write(tmp4);
-		printf("out2: %08x\n", (unsigned int)tmp1);
-		printf("out2: %08x\n", (unsigned int)tmp2);
-		printf("out2: %08x\n", (unsigned int)tmp3);
-		printf("out2: %08x\n", (unsigned int)tmp4);
+		//printf("out2: %08x\n", (unsigned int)tmp1);
+		//printf("out2: %08x\n", (unsigned int)tmp2);
+		//printf("out2: %08x\n", (unsigned int)tmp3);
+		//printf("out2: %08x\n", (unsigned int)tmp4);
 		parity = 0;
 	}
 #ifdef PROFILE
@@ -503,20 +503,20 @@ void rasterization1 (
 	Output_1.write(tmp2);
 	Output_1.write(tmp3);
 	Output_1.write(tmp4);
-	printf("out1: %08x\n", (unsigned int)tmp1);
-	printf("out1: %08x\n", (unsigned int)tmp2);
-	printf("out1: %08x\n", (unsigned int)tmp3);
-	printf("out1: %08x\n", (unsigned int)tmp4);
+	//printf("out1: %08x\n", (unsigned int)tmp1);
+	//printf("out1: %08x\n", (unsigned int)tmp2);
+	//printf("out1: %08x\n", (unsigned int)tmp3);
+	//printf("out1: %08x\n", (unsigned int)tmp4);
 	parity = 1;
   }else{
 	Output_2.write(tmp1);
 	Output_2.write(tmp2);
 	Output_2.write(tmp3);
 	Output_2.write(tmp4);
-	printf("out2: %08x\n", (unsigned int)tmp1);
-	printf("out2: %08x\n", (unsigned int)tmp2);
-	printf("out2: %08x\n", (unsigned int)tmp3);
-	printf("out2: %08x\n", (unsigned int)tmp4);
+	//printf("out2: %08x\n", (unsigned int)tmp1);
+	//printf("out2: %08x\n", (unsigned int)tmp2);
+	//printf("out2: %08x\n", (unsigned int)tmp3);
+	//printf("out2: %08x\n", (unsigned int)tmp4);
 	parity = 0;
   }
 #ifdef PROFILE

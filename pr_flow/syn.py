@@ -3,6 +3,7 @@
 import os  
 import subprocess
 from gen_basic import gen_basic
+import pr_flow.config as config
 import re
 
 
@@ -15,6 +16,71 @@ class syn(gen_basic):
       num_list = re.findall(r""+io_pattern+"\d*", line)
       if(len(num_list)>0 and int(num_list[0].replace(io_pattern,''))): max_num = int(num_list[0].replace(io_pattern,''))
     return max_num
+  
+  def return_bit_size(self, num):
+    print num
+    bit_size = 1
+    num_local = int(num)
+    while (True):
+      if (num_local >> 1) != 0:
+        num_local = num_local >> 1 
+        bit_size = bit_size + 1
+      else:
+        return bit_size
+
+  # riscv preparation
+  def riscv_gen(self, operator):
+    map_target, page_num, input_num, output_num =  self.return_map_target(operator)
+
+    if map_target == 'riscv': 
+      inst_mem_exist, inst_mem_size = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'inst_mem_size')
+      if inst_mem_exist == False: inst_mem_size = 16384 
+      inst_mem_bits = self.return_bit_size(inst_mem_size)
+      LENGTH = '0x'+hex(int(inst_mem_size)).replace('0x', '').zfill(8)
+ 
+      self.shell.cp_dir('./common/riscv_src/riscv/', self.syn_dir+'/'+operator)
+      riscv_file_list = [
+        'src/picorv32.v',
+        'src/picorv32_wrapper.v', 
+        'src/picorv_mem.v', 
+        'src/ram0.v', 
+        'src/rise_detect.v'
+      ] 
+
+
+      config_inst = config.config(self.prflow_params)
+      io_argument_dict = config_inst.return_operator_io_argument_dict_local(operator)
+      for name in riscv_file_list: self.shell.cp_file('./common/riscv_src/'+name, self.syn_dir+'/'+operator+'/'+name)
+      self.shell.replace_lines(self.syn_dir+'/'+operator+'/riscv/qsub_run.sh', {'operator=': 'operator='+operator}) 
+      self.shell.replace_lines(self.syn_dir+'/'+operator+'/riscv/qsub_run.sh', {'MEM_SIZE=': 'MEM_SIZE='+str(int(inst_mem_size)/4)}) 
+      os.system('chmod +x ' + self.syn_dir+'/'+operator+'/riscv/qsub_run.sh') 
+      main_cpp_str_list = []
+      for num in range(input_num): main_cpp_str_list.append('  hls::stream<ap_uint<32> > Input_'+str(num+1)+'(STREAMIN'+str(num+1)+');')
+      for num in range(output_num): main_cpp_str_list.append('  hls::stream<ap_uint<32> > Output_'+str(num+1)+'(STREAMOUT'+str(num+1)+');')
+      str_line = '    '+operator+'('
+      for io_name in io_argument_dict[operator]:
+        str_line = str_line + io_name + ','
+      str_line = str_line + ')'
+      str_line = str_line.replace(',)', ');')
+      main_cpp_str_list.append('  while(1){')
+      main_cpp_str_list.append(str_line)
+      main_cpp_str_list.append('  }')
+      self.print_list(main_cpp_str_list)
+      self.shell.add_lines(self.syn_dir+'/'+operator+'/riscv/main.cpp', '//stream', main_cpp_str_list)
+      self.shell.cp_file('input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.*', self.syn_dir+'/'+operator+'/riscv/')
+      self.shell.replace_lines(self.syn_dir+'/'+operator+'/riscv/'+operator+'.cpp', {'typedefs.h': '#include "typedefs.h"'}) 
+      self.shell.replace_lines(self.syn_dir+'/'+operator+'/riscv/firmware.h', {'// operator': '#include "'+operator+'.h"'}) 
+      self.shell.replace_lines(self.syn_dir+'/'+operator+'/riscv/sections.lds', {'mem : ORIGIN': '         mem : ORIGIN = 0x00000000, LENGTH = '+LENGTH}) 
+
+      self.shell.write_lines(self.syn_dir+'/'+operator+'/leaf.v', self.verilog.return_page_v_list(page_num, operator, input_num, output_num, True, True), False)
+      self.shell.replace_lines(self.syn_dir+'/'+operator+'/src/picorv32_wrapper.v', {'parameter ADDR_BITS': '  parameter ADDR_BITS = '+str(inst_mem_bits-3)})
+      self.shell.replace_lines(self.syn_dir+'/'+operator+'/src/picorv32.v', {'cpuregs[i] = 16380': '                               cpuregs[i] = '+str(int(inst_mem_size)-4)+';'})
+    else:
+      self.shell.mkdir(self.syn_dir+'/'+operator+'/riscv')
+      self.shell.write_lines(self.syn_dir+'/'+operator+'/riscv/qsub_run.sh', self.shell.return_empty_sh_list(), True)
+      self.shell.write_lines(self.syn_dir+'/'+operator+'/leaf.v', self.verilog.return_page_v_list(page_num, operator, input_num, output_num, True), False)
+
+
 
   # create one directory for each page 
   def create_page(self, operator):
@@ -38,26 +104,7 @@ class syn(gen_basic):
     ]
     for name in file_list: self.shell.cp_file(self.overlay_dir+'/'+name, self.syn_dir+'/'+operator+'/'+name)
 
-    if map_target == 'riscv': 
-      self.shell.cp_dir('./common/riscv_src/riscv/', self.syn_dir+'/'+operator)
-      print map_target
-      riscv_file_list = [
-        'src/picorv32.v',
-        'src/picorv32_wrapper.v', 
-        'src/picorv_mem.v', 
-        'src/ram0.v', 
-        'src/rise_detect.v'
-      ] 
-      file_list.extend(riscv_file_list)
-      for name in riscv_file_list: self.shell.cp_file('./common/riscv_src/'+name, self.syn_dir+'/'+operator+'/'+name)
-      self.shell.replace_lines(self.syn_dir+'/'+operator+'/riscv/qsub_run.sh', {'operator=': 'operator='+operator}) 
-      os.system('chmod +x ' + self.syn_dir+'/'+operator+'/riscv/qsub_run.sh') 
-      self.shell.replace_lines(self.syn_dir+'/'+operator+'/riscv/main.cpp', {'data_redir': operator+'(s_in1, s_out1, s_out2);'}) 
-      self.shell.write_lines(self.syn_dir+'/'+operator+'/leaf.v', self.verilog.return_page_v_list(page_num, operator, input_num, output_num, True, True), False)
-    else:
-      self.shell.mkdir(self.syn_dir+'/'+operator+'/riscv')
-      self.shell.write_lines(self.syn_dir+'/'+operator+'/riscv/qsub_run.sh', self.shell.return_empty_sh_list(), True)
-      self.shell.write_lines(self.syn_dir+'/'+operator+'/leaf.v', self.verilog.return_page_v_list(page_num, operator, input_num, output_num, True), False)
+    self.riscv_gen(operator)
 
     file_list=['./leaf.v']
 

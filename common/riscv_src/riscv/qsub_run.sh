@@ -15,7 +15,7 @@ IDIR='-fno-threadsafe-statics -lstdc++'
 
 echo ${GCC_WARNS} 
 ${TOOLCHAIN_PREFIX}g++ -c -march=rv32im -o start.o start.S
-${TOOLCHAIN_PREFIX}g++ -c -march=rv32i -Os ${GCC_WARNS} -ffreestanding ${IDIR} -o data_redir_m.o data_redir_m.cpp
+${TOOLCHAIN_PREFIX}g++ -c -march=rv32i -Os ${GCC_WARNS} -ffreestanding ${IDIR} -o ${operator}.o ${operator}.cpp
 ${TOOLCHAIN_PREFIX}g++ -c -march=rv32i -Os ${GCC_WARNS} -ffreestanding -nostdlib -o main.o main.cpp
 ${TOOLCHAIN_PREFIX}g++ -c -march=rv32i -Os ${GCC_WARNS} -ffreestanding -nostdlib -o print.o print.cpp
 ${TOOLCHAIN_PREFIX}g++ -c -march=rv32i -Os ${GCC_WARNS} -ffreestanding -nostdlib -o stream.o stream.cpp

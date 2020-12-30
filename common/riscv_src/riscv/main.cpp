@@ -22,13 +22,7 @@ int main(void)
 {
   char const *s = "Hello world!\n";
   int i = 0;
-  //stream();
-  hls::stream< ap_uint<32>> s_in1(STREAMIN1); 
-  hls::stream< ap_uint<32>> s_out1(STREAMOUT1); 
-  hls::stream< ap_uint<32>> s_out2(STREAMOUT2); 
-  for(i=0; i<3192; i++){
-    data_redir_m(s_in1, s_out1, s_out2);
-  }
+  //stream operator instance;
   return 0;
 
 }  

@@ -180,10 +180,10 @@ void zculling_top (
   static bit8 z_buffer[MAX_X/2][MAX_Y];
   if (counter == 0)
   {
-    ZCULLING_INIT_ROW: for ( bit16 i = 0; i < MAX_X/2; i++)
+    for ( bit16 i = 0; i < MAX_X/2; i++)
     {
       #pragma HLS PIPELINE II=1
-      ZCULLING_INIT_COL: for ( bit16 j = 0; j < MAX_Y; j++)
+      for ( bit16 j = 0; j < MAX_Y; j++)
       {
         z_buffer[i][j] = 255;
       }

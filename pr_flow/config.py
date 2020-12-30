@@ -41,7 +41,8 @@ class config(gen_basic):
     for operator in operator_list:
       HW_exist, target = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'map_target')
       page_exist, page_num = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'page_num')
-      if HW_exist and target=='HW' and page_exist:
+      #if HW_exist and target=='HW' and page_exist:
+      if page_exist:
         page_num_dict[operator] = page_num
     return page_num_dict 
 
@@ -73,7 +74,6 @@ class config(gen_basic):
         arguments_list.append(io_str[0])
        
       operator_arg_dict[operator] = arguments_list
-    
     return operator_arg_dict 
 
 
