@@ -46,6 +46,8 @@ config: $(config_target)
 $(config_target): $(operators_src)
 	python2 pr_flow.py $(prj_name) -cfg -op '$(basename $(notdir $^))'
 
+download: $(download_target)
+	cd $(ws_bit) && ./qsub_run.sh 
 
 $(download_target): $(operators_bit_targets)
 	python2 pr_flow.py $(prj_name) -bit -op '$(basename $(notdir $^))'

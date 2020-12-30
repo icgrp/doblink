@@ -22,7 +22,6 @@ class syn(gen_basic):
     num_bram_addr_bits =int(self.prflow_params['bram_addr_bits'])
     self.shell.re_mkdir(self.syn_dir+'/'+operator)
     self.shell.mkdir(self.syn_dir+'/'+operator+'/src')
-    self.shell.cp_dir('./common/riscv_src/riscv/', self.syn_dir+'/'+operator)
     file_list = [
       'src/Config_Controls.v',
       'src/converge_ctrl.v',
@@ -40,6 +39,7 @@ class syn(gen_basic):
     for name in file_list: self.shell.cp_file(self.overlay_dir+'/'+name, self.syn_dir+'/'+operator+'/'+name)
 
     if map_target == 'riscv': 
+      self.shell.cp_dir('./common/riscv_src/riscv/', self.syn_dir+'/'+operator)
       print map_target
       riscv_file_list = [
         'src/picorv32.v',
@@ -55,6 +55,8 @@ class syn(gen_basic):
       self.shell.replace_lines(self.syn_dir+'/'+operator+'/riscv/main.cpp', {'data_redir': operator+'(s_in1, s_out1, s_out2);'}) 
       self.shell.write_lines(self.syn_dir+'/'+operator+'/leaf.v', self.verilog.return_page_v_list(page_num, operator, input_num, output_num, True, True), False)
     else:
+      self.shell.mkdir(self.syn_dir+'/'+operator+'/riscv')
+      self.shell.write_lines(self.syn_dir+'/'+operator+'/riscv/qsub_run.sh', self.shell.return_empty_sh_list(), True)
       self.shell.write_lines(self.syn_dir+'/'+operator+'/leaf.v', self.verilog.return_page_v_list(page_num, operator, input_num, output_num, True), False)
 
     file_list=['./leaf.v']

@@ -25,6 +25,7 @@ class hls(gen_basic):
       self.shell.write_lines(self.hls_dir+'/qsub_run_'+fun_name+'.sh', self.shell.return_run_hls_sh_list(self.prflow_params['Xilinx_dir'], './'+fun_name+'_prj/'+fun_name+'/script.tcl'), True)
     else:
       self.shell.write_lines(self.hls_dir+'/qsub_run_'+fun_name+'.sh', self.shell.return_empty_sh_list(), True)
+      self.shell.write_lines(self.hls_dir+'/runLogdata_redir_m.log', ['hls: 0 senconds'], False)
 
   # main.sh will be used for local compilation
   def return_qsub_main_sh_list_local(self):

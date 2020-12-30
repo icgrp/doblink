@@ -118,7 +118,7 @@ class _shell:
       './' + run_file,
       ''])
 
-  def return_empty_sh_list(self, run_file='run.sh'):
+  def return_empty_sh_list(self):
     return ([
       '#!/bin/bash -e',
       ''])
@@ -395,6 +395,16 @@ class _tcl:
       '    add_files -norecurse $item',
       '  }',
       '}',
+      'set dir "../../F002_hls_'+self.prflow_params['benchmark_name']  + '/' + fun_name + '_prj/' + fun_name + '/syn/verilog"',
+      'set contents [glob -nocomplain -directory $dir *]',
+      'foreach item $contents {',
+      '  if { [regexp {.*\.tcl} $item] } {',
+      '    source $item',
+      '  } else {',
+      '    add_files -norecurse $item',
+      '  }',
+      '}',
+ 
       'set_param general.maxThreads  8',
       'set_property XPM_LIBRARIES {XPM_CDC XPM_MEMORY XPM_FIFO} [current_project]',
       'set logFileId [open ./runLog_'+fun_name+'.log "a"]',
