@@ -92,8 +92,10 @@ class _shell:
 
 
   def cp_dir(self, src_dir, dst_dir):
-     print ('cp -rf '+src_dir+' '+dst_dir)
      os.system('cp -rf '+src_dir+' '+dst_dir)
+
+  def cp_file(self, src_file, dst_file):
+     os.system('cp -rf '+src_file+' '+dst_file)
 
   def return_run_sh_list(self, vivado_dir, tcl_file):
     return ([
@@ -115,6 +117,12 @@ class _shell:
       '#!/bin/bash -e',
       './' + run_file,
       ''])
+
+  def return_empty_sh_list(self, run_file='run.sh'):
+    return ([
+      '#!/bin/bash -e',
+      ''])
+
 
   def return_qsub_scan_sh_list(self, scan_dir, run_shell='qsub_run.sh', hold_prefix='hls_', name_prefix='mono_bft_'):
     return ([
@@ -160,6 +168,7 @@ class _verilog:
                          input_num,
                          output_num,
                          for_syn=False,
+                         is_riscv=False,
                          PAYLOAD_BITS=None,
                          PACKET_BITS=None,
                          NUM_LEAF_BITS=None,
@@ -251,22 +260,41 @@ class _verilog:
     lines_list.append('        .din_leaf_user2interface('+din_str+')')
     lines_list.append('    );')
     lines_list.append('    ')
-    lines_list.append('    '+fun_name+' '+fun_name+'_inst(')
-    lines_list.append('        .ap_clk(clk_user),')
-    lines_list.append('        .ap_start(ap_start),')
-    lines_list.append('        .ap_done(),')
-    lines_list.append('        .ap_idle(),')
-    lines_list.append('        .ap_ready(),')
-    for i in range(int(input_num),0,-1): 
-      lines_list.append('        .Input_'+str(i)+'_V_V(dout_leaf_interface2user_'+str(i)+'),')
-      lines_list.append('        .Input_'+str(i)+'_V_V_ap_vld(vld_interface2user_'+str(i)+'),')
-      lines_list.append('        .Input_'+str(i)+'_V_V_ap_ack(ack_user2interface_'+str(i)+'),')
-    for i in range(int(output_num),0,-1): 
-      lines_list.append('        .Output_'+str(i)+'_V_V(din_leaf_user2interface_'+str(i)+'),')
-      lines_list.append('        .Output_'+str(i)+'_V_V_ap_vld(vld_user2interface_'+str(i)+'),')
-      lines_list.append('        .Output_'+str(i)+'_V_V_ap_ack(ack_interface2user_'+str(i)+'),')
-    lines_list.append('        .ap_rst(reset)')
-    lines_list.append('        );  ')
+    if is_riscv == True:
+      lines_list.append('   picorv32_wrapper picorv32_wrapper_inst(')
+      lines_list.append('       .clk(clk_user),')
+      for i in range(1, int(input_num)+1, 1):
+        lines_list.append('       .din'+str(i)+'(dout_leaf_interface2user_'+str(i)+'),')
+        lines_list.append('       .val_in'+str(i)+'(vld_interface2user_'+str(i)+'),')
+        lines_list.append('       .ready_upward'+str(i)+'(ack_user2interface_'+str(i)+'),')
+      for i in range(1, int(output_num)+1, 1):
+        lines_list.append('       .dout'+str(i)+'(din_leaf_user2interface_'+str(i)+'),')
+        lines_list.append('       .val_out'+str(i)+'(vld_user2interface_'+str(i)+'),')
+        lines_list.append('       .ready_downward'+str(i)+'(ack_interface2user_'+str(i)+'),')
+      for i in range(int(input_num)+1, 5, 1):
+        lines_list.append('       .din'+str(i)+'(32\'d0),')
+        lines_list.append('       .val_in'+str(i)+'(1\'d0),')
+      for i in range(int(output_num)+1, 5, 1):
+        lines_list.append('       .ready_downward'+str(i)+'(1\'d0),')
+      lines_list.append('       .resetn(ap_start&(!reset))')
+      lines_list.append('       );') 
+    else:
+      lines_list.append('    '+fun_name+' '+fun_name+'_inst(')
+      lines_list.append('        .ap_clk(clk_user),')
+      lines_list.append('        .ap_start(ap_start),')
+      lines_list.append('        .ap_done(),')
+      lines_list.append('        .ap_idle(),')
+      lines_list.append('        .ap_ready(),')
+      for i in range(int(input_num),0,-1): 
+        lines_list.append('        .Input_'+str(i)+'_V_V(dout_leaf_interface2user_'+str(i)+'),')
+        lines_list.append('        .Input_'+str(i)+'_V_V_ap_vld(vld_interface2user_'+str(i)+'),')
+        lines_list.append('        .Input_'+str(i)+'_V_V_ap_ack(ack_user2interface_'+str(i)+'),')
+      for i in range(int(output_num),0,-1): 
+        lines_list.append('        .Output_'+str(i)+'_V_V(din_leaf_user2interface_'+str(i)+'),')
+        lines_list.append('        .Output_'+str(i)+'_V_V_ap_vld(vld_user2interface_'+str(i)+'),')
+        lines_list.append('        .Output_'+str(i)+'_V_V_ap_ack(ack_interface2user_'+str(i)+'),')
+      lines_list.append('        .ap_rst(reset)')
+      lines_list.append('        );  ')
     lines_list.append('    ')
     lines_list.append('endmodule')
 
@@ -357,7 +385,8 @@ class _tcl:
       lines_list.append('add_files -norecurse '+file_name)
  
     lines_list.extend([
-      'set dir "../../F002_hls_'+self.prflow_params['benchmark_name']  + '/' + fun_name + '_prj/' + fun_name + '/syn/verilog"',
+      #'set dir "../../F002_hls_'+self.prflow_params['benchmark_name']  + '/' + fun_name + '_prj/' + fun_name + '/syn/verilog"',
+      'set dir "./src/"',
       'set contents [glob -nocomplain -directory $dir *]',
       'foreach item $contents {',
       '  if { [regexp {.*\.tcl} $item] } {',
@@ -387,7 +416,7 @@ class _tcl:
 
   def return_hls_tcl_list(self, fun_name):
     lines_list = []
-    lines_list.append('set logFileId [open ./runLog' + fun_name + '.log "a"]')
+    lines_list.append('set logFileId [open ./runLog' + fun_name + '.log "w"]')
     lines_list.append('set_param general.maxThreads ' + self.prflow_params['maxThreads'] + ' ')
     lines_list.append('set start_time [clock seconds]')                     
     lines_list.append('open_project ' + fun_name + '_prj')                  

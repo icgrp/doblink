@@ -15,12 +15,16 @@ class hls(gen_basic):
 
   # create one directory for each page 
   def create_page(self, fun_name):
+    map_target_exist, map_target = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+fun_name+'.h', 'map_target')
     self.shell.re_mkdir(self.hls_dir+'/'+fun_name+'_prj')
     self.shell.re_mkdir(self.hls_dir+'/'+fun_name+'_prj/'+fun_name)
         
     self.shell.write_lines(self.hls_dir+'/'+fun_name+'_prj/vivado_hls.app', self.tcl.return_hls_prj_list(fun_name))
     self.shell.write_lines(self.hls_dir+'/'+fun_name+'_prj/'+fun_name+'/script.tcl', self.tcl.return_hls_tcl_list(fun_name))
-    self.shell.write_lines(self.hls_dir+'/qsub_run_'+fun_name+'.sh', self.shell.return_run_hls_sh_list(self.prflow_params['Xilinx_dir'], './'+fun_name+'_prj/'+fun_name+'/script.tcl'), True)
+    if map_target == 'HW':
+      self.shell.write_lines(self.hls_dir+'/qsub_run_'+fun_name+'.sh', self.shell.return_run_hls_sh_list(self.prflow_params['Xilinx_dir'], './'+fun_name+'_prj/'+fun_name+'/script.tcl'), True)
+    else:
+      self.shell.write_lines(self.hls_dir+'/qsub_run_'+fun_name+'.sh', self.shell.return_empty_sh_list(), True)
 
   # main.sh will be used for local compilation
   def return_qsub_main_sh_list_local(self):
@@ -53,7 +57,6 @@ class hls(gen_basic):
    
     self.shell.write_lines(self.hls_dir+'/main.sh', self.return_main_sh_list_local(), True)
     self.shell.write_lines(self.hls_dir+'/qsub_main.sh', self.return_qsub_main_sh_list_local(), True)
-
 
 
   def run(self, operator):

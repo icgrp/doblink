@@ -17,27 +17,52 @@ class syn(gen_basic):
     return max_num
 
   # create one directory for each page 
-  def create_page(self, operator, input_num, output_num, page_num):
+  def create_page(self, operator):
+    map_target, page_num, input_num, output_num =  self.return_map_target(operator)
     num_bram_addr_bits =int(self.prflow_params['bram_addr_bits'])
     self.shell.re_mkdir(self.syn_dir+'/'+operator)
+    self.shell.mkdir(self.syn_dir+'/'+operator+'/src')
+    self.shell.cp_dir('./common/riscv_src/riscv/', self.syn_dir+'/'+operator)
     file_list = [
-      '../../F001_overlay/src/Config_Controls.v',
-      '../../F001_overlay/src/converge_ctrl.v',
-      '../../F001_overlay/src/ExtractCtrl.v',
-      '../../F001_overlay/src/Input_Port_Cluster.v',
-      '../../F001_overlay/src/Input_Port.v',
-      '../../F001_overlay/src/leaf_interface.v',
-      '../../F001_overlay/src/Output_Port_Cluster.v',
-      '../../F001_overlay/src/Output_Port.v',
-      '../../F001_overlay/src/read_b_in.v',
-      '../../F001_overlay/src/Stream_Flow_Control.v',
-      '../../F001_overlay/src/write_b_in.v',
-      '../../F001_overlay/src/write_b_out.v',
-      './leaf.v'
+      'src/Config_Controls.v',
+      'src/converge_ctrl.v',
+      'src/ExtractCtrl.v',
+      'src/Input_Port_Cluster.v',
+      'src/Input_Port.v',
+      'src/leaf_interface.v',
+      'src/Output_Port_Cluster.v',
+      'src/Output_Port.v',
+      'src/read_b_in.v',
+      'src/Stream_Flow_Control.v',
+      'src/write_b_in.v',
+      'src/write_b_out.v'
     ]
+    for name in file_list: self.shell.cp_file(self.overlay_dir+'/'+name, self.syn_dir+'/'+operator+'/'+name)
+
+    if map_target == 'riscv': 
+      print map_target
+      riscv_file_list = [
+        'src/picorv32.v',
+        'src/picorv32_wrapper.v', 
+        'src/picorv_mem.v', 
+        'src/ram0.v', 
+        'src/rise_detect.v'
+      ] 
+      file_list.extend(riscv_file_list)
+      for name in riscv_file_list: self.shell.cp_file('./common/riscv_src/'+name, self.syn_dir+'/'+operator+'/'+name)
+      self.shell.replace_lines(self.syn_dir+'/'+operator+'/riscv/qsub_run.sh', {'operator=': 'operator='+operator}) 
+      os.system('chmod +x ' + self.syn_dir+'/'+operator+'/riscv/qsub_run.sh') 
+      self.shell.replace_lines(self.syn_dir+'/'+operator+'/riscv/main.cpp', {'data_redir': operator+'(s_in1, s_out1, s_out2);'}) 
+      self.shell.write_lines(self.syn_dir+'/'+operator+'/leaf.v', self.verilog.return_page_v_list(page_num, operator, input_num, output_num, True, True), False)
+    else:
+      self.shell.write_lines(self.syn_dir+'/'+operator+'/leaf.v', self.verilog.return_page_v_list(page_num, operator, input_num, output_num, True), False)
+
+    file_list=['./leaf.v']
+
+ 
     self.shell.write_lines(self.syn_dir+'/'+operator+'/syn_page.tcl', self.tcl.return_syn_page_tcl_list(operator, file_list))
     self.shell.write_lines(self.syn_dir+'/'+operator+'/qsub_run.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'syn_page.tcl'), True)
-    self.shell.write_lines(self.syn_dir+'/'+operator+'/leaf.v', self.verilog.return_page_v_list(page_num, operator, input_num, output_num, True), False)
+   
 
 
   # main.sh will be used for local compilation
@@ -83,12 +108,13 @@ class syn(gen_basic):
     src_list = self.shell.file_to_list('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h')
     input_num = self.return_io_num('Input_', src_list)
     output_num = self.return_io_num('Output_', src_list)
-    HW, page_num = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'page_num')
-    return HW, page_num, input_num, output_num
+    HW_exist, page_num           = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'page_num')
+    map_target_exist, map_target = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'map_target')
+    return map_target, page_num, input_num, output_num
  
   def run(self, operator):
     # mk work directory
-    if self.prflow_params['leaf_syn_regen']=='1':
+    if self.prflow_params['gen_syn']=='1':
       self.shell.mkdir(self.syn_dir)
     
     # generate shell files for qsub run and local run
@@ -96,9 +122,8 @@ class syn(gen_basic):
 
 
     # create ip directories for the operator
-    HW, page_num, input_num, output_num =  self.return_map_target(operator)
-    if HW==True:
-      self.create_page(operator, input_num, output_num, page_num)
+    #if map_target=='HW':
+    self.create_page(operator)
      
 
     # go to the local mono_bft directory and run the qsub command
