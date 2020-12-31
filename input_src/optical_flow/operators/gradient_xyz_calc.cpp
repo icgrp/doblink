@@ -36,9 +36,10 @@ void gradient_xyz_calc(//input_t frame[MAX_HEIGHT][MAX_WIDTH],
       // the new value is either 0 or read from frame
       if (r<MAX_HEIGHT && c<MAX_WIDTH){
     	databus_t pixel1,pixel2,pixel3,pixel4,pixel5;
-    	ap_uint<64> buf;
-    	buf(31,0)= Input_1.read();
-    	buf(63,32)= Input_1.read();
+    	ap_uint<32> buf1;
+    	ap_uint<32> buf2;
+    	buf1(31,0)= Input_1.read();
+    	buf2(31,0)= Input_1.read();
     	//buf(95,64)= Input_1.read();
     	//buf(127,96)= Input_1.read();
     	//printf("0x%08x, 0x%08x, 0x%08x, 0x%08x,\n", (unsigned int)buf(127, 96),
@@ -50,11 +51,11 @@ void gradient_xyz_calc(//input_t frame[MAX_HEIGHT][MAX_WIDTH],
     	pixel3 = 0;
     	pixel4 = 0;
     	pixel5 = 0;
-        pixel1.range(7,0) = buf.range(7,0);
-        pixel2.range(7,0) = buf.range(15,8);
-        pixel3.range(7,0) = buf.range(23,16);
-        pixel4.range(7,0) = buf.range(31,24);
-        pixel5.range(7,0) = buf.range(39,32);
+        pixel1.range(7,0) = buf1.range(7,0);
+        pixel2.range(7,0) = buf1.range(15,8);
+        pixel3.range(7,0) = buf1.range(23,16);
+        pixel4.range(7,0) = buf1.range(31,24);
+        pixel5.range(7,0) = buf2.range(7,0);
 
     	databus_t tmpread = pixel3;
         input_t tmpin = 0;

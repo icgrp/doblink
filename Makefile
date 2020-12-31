@@ -1,6 +1,6 @@
 
-#prj_name=optical_flow
-prj_name=rendering
+prj_name=optical_flow
+#prj_name=rendering
 
 
 src=./common/verilog_src
@@ -22,7 +22,7 @@ operators_impl_targets=$(foreach n, $(operators), $(ws_impl)/$(n)/page_routed.dc
 operators_bit_targets=$(foreach n, $(operators), $(ws_bit)/$(n).bit)
 operators_ip_targets=$(foreach n, $(operators), $(ws_mbft)/ip_repo/$(n)/prj/floorplan_static.xpr)
 mono_bft_target=$(ws_mbft)/prj/floorplan_static.runs/impl_1/floorplan_static_wrapper.bit
-download_target=$(ws_bit)/download.tcl
+download_target=$(ws_bit)/download.tcl $(ws_bit)/qsub_run.sh
 config_target=$(ws_mbft)/config.cpp 
 
 

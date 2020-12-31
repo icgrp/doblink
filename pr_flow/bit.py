@@ -16,4 +16,5 @@ class bit(gen_basic):
       if_HW, target = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'map_target')
       if (if_HW==True and target=='HW') or target == 'riscv': hw_operator_list.append(operator)
     self.shell.write_lines(self.bit_dir+'/download.tcl', self.tcl.return_download_bit_tcl_list(hw_operator_list))
+    self.shell.write_lines(self.bit_dir+'/qsub_run.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'download.tcl'), True)
          
