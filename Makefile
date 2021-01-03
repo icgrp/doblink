@@ -106,13 +106,8 @@ $(ws_sdk): $(src)/*.cc $(src)/*.h
 
 
 .PHONY: report 
-report:
-	 python2 ./pr_flow/gen_report.py rendering
-	 python2 ./pr_flow/gen_report.py dg_reg
-	 python2 ./pr_flow/gen_report.py spam_filter
-	 python2 ./pr_flow/gen_report.py bnn
-	 python2 ./pr_flow/gen_report.py face_detection
-	 python2 ./pr_flow/gen_report.py optical_flow
+report: 
+	 python2 ./pr_flow.py $(prj_name) -op '$(basename $(notdir $(operators_bit_targets)))' -rpt
 
 clean:
 	rm -rf ./workspace

@@ -2,7 +2,6 @@
 #ifndef __AP_UINT_H__
 #define __AP_UINT_H__
 
-#include <iostream>
 
 template <int T=32>
 class ap_uint{

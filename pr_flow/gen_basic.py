@@ -407,7 +407,7 @@ class _tcl:
  
       'set_param general.maxThreads  8',
       'set_property XPM_LIBRARIES {XPM_CDC XPM_MEMORY XPM_FIFO} [current_project]',
-      'set logFileId [open ./runLog_'+fun_name+'.log "a"]',
+      'set logFileId [open ./runLog_'+fun_name+'.log "w"]',
       'set start_time [clock seconds]',
       'set_param general.maxThreads  8 ',
       'synth_design -top leaf -part '+self.prflow_params['part']+' -mode out_of_context',
@@ -680,17 +680,14 @@ class gen_basic:
     self.prflow_params = prflow_params
     self.bft_dir = self.prflow_params['workspace']+'/F000_bft_gen'
     #self.overlay_dir = self.prflow_params['workspace']+'/F001_overlay_' + self.prflow_params['nl'] + '_leaves'
-    self.overlay_dir = self.prflow_params['workspace']+'/F001_overlay'
-    self.hls_dir = self.prflow_params['workspace']+'/F002_hls_'+self.prflow_params['benchmark_name']
-    self.syn_dir = self.prflow_params['workspace']+'/F003_syn_'+self.prflow_params['benchmark_name']
-    self.pr_dir = self.prflow_params['workspace']+'/F004_impl_'+self.prflow_params['benchmark_name']
-    self.bit_dir = self.prflow_params['workspace']+'/F005_bits_'+self.prflow_params['benchmark_name']
+    self.overlay_dir  = self.prflow_params['workspace']+'/F001_overlay'
+    self.hls_dir      = self.prflow_params['workspace']+'/F002_hls_'+self.prflow_params['benchmark_name']
+    self.syn_dir      = self.prflow_params['workspace']+'/F003_syn_'+self.prflow_params['benchmark_name']
+    self.pr_dir       = self.prflow_params['workspace']+'/F004_impl_'+self.prflow_params['benchmark_name']
+    self.bit_dir      = self.prflow_params['workspace']+'/F005_bits_'+self.prflow_params['benchmark_name']
     self.mono_bft_dir = self.prflow_params['workspace']+'/F007_mono_bft_'+self.prflow_params['benchmark_name']
-    self.sdk_dir = self.prflow_params['workspace']+'/F008_sdk_'+self.prflow_params['benchmark_name']
-    self.net_list = ['1', '1', '1', '1', '1', '2', '2', '2',
-                     '2', '2', '2', '0', '3', '3', '3', '3',
-                     '3', '3', '4', '4', '4', '4', '4', '4',
-                     '5', '5', '5', '5', '5', '5', '5', '5']
+    self.sdk_dir      = self.prflow_params['workspace']+'/F008_sdk_'+self.prflow_params['benchmark_name']
+    self.rpt_dir      = self.prflow_params['workspace']+'/report'
 
 
 
@@ -707,7 +704,7 @@ class gen_basic:
 
   def print_dict(self, in_dict):
     for key, value in in_dict.items():
-      print str(key)+'->'+str(value)
+      print str(key).ljust(30)+'->'+str(value)
 
   def has_pattern(self, in_str, pattern_str):
     if in_str.replace(pattern_str, '') == in_str:
