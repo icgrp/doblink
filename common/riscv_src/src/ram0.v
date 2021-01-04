@@ -16,7 +16,7 @@ module ram0#(
              
     localparam BRAM_DEPTH = (1<<AWIDTH);                                                         
     
-    (* ram_style = RAM_TYPE *) reg [DWIDTH-1:0] ram[0:BRAM_DEPTH-1];                 
+    (* ram_style = RAM_TYPE *) (* cascade_height = 1 *) reg [DWIDTH-1:0] ram[0:BRAM_DEPTH-1];                 
 
 	initial begin
       $readmemh(INIT_VALUE, ram);
