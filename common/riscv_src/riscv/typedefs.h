@@ -79,8 +79,6 @@ typedef struct
   bit8   color;
 } Pixel;
 
-
-
 // dataflow switch
 #define ENABLE_DATAFLOW
 #endif

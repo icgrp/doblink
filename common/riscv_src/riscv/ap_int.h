@@ -15,6 +15,7 @@ class ap_uint{
 
 		Proxy& operator =(Proxy u) {parent->set(hi, lo, u); return *this;}
 
+
 		// When ap_unit is lhs
 		operator unsigned int () const {return parent->range(hi, lo);}
 	};

@@ -76,17 +76,10 @@ typedef struct{
     vel_pixel_t y;
 }velocity_t;
 
-#ifndef SW
   #include "ap_int.h"
   // for data packing
   typedef ap_uint<64> frames_t;
   typedef ap_uint<32> stdio_t;
-#endif
 
-#ifdef OCL
-  #include <string>
-  // change the target device here
-  const std::string TARGET_DEVICE = "xilinx:aws-vu9p-f1:4ddr-xpr-2pr:4.0";
-#endif
 
 #endif

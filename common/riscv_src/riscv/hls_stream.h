@@ -1,4 +1,8 @@
-# include "ap_int.h"
+
+#ifndef _HLS_STREAM_H_
+#define _HLS_STREAM_H_
+
+//# include "ap_int.h"
 #include <stdint.h>
 #define STREAMOUT_BASE 0x10000000
 
@@ -23,4 +27,4 @@ namespace hls{
   };
 }
 
-
+#endif

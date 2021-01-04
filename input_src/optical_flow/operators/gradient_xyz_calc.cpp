@@ -51,11 +51,11 @@ void gradient_xyz_calc(//input_t frame[MAX_HEIGHT][MAX_WIDTH],
     	pixel3 = 0;
     	pixel4 = 0;
     	pixel5 = 0;
-        pixel1.range(7,0) = buf1.range(7,0);
-        pixel2.range(7,0) = buf1.range(15,8);
-        pixel3.range(7,0) = buf1.range(23,16);
-        pixel4.range(7,0) = buf1.range(31,24);
-        pixel5.range(7,0) = buf2.range(7,0);
+        pixel1(7,0) = buf1(7,0);
+        pixel2(7,0) = buf1(15,8);
+        pixel3(7,0) = buf1(23,16);
+        pixel4(7,0) = buf1(31,24);
+        pixel5(7,0) = buf2(7,0);
 
     	databus_t tmpread = pixel3;
         input_t tmpin = 0;
@@ -85,7 +85,7 @@ void gradient_xyz_calc(//input_t frame[MAX_HEIGHT][MAX_WIDTH],
                          + frame3_tmp*GRAD_WEIGHTS[2]
                          + frame4_tmp*GRAD_WEIGHTS[3]
                          + frame5_tmp*GRAD_WEIGHTS[4]))/12;
-        grad_z.range(31,0) = temp_z.range(31,0);
+        grad_z(31,0) = temp_z(31,0);
 	gradient_z.write(grad_z);
       }
       else if (c < MAX_WIDTH)
@@ -136,10 +136,10 @@ void gradient_xyz_calc(//input_t frame[MAX_HEIGHT][MAX_WIDTH],
           y_grad += window.getval(i,2)*GRAD_WEIGHTS[i];
         }
 		x_grad = x_grad/12;
-		temp1.range(31,0) = x_grad.range(31,0);
+		temp1(31,0) = x_grad(31,0);
 		Output_1.write(temp1);
 		y_grad = y_grad/12;
-		temp2.range(31,0) = y_grad.range(31,0);
+		temp2(31,0) = y_grad(31,0);
 		Output_2.write(temp2);
 		temp3 = gradient_z.read();
 		Output_3.write(temp3);
