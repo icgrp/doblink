@@ -5,4 +5,4 @@ void outer_product1(
 		       hls::stream<databus_t> &Input_3,
 		   hls::stream<databus_t> &Output_1
 		);
-#pragma map_target=HW page_num= 15
+#pragma map_target=HW page_num= 11

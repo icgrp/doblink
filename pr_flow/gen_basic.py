@@ -518,7 +518,7 @@ class _tcl:
       lines_list.append("if { [catch {place_design -directive Quick } errmsg] } {")
     else:
       lines_list.append("if { [catch {place_design} errmsg] } {")
-    lines_list.append("  puts $logFileId \"place: 1000000000 failed!\"")
+    lines_list.append("  puts $logFileId \"place: 99999 failed!\"")
     lines_list.append("}")
 
     lines_list.append("set end_time [clock seconds]")
@@ -532,7 +532,7 @@ class _tcl:
       lines_list.append("if { [catch {route_design -directive Quick } errmsg] } {")
     else:
       lines_list.append("if { [catch {route_design  } errmsg] } {")
-    lines_list.append("  puts $logFileId \"routing: 1000000000 failed!\"")
+    lines_list.append("  puts $logFileId \"routing: 99999 failed!\"")
     lines_list.append("}")
           
     lines_list.append("set end_time [clock seconds]")

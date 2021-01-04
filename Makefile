@@ -1,6 +1,6 @@
 
-#prj_name=optical_flow
-prj_name=rendering
+prj_name=optical_flow
+#prj_name=rendering
 
 
 src=./common/verilog_src

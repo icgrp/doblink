@@ -12,10 +12,12 @@ from gen_basic import gen_basic
 class report(gen_basic):
   def gen_compile_time_report(self, benchmark_name, operators_list):
     time_report_dict = {}
+    time_data_dict = {}
     for fun_name in operators_list:
       map_target_exist, map_target = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+fun_name+'.h', 'map_target')
       page_exist, page_num = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+fun_name+'.h', 'page_num')
       time_report_dict[fun_name] = fun_name.ljust(30) + '\t' + map_target + '\t' + page_num 
+      time_data_dict[fun_name] = []
       #process hls timing
       try:
         file_name = './workspace/F002_hls_'+benchmark_name+'/runLog' + fun_name + '.log'
@@ -23,6 +25,7 @@ class report(gen_basic):
         for line in file_in:
           run_time = re.findall(r"\d+", line)
           time_report_dict[fun_name] += '\t' + run_time[0] 
+          time_data_dict[fun_name].append(int(run_time[0]))
         file_in.close()
       except:
         print ('Something is wrong with '+file_name) 
@@ -34,6 +37,7 @@ class report(gen_basic):
         for line in file_in:
           run_time = re.findall(r"\d+", line)
           time_report_dict[fun_name] += '\t' + run_time[0]
+          time_data_dict[fun_name].append(int(run_time[0]))
         file_in.close()
       except:
         print ('Something is wrong with '+file_name) 
@@ -46,9 +50,12 @@ class report(gen_basic):
         for line in file_in:
           run_time = re.findall(r"\d+", line)
           run_time_list.append(int(run_time[0])) 
+          time_data_dict[fun_name].append(int(run_time[0]))
         file_in.close()
         for i in range(4): time_report_dict[fun_name] += '\t' + str(run_time_list[i])
-        run_time_list.append(run_time_list[0]+run_time_list[1]+run_time_list[2]+run_time_list[3])
+        total_time = 0
+        for i in range(6): total_time += time_data_dict[fun_name][i]
+        run_time_list.append(total_time)
         time_report_dict[fun_name] += '\t' + str(run_time_list[5])
         time_report_dict[fun_name] += '\t\t' + str(run_time_list[4])
       except:
@@ -99,7 +106,7 @@ class report(gen_basic):
   
   def run(self, operators_str):
 
-    self.shell.re_mkdir(self.rpt_dir)
+    self.shell.mkdir(self.rpt_dir)
     benchmark_name = self.prflow_params['benchmark_name']
     operators_list = operators_str.split() 
     self.gen_compile_time_report(benchmark_name, operators_list)
