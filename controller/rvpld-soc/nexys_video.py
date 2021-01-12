@@ -17,6 +17,7 @@ from litex.soc.cores.clock import *
 from soc_core import *
 from litex.soc.integration.soc_sdram import *
 from litex.soc.integration.builder import *
+from litex.soc.interconnect.stream import Converter, Endpoint
 from litex.soc.interconnect import axi, wishbone
 from litex.soc.interconnect.stream import SyncFIFO
 from litex.soc.cores.led import LedChaser
@@ -120,18 +121,32 @@ class BaseSoC(RvpldSoCCore):
         self.submodules.mm2s = mm2s = LiteDRAMDMAReader(self.sdram.crossbar.get_port())
         mm2s.add_csr()
         self.add_csr("mm2s")
+        self.submodules.input_converter = input_converter = Converter(128, 32, reverse=True)
+        self.comb += mm2s.source.connect(input_converter.sink)
+        mm2s_axis = axi.AXIStreamInterface(32)
+        self.comb += input_converter.source.connect(mm2s_axis)
+        platform.add_extension(mm2s_axis.get_ios("mm2s_axis"))
+        mm2s_axis_pads = platform.request("mm2s_axis")
+        self.comb += mm2s_axis.connect_to_pads(mm2s_axis_pads, mode="slave")
 
         # s2mm -------------------------------------------------------------------------------------
         self.submodules.s2mm = s2mm = LiteDRAMDMAWriter(self.sdram.crossbar.get_port())
         s2mm.add_csr()
         self.add_csr("s2mm")
+        self.submodules.output_converter = output_converter = Converter(32, 128, reverse=True)
+        self.comb += output_converter.source.connect(s2mm.sink)
+        s2mm_axis = axi.AXIStreamInterface(32)
+        self.comb += s2mm_axis.connect(output_converter.sink)
+        platform.add_extension(s2mm_axis.get_ios("s2mm_axis"))
+        s2mm_axis_pads = platform.request("s2mm_axis")
+        self.comb += s2mm_axis.connect_to_pads(s2mm_axis_pads, mode="master")
 
         # sync fifo -------------------------------------------------------------------------------
         #self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 400, True)
 
-        self.submodules.rendering = rendering = RenderingMono(clk, rst, platform)
-        rendering.connect_input(mm2s.source)
-        rendering.connect_output(s2mm.sink)
+        #self.submodules.rendering = rendering = RenderingMono(clk, rst, platform)
+        #rendering.connect_input(mm2s.source)
+        #rendering.connect_output(s2mm.sink)
 
         if DEBUG:
             analyzer_signals = [mm2s.source, sync_fifo.level, mm2s.rsv_level, mm2s.sink, mm2s.port.cmd, mm2s.port.rdata]
