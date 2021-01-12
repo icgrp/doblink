@@ -11,7 +11,7 @@ import argparse
 
 from migen import *
 
-from litex_boards.platforms import nexys_video
+from platforms import nexys_video
 
 from litex.soc.cores.clock import *
 from soc_core import *
