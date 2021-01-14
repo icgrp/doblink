@@ -12,8 +12,9 @@
 #include <generated/csr.h>
 #include <generated/mem.h>
 
-#define LED AXILITE2LED_BASE+16
-#define SW  AXILITE2LED_BASE+8
+#include "dma_driver.h"
+#include "axi_lite_driver.h"
+#include "config_rendering.h"
 
 static char *readstr(void)
 {
@@ -87,30 +88,6 @@ static void reboot(void) {
 	ctrl_reset_write(1);
 }
 
-static void led_test(void) {
-	int i;
-	for(i=0; i<256; i++) {
-		//leds_out_write(i);
-		busy_wait(100);
-	}
-}
-
-static void axi_led_write(uint32_t val) {
-  uintptr_t Addr = LED;
-  volatile uint32_t *LocalAddr = (volatile uint32_t *)Addr;
-  *LocalAddr = val;
-}
-
-static uint32_t axi_led_read(void) {
-  uintptr_t Addr = LED;
-  return *(volatile uint32_t *)Addr;
-}
-
-static uint32_t axi_sw_read(void) {
-  uintptr_t Addr = SW;
-  return *(volatile uint32_t *)Addr;
-}
-
 static void axi_led_test(void) {
   axi_led_write(0xffffffff);
   busy_wait(200);
@@ -170,6 +147,12 @@ volatile uint32_t TxBufferPtr[SEND_LEN]  __attribute__((aligned(16)));
 volatile uint32_t RxBufferPtr[RECV_LEN]  __attribute__((aligned(16)));
 
 static void rendering_test(void) {
+  printf("Begin Configuring BFT!\r\n");
+  init_regs();
+
+  printf("Write LED value 3!\r\n");
+  axi_led_write(3);
+
   for(int i = 0; i < SEND_LEN; i++) {
     TxBufferPtr[i] = input_data[i];
   }
@@ -178,25 +161,8 @@ static void rendering_test(void) {
     RxBufferPtr[i] = 0;
   }
 
-  flush_l2_cache();
-  
-  printf("TxBufferPtr = %#8X\n", (uint32_t)TxBufferPtr);
-  printf("RxBufferPtr = %#8X\n", (uint32_t)RxBufferPtr);
+  run_dma(TxBufferPtr, SEND_LEN, RxBufferPtr, RECV_LEN);
 
-  mm2s_base_write((uint32_t)TxBufferPtr);
-  mm2s_length_write(4 * SEND_LEN);
-  mm2s_start_write(1);
-  printf("Waiting for mm2s to finish\n");
-  while(!mm2s_done_read());
-
-  s2mm_base_write((uint32_t) RxBufferPtr);
-  s2mm_length_write(4 * RECV_LEN);
-  s2mm_start_write(1);
-  printf("Waiting for s2mm to finish\n");
-  while(!s2mm_done_read());
-  printf("DMA done\n");
-
-  flush_l2_cache();
   printf("Checking Results\n");
   check_results((uint32_t *) RxBufferPtr);
 }

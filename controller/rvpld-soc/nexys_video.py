@@ -32,6 +32,8 @@ from litedram.frontend.dma import LiteDRAMDMAReader, LiteDRAMDMAWriter
 from litescope import LiteScopeAnalyzer
 from litex.soc.cores import uart
 
+from litex.build.generic_platform import Pins
+
 from liteeth.phy.s7rgmii import LiteEthPHYRGMII
 
 DEBUG = False
@@ -101,10 +103,31 @@ class BaseSoC(RvpldSoCCore):
                 ip_address = "192.168.1.50"
             )
 
-        # AXILite2Led ------------------------------------------------------------------------------
         rst = self.crg.cd_sys.rst
         rstn = ~rst
         clk = self.crg.cd_sys.clk
+
+        # clk IO
+        clk_io = [("clk", 0, Pins("X"))]
+        clk_bft_io = [("clk_bft", 0, Pins("X"))]
+        platform.add_extension(clk_io)
+        platform.add_extension(clk_bft_io)
+        clk_pad = platform.request("clk")
+        clk_bft_pad = platform.request("clk_bft")
+        self.comb += clk_pad.eq(clk)
+        self.comb += clk_bft_pad.eq(clk)
+
+        # rst IO
+        rst_io = [("rst", 0, Pins("X"))]
+        rst_n_io = [("rst_n", 0, Pins("X"))]
+        platform.add_extension(rst_io)
+        platform.add_extension(rst_n_io)
+        rst_pad = platform.request("rst")
+        rst_n_pad = platform.request("rst_n")
+        self.comb += rst_pad.eq(rst)
+        self.comb += rst_n_pad.eq(rstn)
+
+        # AXILite2Led ------------------------------------------------------------------------------
         self.submodules.axilite2led = axilite2led = AxiLite2Led(clk, rstn, platform)
         axilite2led_region = SoCRegion(origin=0x02000000, size=0x10000)
         self.bus.add_slave(name="axilite2led", slave=axilite2led.bus, region=axilite2led_region)
@@ -117,6 +140,14 @@ class BaseSoC(RvpldSoCCore):
         sw_pads = Cat([platform.request("user_sw", 0), platform.request("user_sw", 1)])
         self.comb += axilite2led.sw.eq(sw_pads)
 
+        # AXILite2BFT
+        axi_bft_bus = axi.AXILiteInterface(data_width=32, address_width=5)
+        axilite2bft_region = SoCRegion(origin=0x02010000, size=0x10000)
+        self.bus.add_slave(name="axilite2bft", slave=axi_bft_bus, region=axilite2bft_region)
+        platform.add_extension(axi_bft_bus.get_ios("axi_bft"))
+        axi_bft_pads = platform.request("axi_bft")
+        self.comb += axi_bft_bus.connect_to_pads(axi_bft_pads, mode="master")
+
         # mm2s -------------------------------------------------------------------------------------
         self.submodules.mm2s = mm2s = LiteDRAMDMAReader(self.sdram.crossbar.get_port())
         mm2s.add_csr()
@@ -127,7 +158,7 @@ class BaseSoC(RvpldSoCCore):
         self.comb += input_converter.source.connect(mm2s_axis)
         platform.add_extension(mm2s_axis.get_ios("mm2s_axis"))
         mm2s_axis_pads = platform.request("mm2s_axis")
-        self.comb += mm2s_axis.connect_to_pads(mm2s_axis_pads, mode="slave")
+        self.comb += mm2s_axis.connect_to_pads(mm2s_axis_pads, mode="master")
 
         # s2mm -------------------------------------------------------------------------------------
         self.submodules.s2mm = s2mm = LiteDRAMDMAWriter(self.sdram.crossbar.get_port())
@@ -139,7 +170,7 @@ class BaseSoC(RvpldSoCCore):
         self.comb += s2mm_axis.connect(output_converter.sink)
         platform.add_extension(s2mm_axis.get_ios("s2mm_axis"))
         s2mm_axis_pads = platform.request("s2mm_axis")
-        self.comb += s2mm_axis.connect_to_pads(s2mm_axis_pads, mode="master")
+        self.comb += s2mm_axis.connect_to_pads(s2mm_axis_pads, mode="slave")
 
         # sync fifo -------------------------------------------------------------------------------
         #self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 400, True)

@@ -1,3 +1,6 @@
+#ifndef INPUT_DATA_H
+#define INPUT_DATA_H
+
 unsigned int input_data[9576] = {0x821d5256,
 0x665a1e51,
 0x00000020,
@@ -9574,3 +9577,4 @@ unsigned int input_data[9576] = {0x821d5256,
 0x00538800,
 0x93005b86,
 0x0000005c};
+#endif

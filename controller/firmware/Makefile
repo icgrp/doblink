@@ -1,11 +1,15 @@
 BUILD_DIR=../build
 
+SOURCES:=$(wildcard *.c)
+OBJECTS:=$(patsubst %.c, %.o, $(SOURCES))
+
 include $(BUILD_DIR)/software/include/generated/variables.mak
 include ${SOC_DIR}/software/common.mak
 
-OBJECTS=isr.o main.o
-
 all: clean firmware.bin
+
+echo_objects:
+	-@echo $(OBJECTS)
 
 # pull in dependency info for *existing* .o files
 -include $(OBJECTS:.o=.d)
