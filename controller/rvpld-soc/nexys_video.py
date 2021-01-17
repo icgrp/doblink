@@ -42,29 +42,30 @@ DEBUG = False
 
 class _CRG(Module):
     def __init__(self, platform, sys_clk_freq):
+        self.rst = Signal()
         self.clock_domains.cd_sys       = ClockDomain()
         self.clock_domains.cd_sys4x     = ClockDomain(reset_less=True)
         self.clock_domains.cd_sys4x_dqs = ClockDomain(reset_less=True)
-        self.clock_domains.cd_clk200    = ClockDomain()
-        self.clock_domains.cd_clk100    = ClockDomain()
+        self.clock_domains.cd_idelay    = ClockDomain()
 
         # # #
 
         self.submodules.pll = pll = S7PLL(speedgrade=-1)
-        self.comb += pll.reset.eq(~platform.request("cpu_reset"))
+        self.comb += pll.reset.eq(~platform.request("cpu_reset") | self.rst)
         pll.register_clkin(platform.request("clk100"), 100e6)
         pll.create_clkout(self.cd_sys,       sys_clk_freq)
         pll.create_clkout(self.cd_sys4x,     4*sys_clk_freq)
         pll.create_clkout(self.cd_sys4x_dqs, 4*sys_clk_freq, phase=90)
-        pll.create_clkout(self.cd_clk200,    200e6)
-        pll.create_clkout(self.cd_clk100,    100e6)
-        self.submodules.idelayctrl = S7IDELAYCTRL(self.cd_clk200)
+        pll.create_clkout(self.cd_idelay,    200e6)
+        platform.add_false_path_constraints(self.cd_sys.clk, pll.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
+
+        self.submodules.idelayctrl = S7IDELAYCTRL(self.cd_idelay)
 
 # BaseSoC ------------------------------------------------------------------------------------------
 
 class BaseSoC(RvpldSoCCore):
-    def __init__(self, sys_clk_freq=int(100e6), with_ethernet=False, **kwargs):
-        platform = nexys_video.Platform()
+    def __init__(self, toolchain="vivado", sys_clk_freq=int(100e6), with_ethernet=False, **kwargs):
+        platform = nexys_video.Platform(toolchain=toolchain)
 
         # SoCCore ----------------------------------------------------------------------------------
         RvpldSoCCore.__init__(self, platform, sys_clk_freq,
@@ -204,14 +205,15 @@ def main():
     parser = argparse.ArgumentParser(description="LiteX SoC on Nexys Video")
     parser.add_argument("--build", action="store_true", help="Build bitstream")
     parser.add_argument("--load",  action="store_true", help="Load bitstream")
-    builder_args(parser)
-    soc_sdram_args(parser)
+    parser.add_argument("--toolchain",       default="vivado",    help="Toolchain use to build (default: vivado)")
     parser.add_argument("--with-ethernet", action="store_true", help="Enable Ethernet support")
     parser.add_argument("--with-spi-sdcard", action="store_true", help="Enable SPI-mode SDCard support")
     parser.add_argument("--with-sdcard", action="store_true",     help="Enable SDCard support")
+    builder_args(parser)
+    soc_sdram_args(parser)
     args = parser.parse_args()
 
-    soc = BaseSoC(with_ethernet=args.with_ethernet, **soc_sdram_argdict(args))
+    soc = BaseSoC(toolchain=args.toolchain, with_ethernet=args.with_ethernet, **soc_sdram_argdict(args))
     assert not (args.with_spi_sdcard and args.with_sdcard)
     if args.with_spi_sdcard:
         soc.add_spi_sdcard()
