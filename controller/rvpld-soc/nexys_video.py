@@ -50,7 +50,7 @@ class _CRG(Module):
 
         # # #
 
-        self.submodules.pll = pll = S7MMCM(speedgrade=-1)
+        self.submodules.pll = pll = S7PLL(speedgrade=-1)
         self.comb += pll.reset.eq(~platform.request("cpu_reset"))
         pll.register_clkin(platform.request("clk100"), 100e6)
         pll.create_clkout(self.cd_sys,       sys_clk_freq)

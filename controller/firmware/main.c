@@ -164,7 +164,7 @@ static void rendering_test(void) {
   run_dma(TxBufferPtr, SEND_LEN, RxBufferPtr, RECV_LEN);
 
   printf("Checking Results\n");
-  check_results((uint32_t *) RxBufferPtr);
+  check_results((uint32_t *) RxBufferPtr + 16);
 }
 
 static void console_service(void)
