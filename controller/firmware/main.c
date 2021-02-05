@@ -147,11 +147,13 @@ volatile uint32_t TxBufferPtr[SEND_LEN]  __attribute__((aligned(16)));
 volatile uint32_t RxBufferPtr[RECV_LEN]  __attribute__((aligned(16)));
 
 static void rendering_test(void) {
-  printf("Begin Configuring BFT!\r\n");
-  init_regs();
-
   printf("Write LED value 3!\r\n");
+  uart_sync();
   axi_led_write(3);
+
+  printf("Begin Configuring BFT!\r\n");
+  uart_sync();
+  init_regs();
 
   for(int i = 0; i < SEND_LEN; i++) {
     TxBufferPtr[i] = input_data[i];
@@ -193,6 +195,7 @@ int main(void)
 	puts("\nrvpld - CPU testing software built "__DATE__" "__TIME__"\n");
 
   printf("DMA test\n");
+  uart_sync();
   rendering_test();
 
 	printf("led_test...\n");

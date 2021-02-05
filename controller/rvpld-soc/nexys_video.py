@@ -17,7 +17,7 @@ from litex.soc.cores.clock import *
 from soc_core import *
 from litex.soc.integration.soc_sdram import *
 from litex.soc.integration.builder import *
-from litex.soc.interconnect.stream import Converter, Endpoint
+from litex.soc.interconnect.stream import Converter, Endpoint, ClockDomainCrossing
 from litex.soc.interconnect import axi, wishbone
 from litex.soc.interconnect.stream import SyncFIFO
 from litex.soc.cores.led import LedChaser
@@ -47,19 +47,25 @@ class _CRG(Module):
         self.clock_domains.cd_sys4x     = ClockDomain(reset_less=True)
         self.clock_domains.cd_sys4x_dqs = ClockDomain(reset_less=True)
         self.clock_domains.cd_idelay    = ClockDomain()
+        self.clock_domains.cd_bft       = ClockDomain()
 
         # # #
 
         self.submodules.pll = pll = S7PLL(speedgrade=-1)
-        self.comb += pll.reset.eq(~platform.request("cpu_reset") | self.rst)
+        cpu_reset_n = ~platform.request("cpu_reset")
+        self.comb += pll.reset.eq(cpu_reset_n | self.rst)
         pll.register_clkin(platform.request("clk100"), 100e6)
         pll.create_clkout(self.cd_sys,       sys_clk_freq)
         pll.create_clkout(self.cd_sys4x,     4*sys_clk_freq)
         pll.create_clkout(self.cd_sys4x_dqs, 4*sys_clk_freq, phase=90)
         pll.create_clkout(self.cd_idelay,    200e6)
+        pll.create_clkout(self.cd_bft,    30e6)
         platform.add_false_path_constraints(self.cd_sys.clk, pll.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
 
         self.submodules.idelayctrl = S7IDELAYCTRL(self.cd_idelay)
+
+        #platform.add_false_path_constraints(self.cd_sys.clk, pll_bft.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
+
 
 # BaseSoC ------------------------------------------------------------------------------------------
 
@@ -104,9 +110,9 @@ class BaseSoC(RvpldSoCCore):
                 ip_address = "192.168.1.50"
             )
 
-        rst = self.crg.cd_sys.rst
+        rst = self.crg.cd_bft.rst
         rstn = ~rst
-        clk = self.crg.cd_sys.clk
+        clk = self.crg.cd_bft.clk
 
         # clk IO
         clk_io = [("clk", 0, Pins("X"))]
@@ -129,7 +135,7 @@ class BaseSoC(RvpldSoCCore):
         self.comb += rst_n_pad.eq(rstn)
 
         # AXILite2Led ------------------------------------------------------------------------------
-        self.submodules.axilite2led = axilite2led = AxiLite2Led(clk, rstn, platform)
+        self.submodules.axilite2led = axilite2led = AxiLite2Led(self.crg.cd_sys.clk, ~self.crg.cd_sys.clk, platform, "sys")
         axilite2led_region = SoCRegion(origin=0x02000000, size=0x10000)
         self.bus.add_slave(name="axilite2led", slave=axilite2led.bus, region=axilite2led_region)
 
@@ -142,7 +148,7 @@ class BaseSoC(RvpldSoCCore):
         self.comb += axilite2led.sw.eq(sw_pads)
 
         # AXILite2BFT
-        axi_bft_bus = axi.AXILiteInterface(data_width=32, address_width=5)
+        axi_bft_bus = axi.AXILiteInterface(data_width=32, address_width=5, clock_domain="bft")
         axilite2bft_region = SoCRegion(origin=0x02010000, size=0x10000)
         self.bus.add_slave(name="axilite2bft", slave=axi_bft_bus, region=axilite2bft_region)
         platform.add_extension(axi_bft_bus.get_ios("axi_bft"))
@@ -157,9 +163,13 @@ class BaseSoC(RvpldSoCCore):
         self.comb += mm2s.source.connect(input_converter.sink)
         mm2s_axis = axi.AXIStreamInterface(32)
         self.comb += input_converter.source.connect(mm2s_axis)
-        platform.add_extension(mm2s_axis.get_ios("mm2s_axis"))
+        self.submodules.input_cross_domain_converter = input_cross_domain_converter = ClockDomainCrossing(mm2s_axis.description, cd_from="sys", cd_to="bft", depth=8)
+        mm2s_axis_bft = axi.AXIStreamInterface(32)
+        self.comb += mm2s_axis.connect(input_cross_domain_converter.sink)
+        self.comb += input_cross_domain_converter.source.connect(mm2s_axis_bft)
+        platform.add_extension(mm2s_axis_bft.get_ios("mm2s_axis"))
         mm2s_axis_pads = platform.request("mm2s_axis")
-        self.comb += mm2s_axis.connect_to_pads(mm2s_axis_pads, mode="master")
+        self.comb += mm2s_axis_bft.connect_to_pads(mm2s_axis_pads, mode="master")
 
         # s2mm -------------------------------------------------------------------------------------
         self.submodules.s2mm = s2mm = LiteDRAMDMAWriter(self.sdram.crossbar.get_port())
@@ -169,9 +179,13 @@ class BaseSoC(RvpldSoCCore):
         self.comb += output_converter.source.connect(s2mm.sink)
         s2mm_axis = axi.AXIStreamInterface(32)
         self.comb += s2mm_axis.connect(output_converter.sink)
-        platform.add_extension(s2mm_axis.get_ios("s2mm_axis"))
+        self.submodules.output_cross_domain_converter = output_cross_domain_converter = ClockDomainCrossing(s2mm_axis.description, cd_from="bft", cd_to="sys", depth=8)
+        s2mm_axis_bft = axi.AXIStreamInterface(32)
+        self.comb += output_cross_domain_converter.source.connect(s2mm_axis)
+        self.comb += s2mm_axis_bft.connect(output_cross_domain_converter.sink)
+        platform.add_extension(s2mm_axis_bft.get_ios("s2mm_axis"))
         s2mm_axis_pads = platform.request("s2mm_axis")
-        self.comb += s2mm_axis.connect_to_pads(s2mm_axis_pads, mode="slave")
+        self.comb += s2mm_axis_bft.connect_to_pads(s2mm_axis_pads, mode="slave")
 
         # sync fifo -------------------------------------------------------------------------------
         #self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 400, True)
