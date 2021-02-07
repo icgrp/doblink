@@ -25,6 +25,7 @@ from litex.soc.integration.soc import SoCRegion
 from pld_axi import PldAXILiteInterface
 from axilite2led import AxiLite2Led
 from rendering_mono import RenderingMono
+from axil_cdc import AxilCDC
 
 from litedram.modules import MT41K256M16
 from litedram.phy import s7ddrphy
@@ -110,29 +111,42 @@ class BaseSoC(RvpldSoCCore):
                 ip_address = "192.168.1.50"
             )
 
-        rst = self.crg.cd_bft.rst
+        rst = self.crg.cd_sys.rst
         rstn = ~rst
-        clk = self.crg.cd_bft.clk
+        clk = self.crg.cd_sys.clk
+        rst_bft = self.crg.cd_bft.rst
+        rst_bftn = ~rst_bft
+        clk_bft = self.crg.cd_bft.clk
 
         # clk IO
-        clk_io = [("clk", 0, Pins("X"))]
+        clk_io = [("clk_sys", 0, Pins("X"))]
         clk_bft_io = [("clk_bft", 0, Pins("X"))]
         platform.add_extension(clk_io)
         platform.add_extension(clk_bft_io)
-        clk_pad = platform.request("clk")
+        clk_pad = platform.request("clk_sys")
         clk_bft_pad = platform.request("clk_bft")
         self.comb += clk_pad.eq(clk)
-        self.comb += clk_bft_pad.eq(clk)
+        self.comb += clk_bft_pad.eq(clk_bft)
 
         # rst IO
-        rst_io = [("rst", 0, Pins("X"))]
-        rst_n_io = [("rst_n", 0, Pins("X"))]
+        rst_io = [("rst_sys", 0, Pins("X"))]
+        rst_n_io = [("rst_sys_n", 0, Pins("X"))]
         platform.add_extension(rst_io)
         platform.add_extension(rst_n_io)
-        rst_pad = platform.request("rst")
-        rst_n_pad = platform.request("rst_n")
+        rst_pad = platform.request("rst_sys")
+        rst_n_pad = platform.request("rst_sys_n")
         self.comb += rst_pad.eq(rst)
         self.comb += rst_n_pad.eq(rstn)
+
+        # rst IO
+        rst_bft_io = [("rst_bft", 0, Pins("X"))]
+        rst_bft_n_io = [("rst_bft_n", 0, Pins("X"))]
+        platform.add_extension(rst_bft_io)
+        platform.add_extension(rst_bft_n_io)
+        rst_bft_pad = platform.request("rst_bft")
+        rst_bft_n_pad = platform.request("rst_bft_n")
+        self.comb += rst_bft_pad.eq(rst_bft)
+        self.comb += rst_bft_n_pad.eq(rst_bftn)
 
         # AXILite2Led ------------------------------------------------------------------------------
         self.submodules.axilite2led = axilite2led = AxiLite2Led(self.crg.cd_sys.clk, ~self.crg.cd_sys.clk, platform, "sys")
@@ -148,12 +162,17 @@ class BaseSoC(RvpldSoCCore):
         self.comb += axilite2led.sw.eq(sw_pads)
 
         # AXILite2BFT
-        axi_bft_bus = axi.AXILiteInterface(data_width=32, address_width=5, clock_domain="bft")
+        axi_bft_bus_sys = axi.AXILiteInterface(data_width=32, address_width=5, clock_domain="sys")
+        axi_bft_bus_bft = axi.AXILiteInterface(data_width=32, address_width=5, clock_domain="bft")
+        self.submodules.axil_cdc_sys2bft = axil_cdc_sys2bft = AxilCDC(clk, rst, clk_bft, rst_bft, self.platform, 'sys', 'bft')
+        axil_cdc_sys2bft.add_axi_lite_cdc()
+        self.comb += axi_bft_bus_sys.connect(axil_cdc_sys2bft.slave)
+        self.comb += axil_cdc_sys2bft.master.connect(axi_bft_bus_bft)
         axilite2bft_region = SoCRegion(origin=0x02010000, size=0x10000)
-        self.bus.add_slave(name="axilite2bft", slave=axi_bft_bus, region=axilite2bft_region)
-        platform.add_extension(axi_bft_bus.get_ios("axi_bft"))
+        self.bus.add_slave(name="axilite2bft", slave=axi_bft_bus_sys, region=axilite2bft_region)
+        platform.add_extension(axi_bft_bus_bft.get_ios("axi_bft"))
         axi_bft_pads = platform.request("axi_bft")
-        self.comb += axi_bft_bus.connect_to_pads(axi_bft_pads, mode="master")
+        self.comb += axi_bft_bus_bft.connect_to_pads(axi_bft_pads, mode="master")
 
         # mm2s -------------------------------------------------------------------------------------
         self.submodules.mm2s = mm2s = LiteDRAMDMAReader(self.sdram.crossbar.get_port())
