@@ -2,36 +2,17 @@
 <configuration>
   <!--specifications for pr_flow tool-->
   <spec name = "Xilinx_dir"         value = "/opt/Xilinx/SDx/2018.2/settings64.sh" />
-  <!--spec name = "Xilinx_dir"         value = "/scratch/unsafe/SDSoC/SDx/2018.2/settings64.sh" -->
-  <spec name = "board" value = "zcu102" />
-  <!--spec name = "board"              value = "u96" -->
-  <spec name = "part" value = "xczu9eg-ffvb1156-2-e" />
-  <!--spec name = "part"               value = "xczu3eg-sbva484-1-e" -->
-  <spec name = "device" value = "xczu9_0" />  
-  <!--spec name = "device"             value = "xczu3_0" -->
+  <spec name = "riscv_dir"          value = "/opt/riscv32i" />
+  <spec name = "board"              value = "pynq" />
+  <spec name = "part"               value = "xc7z020clg400-1" />
+  <spec name = "device"             value = "xc7z020" />  
+  <spec name = "email"              value = "youemail@seas.upenn.edu" />
+  <spec name = "maxThreads"         value = "8" />
   <spec name = "p"                  value = "0.5" />
   <spec name = "pks"                value = "49" />
-  <spec name = "nl"                 value = "32" />
-  <!-- spec name = "qsub_Xilinx_dir" value = "/scratch/unsafe/SDSoC/SDx/2018.3/settings64.sh" -->
-  <spec name = "email"              value = "youemail@seas.upenn.edu" />
-  <spec name = "bft_regen"          value = "1" />
-  <spec name = "static_regen"       value = "1" />
-  <spec name = "hls_regen"          value = "1" />
-  <spec name = "leaf_syn_regen"     value = "1" />
-  <spec name = "leaf_impl_regen"    value = "1" />
-  <spec name = "bit_gen_regen"      value = "1" />
-  <spec name = "platform_regen"     value = "0" />
-  <spec name = "mono_bft_regen"     value = "0" />
-  <spec name = "mono_regen"         value = "0" />
-  <spec name = "config_regen"       value = "1" />
-  <spec name = "qsub_grid"          value = "70s" />
-  <spec name = "maxThreads"         value = "8" />
-  <spec name = "maxJobs"            value = "32" />
-  <spec name = "qsub_Nodes"         value = "10" />
-  <spec name = "MEM"                value = "2G" />
-  <spec name = "PR_mode"            value = "noquick" />
+  <spec name = "nl"                 value = "8" />
   <spec name = "packet_bits"        value = "49" />
-  <spec name = "addr_bits"          value = "5" />
+  <spec name = "addr_bits"          value = "3" />
   <spec name = "port_bits"          value = "4" />
   <spec name = "bram_addr_bits"     value = "7" />
   <spec name = "payload_bits"       value = "32" />
@@ -39,16 +20,8 @@
   <spec name = "freespace"          value = "64" />
   <spec name = "input_port_base"    value = "2" />
   <spec name = "output_port_base"   value = "9" />
-  <spec name = "min_net"            value = "0" />
-  <spec name = "pp_0"               value = "1" />
-  <spec name = "pp_1"               value = "1" />
-
-
-
-  <clock name = 'clk_bft' period = "3.3" />
+  <spec name = "PR_mode"            value = "noquick" />
   <clock name = 'clk_user' period = "4" />
-
- 
 
 
 </configuration>

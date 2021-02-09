@@ -5,6 +5,7 @@ import os
 import subprocess
 import pr_flow.utils as utils
 import pr_flow.gen_bft as bft
+import pr_flow.bft as bft
 import pr_flow.overlay as overlay
 import pr_flow.hls as hls
 import pr_flow.syn as syn
@@ -59,6 +60,10 @@ if __name__ == '__main__':
 
   # When the input command is with '-g' arguments, the workspace will be regenerated!
   if prflow_params['gen_overlay'] == True:
+    os.system('mkdir -p workspace')
+    # generate BFT before generating the overlay
+    bft_inst = bft.bft(prflow_params)
+    bft_inst.run()
     overlay_inst = overlay.overlay(prflow_params)
     overlay_inst.run()
 

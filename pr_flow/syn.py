@@ -89,20 +89,20 @@ class syn(gen_basic):
     self.shell.re_mkdir(self.syn_dir+'/'+operator)
     self.shell.mkdir(self.syn_dir+'/'+operator+'/src')
     file_list = [
-      'src/Config_Controls.v',
-      'src/converge_ctrl.v',
-      'src/ExtractCtrl.v',
-      'src/Input_Port_Cluster.v',
-      'src/Input_Port.v',
-      'src/leaf_interface.v',
-      'src/Output_Port_Cluster.v',
-      'src/Output_Port.v',
-      'src/read_b_in.v',
-      'src/Stream_Flow_Control.v',
-      'src/write_b_in.v',
-      'src/write_b_out.v'
+      'Config_Controls.v',
+      'converge_ctrl.v',
+      'ExtractCtrl.v',
+      'Input_Port_Cluster.v',
+      'Input_Port.v',
+      'leaf_interface.v',
+      'Output_Port_Cluster.v',
+      'Output_Port.v',
+      'read_b_in.v',
+      'Stream_Flow_Control.v',
+      'write_b_in.v',
+      'write_b_out.v'
     ]
-    for name in file_list: self.shell.cp_file(self.overlay_dir+'/'+name, self.syn_dir+'/'+operator+'/'+name)
+    for name in file_list: self.shell.cp_file('common/verilog_src/'+name, self.syn_dir+'/'+operator+'/src/'+name)
 
     self.riscv_gen(operator)
 

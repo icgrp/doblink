@@ -610,10 +610,10 @@ class _tcl:
     lines_list.append('#############################################')
     lines_list.append('')
     lines_list.append('set start_time [clock seconds]')
-    lines_list.append('update_design -cell floorplan_static_i/axi_leaf -black_box')
-    lines_list.append('update_design -cell floorplan_static_i/bft_01 -black_box')
-    lines_list.append('update_design -cell floorplan_static_i/bft_10 -black_box')
-    lines_list.append('update_design -cell floorplan_static_i/bft_11 -black_box')
+    #lines_list.append('update_design -cell floorplan_static_i/axi_leaf -black_box')
+    #lines_list.append('update_design -cell floorplan_static_i/bft_01 -black_box')
+    #lines_list.append('update_design -cell floorplan_static_i/bft_10 -black_box')
+    #lines_list.append('update_design -cell floorplan_static_i/bft_11 -black_box')
     for i in range(2, int(self.prflow_params['nl'])):
       lines_list.append('update_design -cell floorplan_static_i/leaf_empty_' + str(i) + '/inst -black_box')
 
@@ -622,10 +622,10 @@ class _tcl:
     lines_list.append('## you add -buffer_ports                   ##')
     lines_list.append('#############################################')
  
-    lines_list.append('update_design -cell floorplan_static_i/axi_leaf -buffer_ports')
-    lines_list.append('update_design -cell floorplan_static_i/bft_01 -buffer_ports')
-    lines_list.append('update_design -cell floorplan_static_i/bft_10 -buffer_ports')
-    lines_list.append('update_design -cell floorplan_static_i/bft_11 -buffer_ports')
+    #lines_list.append('update_design -cell floorplan_static_i/axi_leaf -buffer_ports')
+    #lines_list.append('update_design -cell floorplan_static_i/bft_01 -buffer_ports')
+    #lines_list.append('update_design -cell floorplan_static_i/bft_10 -buffer_ports')
+    #lines_list.append('update_design -cell floorplan_static_i/bft_11 -buffer_ports')
     for i in range(2, int(self.prflow_params['nl'])):
       lines_list.append('update_design -cell floorplan_static_i/leaf_empty_' + str(i) + '/inst -buffer_ports')
 

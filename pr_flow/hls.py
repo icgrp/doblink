@@ -62,8 +62,7 @@ class hls(gen_basic):
 
   def run(self, operator):
     # mk work directory
-    if self.prflow_params['hls_regen']=='1':
-      self.shell.mkdir(self.hls_dir)
+    self.shell.mkdir(self.hls_dir)
     
     # generate shell files for qsub run and local run
     self.create_shell_file() 

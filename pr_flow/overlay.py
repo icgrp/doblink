@@ -53,15 +53,15 @@ class overlay(gen_basic):
   # qsub_main.sh will be used for qsub compilation  
   def return_qsub_main_sh_list_local(self):
     # go through all the files and qsub the ip compilation tasks
-    lines_list = self.shell.return_qsub_scan_sh_list('./dummy_repo', 'qsub_run.sh',  '', 'dummy_')
+    # lines_list = self.shell.return_qsub_scan_sh_list('./dummy_repo', 'qsub_run.sh',  '', 'dummy_')
     hold_jid = 'dummy'
 
     # after the ip compilation is done, we can construct the vivado momo bft project
-    lines_list.append(self.shell.return_qsub_command_str('./qsub_project_syn2gen.sh', hold_jid, 'overlay_syn2gen'))
+    # lines_list.append(self.shell.return_qsub_command_str('./qsub_project_syn2gen.sh', hold_jid, 'overlay_syn2gen'))
 
     # we can accelerate the synthesis by compile each out-of-context modules in parallel
-    lines_list.append(self.shell.return_qsub_command_str('./qsub_sub_syn.sh', 'overlay_syn2gen', 'overlay_sub_syn'))
-    return lines_list
+    # lines_list.append(self.shell.return_qsub_command_str('./qsub_sub_syn.sh', 'overlay_syn2gen', 'overlay_sub_syn'))
+    # return lines_list
 
 
   # qsub_sub_syn.sh will go through all the out-of-context module directories and qsub each 
@@ -101,9 +101,9 @@ class overlay(gen_basic):
     self.shell.write_lines(self.overlay_dir+'/mk_overlay.tcl', self.tcl.return_mk_overlay_tcl_list(), False)
 
     self.shell.write_lines(self.overlay_dir+'/main.sh', self.return_main_sh_list_local(), True)
-    self.shell.write_lines(self.overlay_dir+'/qsub_main.sh', self.return_qsub_main_sh_list_local(), True)
+    #self.shell.write_lines(self.overlay_dir+'/qsub_main.sh', self.return_qsub_main_sh_list_local(), True)
     self.shell.write_lines(self.overlay_dir+'/qsub_project_syn2gen.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'project_syn2gen.tcl'), True)
-    self.shell.write_lines(self.overlay_dir+'/qsub_sub_syn.sh', self.return_sub_syn_sh_list_local(), True)
+    #self.shell.write_lines(self.overlay_dir+'/qsub_sub_syn.sh', self.return_sub_syn_sh_list_local(), True)
     self.shell.write_lines(self.overlay_dir+'/qsub_project_syn2dcp.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'project_syn2dcp.tcl'), True)
     self.shell.write_lines(self.overlay_dir+'/qsub_mk_overlay.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'mk_overlay.tcl'), True)
 
