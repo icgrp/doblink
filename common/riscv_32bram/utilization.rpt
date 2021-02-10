@@ -1,11 +1,11 @@
 Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2018.2 (lin64) Build 2258646 Thu Jun 14 20:02:38 MDT 2018
-| Date         : Sun Jan 17 01:56:00 2021
+| Date         : Wed Feb 10 11:28:20 2021
 | Host         : ylxiao-OptiPlex-7050 running 64-bit Ubuntu 18.04.2 LTS
 | Command      : report_utilization -hierarchical
 | Design       : leaf
-| Device       : xczu9egffvb1156-2
+| Device       : xczu3egsbva484-1
 | Design State : Synthesized
 ------------------------------------------------------------------------------------
 
@@ -21,10 +21,10 @@ Table of Contents
 +--------------------------------------------------------+-------------------------------------------+------------+------------+---------+------+------+--------+--------+------+--------------+
 |                        Instance                        |                   Module                  | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs | RAMB36 | RAMB18 | URAM | DSP48 Blocks |
 +--------------------------------------------------------+-------------------------------------------+------------+------------+---------+------+------+--------+--------+------+--------------+
-| leaf                                                   |                                     (top) |       4456 |       4344 |     112 |    0 | 4116 |     26 |     11 |    0 |            0 |
-|   leaf_interface_inst                                  |                            leaf_interface |       1952 |       1920 |      32 |    0 | 2669 |     10 |     11 |    0 |            0 |
-|     ConCtrl                                            |                           Config_Controls |         34 |         34 |       0 |    0 |  170 |      0 |      0 |    0 |            0 |
-|     ExCtrl                                             |                           Extract_Control |        181 |        181 |       0 |    0 |  110 |      0 |      0 |    0 |            0 |
+| leaf                                                   |                                     (top) |       4436 |       4324 |     112 |    0 | 4100 |     26 |     11 |    0 |            0 |
+|   leaf_interface_inst                                  |                            leaf_interface |       1932 |       1900 |      32 |    0 | 2653 |     10 |     11 |    0 |            0 |
+|     ConCtrl                                            |                           Config_Controls |         44 |         44 |       0 |    0 |  160 |      0 |      0 |    0 |            0 |
+|     ExCtrl                                             |                           Extract_Control |        180 |        180 |       0 |    0 |  109 |      0 |      0 |    0 |            0 |
 |     riscv_config                                       |                              instr_config |        138 |        138 |       0 |    0 |  210 |      0 |      1 |    0 |            0 |
 |       (riscv_config)                                   |                              instr_config |          0 |          0 |       0 |    0 |    1 |      0 |      0 |    0 |            0 |
 |       xpm_fifo_async_inst                              |                 xpm_fifo_async__xdcDup__1 |        138 |        138 |       0 |    0 |  209 |      0 |      1 |    0 |            0 |
@@ -50,12 +50,12 @@ Table of Contents
 |             (xpm_fifo_rst_inst)                        |                   xpm_fifo_rst__xdcDup__1 |         16 |         16 |       0 |    0 |   13 |      0 |      0 |    0 |            0 |
 |             gen_rst_ic.rrst_wr_inst                    |                      xpm_cdc_sync_rst__12 |          0 |          0 |       0 |    0 |    2 |      0 |      0 |    0 |            0 |
 |             gen_rst_ic.wrst_rd_inst                    |                      xpm_cdc_sync_rst__11 |          0 |          0 |       0 |    0 |    2 |      0 |      0 |    0 |            0 |
-|     sfc                                                |                       Stream_Flow_Control |       1599 |       1567 |      32 |    0 | 2179 |     10 |     10 |    0 |            0 |
-|       ConCtrl                                          |                             converge_ctrl |        337 |        305 |      32 |    0 |  271 |      0 |      0 |    0 |            0 |
-|         (ConCtrl)                                      |                             converge_ctrl |         42 |         42 |       0 |    0 |  162 |      0 |      0 |    0 |            0 |
-|         rise_detect_u                                  |                               rise_detect |         35 |         35 |       0 |    0 |   15 |      0 |      0 |    0 |            0 |
-|         xpm_fifo_sync_inst                             |                             xpm_fifo_sync |        260 |        228 |      32 |    0 |   94 |      0 |      0 |    0 |            0 |
-|           (xpm_fifo_sync_inst)                         |                             xpm_fifo_sync |        184 |        184 |       0 |    0 |    0 |      0 |      0 |    0 |            0 |
+|     sfc                                                |                       Stream_Flow_Control |       1570 |       1538 |      32 |    0 | 2174 |     10 |     10 |    0 |            0 |
+|       ConCtrl                                          |                             converge_ctrl |        326 |        294 |      32 |    0 |  266 |      0 |      0 |    0 |            0 |
+|         (ConCtrl)                                      |                             converge_ctrl |         43 |         43 |       0 |    0 |  157 |      0 |      0 |    0 |            0 |
+|         rise_detect_u                                  |                               rise_detect |         30 |         30 |       0 |    0 |   15 |      0 |      0 |    0 |            0 |
+|         xpm_fifo_sync_inst                             |                             xpm_fifo_sync |        253 |        221 |      32 |    0 |   94 |      0 |      0 |    0 |            0 |
+|           (xpm_fifo_sync_inst)                         |                             xpm_fifo_sync |        177 |        177 |       0 |    0 |    0 |      0 |      0 |    0 |            0 |
 |           xpm_fifo_base_inst                           |             xpm_fifo_base__parameterized0 |         76 |         44 |      32 |    0 |   94 |      0 |      0 |    0 |            0 |
 |             (xpm_fifo_base_inst)                       |             xpm_fifo_base__parameterized0 |          2 |          2 |       0 |    0 |   21 |      0 |      0 |    0 |            0 |
 |             gen_sdpram.xpm_memory_base_inst            |           xpm_memory_base__parameterized0 |         32 |          0 |      32 |    0 |   49 |      0 |      0 |    0 |            0 |
@@ -241,11 +241,11 @@ Table of Contents
 |           xpm_memory_tdpram_inst_1                     |                         xpm_memory_tdpram |          2 |          2 |       0 |    0 |    0 |      1 |      0 |    0 |            0 |
 |             (xpm_memory_tdpram_inst_1)                 |                         xpm_memory_tdpram |          0 |          0 |       0 |    0 |    0 |      0 |      0 |    0 |            0 |
 |             xpm_memory_base_inst                       |           xpm_memory_base__parameterized1 |          2 |          2 |       0 |    0 |    0 |      1 |      0 |    0 |            0 |
-|       opc                                              |                       Output_Port_Cluster |        671 |        671 |       0 |    0 |  928 |      0 |      5 |    0 |            0 |
-|         output_port_cluster[0].OPort                   |                    Output_Port__xdcDup__1 |        180 |        180 |       0 |    0 |  224 |      0 |      1 |    0 |            0 |
-|           (output_port_cluster[0].OPort)               |                    Output_Port__xdcDup__1 |         25 |         25 |       0 |    0 |   15 |      0 |      0 |    0 |            0 |
-|           xpm_fifo_async_inst                          |                 xpm_fifo_async__xdcDup__2 |        155 |        155 |       0 |    0 |  209 |      0 |      1 |    0 |            0 |
-|             (xpm_fifo_async_inst)                      |                 xpm_fifo_async__xdcDup__2 |         18 |         18 |       0 |    0 |    0 |      0 |      0 |    0 |            0 |
+|       opc                                              |                       Output_Port_Cluster |        653 |        653 |       0 |    0 |  928 |      0 |      5 |    0 |            0 |
+|         output_port_cluster[0].OPort                   |                    Output_Port__xdcDup__1 |        174 |        174 |       0 |    0 |  224 |      0 |      1 |    0 |            0 |
+|           (output_port_cluster[0].OPort)               |                    Output_Port__xdcDup__1 |         14 |         14 |       0 |    0 |   15 |      0 |      0 |    0 |            0 |
+|           xpm_fifo_async_inst                          |                 xpm_fifo_async__xdcDup__2 |        160 |        160 |       0 |    0 |  209 |      0 |      1 |    0 |            0 |
+|             (xpm_fifo_async_inst)                      |                 xpm_fifo_async__xdcDup__2 |         23 |         23 |       0 |    0 |    0 |      0 |      0 |    0 |            0 |
 |             gnuram_async_fifo.xpm_fifo_base_inst       |                  xpm_fifo_base__xdcDup__2 |        137 |        137 |       0 |    0 |  209 |      0 |      1 |    0 |            0 |
 |               (gnuram_async_fifo.xpm_fifo_base_inst)   |                  xpm_fifo_base__xdcDup__2 |          5 |          5 |       0 |    0 |   34 |      0 |      0 |    0 |            0 |
 |               gen_cdc_pntr.rd_pntr_cdc_dc_inst         |           xpm_cdc_gray__parameterized0__9 |         11 |         11 |       0 |    0 |   24 |      0 |      0 |    0 |            0 |
@@ -267,8 +267,8 @@ Table of Contents
 |                 (xpm_fifo_rst_inst)                    |                   xpm_fifo_rst__xdcDup__7 |         16 |         16 |       0 |    0 |   13 |      0 |      0 |    0 |            0 |
 |                 gen_rst_ic.rrst_wr_inst                |                      xpm_cdc_sync_rst__24 |          0 |          0 |       0 |    0 |    2 |      0 |      0 |    0 |            0 |
 |                 gen_rst_ic.wrst_rd_inst                |                      xpm_cdc_sync_rst__23 |          0 |          0 |       0 |    0 |    2 |      0 |      0 |    0 |            0 |
-|         output_port_cluster[1].OPort                   |                    Output_Port__xdcDup__2 |        115 |        115 |       0 |    0 |  176 |      0 |      1 |    0 |            0 |
-|           (output_port_cluster[1].OPort)               |                    Output_Port__xdcDup__2 |         13 |         13 |       0 |    0 |   15 |      0 |      0 |    0 |            0 |
+|         output_port_cluster[1].OPort                   |                    Output_Port__xdcDup__2 |        109 |        109 |       0 |    0 |  176 |      0 |      1 |    0 |            0 |
+|           (output_port_cluster[1].OPort)               |                    Output_Port__xdcDup__2 |          7 |          7 |       0 |    0 |   15 |      0 |      0 |    0 |            0 |
 |           xpm_fifo_async_inst                          |                 xpm_fifo_async__xdcDup__3 |        102 |        102 |       0 |    0 |  161 |      0 |      1 |    0 |            0 |
 |             (xpm_fifo_async_inst)                      |                 xpm_fifo_async__xdcDup__3 |          3 |          3 |       0 |    0 |    0 |      0 |      0 |    0 |            0 |
 |             gnuram_async_fifo.xpm_fifo_base_inst       |                  xpm_fifo_base__xdcDup__3 |         99 |         99 |       0 |    0 |  161 |      0 |      1 |    0 |            0 |
@@ -290,8 +290,8 @@ Table of Contents
 |                 (xpm_fifo_rst_inst)                    |                   xpm_fifo_rst__xdcDup__8 |         14 |         14 |       0 |    0 |   13 |      0 |      0 |    0 |            0 |
 |                 gen_rst_ic.rrst_wr_inst                |                      xpm_cdc_sync_rst__26 |          0 |          0 |       0 |    0 |    2 |      0 |      0 |    0 |            0 |
 |                 gen_rst_ic.wrst_rd_inst                |                      xpm_cdc_sync_rst__25 |          0 |          0 |       0 |    0 |    2 |      0 |      0 |    0 |            0 |
-|         output_port_cluster[2].OPort                   |                    Output_Port__xdcDup__3 |        108 |        108 |       0 |    0 |  176 |      0 |      1 |    0 |            0 |
-|           (output_port_cluster[2].OPort)               |                    Output_Port__xdcDup__3 |          6 |          6 |       0 |    0 |   15 |      0 |      0 |    0 |            0 |
+|         output_port_cluster[2].OPort                   |                    Output_Port__xdcDup__3 |        109 |        109 |       0 |    0 |  176 |      0 |      1 |    0 |            0 |
+|           (output_port_cluster[2].OPort)               |                    Output_Port__xdcDup__3 |          7 |          7 |       0 |    0 |   15 |      0 |      0 |    0 |            0 |
 |           xpm_fifo_async_inst                          |                 xpm_fifo_async__xdcDup__4 |        102 |        102 |       0 |    0 |  161 |      0 |      1 |    0 |            0 |
 |             (xpm_fifo_async_inst)                      |                 xpm_fifo_async__xdcDup__4 |          3 |          3 |       0 |    0 |    0 |      0 |      0 |    0 |            0 |
 |             gnuram_async_fifo.xpm_fifo_base_inst       |                  xpm_fifo_base__xdcDup__4 |         99 |         99 |       0 |    0 |  161 |      0 |      1 |    0 |            0 |
@@ -314,9 +314,9 @@ Table of Contents
 |                 gen_rst_ic.rrst_wr_inst                |                      xpm_cdc_sync_rst__28 |          0 |          0 |       0 |    0 |    2 |      0 |      0 |    0 |            0 |
 |                 gen_rst_ic.wrst_rd_inst                |                      xpm_cdc_sync_rst__27 |          0 |          0 |       0 |    0 |    2 |      0 |      0 |    0 |            0 |
 |         output_port_cluster[3].OPort                   |                    Output_Port__xdcDup__4 |        154 |        154 |       0 |    0 |  176 |      0 |      1 |    0 |            0 |
-|           (output_port_cluster[3].OPort)               |                    Output_Port__xdcDup__4 |         14 |         14 |       0 |    0 |   15 |      0 |      0 |    0 |            0 |
-|           xpm_fifo_async_inst                          |                 xpm_fifo_async__xdcDup__5 |        140 |        140 |       0 |    0 |  161 |      0 |      1 |    0 |            0 |
-|             (xpm_fifo_async_inst)                      |                 xpm_fifo_async__xdcDup__5 |         41 |         41 |       0 |    0 |    0 |      0 |      0 |    0 |            0 |
+|           (output_port_cluster[3].OPort)               |                    Output_Port__xdcDup__4 |         20 |         20 |       0 |    0 |   15 |      0 |      0 |    0 |            0 |
+|           xpm_fifo_async_inst                          |                 xpm_fifo_async__xdcDup__5 |        134 |        134 |       0 |    0 |  161 |      0 |      1 |    0 |            0 |
+|             (xpm_fifo_async_inst)                      |                 xpm_fifo_async__xdcDup__5 |         35 |         35 |       0 |    0 |    0 |      0 |      0 |    0 |            0 |
 |             gnuram_async_fifo.xpm_fifo_base_inst       |                  xpm_fifo_base__xdcDup__5 |         99 |         99 |       0 |    0 |  161 |      0 |      1 |    0 |            0 |
 |               (gnuram_async_fifo.xpm_fifo_base_inst)   |                  xpm_fifo_base__xdcDup__5 |          0 |          0 |       0 |    0 |    2 |      0 |      0 |    0 |            0 |
 |               gen_cdc_pntr.rd_pntr_cdc_dc_inst         |          xpm_cdc_gray__parameterized0__15 |         11 |         11 |       0 |    0 |   24 |      0 |      0 |    0 |            0 |
@@ -336,10 +336,10 @@ Table of Contents
 |                 (xpm_fifo_rst_inst)                    |                  xpm_fifo_rst__xdcDup__10 |         14 |         14 |       0 |    0 |   13 |      0 |      0 |    0 |            0 |
 |                 gen_rst_ic.rrst_wr_inst                |                      xpm_cdc_sync_rst__30 |          0 |          0 |       0 |    0 |    2 |      0 |      0 |    0 |            0 |
 |                 gen_rst_ic.wrst_rd_inst                |                      xpm_cdc_sync_rst__29 |          0 |          0 |       0 |    0 |    2 |      0 |      0 |    0 |            0 |
-|         output_port_cluster[4].OPort                   |                               Output_Port |        114 |        114 |       0 |    0 |  176 |      0 |      1 |    0 |            0 |
-|           (output_port_cluster[4].OPort)               |                               Output_Port |         12 |         12 |       0 |    0 |   15 |      0 |      0 |    0 |            0 |
-|           xpm_fifo_async_inst                          |                            xpm_fifo_async |        102 |        102 |       0 |    0 |  161 |      0 |      1 |    0 |            0 |
-|             (xpm_fifo_async_inst)                      |                            xpm_fifo_async |          3 |          3 |       0 |    0 |    0 |      0 |      0 |    0 |            0 |
+|         output_port_cluster[4].OPort                   |                               Output_Port |        107 |        107 |       0 |    0 |  176 |      0 |      1 |    0 |            0 |
+|           (output_port_cluster[4].OPort)               |                               Output_Port |          6 |          6 |       0 |    0 |   15 |      0 |      0 |    0 |            0 |
+|           xpm_fifo_async_inst                          |                            xpm_fifo_async |        101 |        101 |       0 |    0 |  161 |      0 |      1 |    0 |            0 |
+|             (xpm_fifo_async_inst)                      |                            xpm_fifo_async |          2 |          2 |       0 |    0 |    0 |      0 |      0 |    0 |            0 |
 |             gnuram_async_fifo.xpm_fifo_base_inst       |                             xpm_fifo_base |         99 |         99 |       0 |    0 |  161 |      0 |      1 |    0 |            0 |
 |               (gnuram_async_fifo.xpm_fifo_base_inst)   |                             xpm_fifo_base |          0 |          0 |       0 |    0 |    2 |      0 |      0 |    0 |            0 |
 |               gen_cdc_pntr.rd_pntr_cdc_dc_inst         |              xpm_cdc_gray__parameterized0 |         11 |         11 |       0 |    0 |   24 |      0 |      0 |    0 |            0 |
@@ -385,4 +385,4 @@ Table of Contents
 +--------------------------------------------------------+-------------------------------------------+------------+------------+---------+------+------+--------+--------+------+--------------+
 
 
-report_utilization: Time (s): cpu = 00:00:00.58 ; elapsed = 00:00:00.62 . Memory (MB): peak = 2978.141 ; gain = 0.000 ; free physical = 11087 ; free virtual = 24489
+report_utilization: Time (s): cpu = 00:00:00.21 ; elapsed = 00:00:00.25 . Memory (MB): peak = 2882.629 ; gain = 0.000 ; free physical = 18584 ; free virtual = 26923

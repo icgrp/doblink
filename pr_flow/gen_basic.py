@@ -605,7 +605,8 @@ class _tcl:
     lines_list.append('set start_time [clock seconds]')
     lines_list.append('open_checkpoint ./floorplan_static.dcp')
     # for i in range(2, int(self.prflow_params['nl'])):
-    for i in range(3, 9):
+    lines_list.append('read_checkpoint -cell floorplan_static_i/leaf_empty_3/inst ./dummy_repo/riscv_32bram/page_netlist.dcp')
+    for i in range(4, 9):
       lines_list.append('read_checkpoint -cell floorplan_static_i/leaf_empty_' + str(i) + '/inst ./dummy_repo/user_kernel/page_netlist.dcp')
     lines_list.append('set end_time [clock seconds]')
     lines_list.append('set total_seconds [expr $end_time - $start_time]')

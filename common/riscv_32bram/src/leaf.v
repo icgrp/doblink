@@ -59,7 +59,7 @@ module leaf(
     leaf_interface #(
         .PACKET_BITS(49 ),
         .PAYLOAD_BITS(32 ), 
-        .NUM_LEAF_BITS(5),
+        .NUM_LEAF_BITS(4),
         .NUM_PORT_BITS(4),
         .NUM_ADDR_BITS(7),
         .NUM_IN_PORTS(5), 

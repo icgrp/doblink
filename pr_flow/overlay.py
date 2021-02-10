@@ -31,8 +31,10 @@ class overlay(gen_basic):
                 ]
     self.shell.write_lines(self.overlay_dir+'/dummy_repo/'+fun_name+'/dummy.tcl', self.tcl.return_syn_page_tcl_list(fun_name, file_list))
     self.shell.write_lines(self.overlay_dir+'/dummy_repo/'+fun_name+'/run.sh',      self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'dummy.tcl'), True)
-    self.shell.write_lines(self.overlay_dir+'/dummy_repo/'+fun_name+'/qsub_run.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'dummy.tcl'), True)
+    #self.shell.write_lines(self.overlay_dir+'/dummy_repo/'+fun_name+'/qsub_run.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'dummy.tcl'), True)
     self.shell.write_lines(self.overlay_dir+'/dummy_repo/'+fun_name+'/'+'leaf.v', self.verilog.return_page_v_list(0, fun_name, 1, 1, True))
+    self.shell.cp_dir('common/riscv_32bram', self.overlay_dir+'/dummy_repo/')
+    self.shell.write_lines(self.overlay_dir+'/dummy_repo/riscv_32bram/run.sh',      self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'dummy.tcl'), True)
 
 
   # main.sh will be used for local compilation
@@ -42,6 +44,9 @@ class overlay(gen_basic):
     lines_list.append('source '+self.prflow_params['Xilinx_dir'])
     # compile the dummy logic for each page
     lines_list.append('cd ./dummy_repo/user_kernel')
+    lines_list.append('./run.sh')
+    lines_list.append('cd -')
+    lines_list.append('cd ./dummy_repo/riscv_32bram')
     lines_list.append('./run.sh')
     lines_list.append('cd -')
     lines_list.append('vivado -mode batch -source project_syn2gen.tcl')
