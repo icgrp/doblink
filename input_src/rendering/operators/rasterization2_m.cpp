@@ -340,9 +340,14 @@ static void rasterization2_odd (
 	bit16 max_index[1];
 	bit32 out_tmp;
 	static CandidatePixel fragment[500];
+	static int in_cnt=0;
+	static int out1_cnt=0;
+	static int out2_cnt=0;
 
 	bit32 tmp = Input_1.read();
 	flag = (bit2) tmp(1,0);
+	in_cnt++;
+	//printf("in1 %d\n", in_cnt);
 
 	triangle_2d_same.x0=bit8(tmp(15,8));
 	triangle_2d_same.y0=bit8(tmp(23,16));
@@ -350,6 +355,8 @@ static void rasterization2_odd (
 
 
 	tmp = Input_1.read();
+	in_cnt++;
+	//printf("in1 %d\n", in_cnt);
 	triangle_2d_same.y1=bit8(tmp(7,0));
 	triangle_2d_same.x2=bit8(tmp(15,8));
 	triangle_2d_same.y2=bit8(tmp(23,16));
@@ -357,11 +364,15 @@ static void rasterization2_odd (
 
 
 	tmp = Input_1.read();
+	in_cnt++;
+	//printf("in1 %d\n", in_cnt);
 	max_index[0]= bit16(tmp(15,0));
 	max_min[0]=bit8(tmp(23,16));
 	max_min[1]=bit8(tmp(31,24));
 
 	tmp = Input_1.read();
+	in_cnt++;
+	//printf("in1 %d\n", in_cnt);
 	max_min[2]=bit8(tmp(7,0));
 	max_min[3]=bit8(tmp(15,8));
 	max_min[4]=bit8(tmp(23, 16));
@@ -373,7 +384,11 @@ static void rasterization2_odd (
   if ( flag )
   {
 	  Output_1.write(bit32(i_top));
+	  out1_cnt++;
+	  //printf("out1 %d\n", out1_cnt);
 	  Output_2.write(bit32(i_bot));
+	  out2_cnt++;
+	  //printf("out2 %d\n", out2_cnt);
 #ifdef PROFILE
 		rasterization2_m_out_1++;
 		rasterization2_m_out_2++;
@@ -405,7 +420,11 @@ static void rasterization2_odd (
   }
 
   Output_1.write(bit32(i_top));
+  out1_cnt++;
+  //printf("out1 %d\n", out1_cnt);
   Output_2.write(bit32(i_bot));
+  out2_cnt++;
+  //printf("out2 %d\n", out2_cnt);
 #ifdef PROFILE
 		rasterization2_m_out_1++;
 		rasterization2_m_out_2++;
@@ -419,6 +438,8 @@ static void rasterization2_odd (
 	  out_tmp(31, 24) = fragment[j].color;
 	  if( y_tmp > 127){
 		  Output_1.write(out_tmp);
+		  out1_cnt++;
+		  //printf("out1 %d\n", out1_cnt);
 #ifdef PROFILE
 		rasterization2_m_out_1++;
 #endif
@@ -426,6 +447,8 @@ static void rasterization2_odd (
 	  else
 	  {
 		  Output_2.write(out_tmp);
+		  out2_cnt++;
+		  //printf("out2 %d\n", out2_cnt);
 #ifdef PROFILE
 		rasterization2_m_out_2++;
 #endif
@@ -458,14 +481,21 @@ static void rasterization2_even (
 	bit16 max_index[1];
 	bit32 out_tmp;
 	static CandidatePixel fragment[500];
+	static int in2_cnt = 0;
+	static int out3_cnt = 0;
+	static int out4_cnt = 0;
 
 	bit32 tmp = Input_1.read();
+	in2_cnt++;
+	//printf("in2 %d\n", in2_cnt);
 	flag = (bit2) tmp(1,0);
 	triangle_2d_same.x0=bit8(tmp(15, 8));
 	triangle_2d_same.y0=bit8(tmp(23,16));
 	triangle_2d_same.x1=bit8(tmp(31,24));
 
 	tmp = Input_1.read();
+	in2_cnt++;
+	//printf("in2 %d\n", in2_cnt);
 	triangle_2d_same.y1=bit8(tmp(7,0));
 	triangle_2d_same.x2=bit8(tmp(15,8));
 	triangle_2d_same.y2=bit8(tmp(23,16));
@@ -473,11 +503,15 @@ static void rasterization2_even (
 
 
 	tmp = Input_1.read();
+	in2_cnt++;
+	//printf("in2 %d\n", in2_cnt);
 	max_index[0]= bit16(tmp(15,0));
 	max_min[0]= bit8(tmp(23,16));
 	max_min[1]= bit8(tmp(31,24));
 
 	tmp = Input_1.read();
+	in2_cnt++;
+	//printf("in2 %d\n", in2_cnt);
 	max_min[2]= bit8(tmp(7,0));
 	max_min[3]= bit8(tmp(15,8));
 	max_min[4]=bit8(tmp(23, 16));
@@ -490,8 +524,12 @@ static void rasterization2_even (
   {
 	  unsigned int out_tmp = i_top;
 	  Output_1.write(out_tmp);
+	  out3_cnt++;
+	  //printf("out3 %d\n", out3_cnt);
 	  out_tmp = i_bot;
 	  Output_2.write(out_tmp);
+	  out4_cnt++;
+	  //printf("out4 %d\n", out4_cnt);
 #ifdef PROFILE
 		rasterization2_m_out_3++;
 		rasterization2_m_out_4++;
@@ -525,7 +563,11 @@ static void rasterization2_even (
   }
 
   Output_1.write(bit32(i_top));
+  out3_cnt++;
+  //printf("out3 %d\n", out3_cnt);
   Output_2.write(bit32(i_bot));
+  out4_cnt++;
+  //printf("out4 %d\n", out4_cnt);
 #ifdef PROFILE
 		rasterization2_m_out_3++;
 		rasterization2_m_out_4++;
@@ -540,6 +582,8 @@ static void rasterization2_even (
 	  if(y_tmp > 127)
 	  {
 		  Output_1.write(out_tmp);
+		  out3_cnt++;
+		 //printf("out3 %d\n", out3_cnt);
 #ifdef PROFILE
 		rasterization2_m_out_3++;
 #endif
@@ -547,6 +591,8 @@ static void rasterization2_even (
 	  else
 	  {
 		  Output_2.write(out_tmp);
+		  out4_cnt++;
+		  //printf("out4 %d\n", out4_cnt);
 #ifdef PROFILE
 		rasterization2_m_out_4++;
 #endif

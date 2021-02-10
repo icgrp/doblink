@@ -13,8 +13,6 @@
 #include "../operators/zculling_bot.h"
 #include "../operators/coloringFB_bot_m.h"
 #include "../operators/coloringFB_top_m.h"
-
-
 //#define PROFILE
 
 #ifdef PROFILE
@@ -111,6 +109,7 @@ void top (
   hls::stream<ap_uint<32> > Output_cfb_bot("sb14");
 #pragma HLS STREAM variable=Output_cfb_bot depth=default_depth
 
+  hls::stream<ap_uint<32> > Output_pp("sb15");
 
   // processing NUM_3D_TRI 3D triangles
   TRIANGLES: for (int i = 0; i < NUM_3D_TRI/2; i++)

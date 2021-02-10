@@ -432,20 +432,20 @@ void rasterization1 (
 		Output_1.write(tmp2);
 		Output_1.write(tmp3);
 		Output_1.write(tmp4);
-		//printf("out1: %08x\n", (unsigned int)tmp1);
-		//printf("out1: %08x\n", (unsigned int)tmp2);
-		//printf("out1: %08x\n", (unsigned int)tmp3);
-		//printf("out1: %08x\n", (unsigned int)tmp4);
+		//printf("0x%08x,\n", (unsigned int)tmp1);
+		//printf("0x%08x,\n", (unsigned int)tmp2);
+		//printf("0x%08x,\n", (unsigned int)tmp3);
+		//printf("0x%08x,\n", (unsigned int)tmp4);
 		parity = 1;
 	}else{
 		Output_2.write(tmp1);
 		Output_2.write(tmp2);
 		Output_2.write(tmp3);
 		Output_2.write(tmp4);
-		//printf("out2: %08x\n", (unsigned int)tmp1);
-		//printf("out2: %08x\n", (unsigned int)tmp2);
-		//printf("out2: %08x\n", (unsigned int)tmp3);
-		//printf("out2: %08x\n", (unsigned int)tmp4);
+		//printf("0x%08x,\n", (unsigned int)tmp1);
+		//printf("0x%08x,\n", (unsigned int)tmp2);
+		//printf("0x%08x,\n", (unsigned int)tmp3);
+		//printf("0x%08x,\n", (unsigned int)tmp4);
 		parity = 0;
 	}
 #ifdef PROFILE
@@ -503,20 +503,20 @@ void rasterization1 (
 	Output_1.write(tmp2);
 	Output_1.write(tmp3);
 	Output_1.write(tmp4);
-	//printf("out1: %08x\n", (unsigned int)tmp1);
-	//printf("out1: %08x\n", (unsigned int)tmp2);
-	//printf("out1: %08x\n", (unsigned int)tmp3);
-	//printf("out1: %08x\n", (unsigned int)tmp4);
+	//printf("0x%08x,\n", (unsigned int)tmp1);
+	//printf("0x%08x,\n", (unsigned int)tmp2);
+	//printf("0x%08x,\n", (unsigned int)tmp3);
+	//printf("0x%08x,\n", (unsigned int)tmp4);
 	parity = 1;
   }else{
 	Output_2.write(tmp1);
 	Output_2.write(tmp2);
 	Output_2.write(tmp3);
 	Output_2.write(tmp4);
-	//printf("out2: %08x\n", (unsigned int)tmp1);
-	//printf("out2: %08x\n", (unsigned int)tmp2);
-	//printf("out2: %08x\n", (unsigned int)tmp3);
-	//printf("out2: %08x\n", (unsigned int)tmp4);
+	//printf("0x%08x,\n", (unsigned int)tmp1);
+	//printf("0x%08x,\n", (unsigned int)tmp2);
+	//printf("0x%08x,\n", (unsigned int)tmp3);
+	//printf("0x%08x,\n", (unsigned int)tmp4);
 	parity = 0;
   }
 #ifdef PROFILE
@@ -540,6 +540,7 @@ void data_redir_m (
   bit32 input_mi;
   bit32 input_hi;
   bit128 input_tmp;
+  static int cnt = 0;
 
   hls::stream<ap_uint<32> > Output_1_1;
   hls::stream<ap_uint<32> > Output_2_2;
@@ -547,14 +548,32 @@ void data_redir_m (
   Triangle_2D triangle_2ds_2;
 
 
-
   input_lo = Input_1.read();
+  //printf("0x%08x,\n", input_lo.to_int() );
   input_mi = Input_1.read();
+  //printf("0x%08x,\n", input_mi.to_int() );
   input_hi = Input_1.read();
-
+  //printf("0x%08x,\n", input_hi.to_int() );
+  //Output_3.write(cnt);
+  //cnt++;
+  //Output_3.write(input_lo);
+#ifdef RISCV1
+  //unsigned int data;
+  //data = input_lo;
+  //print_hex(data, 8);
+  //print_str(": ");
+  print_dec(cnt);
+  print_str("\n");
+  cnt++;
+#else
   //printf("in: %08x\n", (unsigned int)input_lo);
   //printf("in: %08x\n", (unsigned int)input_mi);
-  //printf("in: %08x\n", (unsigned int)input_hi);
+  unsigned int data;
+  data = input_lo;
+  //printf("cnt = %08x\n", input_lo.to_int());
+  cnt++;
+#endif
+
 
 #ifdef PROFILE
   data_redir_m_in_1+=3;

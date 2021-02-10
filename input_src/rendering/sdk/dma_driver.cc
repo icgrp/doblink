@@ -7,7 +7,6 @@
 
 
 
-
 #if defined(XPAR_UARTNS550_0_BASEADDR)
 /*****************************************************************************/
 /*
@@ -218,6 +217,8 @@ int dma_inst::TxSetup(XAxiDma * AxiDmaInstPtr)
 		return XST_FAILURE;
 	}
 
+	//printf("set up OK\n");
+
 	return XST_SUCCESS;
 }
 
@@ -281,6 +282,7 @@ int dma_inst::SendPackets()
 
 	for (i = 0; i < number_of_packets; i++) {
 		u32 CrBits = 0;
+		//printf("send %d packets\n", i);
 
 		Status = XAxiDma_BdSetBufAddr(CurBdPtr, BufAddr);
 		if (Status != XST_SUCCESS) {
@@ -338,7 +340,7 @@ int dma_inst::SendPackets()
 		return XST_FAILURE;
 	}
 
-
+	//printf("tx send OK\n");
 	return XST_SUCCESS;
 }
 
@@ -352,9 +354,14 @@ int dma_inst::CleanTxBuffer()
 	TxRingPtr = XAxiDma_GetTxRing(&AxiDma);
 
 	/* Wait until the TX transactions are done */
+	int total_num = 0;
 	while (ProcessedBdCount < number_of_packets) {
 		ProcessedBdCount += XAxiDma_BdRingFromHw(TxRingPtr,
 					       XAXIDMA_ALL_BDS, &BdPtr);
+		if(total_num<100){
+			//printf("Process %d packets\n", ProcessedBdCount);
+			total_num++;
+		}
 	}
 
 	//XTime_GetTime(&End);
@@ -367,7 +374,7 @@ int dma_inst::CleanTxBuffer()
 		return XST_FAILURE;
 	}
 
-	//print("DMA send success!\n");
+	print("DMA send success!\n");
 
 	return Status;
 

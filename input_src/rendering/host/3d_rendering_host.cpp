@@ -151,7 +151,7 @@ int main(int argc, char ** argv)
         //Input_1.write(input_tmp);
     }
 
-    data_gen_1(Input_1);
+    data_gen(Input_1);
 
     // run hardware function and time it
 

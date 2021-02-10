@@ -4,6 +4,23 @@
 /*
  * Device hardware build related constants.
  */
+
+#include "xrtcpsu.h"		/* RTCPSU device driver */
+#ifdef __cplusplus
+}
+#endif
+
+
+#include "xscugic.h"		/* Interrupt controller device driver */
+#include "xil_exception.h"
+#include "xil_printf.h"
+
+#define RTC_DEVICE_ID         XPAR_XRTCPSU_0_DEVICE_ID
+#define INTC_DEVICE_ID			XPAR_SCUGIC_SINGLE_DEVICE_ID
+#define RTC_SEC_INT_IRQ_ID	XPAR_XRTCPSU_SECONDS_INTR
+
+#define REPETATIONS 10
+
 #define DMA_BASE_ADDR       XPAR_AXIDMA_0_BASEADDR
 #define DMA_DEV_ID          XPAR_AXIDMA_0_DEVICE_ID
 

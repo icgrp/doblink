@@ -45,6 +45,7 @@ config: $(config_target)
 
 $(config_target): $(operators_src)
 	python2 pr_flow.py $(prj_name) -cfg -op '$(basename $(notdir $^))'
+	cp $(ws)/F008_sdk_$(prj_name)/cpp_src/* $(ws)/sdk/$(prj_name)/src/
 
 download: $(download_target)
 	cd $(ws_bit) && ./qsub_run.sh 
@@ -90,7 +91,7 @@ $(operators_ip_targets):$(ws_mbft)/ip_repo/%/prj/floorplan_static.xpr:$(ws_hls)/
 $(ws_overlay)/overlay.dcp: $(ws_overlay)/src 
 	cd $(ws_overlay) && ./main.sh
 
-$(ws_overlay)/src : common/verilog_src/* common/dirc_ip/* common/script_src/project_syn_gen_zcu102.tcl
+$(ws_overlay)/src : common/verilog_src/* 
 	python2 pr_flow.py $(prj_name) -g
 
 

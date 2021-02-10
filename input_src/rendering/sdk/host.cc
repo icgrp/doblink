@@ -6,25 +6,46 @@
  * History:
  *   2020/5/14     Yuanlong Xiao   First Release
 */
+
+#include "xparameters.h"	/* SDK generated parameters */
+//#include "xrtcpsu.h"		/* RTCPSU device driver */
+//#include "xscugic.h"		/* Interrupt controller device driver */
+//#include "xil_exception.h"
+//#include "xil_printf.h"
+
 #include "dma_driver.h"
+#include "stream.h"
 #include "typedefs.h"
 #include "config_rendering.h"
-#define SLV_REG0 XPAR_AXI_LEAF_AXILITE2BFT_V2_0_0_BASEADDR+0
-#define SLV_REG1 XPAR_AXI_LEAF_AXILITE2BFT_V2_0_0_BASEADDR+4
-#define SLV_REG2 XPAR_AXI_LEAF_AXILITE2BFT_V2_0_0_BASEADDR+8
-#define SLV_REG3 XPAR_AXI_LEAF_AXILITE2BFT_V2_0_0_BASEADDR+12
-#define SLV_REG4 XPAR_AXI_LEAF_AXILITE2BFT_V2_0_0_BASEADDR+16
-#define SLV_REG5 XPAR_AXI_LEAF_AXILITE2BFT_V2_0_0_BASEADDR+20
-#define SLV_REG6 XPAR_AXI_LEAF_AXILITE2BFT_V2_0_0_BASEADDR+24
-#define SLV_REG7 XPAR_AXI_LEAF_AXILITE2BFT_V2_0_0_BASEADDR+28
+#include "my_timer.h"
+#include "sleep.h"
+
+
+
+
 
 
 int main(void)
 {
-	int Status;
 
-	init_regs();
-	Xil_Out32(SLV_REG6, 1);
+	int Status;
+	/* Run the RtcPsu Interrupt example, specify the the Device ID */
+	Status = RtcPsuSecondsIntrExample();
+	if (Status != XST_SUCCESS) {
+		xil_printf("RTC Seconds Interrupt Example Test Failed\r\n");
+		return XST_FAILURE;
+	}
+
+	config my_config(XPAR_BFT_LEAF_AXILITE2BFT_V2_0_0_BASEADDR, 0);
+	my_config.init_regs();
+	xil_printf("BFT initialization DONE\n");
+
+	my_config.app();
+
+
+
+
+	my_config.ap_start();
 	dma_inst dma1(DMA_DEV_ID,
 			 RX_BD_SPACE_HIGH,
 			 RX_BD_SPACE_BASE,
@@ -92,6 +113,17 @@ int main(void)
 	}
 
 	xil_printf("Rendering runs to the end\r\n");
+
+
+
+	for(int i=0; i<3; i++){
+		sleep(1);
+		//printf("%d seconds\n", i);
+	}
+
+	ClearRtcPsu();
+	xil_printf("Successfully ran RTC Seconds Interrupt Example Test\r\n");
+	xil_printf("Rendering Done!\r\n");
 	return XST_SUCCESS;
 }
 

@@ -37,7 +37,7 @@ class config(gen_basic):
   # find all the operators page num  
   def return_page_num_dict_local(self, operators):
     operator_list = operators.split()
-    page_num_dict = {'DMA':1, 'ARM':0}
+    page_num_dict = {'DMA':1, 'ARM':0, 'DEBUG':2}
     for operator in operator_list:
       HW_exist, target = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'map_target')
       page_exist, page_num = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'page_num')
@@ -104,10 +104,24 @@ class config(gen_basic):
     
     return operator_var_dict 
 
+  def return_io_num(self, io_pattern, file_list):
+    max_num = 0
+    for line in file_list:
+      num_list = re.findall(r""+io_pattern+"\d*", line)
+      if(len(num_list)>0 and int(num_list[0].replace(io_pattern,''))): max_num = int(num_list[0].replace(io_pattern,''))
+    return max_num
+ 
 
   def return_operator_connect_list_local(self, operator_arg_dict, operator_var_dict):
     connection_list = []
     for key_a in operator_var_dict:
+      operator = key_a
+      src_list = self.shell.file_to_list('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h')
+      debug_exist, debug_port = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+key_a+'.h', 'debug_port')
+      map_target_exist, map_target = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+key_a+'.h', 'map_target')
+      if debug_exist:
+        tmp_str = key_a+'.Output_5->DEBUG.Input_'+str(debug_port) 
+        connection_list.append(tmp_str)
       for i_a, var_value_a in enumerate(operator_var_dict[key_a]):
         if var_value_a == 'Input_1': 
           tmp_str='DMA.Output_1->'+key_a+'.Input_1' 
@@ -119,16 +133,17 @@ class config(gen_basic):
           for i_b, var_value_b in enumerate(operator_var_dict[key_b]):
             if var_value_a==var_value_b and key_a!=key_b:
               if self.shell.have_target_string(operator_arg_dict[key_a][i_a], 'Input'):
-                #print "============================"
-                #print key_b
-                #print i_b
-                #print key_a
-                #print i_a
-                #self.print_dict(operator_arg_dict)
                 tmp_str = key_b+'.'+operator_arg_dict[key_b][i_b]+'->'+key_a+'.'+operator_arg_dict[key_a][i_a]
               else:
                 tmp_str = key_a+'.'+operator_arg_dict[key_a][i_a]+'->'+key_b+'.'+operator_arg_dict[key_b][i_b]
               connection_list.append(tmp_str)
+
+    #connection_list = []
+    #connection_list.append('DEBUG.Output_1->add1.Input_1')
+    #connection_list.append('add1.Output_1->DEBUG.Input_1')
+    #connection_list.append('add1.Output_2->DEBUG.Input_3')
+    #connection_list.append('add1.Output_3->DEBUG.Input_3')
+    #connection_list.append('add1.Output_5->DEBUG.Input_5')
     connection_list = set(connection_list)
     return connection_list
 
@@ -154,7 +169,7 @@ class config(gen_basic):
       value_low  =  (src_page_packet      ) & 0xffffffff
       value_high =  (src_page_packet >> 32) & 0xffffffff
       #print 'src_page_packet: ', str(hex(value_high)).replace('L', ''), str(hex(value_low)).replace('L', '') 
-      packet_list.append("  write_to_fifo(" + str(hex(value_high)).replace('L', '') + ', ' + str(hex(value_low)).replace('L', '') + ", &ctrl_reg);")
+      packet_list.append("  write_to_fifo(" + str(hex(value_high)).replace('L', '') + ', ' + str(hex(value_low)).replace('L', '') + ");")
 
       dest_page_packet =                    (dest_page  << self.page_addr_offset)
       dest_page_packet = dest_page_packet + (        1  << self.port_offset)
@@ -164,7 +179,7 @@ class config(gen_basic):
       value_low  =  (dest_page_packet      ) & 0xffffffff
       value_high =  (dest_page_packet >> 32) & 0xffffffff
       #print 'src_page_packet: ', str(hex(value_high)).replace('L', ''), str(hex(value_low)).replace('L', '') 
-      packet_list.append("  write_to_fifo(" + str(hex(value_high)).replace('L', '') + ', ' + str(hex(value_low)).replace('L', '') + ", &ctrl_reg);")
+      packet_list.append("  write_to_fifo(" + str(hex(value_high)).replace('L', '') + ', ' + str(hex(value_low)).replace('L', '') + ");")
 
     return packet_list
 
@@ -175,13 +190,33 @@ class config(gen_basic):
       'xsdk -batch -source ' + tcl_file,
       ''])
 
+  def return_include_list_local(self, operators, dest_dir):
+    include_list = []
+    for operator in operators.split():
+      page_exist, page_num = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'page_num')
+      HW_exist, target = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'map_target')
+      if target == 'riscv':
+        self.shell.cp_dir(self.syn_dir+'/'+operator+'/riscv/instr_data'+str(page_num)+'.h', dest_dir)
+        include_list.append('#include "instr_data'+str(page_num)+'.h"')
+    
+    return include_list
 
+  def return_call_list_local(self, operators):
+    call_list = []
+    for operator in operators.split():
+      page_exist, page_num = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'page_num')
+      HW_exist, target = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'map_target')
+      instr_size_exist, instr_size = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'inst_mem_size')
+      if target == 'riscv': call_list.append('	instr_config('+str(page_num)+',instr_data'+str(page_num)+','+str(int(instr_size)/4)+');')
+
+    return call_list
+ 
  
   def run(self, operators):
     self.shell.re_mkdir(self.sdk_dir+'/')
     self.shell.re_mkdir(self.sdk_dir+'/cpp_src')
-    self.shell.cp_dir('./common/driver_src/config.cpp', self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.cpp')
     self.shell.cp_dir(self.mono_bft_dir+'/prj/floorplan_static.sdk/floorplan_static_wrapper.hdf', self.sdk_dir)
+    self.shell.cp_dir('./common/driver_src/config.cpp', self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.cpp')
     self.shell.cp_dir('./common/driver_src/config.h', self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.h')
     self.shell.cp_dir('./common/script_src/project_xsdk_core.tcl', self.sdk_dir)
     self.shell.cp_dir('./input_src/'+self.prflow_params['benchmark_name']+'/sdk/*', self.sdk_dir+'/cpp_src')
@@ -189,12 +224,23 @@ class config(gen_basic):
     page_num_dict = self.return_page_num_dict_local(operators)
     operator_arg_dict = self.return_operator_io_argument_dict_local(operators)
     operator_var_dict = self.return_operator_inst_dict_local(operators)
-    self.print_dict(operator_arg_dict)
-    print "============================="
-    self.print_dict(operator_var_dict)
     connection_list=self.return_operator_connect_list_local(operator_arg_dict, operator_var_dict)
+
+    #page_num_dict = {'DEBUG': '2','add2': '31', 
+    #              'add1': '4'} 
+    self.print_dict(page_num_dict)
+    self.print_list(connection_list)
+
     packet_list = self.return_config_packet_list_local(page_num_dict, connection_list)
     self.shell.add_lines(self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.cpp', '//packet anchor', packet_list) 
+
+    include_list = self.return_include_list_local(operators, self.sdk_dir+'/cpp_src/')
+    self.shell.add_lines(self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.cpp', 'sleep.h', include_list) 
+
+    fun_call_list = self.return_call_list_local(operators)
+    self.shell.add_lines(self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.cpp', 'download firmware', fun_call_list) 
+
+    self.shell.add_lines(self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.cpp', '#include "config.h"', ['#include "config_'+self.prflow_params['benchmark_name']+'.h"']) 
 
     replace_dict={'set Benchmark_name': "set Benchmark_name " + self.prflow_params['benchmark_name']}
     self.shell.replace_lines(self.sdk_dir+'/project_xsdk_core.tcl', replace_dict)
