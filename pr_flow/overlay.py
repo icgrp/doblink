@@ -116,7 +116,9 @@ class overlay(gen_basic):
     
     # copy the hld/xdc files from input source directory
     self.shell.cp_dir('./common/verilog_src', self.overlay_dir+'/src')
-    self.shell.cp_dir('./common/dirc_ip', self.overlay_dir+'/dirc_ip')
+    self.shell.cp_dir('./workspace/F000_bft_gen/gen_nw_vivado.v', self.overlay_dir+'/src')
+    self.shell.write_lines(self.overlay_dir+'/src/bft.v', self.verilog.return_bft_wrapper_v_list(int(self.prflow_params['nl']), int(self.prflow_params['addr_bits']), int(self.prflow_params['packet_bits'])))
+    # self.shell.cp_dir('./common/dirc_ip', self.overlay_dir+'/dirc_ip')
 
     # generate tcl and shell files for qsub run and local run
     self.create_tcl_shell_file()

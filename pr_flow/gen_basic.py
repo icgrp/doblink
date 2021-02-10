@@ -162,6 +162,35 @@ class _verilog:
     self.prflow_params = prflow_params
     pass
 
+  def return_bft_wrapper_v_list(self, leaf_num, addr_bits, pkt_size):
+    lines_list = [];
+    lines_list.append('module bft(')
+    lines_list.append('    input clk,')
+    for i in range(leaf_num): lines_list.append('    input  ['+str(pkt_size)+'-1:0]dout_leaf_'+str(i)+',')
+    for i in range(leaf_num): lines_list.append('    output ['+str(pkt_size)+'-1:0]din_leaf_'+str(i)+',')
+    for i in range(leaf_num): lines_list.append('    output resend_'+str(i)+',')
+    lines_list.append('    input reset);')
+    lines_list.append('gen_nw'+str(leaf_num)+' # (        .num_leaves('+str(leaf_num)+'),')
+    lines_list.append('    .payload_sz('+str(pkt_size-addr_bits-1)+'),')
+    lines_list.append('    .p_sz('+str(pkt_size)+'),')
+    lines_list.append('    .addr(1\'b0),')
+    lines_list.append('    .level(0)')
+    lines_list.append('    ) gen_nw'+str(leaf_num)+' (')
+    lines_list.append('    .clk(clk),')
+    lines_list.append('    .reset(reset),')
+    lines_list.append('    .pe_interface({')
+    for i in range(leaf_num-1, 0, -1): lines_list.append('    dout_leaf_'+str(i)+',')
+    lines_list.append('    dout_leaf_0}),')
+    lines_list.append('    .interface_pe({')
+    for i in range(leaf_num-1, 0, -1): lines_list.append('    din_leaf_'+str(i)+',')
+    lines_list.append('    din_leaf_0}),')
+    lines_list.append('    .resend({')
+    for i in range(leaf_num-1, 0, -1): lines_list.append('    resend_'+str(i)+',')
+    lines_list.append('    resend_0}));')
+    lines_list.append('endmodule')
+    
+    return lines_list
+
   def return_page_v_list(self, 
                          page_num, 
                          fun_name,
@@ -575,7 +604,8 @@ class _tcl:
     lines_list.append('#####################')
     lines_list.append('set start_time [clock seconds]')
     lines_list.append('open_checkpoint ./floorplan_static.dcp')
-    for i in range(2, int(self.prflow_params['nl'])):
+    # for i in range(2, int(self.prflow_params['nl'])):
+    for i in range(3, 9):
       lines_list.append('read_checkpoint -cell floorplan_static_i/leaf_empty_' + str(i) + '/inst ./dummy_repo/user_kernel/page_netlist.dcp')
     lines_list.append('set end_time [clock seconds]')
     lines_list.append('set total_seconds [expr $end_time - $start_time]')
@@ -614,7 +644,8 @@ class _tcl:
     #lines_list.append('update_design -cell floorplan_static_i/bft_01 -black_box')
     #lines_list.append('update_design -cell floorplan_static_i/bft_10 -black_box')
     #lines_list.append('update_design -cell floorplan_static_i/bft_11 -black_box')
-    for i in range(2, int(self.prflow_params['nl'])):
+    # for i in range(2, int(self.prflow_params['nl'])):
+    for i in range(3, 9):
       lines_list.append('update_design -cell floorplan_static_i/leaf_empty_' + str(i) + '/inst -black_box')
 
     lines_list.append('#############################################')
@@ -626,7 +657,8 @@ class _tcl:
     #lines_list.append('update_design -cell floorplan_static_i/bft_01 -buffer_ports')
     #lines_list.append('update_design -cell floorplan_static_i/bft_10 -buffer_ports')
     #lines_list.append('update_design -cell floorplan_static_i/bft_11 -buffer_ports')
-    for i in range(2, int(self.prflow_params['nl'])):
+    # for i in range(2, int(self.prflow_params['nl'])):
+    for i in range(3, 9):
       lines_list.append('update_design -cell floorplan_static_i/leaf_empty_' + str(i) + '/inst -buffer_ports')
 
     lines_list.append('lock_design -level routing')

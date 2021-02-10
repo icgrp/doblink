@@ -75,7 +75,7 @@ $(operators_hls_targets):$(ws_hls)/runLog%.log:$(operators_dir)/%.cpp $(operator
 mono_prj: $(mono_bft_target)
 
 # prepare the logic equivalent monolithic project 
-$(mono_bft_target): $(ws_overlay)/src $(ws_overlay)/dirc_ip $(operators_ip_targets)
+$(mono_bft_target): $(ws_overlay)/src  $(operators_ip_targets)
 	python2 pr_flow.py $(prj_name) -mbft
 	cd $(ws_mbft) && ./main.sh
 

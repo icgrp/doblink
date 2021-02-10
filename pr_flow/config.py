@@ -119,6 +119,12 @@ class config(gen_basic):
           for i_b, var_value_b in enumerate(operator_var_dict[key_b]):
             if var_value_a==var_value_b and key_a!=key_b:
               if self.shell.have_target_string(operator_arg_dict[key_a][i_a], 'Input'):
+                #print "============================"
+                #print key_b
+                #print i_b
+                #print key_a
+                #print i_a
+                #self.print_dict(operator_arg_dict)
                 tmp_str = key_b+'.'+operator_arg_dict[key_b][i_b]+'->'+key_a+'.'+operator_arg_dict[key_a][i_a]
               else:
                 tmp_str = key_a+'.'+operator_arg_dict[key_a][i_a]+'->'+key_b+'.'+operator_arg_dict[key_b][i_b]
@@ -183,6 +189,9 @@ class config(gen_basic):
     page_num_dict = self.return_page_num_dict_local(operators)
     operator_arg_dict = self.return_operator_io_argument_dict_local(operators)
     operator_var_dict = self.return_operator_inst_dict_local(operators)
+    self.print_dict(operator_arg_dict)
+    print "============================="
+    self.print_dict(operator_var_dict)
     connection_list=self.return_operator_connect_list_local(operator_arg_dict, operator_var_dict)
     packet_list = self.return_config_packet_list_local(page_num_dict, connection_list)
     self.shell.add_lines(self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.cpp', '//packet anchor', packet_list) 

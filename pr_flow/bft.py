@@ -14,7 +14,7 @@ class bft:
     os.chdir(self.prflow_params['workspace']+'/F000_bft_gen')
     os.system('make clean')
     os.system('python3 network_tester.py -s -nl ' + self.prflow_params['nl']\
-            + ' -p ' + self.prflow_params['p'] + ' -pks ' + self.prflow_params['pks'])
+            + ' -p ' + self.prflow_params['p'] + ' -pks ' + self.prflow_params['packet_bits'])
     os.chdir('../../')
 
 

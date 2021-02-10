@@ -3,16 +3,15 @@
   <!--specifications for pr_flow tool-->
   <spec name = "Xilinx_dir"         value = "/opt/Xilinx/SDx/2018.2/settings64.sh" />
   <spec name = "riscv_dir"          value = "/opt/riscv32i" />
-  <spec name = "board"              value = "pynq" />
-  <spec name = "part"               value = "xc7z020clg400-1" />
-  <spec name = "device"             value = "xc7z020" />  
-  <spec name = "email"              value = "youemail@seas.upenn.edu" />
+  <spec name = "board"              value = "ultra96" />
+  <spec name = "part"               value = "xczu3eg-sbva484-1-e" />
+  <spec name = "device"             value = "xczu3eg" />  
+  <spec name = "email"              value = "youremail@seas.upenn.edu" />
   <spec name = "maxThreads"         value = "8" />
   <spec name = "p"                  value = "0.5" />
-  <spec name = "pks"                value = "49" />
-  <spec name = "nl"                 value = "8" />
   <spec name = "packet_bits"        value = "49" />
-  <spec name = "addr_bits"          value = "3" />
+  <spec name = "nl"                 value = "16" />
+  <spec name = "addr_bits"          value = "4" />
   <spec name = "port_bits"          value = "4" />
   <spec name = "bram_addr_bits"     value = "7" />
   <spec name = "payload_bits"       value = "32" />
