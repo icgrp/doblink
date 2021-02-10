@@ -22,7 +22,7 @@ operators_impl_targets=$(foreach n, $(operators), $(ws_impl)/$(n)/page_routed.dc
 operators_bit_targets=$(foreach n, $(operators), $(ws_bit)/$(n).bit)
 operators_ip_targets=$(foreach n, $(operators), $(ws_mbft)/ip_repo/$(n)/prj/floorplan_static.xpr)
 mono_bft_target=$(ws_mbft)/prj/floorplan_static.runs/impl_1/floorplan_static_wrapper.bit
-download_target=$(ws_bit)/download.tcl $(ws_bit)/qsub_run.sh
+download_target=$(ws_bit)/download.tcl 
 config_target=$(ws_mbft)/config.cpp 
 
 
@@ -69,7 +69,7 @@ $(operators_syn_targets):$(ws_syn)/%/page_netlist.dcp:$(ws_hls)/runLog%.log
 
 
 # High-Level-Synthesis from C to Verilog
-$(operators_hls_targets):$(ws_hls)/runLog%.log:$(operators_dir)/%.cpp $(operators_dir)/%.h
+$(operators_hls_targets):$(ws_hls)/runLog%.log:$(operators_dir)/%.cpp $(operators_dir)/%.h 
 	python2 pr_flow.py $(prj_name) -hls -op $(basename $(notdir $<))
 	cd $(ws_hls) && ./qsub_run_$(basename $(notdir $<)).sh
 

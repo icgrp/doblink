@@ -111,5 +111,5 @@ class report(gen_basic):
     operators_list = operators_str.split() 
     self.gen_compile_time_report(benchmark_name, operators_list)
     self.gen_resource_report(benchmark_name, operators_list)
-    print 'You can fine the comile time report and resource report under: ./workspace/report' 
+    print 'You can find the compile time report and resource report under: ./workspace/report' 
 
