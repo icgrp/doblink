@@ -12,6 +12,17 @@ class impl(gen_basic):
     self.shell.re_mkdir(self.pr_dir+'/'+operator)
     self.shell.write_lines(self.pr_dir+'/'+operator+'/impl_'+operator+'.tcl', self.tcl.return_impl_tcl_list(operator, page_num, False))
     self.shell.write_lines(self.pr_dir+'/'+operator+'/qsub_run.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'impl_'+operator+'.tcl'), True)
+    map_target_exist, map_target = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'map_target')
+    if map_target == 'riscv':
+      self.shell.replace_lines(self.pr_dir+'/'+operator+'/qsub_run.sh', {'vivado': 'touch ../../F005_bits_'+self.prflow_params['benchmark_name']+'/'+operator+'.bit\nvivado'})
+      self.shell.replace_lines(self.pr_dir+'/'+operator+'/qsub_run.sh', {'vivado': 'echo read_checkpoint: 0 seconds > runLogImpl_'+operator+'.log\nvivado'})
+      self.shell.replace_lines(self.pr_dir+'/'+operator+'/qsub_run.sh', {'vivado': 'echo opt: 0 seconds >> runLogImpl_'+operator+'.log\nvivado'})
+      self.shell.replace_lines(self.pr_dir+'/'+operator+'/qsub_run.sh', {'vivado': 'echo place: 0 seconds >> runLogImpl_'+operator+'.log\nvivado'})
+      self.shell.replace_lines(self.pr_dir+'/'+operator+'/qsub_run.sh', {'vivado': 'echo route: 0 seconds >> runLogImpl_'+operator+'.log\nvivado'})
+      self.shell.replace_lines(self.pr_dir+'/'+operator+'/qsub_run.sh', {'vivado': 'echo bit_gen: 0 seconds >> runLogImpl_'+operator+'.log\n'})
+      os.system('chmod +x '+self.pr_dir+'/'+operator+'/qsub_run.sh')
+
+
 
 
   # main.sh will be used for local compilation
@@ -66,8 +77,8 @@ class impl(gen_basic):
     self.create_shell_file() 
 
     # create ip directories for all the pages
-    HW, page_num = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'page_num') 
-    if HW==True:
+    page_num_exist, page_num = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'page_num') 
+    if page_num_exist==True:
       self.create_page(operator, page_num)
 
 

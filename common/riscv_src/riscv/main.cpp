@@ -13,14 +13,17 @@
 #define STREAMOUT2  0x10000010
 #define STREAMOUT3  0x10000018
 #define STREAMOUT4  0x10000020
+#define STREAMOUT5  0x10000028
 #define STREAMIN1   0x10000004
 #define STREAMIN2   0x1000000c
 #define STREAMIN3   0x10000014
 #define STREAMIN4   0x1000001c
+#define STREAMIN5   0x10000024
 
 int main(void)
 {
   char const *s = "Hello world!\n";
+  print_str(s);
   int i = 0;
   //stream operator instance;
   return 0;

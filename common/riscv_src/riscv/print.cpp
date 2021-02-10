@@ -7,7 +7,7 @@
 
 #include "firmware.h"
 
-#define OUTPORT 0x10000000
+#define OUTPORT     0x10000000
 #define STREAMOUT1  0x10000008
 #define STREAMOUT2  0x10000010
 #define STREAMOUT3  0x10000018

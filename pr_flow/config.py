@@ -232,7 +232,11 @@ class config(gen_basic):
     self.print_list(connection_list)
 
     packet_list = self.return_config_packet_list_local(page_num_dict, connection_list)
+    # insert the configuration packets to configure the interconnnection betweeen different operators
     self.shell.add_lines(self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.cpp', '//packet anchor', packet_list) 
+    
+    # set the addr shift bits. when the stream.cc is trying to set the instruction packets, we need to shift the destination addresss to the right place.
+    self.shell.replace_lines(self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.cpp', {'#define BFT_ADDR_SHIFT': '#define BFT_ADDR_SHIFT '+str(16-int(self.prflow_params['addr_bits']))}) 
 
     include_list = self.return_include_list_local(operators, self.sdk_dir+'/cpp_src/')
     self.shell.add_lines(self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.cpp', 'sleep.h', include_list) 

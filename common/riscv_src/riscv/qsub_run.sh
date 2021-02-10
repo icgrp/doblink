@@ -5,6 +5,7 @@ SHELL=bash
 PYTHON=python3
 #MEM_SIZE = 262144
 MEM_SIZE=4096
+PAGE_NUM=5
 FIRMWARE_OBJS='start.o print.o stream.o main.o '${operator}'.o' 
 GCC_WARNS='-Wall -Wextra -Wshadow -Wundef -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings'
 GCC_WARNS+=' -Wredundant-decls -pedantic'
@@ -12,18 +13,28 @@ TOOLCHAIN_PREFIX=${RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX}i/bin/riscv32-unknown-elf-
 #COMPRESSED_ISA=C
 COMPRESSED_ISA= 
 IDIR='-fno-threadsafe-statics -lstdc++' 
+OPT_LEVEL=-O3
+
+
+start=`date +%s`
 
 echo ${GCC_WARNS} 
 ${TOOLCHAIN_PREFIX}g++ -c -march=rv32im -o start.o start.S
-${TOOLCHAIN_PREFIX}g++ -c -march=rv32i -Os ${GCC_WARNS} -ffreestanding ${IDIR} -o ${operator}.o ${operator}.cpp
-${TOOLCHAIN_PREFIX}g++ -c -march=rv32i -Os ${GCC_WARNS} -ffreestanding -nostdlib -o main.o main.cpp
-${TOOLCHAIN_PREFIX}g++ -c -march=rv32i -Os ${GCC_WARNS} -ffreestanding -nostdlib -o print.o print.cpp
-${TOOLCHAIN_PREFIX}g++ -c -march=rv32i -Os ${GCC_WARNS} -ffreestanding -nostdlib -o stream.o stream.cpp
-${TOOLCHAIN_PREFIX}g++ -Os -ffreestanding -o firmware.elf -Wl,-Bstatic,-T,sections.lds,-Map,firmware.map,--strip-debug main.o print.o stream.o start.o ${operator}.o -lgcc ${IDIR}
+${TOOLCHAIN_PREFIX}g++ -c -march=rv32im ${OPT_LEVEL} ${GCC_WARNS} -ffreestanding ${IDIR} -o ${operator}.o ${operator}.cpp
+${TOOLCHAIN_PREFIX}g++ -c -march=rv32im ${OPT_LEVEL} ${GCC_WARNS} -ffreestanding -nostdlib -o main.o main.cpp
+${TOOLCHAIN_PREFIX}g++ -c -march=rv32im ${OPT_LEVEL} ${GCC_WARNS} -ffreestanding -nostdlib -o print.o print.cpp
+${TOOLCHAIN_PREFIX}g++ -c -march=rv32im ${OPT_LEVEL} ${GCC_WARNS} -ffreestanding -nostdlib -o stream.o stream.cpp
+${TOOLCHAIN_PREFIX}g++ ${OPT_LEVEL} -ffreestanding -o firmware.elf -Wl,-Bstatic,-T,sections.lds,-Map,firmware.map,--strip-debug main.o print.o stream.o start.o ${operator}.o -lgcc ${IDIR}
 chmod -x firmware.elf
 ${TOOLCHAIN_PREFIX}objcopy -O binary firmware.elf firmware.bin
 chmod -x firmware.bin
-${PYTHON} makehex.py firmware.bin ${MEM_SIZE} > firmware.hex
+${PYTHON} makehex.py firmware.bin ${MEM_SIZE} ${PAGE_NUM}  > firmware.hex
+
+end=`date +%s`
+runtime=$((end-start))
+
+echo syn: ${runtime} seconds > ../runLog_${operator}.log
+
 
 
 

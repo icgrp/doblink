@@ -36,6 +36,36 @@ public:
     }
 };
 
+
+/* Template class of LineBuffer */
+template<int ROWS, int COLS, typename T>
+class LineBuffer {
+public:
+	T val[ROWS][COLS];
+
+    LineBuffer() {
+    };
+
+    void shift_pixels_up(int col) {
+        unsigned int i, j;
+        for(i = 0; i < ROWS-1; i++) {
+            val[i][col] = val[i+1][col];
+        }
+    }
+
+    void insert_bottom_row(T value, int col){
+        val[ROWS-1][col] = value;
+    }
+
+	T getval(int row, int col) {
+        return val[row][col];
+    }
+};
+
+
+
+
+
 } // namespace hls
 
 #endif

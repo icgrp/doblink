@@ -6,7 +6,6 @@
 // means.
 
 // A simple Sieve of Eratosthenes
-
 #include "firmware.h"
 //#include "ap_int.h"
 static void stats_print_dec(unsigned int val, int digits, bool zero_pad)

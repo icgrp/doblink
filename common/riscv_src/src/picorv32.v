@@ -207,7 +207,7 @@ module picorv32 #(
 		if (REGS_INIT_ZERO) begin
 			for (i = 0; i < regfile_size; i = i+1) begin
 			    if(i==2) 
-			      cpuregs[i] = 16380;
+                               cpuregs[i] = 262140;
 			    else
 				  cpuregs[i] = 0;
 	        end
