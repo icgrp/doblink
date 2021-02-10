@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
   <!--specifications for pr_flow tool-->
-  <spec name = "Xilinx_dir"         value = "/opt/Xilinx/SDx/2018.2/settings64.sh" />
+  <spec name = "Xilinx_dir"         value = "/opt/Xilinx/Vivado/2020.1/settings64.sh" />
   <spec name = "riscv_dir"          value = "/opt/riscv32i" />
   <spec name = "board"              value = "ultra96" />
   <spec name = "part"               value = "xczu3eg-sbva484-1-e" />

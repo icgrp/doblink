@@ -557,11 +557,7 @@ void data_redir_m (
   //Output_3.write(cnt);
   //cnt++;
   //Output_3.write(input_lo);
-#ifdef RISCV1
-  //unsigned int data;
-  //data = input_lo;
-  //print_hex(data, 8);
-  //print_str(": ");
+#ifdef RISCV
   print_dec(cnt);
   print_str("\n");
   cnt++;

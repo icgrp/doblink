@@ -7,7 +7,6 @@
 
 #include "xrtcpsu.h"		/* RTCPSU device driver */
 #ifdef __cplusplus
-}
 #endif
 
 

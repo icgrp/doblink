@@ -168,7 +168,7 @@ class mbft(gen_basic):
     self.uncomment_page_empty()
 
     # clear up the xdc file
-    self.shell.write_lines(self.mono_bft_dir+'/src/pblocks_8.xdc', [''])
+    self.shell.write_lines(self.mono_bft_dir+'/src/pblocks.xdc', [''])
 
     # generate shell files for qsub run and local run
     self.create_shell_file() 

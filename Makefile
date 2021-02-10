@@ -45,7 +45,7 @@ config: $(config_target)
 
 $(config_target): $(operators_src)
 	python2 pr_flow.py $(prj_name) -cfg -op '$(basename $(notdir $^))'
-	cp $(ws)/F008_sdk_$(prj_name)/cpp_src/* $(ws)/sdk/$(prj_name)/src/
+	cp $(ws)/F008_sdk_$(prj_name)/cpp_src/* $(ws)/vitis/$(prj_name)/src/
 
 download: $(download_target)
 	cd $(ws_bit) && ./qsub_run.sh 
