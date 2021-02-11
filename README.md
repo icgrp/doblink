@@ -22,16 +22,16 @@ as below.
             libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo \
 	    gperf libtool patchutils bc zlib1g-dev git libexpat1-dev
 
-    sudo mkdir /opt/riscv32i
-    sudo chown $USER /opt/riscv32i
+    sudo mkdir /opt/RISC-V32i
+    sudo chown $USER /opt/RISC-V32i
 
-    git clone https://github.com/riscv/riscv-gnu-toolchain riscv-gnu-toolchain-rv32i
-    cd riscv-gnu-toolchain-rv32i
+    git clone https://github.com/RISC-V/RISC-V-gnu-toolchain RISC-V-gnu-toolchain-rv32i
+    cd RISC-V-gnu-toolchain-rv32i
     git checkout 411d134
     git submodule update --init --recursive
 
     mkdir build; cd build
-    ../configure --with-arch=rv32i --prefix=/opt/riscv32i
+    ../configure --with-arch=rv32i --prefix=/opt/RISC-V32i
     make -j$(nproc)
 
 
@@ -44,7 +44,7 @@ name as the benchmark under '**./input_src**'.
 3. We create one cpp file and one header file for each operator. In 
 [./input_src/rendering/operators](./input_src/rendering/operators), we
 can see 6 operators to be mapped to partial reconfigurable pages.
-4. We can set the page number and target (HW or riscv) in the header file
+4. We can set the page number and target (HW or RISC-V) in the header file
 for each [operator](input_src/rendering/operators/data_redir_m.h).
 
 ```c
@@ -64,7 +64,7 @@ and generate the configuration packets.
 for Vitis and RISC-V toolchain in [configure.xml](./common/configure/configure.xml).
 ```c
     <spec name = "Xilinx_dir" value = "/scratch/unsafe/SDSoC/Vivado/2020.1/settings64.sh" />
-    <spec name = "riscv_dir"  value = "/scratch/unsafe/RISCV/riscv32" />
+    <spec name = "RISC-V_dir"  value = "/scratch/unsafe/RISCV/RISC-V32" />
 ```
 
 2. In the [Makefile](./Makefile), change the **prj_name** to **rendering**.
@@ -124,28 +124,28 @@ Vitis application, you should get the correct results.
 
 
 ## 4 Tutorial 2: Map one operator to RISC-V
-1. The partial reconfigurable page 3 is re-loaded with one picorc32 cores.
-To make sure the risc-v core can run 'ap_int.h' and 'ap_fixed.h', the 
-smallest bram size it 65536 Bytes. We could only re-load one page with
-risc-v for ultra96, but for ZCU102, we can pre-load 16 riscvs.
+1. The partial reconfigurable page 3 is pre-loaded with one picorc32 cores.
+To make sure the RISC-V core can run 'ap_int.h' and 'ap_fixed.h', the 
+smallest bram size it 65536 Bytes. We could only pre-load one page (page 3) with
+RISC-V for ultra96, but for ZCU102, we can pre-load 16 RISC-V cores.
 
-2. We are going to switch '**data_redir**' page to risc-v. To achieve
+2. We are going to switch '**data_redir**' page to RISC-V. To achieve
 this goal, we only need to avoid downloading any partial bitstreams to
 page 3 and use ARM to send instruction data through BFT to the pre-loaded
 RISC-V core. 
 
 3. As the user, we only need to change the pragma in [data_redir.h](./input_src/rendering/operators/data_redir_m.h).
 ```c
-    #pragma map_target = riscv page_num = 3 inst_mem_size = 65536
+    #pragma map_target = RISC-V page_num = 3 inst_mem_size = 65536
 ```
-4. Type '**Make**', the riscv elf file will be compiled automatically.
+4. Type '**Make**', the RISC-V elf file will be compiled automatically.
 
 5. Type '**Make config**", the instr_data will make copied to Vitis project,
 and the cpp source will also be updated.
 
 6. Type '**Make download**' to download the bitstreams into the board,
 and launch the Vitis project to run the project. You can see the results
-with one page running on the riscv core.
+with one page running on the RISC-V core.
 
 ## 5 Tutorial 3: Enable Print Function for Risc-V.
 
@@ -154,18 +154,18 @@ it back to ARM. The ARM can parse the printed-out information and show
 it through UART.
 
 2. We have 7 stream ports to receive debugging information from up to 7
-risc-v cores.
+RISC-V cores.
 
 3. You can modify the file [data_redir.h](./input_src/rendering/operators/data_redir_m.h) 
 This means that the debugging information from page 3 will send to 
 debug port 2.
 ```c
-    #pragma map_target = riscv page_num = 3 inst_mem_size = 65536
+    #pragma map_target = RISC-V page_num = 3 inst_mem_size = 65536
     #pragma debug_port = 2
 ```
 
 4. In the [data_redir.cpp](./input_src/rendering/operators/data_redir_m.cpp),
-you can use the print_dec and print_str function for riscv.
+you can use the print_dec and print_str function for RISC-V.
 Change **RISCV1** to **RISCV**. the print code will be enabled.
 
 ```c
@@ -183,15 +183,15 @@ Change **RISCV1** to **RISCV**. the print code will be enabled.
 #endif
 ```
 `
-5. Type '**Make**', the riscv elf file will be compiled automatically.
+5. Type '**Make**', the RISC-V elf file will be compiled automatically.
 
 6. Type '**Make config**", the instr_data will make copied to Vitis project,
 and the cpp source will also be updated.
 
 7. Type '**Make download**' to download the bitstreams into the board,
 and launch the Vitis project to run the project. You can see the results
-with one page running on the riscv core. The debugging information from 
-risc-v core will show up.
+with one page running on the RISC-V core. The debugging information from 
+RISC-V core will show up.
 
 
 
