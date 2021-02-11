@@ -96,7 +96,12 @@ can directly copy the application cpp files to the correct directory later.
 
 ![](images/empty_cpp.png)
 
+6. Type '**Make config**'. It will generate all the necessary cpp files
+for the Vitis project under './workspace/F008_sdk_rendering/cpp_src'.
+If you create your Vitis project under the right place, the Makefile
+has already copied the cpp source to your Vitis project/src/.
 
+![](images/vitis_src.png)
 
 
 
