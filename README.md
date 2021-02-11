@@ -92,7 +92,7 @@ Make mono_prj -j$(nproc)
 ```
 
 5. I recomend you set your Vitis directory to ./workspace/vitis, and create
-an empty cpp application with the same name as the benchmark, since our Makefile
+an empty cpp application with the same name as the benchmark, so that our Makefile
 can directly copy the application cpp files to the correct directory later.
 
 ![](images/empty_cpp.png)
@@ -101,6 +101,7 @@ can directly copy the application cpp files to the correct directory later.
 for the Vitis project under './workspace/F008_sdk_rendering/cpp_src'.
 If you create your Vitis project under the right place, the Makefile
 has already copied the cpp source to your Vitis project/src/.
+Otherwise, you need to copy the source files to your Vitis project by yourself.
 
 ![](images/vitis_src.png)
 
@@ -108,6 +109,7 @@ has already copied the cpp source to your Vitis project/src/.
 run the vitis project and get the correct results. At least run it once 
 to get a '**run configuration file**', which we can modify later.
 
+![](images/configuration.png)
 
 8. However, our target is to replace the bitstreams with our partially-generated ones. Therefore, 
 we need to modify the '**run configurations file**' to avoid downloading bitstream
