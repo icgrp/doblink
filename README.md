@@ -153,7 +153,7 @@ with one page running on the RISC-V core.
 it back to ARM. The ARM can parse the printed-out information and show 
 it through UART.
 
-2. We have 7 stream ports to receive debugging information from up to 7
+2. We have 7 debug ports to receive debugging information from up to 7
 RISC-V cores. The ARM will detect whether there are valid data in the receiving
 stream fifo according to a timer interrupt, and read out the debugging data. 
 
@@ -166,8 +166,8 @@ debug port 2.
 ```
 
 4. In the [data_redir.cpp](./input_src/rendering/operators/data_redir_m.cpp),
-you can use the print_dec and print_str function for RISC-V.
-Change **RISCV1** to **RISCV**. the print code will be enabled.
+you can use the **print_dec** and **print_str** functions for RISC-V.
+Change **RISCV1** to **RISCV**. The print code will be enabled.
 
 ```c
 #ifdef RISCV
