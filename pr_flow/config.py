@@ -196,7 +196,7 @@ class config(gen_basic):
       page_exist, page_num = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'page_num')
       HW_exist, target = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'map_target')
       if target == 'riscv':
-        self.shell.cp_dir(self.syn_dir+'/'+operator+'/riscv/instr_data'+str(page_num)+'.h', dest_dir)
+        self.shell.cp_dir(self.syn_dir+'/'+operator+'/instr_data'+str(page_num)+'.h', dest_dir)
         include_list.append('#include "instr_data'+str(page_num)+'.h"')
     
     return include_list
