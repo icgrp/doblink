@@ -1,17 +1,16 @@
-DIRC based on PicoRV32
-======================================================
+# DIRC based on PicoRV32
 This is a temporary repo for DIRC with [picorv32](https://github.com/cliffordwolf/picorv32) support.
 
 
-# Tool Setup
+## Tool Setup
 
-## Vitis Preparation
+### Vitis Preparation
 The demo is developed with [Vitis 2020.1](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/2020-1.html) 
 and [Ultra96v2 board](https://www.96boards.org/product/ultra96/).
 The default Vitis does not include Ultra96v2 BSP. You can copy the dir **ultra96v2**
 under [BSP](./BSP) to \<Vitis Installation DIR\>/Vivado/2020.1/data/boards/board_files.
 
-## RISCV Tool Praparation
+### RISCV Tool Praparation
 
 We are based on picorv32 repo. You can install the RISC-V toolchain 
 certain commit tag (411d134) as below.
