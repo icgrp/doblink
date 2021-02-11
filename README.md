@@ -38,9 +38,9 @@ as below.
 ## 2 Benchmark Preparation
 1. To get our [Makefile](./Makefile) to work, you need to copy your application cpp
 code to certain directory. We take 
-**Rendering** as an example.
+**rendering** as an example.
 2. You can create the directory [rendering](./input_src) with the same 
-name as the benchmark.
+name as the benchmark under '**./input_src**'.
 3. We create one cpp file and one header file for each operator. In 
 [./input_src/rendering/operators](./input_src/rendering/operators), we
 can see 6 operators to be mapped to partial reconfigurable pages.
