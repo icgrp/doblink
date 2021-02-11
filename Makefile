@@ -63,8 +63,8 @@ $(operators_bit_targets):$(ws_bit)/%.bit:$(ws_syn)/%/page_netlist.dcp $(ws_overl
 # Out-of-Context Synthesis from Verilog to post-synthesis DCP
 $(operators_syn_targets):$(ws_syn)/%/page_netlist.dcp:$(ws_hls)/runLog%.log
 	python2 pr_flow.py $(prj_name) -syn -op $(subst runLog,,$(basename $(notdir $<)))
-	cd $(ws_syn)/$(subst runLog,,$(basename $(notdir $<)))/riscv && ./qsub_run.sh
-	cd $(ws_syn)/$(subst runLog,,$(basename $(notdir $<))) && ./qsub_run.sh
+	#cd $(ws_syn)/$(subst runLog,,$(basename $(notdir $<)))/riscv && ./run.sh
+	cd $(ws_syn)/$(subst runLog,,$(basename $(notdir $<))) && ./run.sh
 
 
 # High-Level-Synthesis from C to Verilog

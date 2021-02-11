@@ -33,8 +33,9 @@ ${PYTHON} makehex.py firmware.bin ${MEM_SIZE} ${PAGE_NUM}  > firmware.hex
 end=`date +%s`
 runtime=$((end-start))
 
-echo syn: ${runtime} seconds > ../runLog_${operator}.log
+echo syn: ${runtime} seconds > ./runLog_${operator}.log
 
+vivado
 
 
 
