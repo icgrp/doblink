@@ -4,7 +4,6 @@
 import os  
 import subprocess
 import pr_flow.utils as utils
-import pr_flow.gen_bft as bft
 import pr_flow.bft as bft
 import pr_flow.overlay as overlay
 import pr_flow.hls as hls
@@ -16,8 +15,6 @@ import pr_flow.mbft as mbft
 import pr_flow.config as config
 import pr_flow.report as report
 
-import pr_flow.gen_sdk as sdk
-import pr_flow.gen_mono_bft as mono_bft
 import argparse
 import xml.etree.ElementTree
 
@@ -67,38 +64,44 @@ if __name__ == '__main__':
     overlay_inst = overlay.overlay(prflow_params)
     overlay_inst.run()
 
-
+  # Generate HLS workspace
   if prflow_params['gen_hls'] == True:
     hls_inst = hls.hls(prflow_params)
     hls_inst.run(operator)
 
+  # Generate Synthesis workspace
   if prflow_params['gen_syn'] == True:
     syn_inst = syn.syn(prflow_params)
     syn_inst.run(operator)
 
+  # Generate Implementation workspace
   if prflow_params['gen_impl'] == True:
     impl_inst = impl.impl(prflow_params)
     impl_inst.run(operator)
 
+  # Prepare the bitstreams and downloading script
   if prflow_params['gen_bits'] == True:
     bit_inst = bit.bit(prflow_params)
     bit_inst.run(operator)
 
+  # encapsulate HLS generated code and interface into an Xilinx IP for each page
   if prflow_params['gen_ip_repo'] == True:
     ip_repo_inst = ip_repo.ip_repo(prflow_params)
     ip_repo_inst.run(operator)
 
-
+  # Compile an equivalent nonolithic project with BFT.
+  # This can generate the xsa files for vitis.
+  # This is also a useful project for debugging.
   if prflow_params['gen_mono_bft'] == True:
     mbft_inst = mbft.mbft(prflow_params)
     mbft_inst.run()
 
-
+  # generate the configuration packets for the BFT
   if prflow_params['gen_config'] == True:
     cfg_inst = config.config(prflow_params)
     cfg_inst.run(operator)
 
-  print operator
+  # generate compile time and resource report
   if prflow_params['gen_report'] == True:
     rpt_inst = report.report(prflow_params)
     rpt_inst.run(operator)
