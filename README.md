@@ -46,7 +46,9 @@ can see 6 operators to be mapped to partial reconfigurable pages.
 4. We can set the page number and target (HW or riscv) in the header file
 for each [operator](input_src/rendering/operators/data_redir_m.h).
 
+```c
     #pragma map_target = HW page_num = 3 inst_mem_size = 65536
+```
 
 5. Currently, we use a **top** function in [./input_src/rendering/host/top.cpp](./input_src/rendering/host/top.cpp)
 to show how to connect different operators together. Our python script 
@@ -56,9 +58,13 @@ and generate the configuration packets.
  
 
 
-## Tutorial 1: all hardware for rendering
-1. Make
-
+## Tutorial 1: Map all Operators to Hardware
+1. After you set up all the necessary tools, you need set the directory 
+for Vitis and RISC-V toolchain in [configure.xml](./common/configure/configure.xml).
+```c
+    <spec name = "Xilinx_dir" value = "/scratch/unsafe/SDSoC/Vivado/2020.1/settings64.sh" />
+    <spec name = "riscv_dir"  value = "/scratch/unsafe/RISCV/riscv32" />
+```
 
 
 
