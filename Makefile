@@ -57,7 +57,7 @@ $(download_target): $(operators_bit_targets)
 # generate bitstream for each operator
 $(operators_bit_targets):$(ws_bit)/%.bit:$(ws_syn)/%/page_netlist.dcp $(ws_overlay)/overlay.dcp 
 	python2 pr_flow.py $(prj_name) -impl -op $(basename $(notdir $@))
-	cd $(ws_impl)/$(basename $(notdir $@)) && ./qsub_run.sh
+	cd $(ws_impl)/$(basename $(notdir $@)) && ./run.sh
 
 
 # Out-of-Context Synthesis from Verilog to post-synthesis DCP

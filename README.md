@@ -94,6 +94,7 @@ Make mono_prj -j$(nproc)
 5. I recomend you set your Vitis directory to ./workspace/vitis, and create
 an empty cpp application with the same name as the benchmark, so that our Makefile
 can directly copy the application cpp files to the correct directory later.
+Change the stack and heap size to 0x20000 in lscript.ld file.
 
 ![](images/empty_cpp.png)
 

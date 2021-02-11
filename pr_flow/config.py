@@ -215,10 +215,10 @@ class config(gen_basic):
   def run(self, operators):
     self.shell.re_mkdir(self.sdk_dir+'/')
     self.shell.re_mkdir(self.sdk_dir+'/cpp_src')
-    self.shell.cp_dir(self.mono_bft_dir+'/prj/floorplan_static.sdk/floorplan_static_wrapper.hdf', self.sdk_dir)
+    #self.shell.cp_dir(self.mono_bft_dir+'/prj/floorplan_static.sdk/floorplan_static_wrapper.hdf', self.sdk_dir)
     self.shell.cp_dir('./common/driver_src/config.cpp', self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.cpp')
     self.shell.cp_dir('./common/driver_src/config.h', self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.h')
-    self.shell.cp_dir('./common/script_src/project_xsdk_core.tcl', self.sdk_dir)
+    #self.shell.cp_dir('./common/script_src/project_xsdk_core.tcl', self.sdk_dir)
     self.shell.cp_dir('./input_src/'+self.prflow_params['benchmark_name']+'/sdk/*', self.sdk_dir+'/cpp_src')
 
     page_num_dict = self.return_page_num_dict_local(operators)
@@ -247,7 +247,7 @@ class config(gen_basic):
     self.shell.add_lines(self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.cpp', '#include "config.h"', ['#include "config_'+self.prflow_params['benchmark_name']+'.h"']) 
 
     replace_dict={'set Benchmark_name': "set Benchmark_name " + self.prflow_params['benchmark_name']}
-    self.shell.replace_lines(self.sdk_dir+'/project_xsdk_core.tcl', replace_dict)
+    #self.shell.replace_lines(self.sdk_dir+'/project_xsdk_core.tcl', replace_dict)
 
     self.shell.write_lines(self.sdk_dir+'/run_project_xsdk.sh', self.return_run_sdk_sh_list_local(self.prflow_params['Xilinx_dir'], 'project_xsdk_core.tcl'), True)    
     self.shell.write_lines(self.sdk_dir+'/main.sh', self.shell.return_main_sh_list('run_project_xsdk.sh'), True)
