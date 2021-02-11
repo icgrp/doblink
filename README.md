@@ -82,11 +82,11 @@ memory.
 Make -j$(nproc)
 ```
 
-4. Type **Make mono_prj -j$(nproc)**. It will generate floorplan_staitc.xda
+4. Type **Make mono_prj -j$(nproc)**. It will generate floorplan_staitc.xsa
 file for Vitis project under ./workspace/F007_mono_bft_rendering/prj/.
-This is a one-time compilation to get the xda file for Vitis. You don't 
-need to compile the xda when you make changes to the operators later.
-To save time, you can also copy the floorplan_staitc.xda [here](./BSP).
+This is a one-time compilation to get the xsa file for Vitis. You don't 
+need to compile the xsa when you make changes to the operators later.
+To save time, you can also copy the floorplan_staitc.xsa [here](./BSP).
 ```c
 Make mono_prj -j$(nproc)
 ```
@@ -104,7 +104,7 @@ has already copied the cpp source to your Vitis project/src/.
 
 ![](images/vitis_src.png)
 
-7. As our floorplan_staitc.xda includes the correct bitstreams, you can
+7. As our floorplan_staitc.xsa includes the correct bitstreams, you can
 run the vitis project and get the correct results. At least run it once 
 to get a '**run configuration file**', which we can modify later.
 
