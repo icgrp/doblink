@@ -65,24 +65,39 @@ for Vitis and RISC-V toolchain in [configure.xml](./common/configure/configure.x
     <spec name = "Xilinx_dir" value = "/scratch/unsafe/SDSoC/Vivado/2020.1/settings64.sh" />
     <spec name = "riscv_dir"  value = "/scratch/unsafe/RISCV/riscv32" />
 ```
+
 2. In the [Makefile](./Makefile), change the **prj_name** to **rendering**.
 ```c
     prj_name=rendering
 ```
-3. Type **Make -j$(nproc)**. It will generate all the necessary DCP and 
+
+3. Type '**Make -j$(nproc)**'. It will generate all the necessary DCP and 
 bitstream files automatically. Different operators can be compiled in 
 parallel according to the thread number of your local machine. Be carefull
 with the memory requirements, when you use multi-threads to compile the 
 project. When I use 8 threads to compile, I at least needs 32 GB DDR 
 memory.
+```c
+Make -j$(nproc)
+```
 
 4. Type **Make mono_prj -j$(nproc)**, it will generate floorplan_staitc.xda
 file for Vitis project under ./workspace/F007_mono_bft_rendering/prj/.
 This is a one-time compilation to get the xda file for Vitis. You don't 
 need to compile the xda when you make changes to the operators later.
 To save time, you can also copy the floorplan_staitc.xda under [here](./BSP).
+```c
+Make mono_prj -j$(nproc)
+```
 
-5.  
+5. I recomend you set your Vitis directory to ./workspace/Vitis, and create
+an empty cpp application with the same name as the benchmark, since our Makefile
+can directly copy the application cpp files to the correct directory later.
+
+![](images/empty_cpp.png)
+
+
+
 
 
 
