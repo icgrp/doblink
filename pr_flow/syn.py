@@ -18,7 +18,6 @@ class syn(gen_basic):
     return max_num
   
   def return_bit_size(self, num):
-    print num
     bit_size = 1
     num_local = int(num)
     while (True):
@@ -52,6 +51,7 @@ class syn(gen_basic):
       config_inst = config.config(self.prflow_params)
       io_argument_dict = config_inst.return_operator_io_argument_dict_local(operator)
       for name in riscv_file_list: self.shell.cp_file('./common/riscv_src/'+name, self.syn_dir+'/'+operator+'/'+name)
+      self.shell.replace_lines(self.syn_dir+'/'+operator+'/riscv/qsub_run.sh', {'RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX=': 'RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX='+self.prflow_params['riscv_dir']}) 
       self.shell.replace_lines(self.syn_dir+'/'+operator+'/riscv/qsub_run.sh', {'operator=': 'operator='+operator}) 
       self.shell.replace_lines(self.syn_dir+'/'+operator+'/riscv/qsub_run.sh', {'MEM_SIZE=': 'MEM_SIZE='+str(int(inst_mem_size)/4)}) 
       self.shell.replace_lines(self.syn_dir+'/'+operator+'/riscv/qsub_run.sh', {'PAGE_NUM=': 'PAGE_NUM='+str(page_num)}) 
@@ -67,7 +67,6 @@ class syn(gen_basic):
       main_cpp_str_list.append('  while(1){')
       main_cpp_str_list.append(str_line)
       main_cpp_str_list.append('  }')
-      self.print_list(main_cpp_str_list)
       self.shell.add_lines(self.syn_dir+'/'+operator+'/riscv/main.cpp', '//stream', main_cpp_str_list)
       self.shell.cp_file('input_src/'+self.prflow_params['benchmark_name']+'/host/typedefs.h', self.syn_dir+'/'+operator+'/riscv/')
       self.shell.replace_lines(self.syn_dir+'/'+operator+'/riscv/typedefs.h', {'<hls_stream.h>': '#include "hls_stream.h"'}) 
@@ -83,7 +82,6 @@ class syn(gen_basic):
       self.shell.write_lines(self.syn_dir+'/'+operator+'/leaf.v', self.verilog.return_page_v_list(page_num, operator, input_num, output_num, True, True), False)
       self.shell.replace_lines(self.syn_dir+'/'+operator+'/src/picorv32_wrapper.v', {'parameter ADDR_BITS': '  parameter ADDR_BITS = '+str(inst_mem_bits-3)})
       self.shell.replace_lines(self.syn_dir+'/'+operator+'/src/picorv32.v', {'cpuregs[i] = 16380': '                               cpuregs[i] = '+str(int(inst_mem_size)-4)+';'})
-      print "================================================\n"
       if debug_exist: self.shell.replace_lines(self.syn_dir+'/'+operator+'/riscv/print.cpp', {'#define OUTPORT': '#define OUTPORT 0x10000028'})  
     else:
       self.shell.mkdir(self.syn_dir+'/'+operator+'/riscv')
@@ -114,7 +112,7 @@ class syn(gen_basic):
       'src/write_b_in.v',
       'src/write_b_out.v'
     ]
-    for name in file_list: self.shell.cp_file(self.overlay_dir+'/'+name, self.syn_dir+'/'+operator+'/'+name)
+    # for name in file_list: self.shell.cp_file(self.overlay_dir+'/'+name, self.syn_dir+'/'+operator+'/'+name)
 
     self.riscv_gen(operator)
 

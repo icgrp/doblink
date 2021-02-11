@@ -363,9 +363,6 @@ class _tcl:
       'wait_on_run impl_1',
       'set_property pfm_name {} [get_files -all {./prj/floorplan_static.srcs/sources_1/bd/floorplan_static/floorplan_static.bd}]',
       'write_hw_platform -fixed -include_bit -force -file ./prj/floorplan_static_wrapper.xsa',
-      'file mkdir '+prj_dir+prj_name+'.sdk',
-      'file copy -force '+prj_dir+prj_name\
-        +'.runs/impl_1/'+prj_name+'_wrapper.sysdef '+prj_dir+prj_name+'.sdk/'+prj_name+'_wrapper.hdf ',
       ''])
 
   def return_syn2dcp_tcl_list(self, prj_dir='./prj/', prj_name = 'floorplan_static.xpr'):
