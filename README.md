@@ -136,7 +136,7 @@ RISC-V core.
 
 3. As the user, we only need to change the pragma in [data_redir.h](./input_src/rendering/operators/data_redir_m.h).
 ```c
-    #pragma map_target = RISC-V page_num = 3 inst_mem_size = 65536
+    #pragma map_target = riscv page_num = 3 inst_mem_size = 65536
 ```
 4. Type '**Make**', the RISC-V elf file will be compiled automatically.
 
@@ -160,7 +160,7 @@ RISC-V cores.
 This means that the debugging information from page 3 will send to 
 debug port 2.
 ```c
-    #pragma map_target = RISC-V page_num = 3 inst_mem_size = 65536
+    #pragma map_target = riscv page_num = 3 inst_mem_size = 65536
     #pragma debug_port = 2
 ```
 
