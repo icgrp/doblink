@@ -44,8 +44,10 @@ name as the benchmark.
 [./input_src/rendering/operators](./input_src/rendering/operators), we
 can see 6 operators to be mapped to partial reconfigurable pages.
 4. We can set the page number and target (HW or riscv) in the header file
-for each operator.
+for each [operator](input_src/rendering/operators/data_redir_m.h).
+
     #pragma map_target = HW page_num = 3 inst_mem_size = 65536
+
 5. Currently, we use a **top** function in [./input_src/rendering/host/top.cpp](./input_src/rendering/host/top.cpp)
 to show how to connect different operators together. Our python script 
 ([config.py](./pr_flow/config.py)) will
