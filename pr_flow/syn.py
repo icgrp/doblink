@@ -112,7 +112,7 @@ class syn(gen_basic):
       'src/write_b_in.v',
       'src/write_b_out.v'
     ]
-    # for name in file_list: self.shell.cp_file(self.overlay_dir+'/'+name, self.syn_dir+'/'+operator+'/'+name)
+    for name in file_list: self.shell.cp_file(self.overlay_dir+'/'+name, self.syn_dir+'/'+operator+'/'+name)
 
     self.riscv_gen(operator)
 
