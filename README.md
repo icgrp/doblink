@@ -103,6 +103,110 @@ has already copied the cpp source to your Vitis project/src/.
 
 ![](images/vitis_src.png)
 
+7. As our floorplan_staitc.xda includes the correct bitstreams, you can
+run the vitis project and get the correct results. At least run it once 
+to get a '**run configuration file**', which we can modify later.
+
+
+8. However, our target is to replace the bitstreams with our partially-generated ones. Therefore, 
+we need to modify the '**run configurations file**' to avoid downloading bitstream
+when launch the ARM. You can right click the project->Run As->Run Configurations.
+Uncheck **Program FPGA** and **Reset entire system**, check **Reset APU**, 
+and fianlly click **Apply** and **Close**. 
+
+9. Type '**Make download**', the terminal will download the static and 
+partial bitstreams into the board automatically. This time, run the 
+Vitis application, you should get the correct results.
+
+
+
+## Tutorial 2: Map one operator to RISC-V
+1. The partial reconfigurable page 3 is re-loaded with one picorc32 cores.
+To make sure the risc-v core can run 'ap_int.h' and 'ap_fixed.h', the 
+smallest bram size it 65536 Bytes. We could only re-load one page with
+risc-v for ultra96, but for ZCU102, we can pre-load 16 riscvs.
+
+2. We are going to switch '**data_redir**' page to risc-v. To achieve
+this goal, we only need to avoid downloading any partial bitstreams to
+page 3 and use ARM to send instruction data through BFT to the pre-loaded
+RISC-V core. 
+
+3. As the user, we only need to change the pragma in [data_redir.h](./input_src/rendering/operators/data_redir_m.h).
+```c
+    #pragma map_target = riscv page_num = 3 inst_mem_size = 65536
+```
+4. Type '**Make**', the riscv elf file will be compiled automatically.
+
+5. Type '**Make config**", the instr_data will make copied to Vitis project,
+and the cpp source will also be updated.
+
+6. Type '**Make download**' to download the bitstreams into the board,
+and launch the Vitis project to run the project. You can see the results
+with one page running on the riscv core.
+
+## Tutorial 3: Enable Print Function for Risc-V.
+
+1. The RISC-V core can also print out some debugging information and send
+it back to ARM. The ARM can parse the printed-out information and show 
+it through UART.
+
+2. We have 7 stream ports to receive debugging information from up to 7
+risc-v cores.
+
+3. You can modify the file [data_redir.h](./input_src/rendering/operators/data_redir_m.h) 
+This means that the debugging information from page 3 will send to 
+debug port 2.
+```c
+    #pragma map_target = riscv page_num = 3 inst_mem_size = 65536
+    #pragma debug_port = 2
+```
+
+4. In the [data_redir.cpp](./input_src/rendering/operators/data_redir_m.cpp),
+you can use the print_dec and print_str function for riscv.
+Change **RISCV1** to **RISCV**. the print code will be enabled.
+
+```c
+#ifdef RISCV
+      print_dec(cnt);
+      print_str("\n");
+      cnt++;
+    #else
+      //printf("in: %08x\n", (unsigned int)input_lo);
+      //printf("in: %08x\n", (unsigned int)input_mi);
+      unsigned int data;
+      data = input_lo;
+      //printf("cnt = %08x\n", input_lo.to_int());
+      cnt++;
+#endif
+```
+`
+5. Type '**Make**', the riscv elf file will be compiled automatically.
+
+6. Type '**Make config**", the instr_data will make copied to Vitis project,
+and the cpp source will also be updated.
+
+7. Type '**Make download**' to download the bitstreams into the board,
+and launch the Vitis project to run the project. You can see the results
+with one page running on the riscv core. The debugging information from 
+risc-v core will show up.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
