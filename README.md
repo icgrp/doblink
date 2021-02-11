@@ -154,7 +154,8 @@ it back to ARM. The ARM can parse the printed-out information and show
 it through UART.
 
 2. We have 7 stream ports to receive debugging information from up to 7
-RISC-V cores.
+RISC-V cores. The ARM will detect whether there are valid data in the receiving
+stream fifo according to a timer interrupt, and read out the debugging data. 
 
 3. You can modify the file [data_redir.h](./input_src/rendering/operators/data_redir_m.h) 
 This means that the debugging information from page 3 will send to 
@@ -192,51 +193,6 @@ and the cpp source will also be updated.
 and launch the Vitis project to run the project. You can see the results
 with one page running on the RISC-V core. The debugging information from 
 RISC-V core will show up.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-
-
- 
-
-
-
-
-
-
-
-
 
 
 
