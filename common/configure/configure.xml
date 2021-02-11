@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
   <!--specifications for pr_flow tool-->
-  <spec name = "Xilinx_dir"         value = "/scratch/unsafe/SDSoC/Vivado/2020.1/settings64.sh" />
-  <spec name = "riscv_dir"          value = "/scratch/unsafe/RISCV/riscv32" />
+  <spec name = "Xilinx_dir"         value = "/opt/Xilinx/Vivado/2020.1/settings64.sh" />
+  <spec name = "riscv_dir"          value = "/opt/riscv32" />
   <spec name = "board"              value = "ultra96" />
   <spec name = "part"               value = "xczu3eg-sbva484-1-e" />
   <spec name = "device"             value = "xczu3_0" />  

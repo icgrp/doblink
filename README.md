@@ -10,10 +10,10 @@ and [Ultra96v2 board](https://www.96boards.org/product/ultra96/).
 The default Vitis does not include Ultra96v2 BSP. You can copy the dir **ultra96v2**
 under [BSP](./BSP) to \<Vitis Installation DIR\>/Vivado/2020.1/data/boards/board_files.
 
-### 1.2 RISCV Tool Praparation
+### 1.2 RISC-V Tool Praparation
 
-We are based on picorv32 repo. You can install the RISC-V toolchain with 
-certain commit tag (411d134).
+The RISC-V toolchain is based on picorv32 repo. You can install the RISC-V toolchain with 
+this commit tag (411d134).
 We copy the installation guide from [picorv32](https://github.com/cliffordwolf/picorv32) 
 as below.
 
