@@ -1,4 +1,20 @@
 # -*- coding: utf-8 -*-   
+# Company: IC group, University of Pennsylvania
+# Engineer: Yuanlong Xiao
+#
+# Create Date: 02/11/2021
+# Design Name: overlay
+# Project Name: DIRC
+# Versions: 1.0
+# Description: This is a python script to prepare the script for Out-Context-Synthesis 
+#              from verilog to DCP for PRFlow
+# Dependencies: python2, gen_basic.py, config.py
+# Revision:
+# Revision 0.01 - File Created
+#
+# Additional Comments:
+
+
 
 import os  
 import subprocess
@@ -156,9 +172,6 @@ class syn(gen_basic):
   def create_shell_file(self):
   # local run:
   #   main.sh <- |_ execute each run.sh <- syn_page.tcl
-  #
-  # qsub run:
-  #   qsub_main.sh <-|_ Qsubmit each qsub_run.sh <- syn_page.tcl
    
     self.shell.write_lines(self.syn_dir+'/main.sh', self.return_main_sh_list_local(), True)
     self.shell.write_lines(self.syn_dir+'/qsub_main.sh', self.return_qsub_main_sh_list_local(), True)

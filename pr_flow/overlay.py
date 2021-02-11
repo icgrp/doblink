@@ -1,4 +1,19 @@
 # -*- coding: utf-8 -*-   
+# Company: IC group, University of Pennsylvania
+# Engineer: Yuanlong Xiao
+#
+# Create Date: 02/11/2021
+# Design Name: overlay
+# Project Name: DIRC
+# Versions: 1.0
+# Description: This is a python script to prepare the script for static region 
+#              compile for PRflow.
+# Dependencies: python2, gen_basic
+# Revision:
+# Revision 0.01 - File Created
+#
+# Additional Comments:
+
 
 import os  
 import subprocess

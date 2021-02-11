@@ -70,7 +70,7 @@ $(operators_syn_targets):$(ws_syn)/%/page_netlist.dcp:$(ws_hls)/runLog%.log
 # High-Level-Synthesis from C to Verilog
 $(operators_hls_targets):$(ws_hls)/runLog%.log:$(operators_dir)/%.cpp $(operators_dir)/%.h 
 	python2 pr_flow.py $(prj_name) -hls -op $(basename $(notdir $<))
-	cd $(ws_hls) && ./qsub_run_$(basename $(notdir $<)).sh
+	cd $(ws_hls) && ./run_$(basename $(notdir $<)).sh
 
 mono_prj: $(mono_bft_target)
 
