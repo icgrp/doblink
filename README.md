@@ -14,6 +14,7 @@ under [BSP](./BSP) to \<Vitis Installation DIR\>/Vivado/2020.1/data/boards/board
 
 We are based on picorv32 repo. You can install the RISC-V toolchain 
 certain commit tag (411d134) as below.
+We copy the installation guide from [picorv32](https://github.com/cliffordwolf/picorv32) 
 
     # Ubuntu packages needed:
     sudo apt-get install autoconf automake autotools-dev curl libmpc-dev \
