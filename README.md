@@ -76,17 +76,17 @@ for Vitis and RISC-V toolchain in [configure.xml](./common/configure/configure.x
 bitstream files automatically. Different operators can be compiled in 
 parallel according to the thread number of your local machine. Be carefull
 with the memory requirements, when you use multi-threads to compile the 
-project. When I use 8 threads to compile, I at least needs 32 GB DDR 
+project. When I use 8 threads to compile, I at least need 32 GB DDR 
 memory.
 ```c
 Make -j$(nproc)
 ```
 
-4. Type **Make mono_prj -j$(nproc)**, it will generate floorplan_staitc.xda
+4. Type **Make mono_prj -j$(nproc)**. It will generate floorplan_staitc.xda
 file for Vitis project under ./workspace/F007_mono_bft_rendering/prj/.
 This is a one-time compilation to get the xda file for Vitis. You don't 
 need to compile the xda when you make changes to the operators later.
-To save time, you can also copy the floorplan_staitc.xda under [here](./BSP).
+To save time, you can also copy the floorplan_staitc.xda [here](./BSP).
 ```c
 Make mono_prj -j$(nproc)
 ```
