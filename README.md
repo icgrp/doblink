@@ -109,13 +109,13 @@ Otherwise, you need to copy the source files to your Vitis project by yourself.
 run the vitis project and get the correct results. At least run it once 
 to get a '**run configuration file**', which we can modify later.
 
-![](images/configuration.png)
-
 8. However, our target is to replace the bitstreams with our partially-generated ones. Therefore, 
 we need to modify the '**run configurations file**' to avoid downloading bitstream
 when launch the ARM. You can right click the project->Run As->Run Configurations.
 Uncheck **Program FPGA** and **Reset entire system**, check **Reset APU**, 
 and fianlly click **Apply** and **Close**. 
+
+![](images/configuration.png)
 
 9. Type '**Make download**', the terminal will download the static and 
 partial bitstreams into the board automatically. This time, run the 
