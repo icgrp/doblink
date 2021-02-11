@@ -59,7 +59,7 @@ and generate the configuration packets.
  
 
 
-## Tutorial 1: Map all Operators to Hardware
+## 3 Tutorial 1: Map all Operators to Hardware
 1. After you set up all the necessary tools, you need set the directory 
 for Vitis and RISC-V toolchain in [configure.xml](./common/configure/configure.xml).
 ```c
@@ -121,7 +121,7 @@ Vitis application, you should get the correct results.
 
 
 
-## Tutorial 2: Map one operator to RISC-V
+## 4 Tutorial 2: Map one operator to RISC-V
 1. The partial reconfigurable page 3 is re-loaded with one picorc32 cores.
 To make sure the risc-v core can run 'ap_int.h' and 'ap_fixed.h', the 
 smallest bram size it 65536 Bytes. We could only re-load one page with
@@ -145,7 +145,7 @@ and the cpp source will also be updated.
 and launch the Vitis project to run the project. You can see the results
 with one page running on the riscv core.
 
-## Tutorial 3: Enable Print Function for Risc-V.
+## 5 Tutorial 3: Enable Print Function for Risc-V.
 
 1. The RISC-V core can also print out some debugging information and send
 it back to ARM. The ARM can parse the printed-out information and show 
