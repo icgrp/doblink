@@ -82,16 +82,16 @@ memory.
 Make -j$(nproc)
 ```
 
-4. Type **Make mono_prj -j$(nproc)**. It will generate floorplan_staitc.xsa
+4. Type **Make mono_prj -j$(nproc)**. It will generate floorplan_staitc_wrapper.xsa
 file for Vitis project under ./workspace/F007_mono_bft_rendering/prj/.
 This is a one-time compilation to get the xsa file for Vitis. You don't 
 need to compile the xsa when you make changes to the operators later.
-To save time, you can also copy the floorplan_staitc.xsa [here](./BSP).
+To save time, you can also copy the floorplan_staitc_wrapper.xsa [here](./BSP).
 ```c
 Make mono_prj -j$(nproc)
 ```
 
-5. I recomend you set your Vitis directory to ./workspace/Vitis, and create
+5. I recomend you set your Vitis directory to ./workspace/vitis, and create
 an empty cpp application with the same name as the benchmark, since our Makefile
 can directly copy the application cpp files to the correct directory later.
 
@@ -104,7 +104,7 @@ has already copied the cpp source to your Vitis project/src/.
 
 ![](images/vitis_src.png)
 
-7. As our floorplan_staitc.xsa includes the correct bitstreams, you can
+7. As our floorplan_staitc_wrapper.xsa includes the correct bitstreams, you can
 run the vitis project and get the correct results. At least run it once 
 to get a '**run configuration file**', which we can modify later.
 
