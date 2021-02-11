@@ -195,6 +195,10 @@ with one page running on the RISC-V core. The debugging information from
 RISC-V core will show up.
 
 
+## 6 Mapping Report
+Type '**Make report**', you can find the compile and resource report under 
+'workspace/report'.
+
 
 
 
