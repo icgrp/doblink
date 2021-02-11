@@ -36,7 +36,8 @@ as below.
 
 
 ## 2 Benchmark Preparation
-1. As our [Makefile](./Makefile) certain directory hierarchy. We take 
+1. To get our [Makefile](./Makefile) to work, you need to copy your application cpp
+code to certain directory. We take 
 **Rendering** as an example.
 2. You can create the directory [rendering](./input_src) with the same 
 name as the benchmark.
