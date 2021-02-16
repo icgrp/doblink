@@ -130,6 +130,8 @@ To make sure the RISC-V core can run 'ap_int.h' and 'ap_fixed.h', the
 smallest bram size it 65536 Bytes. We could only pre-load one page (page 3) with
 RISC-V for ultra96, but for ZCU102, we can pre-load 16 RISC-V cores.
 
+![](images/Overlay_ultra96.png)
+
 2. We are going to switch '**data_redir**' page to RISC-V. To achieve
 this goal, we only need to avoid downloading any partial bitstreams to
 page 3 and use ARM to send instruction data through BFT to the pre-loaded
