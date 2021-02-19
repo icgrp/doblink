@@ -65,6 +65,11 @@ dump.vcd
 riscv/compiler/gnu/riscv64-*/
 riscv/compiler/gnu/riscv64-*
 
+# Scala Project Files
+riscv/core/project
+riscv/core/target
+riscv/core/output/*
+
 .DS_Store
 *.jou
 vivado.log
