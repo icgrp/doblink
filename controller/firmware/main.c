@@ -1,8 +1,10 @@
 #include "stdint.h"
 #include "system.h"
+#include "input_data.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include <irq.h>
 #include <uart.h>
@@ -121,56 +123,82 @@ static void axi_sw_test(void) {
   busy_wait(100);
 }
 
-#define LEN 10000
+#define SEND_LEN 9576
+#define RECV_LEN 16384
 
-volatile uint32_t TxBufferPtr[LEN]  __attribute__((aligned(16)));
-volatile uint32_t RxBufferPtr[LEN]  __attribute__((aligned(16)));
+static char frame_buffer_print[256][256];
 
-static void dma_test(void) {
+static void check_results(uint32_t * output)
+{
 
-  for(int i = 0; i < LEN; i++) {
-    TxBufferPtr[i] = i+1;
+  // read result from the 32-bit output buffer
+  for (int i = 0, j = 0, n = 0; n < 16384; n ++ )
+  {
+    uint32_t temp = output[n];
+    //printf("n = %d, val = %#X\n", n, temp);
+
+    frame_buffer_print[i][j++] = (char) (temp & 0x000000ff);
+    frame_buffer_print[i][j++] = (char) ((temp & 0x0000ff00) >> 8);
+    frame_buffer_print[i][j++] = (char) ((temp & 0x00ff0000) >> 16);
+    frame_buffer_print[i][j++] = (char) ((temp & 0xff000000) >> 24);
+    if(j == 256)
+    {
+      i++;
+      j = 0;
+    }
   }
 
-  for(int i = 0; i < LEN; i++) {
+  // print result
+  printf("Image After Rendering: \n\r");
+  for (int j = 256 - 1; j >= 0; j -- )
+  {
+    for (int i = 0; i < 256; i ++ )
+    {
+      int pix;
+        pix = frame_buffer_print[i][j];
+        //pix = output[i*256+j];
+      if (pix!=0)
+        printf("1");
+      else
+        printf("0");
+    }
+    printf("\n\r");
+  }
+}
+
+volatile uint32_t TxBufferPtr[SEND_LEN]  __attribute__((aligned(16)));
+volatile uint32_t RxBufferPtr[RECV_LEN]  __attribute__((aligned(16)));
+
+static void rendering_test(void) {
+  for(int i = 0; i < SEND_LEN; i++) {
+    TxBufferPtr[i] = input_data[i];
+  }
+
+  for(int i = 0; i < RECV_LEN; i++) {
     RxBufferPtr[i] = 0;
   }
 
-  //flush_cpu_dcache();
   flush_l2_cache();
   
   printf("TxBufferPtr = %#8X\n", (uint32_t)TxBufferPtr);
   printf("RxBufferPtr = %#8X\n", (uint32_t)RxBufferPtr);
 
   mm2s_base_write((uint32_t)TxBufferPtr);
-  mm2s_length_write(4 * LEN);
+  mm2s_length_write(4 * SEND_LEN);
   mm2s_start_write(1);
+  printf("Waiting for mm2s to finish\n");
+  while(!mm2s_done_read());
 
   s2mm_base_write((uint32_t) RxBufferPtr);
-  s2mm_length_write(4 * LEN);
+  s2mm_length_write(4 * RECV_LEN);
   s2mm_start_write(1);
-  printf("Waiting for DMA to finish\n");
+  printf("Waiting for s2mm to finish\n");
   while(!s2mm_done_read());
   printf("DMA done\n");
 
-  //busy_wait(1000);
-
   flush_l2_cache();
-  int matching = 1;
-  for (int i = 0; i < LEN; i++) {
-    if (RxBufferPtr[i] != TxBufferPtr[i]) {
-      printf("Data mismatch at i=%d, expected=%d, actual=%d\n", i, TxBufferPtr[i], RxBufferPtr[i]);
-      matching = 0;
-    } else {
-      //printf("Data match at i=%d, expected=%d, actual=%d\n", i, TxBufferPtr[i], RxBufferPtr[i]);
-    }
-  }
-
-  if (!matching) {
-    printf("TEST FAILED\n");
-  } else {
-    printf("TEST PASSED\n");
-  }
+  printf("Checking Results\n");
+  check_results((uint32_t *) RxBufferPtr);
 }
 
 static void console_service(void)
@@ -199,7 +227,7 @@ int main(void)
 	puts("\nrvpld - CPU testing software built "__DATE__" "__TIME__"\n");
 
   printf("DMA test\n");
-  dma_test();
+  rendering_test();
 
 	printf("led_test...\n");
 

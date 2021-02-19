@@ -52,10 +52,6 @@ class PldAXIStreamInterface(AXIStreamInterface):
             "param",
         ]
         for channel in channels:
-            for name, width in [("valid", 1)] + getattr(self, channel).description.payload_layout:
-                sig  = getattr(getattr(self, channel), name)
-                signals[channel + name] = sig
-            for name, width in [("ready", 1)]:
-                sig  = getattr(getattr(self, channel), name)
-                signals[channel + name] = sig
+            sig  = getattr(self, channel)
+            signals['t' + channel] = sig
         return signals
