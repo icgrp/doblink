@@ -29,7 +29,7 @@ class StreamwPlugin(streamCount: Int) extends Plugin[VexRiscv]{
       //Decoding specification when the 'key' pattern is recognized in the instruction
       List(
         IS_STREAMW               -> True,
-        BYPASSABLE_EXECUTE_STAGE -> True, //Notify the hazard management unit that the instruction result is already accessible in the EXECUTE stage (Bypass ready)
+        // BYPASSABLE_EXECUTE_STAGE -> True, //Notify the hazard management unit that the instruction result is already accessible in the EXECUTE stage (Bypass ready)
         BYPASSABLE_MEMORY_STAGE  -> True, //Same as above but for the memory stage
         RS1_USE                  -> True, //Notify the hazard management unit that this instruction uses the RS1 value
         RS2_USE                  -> True,  //Same than above but for RS2.
@@ -47,9 +47,9 @@ class StreamwPlugin(streamCount: Int) extends Plugin[VexRiscv]{
     streams = Vec(master(AXIStream32()), streamCount)
 
     //Add a new scope on the execute stage (used to give a name to signals)
-    execute plug new Area {
-      val rs1 = execute.input(RS1) // Value of the regfile[RS1]
-      val rs2 = execute.input(RS2) // Value of the regfile[RS2]
+    memory plug new Area {
+      val rs1 = memory.input(RS1) // Value of the regfile[RS1]
+      val rs2 = memory.input(RS2) // Value of the regfile[RS2]
 
       for(i <- 0 until streamCount) {
         val stream = streams(i)
@@ -57,12 +57,12 @@ class StreamwPlugin(streamCount: Int) extends Plugin[VexRiscv]{
 
         stream.valid := False
         stream.data := 0
-        when(execute.arbitration.isValid && execute.input(IS_STREAMW) && rs1 === i) {
+        when(memory.arbitration.isValid && memory.input(IS_STREAMW) && rs1 === i) {
            stream.valid := True
            when(stream.ready) {
              stream.data := rs2
            }.otherwise {
-             execute.arbitration.haltItself := True
+             memory.arbitration.haltItself := True
            }
         }
       }

@@ -33,10 +33,12 @@ class Fifo extends Component {
 
   when(io.push.valid & io.push.ready) {
     data(pushTo.value) := io.push.data
+    full := (pushTo.value + 1) === popFrom.value
     pushTo.increment()
   }
   when(io.pop.valid & io.pop.ready) {
     popFrom.increment()
+    full := False
   }
 }
 

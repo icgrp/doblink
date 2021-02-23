@@ -30,7 +30,7 @@ class StreamrPlugin(streamCount: Int) extends Plugin[VexRiscv]{
       List(
         IS_STREAMR               -> True,
         REGFILE_WRITE_VALID      -> True, //Enable the register file write
-        BYPASSABLE_EXECUTE_STAGE -> True, //Notify the hazard management unit that the instruction result is already accessible in the EXECUTE stage (Bypass ready)
+        // BYPASSABLE_EXECUTE_STAGE -> True, //Notify the hazard management unit that the instruction result is already accessible in the EXECUTE stage (Bypass ready)
         BYPASSABLE_MEMORY_STAGE  -> True, //Same as above but for the memory stage
         RS1_USE                  -> True, //Notify the hazard management unit that this instruction uses the RS1 value
         SRC1_CTRL                -> Src1CtrlEnum.RS // Input comes from register
@@ -46,8 +46,8 @@ class StreamrPlugin(streamCount: Int) extends Plugin[VexRiscv]{
     streams = Vec(slave(AXIStream32()), streamCount)
 
     //Add a new scope on the execute stage (used to give a name to signals)
-    execute plug new Area {
-      val rs1 = execute.input(RS1) // Value of the regfile[RS1]
+    memory plug new Area {
+      val rs1 = memory.input(RS1) // Value of the regfile[RS1]
       val rd = Bits(32 bits)
 
       rd := 0 // Default value
@@ -56,19 +56,19 @@ class StreamrPlugin(streamCount: Int) extends Plugin[VexRiscv]{
         stream.setName("readStream" + i)
 
         stream.ready := False
-        when(execute.arbitration.isValid && execute.input(IS_STREAMR) && rs1 === i) {
+        when(memory.arbitration.isValid && memory.input(IS_STREAMR) && rs1 === i) {
            stream.ready := True
            when(stream.valid) {
              rd := stream.data
            }.otherwise {
-             execute.arbitration.haltItself := True
+             memory.arbitration.haltItself := True
            }
         }
       }
 
       // When the instruction is a STREAMR, write the result into the register file data path.
-      when(execute.input(IS_STREAMR)) {
-        execute.output(REGFILE_WRITE_DATA) := rd
+      when(memory.input(IS_STREAMR)) {
+        memory.output(REGFILE_WRITE_DATA) := rd
       }
     }
   }

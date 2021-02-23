@@ -42,7 +42,7 @@
 `define Src1CtrlEnum_defaultEncoding_URS1 2'b11
 
 
-module VexRiscvStreamWithFifo (
+module VexRiscv (
   output              iBusWishbone_CYC,
   output              iBusWishbone_STB,
   input               iBusWishbone_ACK,
@@ -95,7 +95,7 @@ module VexRiscvStreamWithFifo (
   wire                fifo_1_io_pop_valid;
   wire       [31:0]   fifo_1_io_pop_data;
 
-  VexRiscv cpu (
+  VexRiscvCpu cpu (
     .externalResetVector       (externalResetVector[31:0]     ), //i
     .timerInterrupt            (timerInterrupt                ), //i
     .softwareInterrupt         (softwareInterrupt             ), //i
@@ -480,7 +480,7 @@ module Fifo (
 
 endmodule
 
-module VexRiscv (
+module VexRiscvCpu (
   input      [31:0]   externalResetVector,
   input               timerInterrupt,
   input               softwareInterrupt,
