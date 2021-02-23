@@ -17,8 +17,7 @@ build/gateware/nexys_video.v: ./rvpld-soc/nexys_video.py ./rvpld-soc/soc_core.py
 build: build/gateware/nexys_video.bit
 
 build/gateware/nexys_video.bit: ./rvpld-soc/nexys_video.py ./rvpld-soc/soc_core.py ./rvpld-soc/soc.py
-	. ${RVPLD_VIVADO} && \
-		python3 ./rvpld-soc/nexys_video.py --cpu-type $(CPU) --output-dir ./build --bus-standard $(BUS) --build $(DEBUG_ARGS)
+	python3 ./rvpld-soc/nexys_video.py --cpu-type $(CPU) --output-dir ./build --bus-standard $(BUS) --build $(DEBUG_ARGS)
 
 firmware: firmware/firmware.bin
 
