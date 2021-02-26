@@ -7,6 +7,8 @@ ifdef DEBUG
 	DEBUG_ARGS=--with-ethernet --csr-csv csr.csv
 endif
 
+.PHONY: load clean firmware gateware prog
+
 default: prog
 
 gateware: build/gateware/nexys_video.v
