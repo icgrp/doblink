@@ -9,6 +9,8 @@ endif
 
 LITEX_ARGS=--cpu-type $(CPU) --output-dir ./build --bus-standard $(BUS) --toolchain vivado
 
+.PHONY: load clean firmware gateware prog
+
 default: prog
 
 gateware: build/gateware/nexys_video.v

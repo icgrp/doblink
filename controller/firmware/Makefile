@@ -1,7 +1,7 @@
 BUILD_DIR=../build
 
 include $(BUILD_DIR)/software/include/generated/variables.mak
-include ${SOC_DIR}/software/common.mak
+include ../common.mak
 
 OBJECTS=isr.o main.o
 

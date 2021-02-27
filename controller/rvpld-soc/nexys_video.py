@@ -11,8 +11,8 @@ import argparse
 
 from migen import *
 
-from litex_boards.platforms import nexys_video
 from litex.build.xilinx.vivado import vivado_build_args, vivado_build_argdict
+from platforms import nexys_video
 
 from litex.soc.cores.clock import *
 from litex.soc.integration.soc_core import *
@@ -123,19 +123,50 @@ class BaseSoC(SoCCore):
             self.add_sata(phy=self.sata_phy, mode="read+write")
 
         # AXILite2Led ------------------------------------------------------------------------------
-        #rst = ~self.crg.cd_sys.rst
-        #clk = self.crg.cd_sys.clk
-        #self.submodules.axilite2led = axilite2led = AxiLite2Led(clk, rst, platform)
-        #axilite2led_region = SoCRegion(origin=0x02000000, size=0x10000)
-        #self.bus.add_slave(name="axilite2led", slave=axilite2led.bus, region=axilite2led_region)
+        rst = self.crg.cd_sys.rst
+        rstn = ~rst
+        clk = self.crg.cd_sys.clk
+        self.submodules.axilite2led = axilite2led = AxiLite2Led(clk, rstn, platform)
+        axilite2led_region = SoCRegion(origin=0x02000000, size=0x10000)
+        self.bus.add_slave(name="axilite2led", slave=axilite2led.bus, region=axilite2led_region)
 
-        #axilite2led.add_axi_lite_to_led()
+        axilite2led.add_axi_lite_to_led()
 
-        #led_pads = Cat([platform.request("user_led", 0), platform.request("user_led", 1)])
-        #self.comb += led_pads.eq(axilite2led.led)
+        led_pads = Cat([platform.request("user_led", 0), platform.request("user_led", 1)])
+        self.comb += led_pads.eq(axilite2led.led)
 
-        #sw_pads = Cat([platform.request("user_sw", 0), platform.request("user_sw", 1)])
-        #self.comb += axilite2led.sw.eq(sw_pads)
+        sw_pads = Cat([platform.request("user_sw", 0), platform.request("user_sw", 1)])
+        self.comb += axilite2led.sw.eq(sw_pads)
+
+        # mm2s -------------------------------------------------------------------------------------
+        self.submodules.mm2s = mm2s = LiteDRAMDMAReader(self.sdram.crossbar.get_port())
+        mm2s.add_csr()
+        self.add_csr("mm2s")
+
+        # s2mm -------------------------------------------------------------------------------------
+        self.submodules.s2mm = s2mm = LiteDRAMDMAWriter(self.sdram.crossbar.get_port())
+        s2mm.add_csr()
+        self.add_csr("s2mm")
+
+        # sync fifo -------------------------------------------------------------------------------
+        #self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 400, True)
+
+        #self.submodules.rendering = rendering = RenderingMono(clk, rst, platform)
+        #rendering.connect_input(mm2s.source)
+        #rendering.connect_output(s2mm.sink)
+
+        if DEBUG:
+            analyzer_signals = [mm2s.source, sync_fifo.level, mm2s.rsv_level, mm2s.sink, mm2s.port.cmd, mm2s.port.rdata]
+            self.submodules.analyzer = LiteScopeAnalyzer(analyzer_signals,
+                                                         depth = 2048,
+                                                         clock_domain = "sys",
+                                                         csr_csv = "analyzer.csv")
+            self.add_csr("analyzer")
+
+        #level_pads = Cat([platform.request("user_led", 2), platform.request("user_led", 3), \
+        #                    platform.request("user_led", 4), platform.request("user_led", 5), \
+        #                    platform.request("user_led", 6)])
+        #self.comb += level_pads.eq(sync_fifo.level)
 
         # Leds -------------------------------------------------------------------------------------
         #self.submodules.leds = LedChaser(
