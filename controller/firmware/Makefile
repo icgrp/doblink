@@ -4,7 +4,7 @@ SOURCES:=$(wildcard *.c)
 OBJECTS:=$(patsubst %.c, %.o, $(SOURCES))
 
 include $(BUILD_DIR)/software/include/generated/variables.mak
-include ${SOC_DIR}/software/common.mak
+include ../common.mak
 
 all: clean firmware.bin
 

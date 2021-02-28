@@ -11,10 +11,12 @@ import argparse
 
 from migen import *
 
+from litex.build.xilinx.vivado import vivado_build_args, vivado_build_argdict
 from platforms import nexys_video
 
 from litex.soc.cores.clock import *
-from soc_core import *
+from litex.soc.integration.soc_core import *
+from litex.soc.integration.soc import *
 from litex.soc.integration.soc_sdram import *
 from litex.soc.integration.builder import *
 from litex.soc.interconnect.stream import Converter, Endpoint, ClockDomainCrossing
@@ -29,15 +31,11 @@ from axil_cdc import AxilCDC
 
 from litedram.modules import MT41K256M16
 from litedram.phy import s7ddrphy
-from litedram.frontend.dma import LiteDRAMDMAReader, LiteDRAMDMAWriter
-from litescope import LiteScopeAnalyzer
-from litex.soc.cores import uart
+from litedram.frontend.dma import *
 
 from litex.build.generic_platform import Pins
 
 from liteeth.phy.s7rgmii import LiteEthPHYRGMII
-
-DEBUG = False
 
 # CRG ----------------------------------------------------------------------------------------------
 
@@ -70,12 +68,12 @@ class _CRG(Module):
 
 # BaseSoC ------------------------------------------------------------------------------------------
 
-class BaseSoC(RvpldSoCCore):
-    def __init__(self, toolchain="vivado", sys_clk_freq=int(100e6), with_ethernet=False, **kwargs):
+class BaseSoC(SoCCore):
+    def __init__(self, toolchain="vivado", sys_clk_freq=int(100e6), with_ethernet=False, with_sata=False, **kwargs):
         platform = nexys_video.Platform(toolchain=toolchain)
 
         # SoCCore ----------------------------------------------------------------------------------
-        RvpldSoCCore.__init__(self, platform, sys_clk_freq,
+        SoCCore.__init__(self, platform, sys_clk_freq,
             ident          = "LiteX SoC on Nexys Video",
             ident_version  = True,
             **kwargs)
@@ -106,10 +104,37 @@ class BaseSoC(RvpldSoCCore):
                 clock_pads = self.platform.request("eth_clocks"),
                 pads       = self.platform.request("eth"))
             self.add_csr("ethphy")
-            self.add_etherbone(
-                phy=self.ethphy,
-                ip_address = "192.168.1.50"
-            )
+            self.add_ethernet(phy=self.ethphy)
+
+        # SATA -------------------------------------------------------------------------------------
+        if with_sata:
+            from litex.build.generic_platform import Subsignal, Pins
+            from litesata.phy import LiteSATAPHY
+
+            # IOs
+            _sata_io = [
+                # AB09-FMCRAID / https://www.dgway.com/AB09-FMCRAID_E.html
+                ("fmc2sata", 0,
+                    Subsignal("clk_p", Pins("LPC:GBTCLK0_M2C_P")),
+                    Subsignal("clk_n", Pins("LPC:GBTCLK0_M2C_N")),
+                    Subsignal("tx_p",  Pins("LPC:DP0_C2M_P")),
+                    Subsignal("tx_n",  Pins("LPC:DP0_C2M_N")),
+                    Subsignal("rx_p",  Pins("LPC:DP0_M2C_P")),
+                    Subsignal("rx_n",  Pins("LPC:DP0_M2C_N"))
+                ),
+            ]
+            platform.add_extension(_sata_io)
+
+            # PHY
+            self.submodules.sata_phy = LiteSATAPHY(platform.device,
+                pads       = platform.request("fmc2sata"),
+                gen        = "gen2",
+                clk_freq   = sys_clk_freq,
+                data_width = 16)
+            self.add_csr("sata_phy")
+
+            # Core
+            self.add_sata(phy=self.sata_phy, mode="read+write")
 
         rst = self.crg.cd_sys.rst
         rstn = ~rst
@@ -213,40 +238,30 @@ class BaseSoC(RvpldSoCCore):
         #rendering.connect_input(mm2s.source)
         #rendering.connect_output(s2mm.sink)
 
-        if DEBUG:
-            analyzer_signals = [mm2s.source, sync_fifo.level, mm2s.rsv_level, mm2s.sink, mm2s.port.cmd, mm2s.port.rdata]
-            self.submodules.analyzer = LiteScopeAnalyzer(analyzer_signals,
-                                                         depth = 2048,
-                                                         clock_domain = "sys",
-                                                         csr_csv = "analyzer.csv")
-            self.add_csr("analyzer")
-
-        #level_pads = Cat([platform.request("user_led", 2), platform.request("user_led", 3), \
-        #                    platform.request("user_led", 4), platform.request("user_led", 5), \
-        #                    platform.request("user_led", 6)])
-        #self.comb += level_pads.eq(sync_fifo.level)
-
-        # Leds -------------------------------------------------------------------------------------
-        #self.submodules.leds = LedChaser(
-        #    pads         = platform.request_all("user_led"),
-        #    sys_clk_freq = sys_clk_freq)
-        #self.add_csr("leds")
-
 # Build --------------------------------------------------------------------------------------------
 
 def main():
     parser = argparse.ArgumentParser(description="LiteX SoC on Nexys Video")
-    parser.add_argument("--build", action="store_true", help="Build bitstream")
-    parser.add_argument("--load",  action="store_true", help="Load bitstream")
+    parser.add_argument("--build",           action="store_true", help="Build bitstream")
+    parser.add_argument("--load",            action="store_true", help="Load bitstream")
     parser.add_argument("--toolchain",       default="vivado",    help="Toolchain use to build (default: vivado)")
-    parser.add_argument("--with-ethernet", action="store_true", help="Enable Ethernet support")
+    parser.add_argument("--sys-clk-freq",    default=100e6,       help="System clock frequency (default: 100MHz)")
+    parser.add_argument("--with-ethernet",   action="store_true", help="Enable Ethernet support")
     parser.add_argument("--with-spi-sdcard", action="store_true", help="Enable SPI-mode SDCard support")
-    parser.add_argument("--with-sdcard", action="store_true",     help="Enable SDCard support")
+    parser.add_argument("--with-sdcard",     action="store_true", help="Enable SDCard support")
+    parser.add_argument("--with-sata",       action="store_true", help="Enable SATA support (over FMCRAID)")
     builder_args(parser)
     soc_sdram_args(parser)
     args = parser.parse_args()
 
-    soc = BaseSoC(toolchain=args.toolchain, with_ethernet=args.with_ethernet, **soc_sdram_argdict(args))
+    soc = BaseSoC(
+        toolchain      = args.toolchain,
+        sys_clk_freq  = int(float(args.sys_clk_freq)),
+        with_ethernet = args.with_ethernet,
+        with_sata     = args.with_sata,
+        **soc_sdram_argdict(args)
+    )
+
     assert not (args.with_spi_sdcard and args.with_sdcard)
     if args.with_spi_sdcard:
         soc.add_spi_sdcard()

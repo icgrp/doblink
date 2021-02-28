@@ -7,7 +7,9 @@ ifdef DEBUG
 	DEBUG_ARGS=--with-ethernet --csr-csv csr.csv
 endif
 
-LITEX_ARGS=--cpu-type $(CPU) --output-dir ./build --bus-standard $(BUS) --toolchain symbiflow
+LITEX_ARGS=--cpu-type $(CPU) --output-dir ./build --bus-standard $(BUS) --toolchain vivado
+
+.PHONY: load clean firmware gateware prog
 
 default: prog
 
@@ -19,8 +21,7 @@ build/gateware/nexys_video.v: ./rvpld-soc/nexys_video.py ./rvpld-soc/soc_core.py
 build: build/gateware/nexys_video.bit
 
 build/gateware/nexys_video.bit: ./rvpld-soc/nexys_video.py ./rvpld-soc/soc_core.py ./rvpld-soc/soc.py
-	source $$RVPLD_VIVADO && \
-		python3 ./rvpld-soc/nexys_video.py $(LITEX_ARGS) --build $(DEBUG_ARGS)
+	python3 ./rvpld-soc/nexys_video.py $(LITEX_ARGS) --build $(DEBUG_ARGS)
 
 firmware: firmware/firmware.bin
 
