@@ -26,6 +26,7 @@ from axilite2led import *
 
 from litedram.modules import MT41K256M16
 from litedram.phy import s7ddrphy
+from litedram.frontend.dma import *
 
 from liteeth.phy.s7rgmii import LiteEthPHYRGMII
 
@@ -155,24 +156,6 @@ class BaseSoC(SoCCore):
         #rendering.connect_input(mm2s.source)
         #rendering.connect_output(s2mm.sink)
 
-        if DEBUG:
-            analyzer_signals = [mm2s.source, sync_fifo.level, mm2s.rsv_level, mm2s.sink, mm2s.port.cmd, mm2s.port.rdata]
-            self.submodules.analyzer = LiteScopeAnalyzer(analyzer_signals,
-                                                         depth = 2048,
-                                                         clock_domain = "sys",
-                                                         csr_csv = "analyzer.csv")
-            self.add_csr("analyzer")
-
-        #level_pads = Cat([platform.request("user_led", 2), platform.request("user_led", 3), \
-        #                    platform.request("user_led", 4), platform.request("user_led", 5), \
-        #                    platform.request("user_led", 6)])
-        #self.comb += level_pads.eq(sync_fifo.level)
-
-        # Leds -------------------------------------------------------------------------------------
-        #self.submodules.leds = LedChaser(
-        #    pads         = platform.request_all("user_led"),
-        #    sys_clk_freq = sys_clk_freq)
-        #self.add_csr("leds")
 
 # Build --------------------------------------------------------------------------------------------
 
