@@ -1,19 +1,23 @@
 from pld_axi import PldAXILiteInterface
 from migen import *
 
-class AxiLite2Led(Module):
+class AxiLite2Bft(Module):
     def __init__(self, clk, rst, platform, clock_domain):
         self.bus = PldAXILiteInterface(data_width=32, address_width=5, clock_domain=clock_domain)
-        self.led = Signal(2, name="led")
-        self.sw = Signal(2, name="sw")
+        self.resend = Signal(1, name="resend")
+        self.host_bft2interface = Signal(49, name="host_bft2interface")
+        self.host_interface2bft = Signal(49, name="host_interface2bft")
         self.clk = clk
         self.rst = rst
         self.platform = platform
         axil_sigs = self.bus.get_signals()
-        self.platform.add_source('rtl/AxiLite2Led.v')
-        self.specials += Instance("AxiLite2Led",
-                          o_LED = self.led,
-                          i_SW = self.sw,
+        self.platform.add_source('rtl/AxiLite2Bft_v2_0.v')
+        self.platform.add_source('rtl/SynFIFO.v')
+        self.platform.add_source('rtl/gen_nw8.v')
+        self.specials += Instance("AxiLite2Bft_v2_0",
+                          i_resend = self.resend,
+                          i_host_bft2interface = self.host_bft2interface,
+                          o_host_interface2bft = self.host_interface2bft,
                           i_s00_axi_aclk = self.clk,
                           i_s00_axi_aresetn = self.rst,
                           i_s00_axi_awaddr = axil_sigs['awaddr'],

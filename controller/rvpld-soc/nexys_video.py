@@ -11,7 +11,6 @@ import argparse
 
 from migen import *
 
-from litex.build.xilinx.vivado import vivado_build_args, vivado_build_argdict
 from platforms import nexys_video
 
 from litex.soc.cores.clock import *
@@ -24,16 +23,18 @@ from litex.soc.interconnect import axi, wishbone
 from litex.soc.interconnect.stream import SyncFIFO
 from litex.soc.cores.led import LedChaser
 from litex.soc.integration.soc import SoCRegion
+from litex.build.xilinx.vivado import vivado_build_args, vivado_build_argdict
 from pld_axi import PldAXILiteInterface
 from axilite2led import AxiLite2Led
-from rendering_mono import RenderingMono
 from axil_cdc import AxilCDC
+from rendering.rendering_6_page import Rendering6Page
 
 from litedram.modules import MT41K256M16
 from litedram.phy import s7ddrphy
 from litedram.frontend.dma import *
 
-from litex.build.generic_platform import Pins
+from litex.build.generic_platform import Subsignal, Pins
+from litesata.phy import LiteSATAPHY
 
 from liteeth.phy.s7rgmii import LiteEthPHYRGMII
 
@@ -106,36 +107,6 @@ class BaseSoC(SoCCore):
             self.add_csr("ethphy")
             self.add_ethernet(phy=self.ethphy)
 
-        # SATA -------------------------------------------------------------------------------------
-        if with_sata:
-            from litex.build.generic_platform import Subsignal, Pins
-            from litesata.phy import LiteSATAPHY
-
-            # IOs
-            _sata_io = [
-                # AB09-FMCRAID / https://www.dgway.com/AB09-FMCRAID_E.html
-                ("fmc2sata", 0,
-                    Subsignal("clk_p", Pins("LPC:GBTCLK0_M2C_P")),
-                    Subsignal("clk_n", Pins("LPC:GBTCLK0_M2C_N")),
-                    Subsignal("tx_p",  Pins("LPC:DP0_C2M_P")),
-                    Subsignal("tx_n",  Pins("LPC:DP0_C2M_N")),
-                    Subsignal("rx_p",  Pins("LPC:DP0_M2C_P")),
-                    Subsignal("rx_n",  Pins("LPC:DP0_M2C_N"))
-                ),
-            ]
-            platform.add_extension(_sata_io)
-
-            # PHY
-            self.submodules.sata_phy = LiteSATAPHY(platform.device,
-                pads       = platform.request("fmc2sata"),
-                gen        = "gen2",
-                clk_freq   = sys_clk_freq,
-                data_width = 16)
-            self.add_csr("sata_phy")
-
-            # Core
-            self.add_sata(phy=self.sata_phy, mode="read+write")
-
         rst = self.crg.cd_sys.rst
         rstn = ~rst
         clk = self.crg.cd_sys.clk
@@ -143,42 +114,10 @@ class BaseSoC(SoCCore):
         rst_bftn = ~rst_bft
         clk_bft = self.crg.cd_bft.clk
 
-        # clk IO
-        clk_io = [("clk_sys", 0, Pins("X"))]
-        clk_bft_io = [("clk_bft", 0, Pins("X"))]
-        platform.add_extension(clk_io)
-        platform.add_extension(clk_bft_io)
-        clk_pad = platform.request("clk_sys")
-        clk_bft_pad = platform.request("clk_bft")
-        self.comb += clk_pad.eq(clk)
-        self.comb += clk_bft_pad.eq(clk_bft)
-
-        # rst IO
-        rst_io = [("rst_sys", 0, Pins("X"))]
-        rst_n_io = [("rst_sys_n", 0, Pins("X"))]
-        platform.add_extension(rst_io)
-        platform.add_extension(rst_n_io)
-        rst_pad = platform.request("rst_sys")
-        rst_n_pad = platform.request("rst_sys_n")
-        self.comb += rst_pad.eq(rst)
-        self.comb += rst_n_pad.eq(rstn)
-
-        # rst IO
-        rst_bft_io = [("rst_bft", 0, Pins("X"))]
-        rst_bft_n_io = [("rst_bft_n", 0, Pins("X"))]
-        platform.add_extension(rst_bft_io)
-        platform.add_extension(rst_bft_n_io)
-        rst_bft_pad = platform.request("rst_bft")
-        rst_bft_n_pad = platform.request("rst_bft_n")
-        self.comb += rst_bft_pad.eq(rst_bft)
-        self.comb += rst_bft_n_pad.eq(rst_bftn)
-
         # AXILite2Led ------------------------------------------------------------------------------
         self.submodules.axilite2led = axilite2led = AxiLite2Led(self.crg.cd_sys.clk, ~self.crg.cd_sys.clk, platform, "sys")
         axilite2led_region = SoCRegion(origin=0x02000000, size=0x10000)
         self.bus.add_slave(name="axilite2led", slave=axilite2led.bus, region=axilite2led_region)
-
-        axilite2led.add_axi_lite_to_led()
 
         led_pads = Cat([platform.request("user_led", 0), platform.request("user_led", 1)])
         self.comb += led_pads.eq(axilite2led.led)
@@ -186,18 +125,14 @@ class BaseSoC(SoCCore):
         sw_pads = Cat([platform.request("user_sw", 0), platform.request("user_sw", 1)])
         self.comb += axilite2led.sw.eq(sw_pads)
 
-        # AXILite2BFT
+        # AXILite2BFT ------------------------------------------------------------------------------
         axi_bft_bus_sys = axi.AXILiteInterface(data_width=32, address_width=5, clock_domain="sys")
         axi_bft_bus_bft = axi.AXILiteInterface(data_width=32, address_width=5, clock_domain="bft")
         self.submodules.axil_cdc_sys2bft = axil_cdc_sys2bft = AxilCDC(clk, rst, clk_bft, rst_bft, self.platform, 'sys', 'bft')
-        axil_cdc_sys2bft.add_axi_lite_cdc()
         self.comb += axi_bft_bus_sys.connect(axil_cdc_sys2bft.slave)
         self.comb += axil_cdc_sys2bft.master.connect(axi_bft_bus_bft)
         axilite2bft_region = SoCRegion(origin=0x02010000, size=0x10000)
         self.bus.add_slave(name="axilite2bft", slave=axi_bft_bus_sys, region=axilite2bft_region)
-        platform.add_extension(axi_bft_bus_bft.get_ios("axi_bft"))
-        axi_bft_pads = platform.request("axi_bft")
-        self.comb += axi_bft_bus_bft.connect_to_pads(axi_bft_pads, mode="master")
 
         # mm2s -------------------------------------------------------------------------------------
         self.submodules.mm2s = mm2s = LiteDRAMDMAReader(self.sdram.crossbar.get_port())
@@ -211,9 +146,6 @@ class BaseSoC(SoCCore):
         mm2s_axis_bft = axi.AXIStreamInterface(32)
         self.comb += mm2s_axis.connect(input_cross_domain_converter.sink)
         self.comb += input_cross_domain_converter.source.connect(mm2s_axis_bft)
-        platform.add_extension(mm2s_axis_bft.get_ios("mm2s_axis"))
-        mm2s_axis_pads = platform.request("mm2s_axis")
-        self.comb += mm2s_axis_bft.connect_to_pads(mm2s_axis_pads, mode="master")
 
         # s2mm -------------------------------------------------------------------------------------
         self.submodules.s2mm = s2mm = LiteDRAMDMAWriter(self.sdram.crossbar.get_port())
@@ -227,16 +159,13 @@ class BaseSoC(SoCCore):
         s2mm_axis_bft = axi.AXIStreamInterface(32)
         self.comb += output_cross_domain_converter.source.connect(s2mm_axis)
         self.comb += s2mm_axis_bft.connect(output_cross_domain_converter.sink)
-        platform.add_extension(s2mm_axis_bft.get_ios("s2mm_axis"))
-        s2mm_axis_pads = platform.request("s2mm_axis")
-        self.comb += s2mm_axis_bft.connect_to_pads(s2mm_axis_pads, mode="slave")
 
         # sync fifo -------------------------------------------------------------------------------
         #self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 400, True)
 
-        #self.submodules.rendering = rendering = RenderingMono(clk, rst, platform)
-        #rendering.connect_input(mm2s.source)
-        #rendering.connect_output(s2mm.sink)
+        self.submodules.rendering = rendering = Rendering6Page(clk_bft, rst_bft, platform, 'bft')
+        rendering.connect_input(mm2s_axis_bft)
+        rendering.connect_output(s2mm_axis_bft)
 
 # Build --------------------------------------------------------------------------------------------
 

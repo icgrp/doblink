@@ -15,12 +15,12 @@ default: prog
 
 gateware: build/gateware/nexys_video.v
 
-build/gateware/nexys_video.v: ./rvpld-soc/nexys_video.py ./rvpld-soc/soc_core.py ./rvpld-soc/soc.py
+build/gateware/nexys_video.v: ./rvpld-soc/nexys_video.py
 	python3 ./rvpld-soc/nexys_video.py $(LITEX_ARGS) --no-compile-gateware $(DEBUG_ARGS)
 
 build: build/gateware/nexys_video.bit
 
-build/gateware/nexys_video.bit: ./rvpld-soc/nexys_video.py ./rvpld-soc/soc_core.py ./rvpld-soc/soc.py
+build/gateware/nexys_video.bit: ./rvpld-soc/nexys_video.py
 	python3 ./rvpld-soc/nexys_video.py $(LITEX_ARGS) --build $(DEBUG_ARGS)
 
 firmware: firmware/firmware.bin

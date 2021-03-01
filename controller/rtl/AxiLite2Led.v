@@ -47,10 +47,10 @@
 		input wire  s00_axi_rready
 	);
 // Instantiation of Axi Bus Interface S00_AXI
-	AxiLite2Bft_v2_0_S00_AXI # ( 
+	AxiLite2Bft_v2_0_S00_AXI_LED # ( 
 		.C_S_AXI_DATA_WIDTH(C_S00_AXI_DATA_WIDTH),
 		.C_S_AXI_ADDR_WIDTH(C_S00_AXI_ADDR_WIDTH)
-	) AxiLite2Bft_v2_0_S00_AXI_inst (
+	) AxiLite2Bft_v2_0_S00_AXI_LED_inst (
 		.LED(LED),
 		.SW(SW),
 		.S_AXI_ACLK(s00_axi_aclk),
@@ -85,7 +85,7 @@
 
 `timescale 1 ns / 1 ps
 
-	module AxiLite2Bft_v2_0_S00_AXI #
+	module AxiLite2Bft_v2_0_S00_AXI_LED #
 	(
 		// Users to add parameters here
 
