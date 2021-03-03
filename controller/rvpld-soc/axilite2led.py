@@ -9,8 +9,6 @@ class AxiLite2Led(Module):
         self.clk = clk
         self.rst = rst
         self.platform = platform
-
-    def add_axi_lite_to_led(self):
         axil_sigs = self.bus.get_signals()
         self.platform.add_source('rtl/AxiLite2Led.v')
         self.specials += Instance("AxiLite2Led",

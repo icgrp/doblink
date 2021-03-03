@@ -95,36 +95,6 @@ class BaseSoC(SoCCore):
             self.add_csr("ethphy")
             self.add_ethernet(phy=self.ethphy)
 
-        # SATA -------------------------------------------------------------------------------------
-        if with_sata:
-            from litex.build.generic_platform import Subsignal, Pins
-            from litesata.phy import LiteSATAPHY
-
-            # IOs
-            _sata_io = [
-                # AB09-FMCRAID / https://www.dgway.com/AB09-FMCRAID_E.html
-                ("fmc2sata", 0,
-                    Subsignal("clk_p", Pins("LPC:GBTCLK0_M2C_P")),
-                    Subsignal("clk_n", Pins("LPC:GBTCLK0_M2C_N")),
-                    Subsignal("tx_p",  Pins("LPC:DP0_C2M_P")),
-                    Subsignal("tx_n",  Pins("LPC:DP0_C2M_N")),
-                    Subsignal("rx_p",  Pins("LPC:DP0_M2C_P")),
-                    Subsignal("rx_n",  Pins("LPC:DP0_M2C_N"))
-                ),
-            ]
-            platform.add_extension(_sata_io)
-
-            # PHY
-            self.submodules.sata_phy = LiteSATAPHY(platform.device,
-                pads       = platform.request("fmc2sata"),
-                gen        = "gen2",
-                clk_freq   = sys_clk_freq,
-                data_width = 16)
-            self.add_csr("sata_phy")
-
-            # Core
-            self.add_sata(phy=self.sata_phy, mode="read+write")
-
         # AXILite2Led ------------------------------------------------------------------------------
         rst = self.crg.cd_sys.rst
         rstn = ~rst
@@ -132,8 +102,6 @@ class BaseSoC(SoCCore):
         self.submodules.axilite2led = axilite2led = AxiLite2Led(clk, rstn, platform)
         axilite2led_region = SoCRegion(origin=0x02000000, size=0x10000)
         self.bus.add_slave(name="axilite2led", slave=axilite2led.bus, region=axilite2led_region)
-
-        axilite2led.add_axi_lite_to_led()
 
         led_pads = Cat([platform.request("user_led", 0), platform.request("user_led", 1)])
         self.comb += led_pads.eq(axilite2led.led)
@@ -151,9 +119,7 @@ class BaseSoC(SoCCore):
         s2mm.add_csr()
         self.add_csr("s2mm")
 
-        # sync fifo -------------------------------------------------------------------------------
-        #self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 400, True)
-
+        # rendering -------------------------------------------------------------------------------
         self.submodules.rendering = rendering = RenderingMono(clk, rst, platform)
         rendering.connect_input(mm2s.source)
         rendering.connect_output(s2mm.sink)
