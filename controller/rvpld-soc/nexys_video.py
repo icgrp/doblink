@@ -21,6 +21,8 @@ from litex.soc.integration.soc_sdram import *
 from litex.soc.integration.builder import *
 from litex.soc.cores.led import LedChaser
 
+from rendering.rendering_mono import RenderingMono
+
 from pld_axi import *
 from axilite2led import *
 
@@ -152,9 +154,9 @@ class BaseSoC(SoCCore):
         # sync fifo -------------------------------------------------------------------------------
         #self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 400, True)
 
-        #self.submodules.rendering = rendering = RenderingMono(clk, rst, platform)
-        #rendering.connect_input(mm2s.source)
-        #rendering.connect_output(s2mm.sink)
+        self.submodules.rendering = rendering = RenderingMono(clk, rst, platform)
+        rendering.connect_input(mm2s.source)
+        rendering.connect_output(s2mm.sink)
 
 
 # Build --------------------------------------------------------------------------------------------
