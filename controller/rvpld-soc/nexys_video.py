@@ -28,6 +28,7 @@ from pld_axi import PldAXILiteInterface
 from axilite2led import AxiLite2Led
 from axil_cdc import AxilCDC
 from rendering.rendering_6_page import Rendering6Page
+from rendering.rendering_mono import RenderingMono
 
 from litedram.modules import MT41K256M16
 from litedram.phy import s7ddrphy
@@ -163,7 +164,8 @@ class BaseSoC(SoCCore):
         # sync fifo -------------------------------------------------------------------------------
         #self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 400, True)
 
-        self.submodules.rendering = rendering = Rendering6Page(clk_bft, rst_bft, platform, 'bft')
+        #self.submodules.rendering = rendering = Rendering6Page(clk_bft, rst_bft, platform, 'bft')
+        self.submodules.rendering = rendering = RenderingMono(clk_bft, rst_bft, platform, 'bft')
         rendering.connect_input(mm2s_axis_bft)
         rendering.connect_output(s2mm_axis_bft)
 
