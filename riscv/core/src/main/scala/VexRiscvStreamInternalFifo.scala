@@ -4,6 +4,7 @@ import vexriscv.{plugin, VexRiscv, VexRiscvConfig}
 import spinal.core._
 import spinal.lib._
 import spinal.lib.bus.wishbone.{Wishbone, WishboneConfig}
+import vexriscv.plugin.CsrAccess.WRITE_ONLY
 
 
 case class FifoStream() extends Bundle with IMasterSlave {
@@ -45,43 +46,48 @@ class Fifo extends Component {
 class VexRiscvStreamWithFifo extends Component {
     val config = VexRiscvConfig(
       plugins = List(
-        new PcManagerSimplePlugin(
-          resetVector = 0x80000000l,
-          relaxedPcCalculation = false
-        ),
         new IBusCachedPlugin(
-          prediction = DYNAMIC_TARGET,
-          historyRamSizeLog2 = 8,
-          resetVector = null, // pretty sure this is needed to match litex's vexriscv
-          config = InstructionCacheConfig(
-            cacheSize = 4096*2,
-            bytePerLine =32,
-            wayCount = 1,
-            addressWidth = 32,
-            cpuDataWidth = 32,
-            memDataWidth = 32,
-            catchIllegalAccess = true,
-            catchAccessFault = true,
-            asyncTagMemory = false,
-            twoCycleRam = false,
-            twoCycleCache = true
-          )
-        ),
+            resetVector = null,
+            relaxedPcCalculation = false,
+            prediction = STATIC,
+            compressedGen = false,
+            config = InstructionCacheConfig(
+              cacheSize = 4096,
+              bytePerLine = 32,
+              wayCount = 1,
+              addressWidth = 32,
+              cpuDataWidth = 32,
+              memDataWidth = 32,
+              catchIllegalAccess = true,
+              catchAccessFault = true,
+              asyncTagMemory = false,
+              twoCycleRam = false,
+              twoCycleCache = false
+            )
+          ),
         new DBusCachedPlugin(
-          config = new DataCacheConfig(
-            cacheSize         = 4096*2,
-            bytePerLine       = 32,
-            wayCount          = 1,
-            addressWidth      = 32,
-            cpuDataWidth      = 32,
-            memDataWidth      = 32,
-            catchAccessError  = true,
-            catchIllegal      = true,
-            catchUnaligned    = true
-          )
-        ),
+            dBusCmdMasterPipe = true,
+            dBusCmdSlavePipe = true,
+            dBusRspSlavePipe = false,
+            relaxedMemoryTranslationRegister = false,
+            config = new DataCacheConfig(
+              cacheSize = 4096,
+              bytePerLine = 32,
+              wayCount = 1,
+              addressWidth = 32,
+              cpuDataWidth = 32,
+              memDataWidth = 32,
+              catchAccessError = true,
+              catchIllegal = true,
+              catchUnaligned = true,
+              withLrSc = false,
+              withAmo = false,
+              earlyWaysHits = true
+            ),
+            csrInfo = true
+          ),
         new StaticMemoryTranslatorPlugin(
-          ioRange      = _(31 downto 28) === 0xF
+          ioRange      = _.msb
         ),
         new DecoderSimplePlugin(
           catchIllegalInstruction = true
@@ -95,7 +101,7 @@ class VexRiscvStreamWithFifo extends Component {
           separatedAddSub = false,
           executeInsertion = true
         ),
-        new FullBarrelShifterPlugin(earlyInjection = true),
+        new FullBarrelShifterPlugin,
         new HazardSimplePlugin(
           bypassExecute           = true,
           bypassMemory            = true,
@@ -107,8 +113,13 @@ class VexRiscvStreamWithFifo extends Component {
         ),
         new MulPlugin,
         new DivPlugin,
-        new CsrPlugin(CsrPluginConfig.small),
-        new ExternalInterruptArrayPlugin,
+        new CsrPlugin(CsrPluginConfig.small(mtvecInit = null).copy(mtvecAccess = WRITE_ONLY, ecallGen = true, wfiGenAsNop = true)),
+        new ExternalInterruptArrayPlugin(
+          machineMaskCsrId = 0xBC0,
+          machinePendingsCsrId = 0xFC0,
+          supervisorMaskCsrId = 0x9C0,
+          supervisorPendingsCsrId = 0xDC0
+        ),
         // new DebugPlugin(ClockDomain.current.clone(reset = Bool().setName("debugReset"))),
         new BranchPlugin(
           earlyBranch = false,
