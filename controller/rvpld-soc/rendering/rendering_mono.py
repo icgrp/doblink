@@ -4,7 +4,7 @@ from litex.soc.interconnect.stream import Converter, Endpoint
 from migen import *
 
 class RenderingMono(Module):
-    def __init__(self, clk, rst, platform):
+    def __init__(self, clk, rst, platform, clock_domain='sys'):
         self.source = PldAXIStreamInterface(data_width=32)
         self.sink = PldAXIStreamInterface(data_width=32)
         self.clk = clk

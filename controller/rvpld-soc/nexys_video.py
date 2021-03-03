@@ -11,27 +11,33 @@ import argparse
 
 from migen import *
 
-from litex.build.xilinx.vivado import vivado_build_args, vivado_build_argdict
-from platforms import nexys_video
-
 from litex.soc.cores.clock import *
 from litex.soc.integration.soc_core import *
 from litex.soc.integration.soc import *
 from litex.soc.integration.soc_sdram import *
 from litex.soc.integration.builder import *
+from litex.soc.interconnect.stream import Converter, Endpoint, ClockDomainCrossing
+from litex.soc.interconnect import axi, wishbone
+from litex.soc.interconnect.stream import SyncFIFO
 from litex.soc.cores.led import LedChaser
-
-from rendering.rendering_mono import RenderingMono
-
-from pld_axi import *
-from axilite2led import *
+from litex.soc.integration.soc import SoCRegion
+from litex.build.xilinx.vivado import vivado_build_args, vivado_build_argdict
 
 from litedram.modules import MT41K256M16
 from litedram.phy import s7ddrphy
 from litedram.frontend.dma import *
 
+from litex.build.generic_platform import Subsignal, Pins
+from litesata.phy import LiteSATAPHY
+
 from liteeth.phy.s7rgmii import LiteEthPHYRGMII
 
+from pld_axi import PldAXILiteInterface
+from axilite2led import AxiLite2Led
+from rendering.rendering_mono import RenderingMono
+from axil_cdc import AxilCDC
+
+from platforms import nexys_video
 # CRG ----------------------------------------------------------------------------------------------
 
 class _CRG(Module):
@@ -41,19 +47,25 @@ class _CRG(Module):
         self.clock_domains.cd_sys4x     = ClockDomain(reset_less=True)
         self.clock_domains.cd_sys4x_dqs = ClockDomain(reset_less=True)
         self.clock_domains.cd_idelay    = ClockDomain()
+        self.clock_domains.cd_bft       = ClockDomain()
 
         # # #
 
         self.submodules.pll = pll = S7PLL(speedgrade=-1)
-        self.comb += pll.reset.eq(~platform.request("cpu_reset") | self.rst)
+        cpu_reset_n = ~platform.request("cpu_reset")
+        self.comb += pll.reset.eq(cpu_reset_n | self.rst)
         pll.register_clkin(platform.request("clk100"), 100e6)
         pll.create_clkout(self.cd_sys,       sys_clk_freq)
         pll.create_clkout(self.cd_sys4x,     4*sys_clk_freq)
         pll.create_clkout(self.cd_sys4x_dqs, 4*sys_clk_freq, phase=90)
         pll.create_clkout(self.cd_idelay,    200e6)
+        pll.create_clkout(self.cd_bft,    30e6)
         platform.add_false_path_constraints(self.cd_sys.clk, pll.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
 
         self.submodules.idelayctrl = S7IDELAYCTRL(self.cd_idelay)
+
+        #platform.add_false_path_constraints(self.cd_sys.clk, pll_bft.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
+
 
 # BaseSoC ------------------------------------------------------------------------------------------
 
@@ -95,11 +107,15 @@ class BaseSoC(SoCCore):
             self.add_csr("ethphy")
             self.add_ethernet(phy=self.ethphy)
 
-        # AXILite2Led ------------------------------------------------------------------------------
         rst = self.crg.cd_sys.rst
         rstn = ~rst
         clk = self.crg.cd_sys.clk
-        self.submodules.axilite2led = axilite2led = AxiLite2Led(clk, rstn, platform)
+        rst_bft = self.crg.cd_bft.rst
+        rst_bftn = ~rst_bft
+        clk_bft = self.crg.cd_bft.clk
+
+        # AXILite2Led ------------------------------------------------------------------------------
+        self.submodules.axilite2led = axilite2led = AxiLite2Led(self.crg.cd_sys.clk, ~self.crg.cd_sys.clk, platform, "sys")
         axilite2led_region = SoCRegion(origin=0x02000000, size=0x10000)
         self.bus.add_slave(name="axilite2led", slave=axilite2led.bus, region=axilite2led_region)
 
@@ -109,21 +125,48 @@ class BaseSoC(SoCCore):
         sw_pads = Cat([platform.request("user_sw", 0), platform.request("user_sw", 1)])
         self.comb += axilite2led.sw.eq(sw_pads)
 
+        # AXILite2BFT ------------------------------------------------------------------------------
+        axi_bft_bus_sys = axi.AXILiteInterface(data_width=32, address_width=5, clock_domain="sys")
+        axi_bft_bus_bft = axi.AXILiteInterface(data_width=32, address_width=5, clock_domain="bft")
+        self.submodules.axil_cdc_sys2bft = axil_cdc_sys2bft = AxilCDC(clk, rst, clk_bft, rst_bft, self.platform, 'sys', 'bft')
+        self.comb += axi_bft_bus_sys.connect(axil_cdc_sys2bft.slave)
+        self.comb += axil_cdc_sys2bft.master.connect(axi_bft_bus_bft)
+        axilite2bft_region = SoCRegion(origin=0x02010000, size=0x10000)
+        self.bus.add_slave(name="axilite2bft", slave=axi_bft_bus_sys, region=axilite2bft_region)
+
         # mm2s -------------------------------------------------------------------------------------
         self.submodules.mm2s = mm2s = LiteDRAMDMAReader(self.sdram.crossbar.get_port())
         mm2s.add_csr()
         self.add_csr("mm2s")
+        self.submodules.input_converter = input_converter = Converter(128, 32, reverse=True)
+        self.comb += mm2s.source.connect(input_converter.sink)
+        mm2s_axis = axi.AXIStreamInterface(32)
+        self.comb += input_converter.source.connect(mm2s_axis)
+        self.submodules.input_cross_domain_converter = input_cross_domain_converter = ClockDomainCrossing(mm2s_axis.description, cd_from="sys", cd_to="bft", depth=8)
+        mm2s_axis_bft = axi.AXIStreamInterface(32)
+        self.comb += mm2s_axis.connect(input_cross_domain_converter.sink)
+        self.comb += input_cross_domain_converter.source.connect(mm2s_axis_bft)
 
         # s2mm -------------------------------------------------------------------------------------
         self.submodules.s2mm = s2mm = LiteDRAMDMAWriter(self.sdram.crossbar.get_port())
         s2mm.add_csr()
         self.add_csr("s2mm")
+        self.submodules.output_converter = output_converter = Converter(32, 128, reverse=True)
+        self.comb += output_converter.source.connect(s2mm.sink)
+        s2mm_axis = axi.AXIStreamInterface(32)
+        self.comb += s2mm_axis.connect(output_converter.sink)
+        self.submodules.output_cross_domain_converter = output_cross_domain_converter = ClockDomainCrossing(s2mm_axis.description, cd_from="bft", cd_to="sys", depth=8)
+        s2mm_axis_bft = axi.AXIStreamInterface(32)
+        self.comb += output_cross_domain_converter.source.connect(s2mm_axis)
+        self.comb += s2mm_axis_bft.connect(output_cross_domain_converter.sink)
 
-        # rendering -------------------------------------------------------------------------------
-        self.submodules.rendering = rendering = RenderingMono(clk, rst, platform)
-        rendering.connect_input(mm2s.source)
-        rendering.connect_output(s2mm.sink)
+        # sync fifo -------------------------------------------------------------------------------
+        #self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 400, True)
 
+        #self.submodules.rendering = rendering = Rendering6Page(clk_bft, rst_bft, platform, 'bft')
+        self.submodules.rendering = rendering = RenderingMono(clk_bft, rst_bft, platform, 'bft')
+        rendering.connect_input(mm2s_axis_bft)
+        rendering.connect_output(s2mm_axis_bft)
 
 # Build --------------------------------------------------------------------------------------------
 
@@ -148,6 +191,7 @@ def main():
         with_sata     = args.with_sata,
         **soc_sdram_argdict(args)
     )
+
     assert not (args.with_spi_sdcard and args.with_sdcard)
     if args.with_spi_sdcard:
         soc.add_spi_sdcard()
