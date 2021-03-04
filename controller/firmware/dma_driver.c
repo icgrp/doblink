@@ -16,7 +16,7 @@ void run_dma(volatile uint32_t *send_buffer, uint32_t send_len,
   mm2s_length_write(4 * send_len);
   mm2s_start_write(1);
   printf("Waiting for mm2s to finish\n");
-  //while(!mm2s_done_read());
+  while(!mm2s_done_read());
 
   s2mm_base_write((uint32_t) recv_buffer);
   s2mm_length_write(4 * recv_len);

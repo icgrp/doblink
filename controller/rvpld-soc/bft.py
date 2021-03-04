@@ -1,9 +1,7 @@
-from pld_axi import PldAXILiteInterface
 from migen import *
 
 class Bft(Module):
-    def __init__(self, clk, rst, platform, clock_domain):
-        self.bus = PldAXILiteInterface(data_width=32, address_width=5, clock_domain=clock_domain)
+    def __init__(self, clk, rst, platform):
         self.clk = clk
         self.rst = rst
         self.dout_leaf_0 = Signal(49, name='dout_leaf_0')
@@ -32,7 +30,6 @@ class Bft(Module):
         self.resend_7 = Signal(1, name='resend_7')
         self.platform = platform
 
-        axil_sigs = self.bus.get_signals()
         self.platform.add_source('rtl/bft.v')
         self.specials += Instance("bft",
                           i_clk = self.clk,

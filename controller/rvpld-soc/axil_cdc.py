@@ -10,8 +10,6 @@ class AxilCDC(Module):
         self.m_clk = m_clk
         self.m_rst = m_rst
         self.platform = platform
-
-    def add_axi_lite_cdc(self):
         s_axil_sigs = self.slave.get_signals()
         m_axil_sigs = self.master.get_signals()
         self.platform.add_source('rtl/axil_cdc.v')

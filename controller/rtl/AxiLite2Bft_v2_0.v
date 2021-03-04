@@ -17,9 +17,9 @@
 	)
 	(
 		// Users to add ports here
-    input resend,
-    input [p_sz-1:0] host_bft2interface,
-    output [p_sz-1:0] host_interface2bft,
+        input resend,
+        input [p_sz-1:0] host_bft2interface,
+        output [p_sz-1:0] host_interface2bft,
 		// User ports ends
 		// Do not modify the ports beyond this line
 

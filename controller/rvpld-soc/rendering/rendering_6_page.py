@@ -144,14 +144,12 @@ class Leaf7(Leaf):
 
 class Rendering6Page(Module):
     def __init__(self, clk, rst, platform, clock_domain):
-        self.source = AXIStreamInterface(data_width=32)
-        self.sink = AXIStreamInterface(data_width=32)
         self.axil = AXILiteInterface(data_width=32, address_width=5, clock_domain=clock_domain)
         self.clk = clk
         self.rst = rst
         self.platform = platform
         self.submodules.axilite2bft = axilite2bft = AxiLite2Bft(clk, rst, platform, clock_domain)
-        self.submodules.bft = bft = Bft(clk, rst, platform, clock_domain)
+        self.submodules.bft = bft = Bft(clk, rst, platform)
         self.submodules.interface_wrapper = interface_wrapper = InterfaceWrapper(clk, rst, platform)
         self.submodules.leaf_2 = leaf_2 = Leaf2(clk, rst, platform)
         self.submodules.leaf_3 = leaf_3 = Leaf3(clk, rst, platform)
@@ -167,8 +165,6 @@ class Rendering6Page(Module):
         self.comb += bft.dout_leaf_0.eq(axilite2bft.host_interface2bft)
 
         # interface_wrapper
-        self.comb += self.source.connect(interface_wrapper.sink)
-        self.comb += interface_wrapper.source.connect(self.sink)
         self.comb += interface_wrapper.din_leaf_bft2interface.eq(bft.din_leaf_1)
         self.comb += bft.dout_leaf_1.eq(interface_wrapper.dout_leaf_interface2bft)
         self.comb += interface_wrapper.resend.eq(bft.resend_1)
@@ -184,18 +180,8 @@ class Rendering6Page(Module):
 
     def connect_input(self, stream):
         assert isinstance(stream, Endpoint)
-        if stream.payload.data.nbits != 32:
-            self.submodules.input_converter = input_converter = Converter(stream.payload.data.nbits, 32, reverse=True)
-            self.comb += input_converter.source.connect(self.sink)
-            self.comb += stream.connect(input_converter.sink)
-        else:
-            self.comb += stream.connect(self.sink)
+        self.interface_wrapper.connect_input(stream)
 
     def connect_output(self, stream):
         assert isinstance(stream, Endpoint)
-        if stream.payload.data.nbits != 32:
-            self.submodules.output_converter = output_converter = Converter(32, stream.payload.data.nbits, reverse=True)
-            self.comb += output_converter.source.connect(stream)
-            self.comb += self.source.connect(output_converter.sink)
-        else:
-            self.comb += self.source.connect(stream)
+        self.interface_wrapper.connect_output(stream)

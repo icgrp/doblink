@@ -154,6 +154,7 @@ static void rendering_test(void) {
   printf("Begin Configuring BFT!\r\n");
   uart_sync();
   init_regs();
+  printf("Configuring BFT Done\r\n");
 
   for(int i = 0; i < SEND_LEN; i++) {
     TxBufferPtr[i] = input_data[i];
