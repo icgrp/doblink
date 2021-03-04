@@ -4,7 +4,7 @@ from litex.soc.interconnect.stream import Converter, Endpoint
 from migen import *
 
 class InterfaceWrapper(Module):
-    def __init__(self, clk, rst, platform):
+    def __init__(self, clk, rst, platform, clock_domain='bft'):
         self.source = PldAXIStreamInterface(data_width=32)
         self.sink = PldAXIStreamInterface(data_width=32)
         self.clk = clk
@@ -49,18 +49,10 @@ class InterfaceWrapper(Module):
 
     def connect_input(self, stream):
         assert isinstance(stream, Endpoint)
-        if stream.payload.data.nbits != 32:
-            self.submodules.input_converter = input_converter = Converter(stream.payload.data.nbits, 32, reverse=True)
-            self.comb += input_converter.source.connect(self.sink)
-            self.comb += stream.connect(input_converter.sink)
-        else:
-            self.comb += stream.connect(self.sink)
+        assert stream.payload.data.nbits == 32
+        self.comb += stream.connect(self.sink)
 
     def connect_output(self, stream):
         assert isinstance(stream, Endpoint)
-        if stream.payload.data.nbits != 32:
-            self.submodules.output_converter = output_converter = Converter(32, stream.payload.data.nbits, reverse=True)
-            self.comb += output_converter.source.connect(stream)
-            self.comb += self.source.connect(output_converter.sink)
-        else:
-            self.comb += self.source.connect(stream)
+        assert stream.payload.data.nbits == 32
+        self.comb += self.source.connect(stream)
