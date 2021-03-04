@@ -2,7 +2,7 @@ from pld_axi import PldAXILiteInterface
 from migen import *
 
 class AxiLite2Led(Module):
-    def __init__(self, clk, rst, platform, clock_domain):
+    def __init__(self, clk, rst, platform, clock_domain='sys'):
         self.bus = PldAXILiteInterface(data_width=32, address_width=5, clock_domain=clock_domain)
         self.led = Signal(2, name="led")
         self.sw = Signal(2, name="sw")

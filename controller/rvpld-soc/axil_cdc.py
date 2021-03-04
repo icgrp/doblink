@@ -12,9 +12,9 @@ class AxilCDC(Module):
         self.platform = platform
         s_axil_sigs = self.slave.get_signals()
         m_axil_sigs = self.master.get_signals()
-        self.platform.add_source('rtl/axil_cdc.v')
-        self.platform.add_source('rtl/axil_cdc_rd.v')
-        self.platform.add_source('rtl/axil_cdc_wr.v')
+        self.platform.add_source('rtl/axil_cdc/axil_cdc.v')
+        self.platform.add_source('rtl/axil_cdc/axil_cdc_rd.v')
+        self.platform.add_source('rtl/axil_cdc/axil_cdc_wr.v')
         self.specials += Instance("axil_cdc",
                                   i_s_clk = self.s_clk,
                                   i_s_rst = self.s_rst,
