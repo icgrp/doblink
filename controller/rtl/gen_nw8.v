@@ -357,7 +357,11 @@ module pi_arbiter(
 		is_void= 4'b1111; // local var, order is L, R, U1, U2;
 	
 		rand_gen= 0;
-
+		sel_l = `LEFT;
+		sel_r = `RIGHT;
+		sel_u1 = `UPR;
+		sel_u2 = `UPL;
+        
 		// First Priority: Turnback Packets
 		if (d_l == `LEFT)
 			{sel_l, is_void[3]}= {`LEFT, 1'b0};
