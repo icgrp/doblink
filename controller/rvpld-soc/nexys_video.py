@@ -42,31 +42,29 @@ from platforms import nexys_video
 # CRG ----------------------------------------------------------------------------------------------
 
 class _CRG(Module):
-    def __init__(self, platform, sys_clk_freq):
+    def __init__(self, platform, sys_clk_freq, toolchain):
         self.rst = Signal()
         self.clock_domains.cd_sys       = ClockDomain()
         self.clock_domains.cd_sys4x     = ClockDomain(reset_less=True)
         self.clock_domains.cd_sys4x_dqs = ClockDomain(reset_less=True)
         self.clock_domains.cd_idelay    = ClockDomain()
+        self.clock_domains.cd_clk100    = ClockDomain()
         self.clock_domains.cd_bft       = ClockDomain()
 
         # # #
 
         self.submodules.pll = pll = S7PLL(speedgrade=-1)
-        cpu_reset_n = ~platform.request("cpu_reset")
-        self.comb += pll.reset.eq(cpu_reset_n | self.rst)
+        self.comb += pll.reset.eq(~platform.request("cpu_reset") | self.rst)
         pll.register_clkin(platform.request("clk100"), 100e6)
         pll.create_clkout(self.cd_sys,       sys_clk_freq)
         pll.create_clkout(self.cd_sys4x,     4*sys_clk_freq)
         pll.create_clkout(self.cd_sys4x_dqs, 4*sys_clk_freq, phase=90)
         pll.create_clkout(self.cd_idelay,    200e6)
+        pll.create_clkout(self.cd_clk100,    100e6)
         pll.create_clkout(self.cd_bft,    10e6)
         platform.add_false_path_constraints(self.cd_sys.clk, pll.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
 
         self.submodules.idelayctrl = S7IDELAYCTRL(self.cd_idelay)
-
-        #platform.add_false_path_constraints(self.cd_sys.clk, pll_bft.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
-
 
 # BaseSoC ------------------------------------------------------------------------------------------
 
@@ -81,7 +79,7 @@ class BaseSoC(SoCCore):
             **kwargs)
 
         # CRG --------------------------------------------------------------------------------------
-        self.submodules.crg = _CRG(platform, sys_clk_freq)
+        self.submodules.crg = _CRG(platform, sys_clk_freq, toolchain)
 
         # DDR3 SDRAM -------------------------------------------------------------------------------
         if not self.integrated_main_ram_size:
@@ -120,8 +118,8 @@ class BaseSoC(SoCCore):
         axilite2led_region = SoCRegion(origin=0x02000000, size=0x10000)
         self.bus.add_slave(name="axilite2led", slave=axilite2led.bus, region=axilite2led_region)
 
-        led_pads = Cat([platform.request("user_led", 0), platform.request("user_led", 1)])
-        self.comb += led_pads.eq(axilite2led.led)
+        #led_pads = Cat([platform.request("user_led", 0), platform.request("user_led", 1)])
+        #self.comb += led_pads.eq(axilite2led.led)
 
         sw_pads = Cat([platform.request("user_sw", 0), platform.request("user_sw", 1)])
         self.comb += axilite2led.sw.eq(sw_pads)
@@ -140,6 +138,16 @@ class BaseSoC(SoCCore):
         self.submodules.s2mm = s2mm = LiteDRAMDMAWriter(self.sdram.crossbar.get_port())
         s2mm.add_csr()
         self.add_csr("s2mm")
+
+        #self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 100, True)
+        #self.comb += mm2s.source.connect(sync_fifo.sink)
+        #self.comb += sync_fifo.source.connect(s2mm.sink)
+
+        #self.comb += platform.request('user_led', 0).eq(s2mm.sink.valid)
+        #self.comb += platform.request('user_led', 1).eq(s2mm.sink.ready)
+        #self.comb += platform.request('user_led', 2).eq(mm2s.source.valid)
+        #self.comb += platform.request('user_led', 3).eq(mm2s.source.ready)
+        #self.comb += platform.request_all('user_led').eq(sync_fifo.level)
 
         # Rendering6Page -------------------------------------------------------------------------------
         self.submodules.rendering = rendering = Rendering6Page(clk_bft, rst_bft, platform, 'bft')
