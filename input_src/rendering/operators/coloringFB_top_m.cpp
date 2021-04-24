@@ -10,9 +10,9 @@ void coloringFB_top_m(
 		hls::stream<ap_uint<32> > & Output_1)
 
 {
-#pragma HLS INTERFACE ap_hs port=Input_1
-#pragma HLS INTERFACE ap_hs port=Input_2
-#pragma HLS INTERFACE ap_hs port=Output_1
+#pragma HLS INTERFACE axis register port=Input_1
+#pragma HLS INTERFACE axis register port=Input_2
+#pragma HLS INTERFACE axis register port=Output_1
   #pragma HLS INLINE off
   int i,j;
   static bit8 frame_buffer[MAX_X][MAX_Y/2];

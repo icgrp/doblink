@@ -34,7 +34,7 @@ class hls(gen_basic):
     self.shell.re_mkdir(self.hls_dir+'/'+fun_name+'_prj')
     self.shell.re_mkdir(self.hls_dir+'/'+fun_name+'_prj/'+fun_name)
         
-    self.shell.write_lines(self.hls_dir+'/'+fun_name+'_prj/vivado_hls.app', self.tcl.return_hls_prj_list(fun_name))
+    self.shell.write_lines(self.hls_dir+'/'+fun_name+'_prj/hls.app', self.tcl.return_hls_prj_list(fun_name))
     self.shell.write_lines(self.hls_dir+'/'+fun_name+'_prj/'+fun_name+'/script.tcl', self.tcl.return_hls_tcl_list(fun_name))
     if map_target == 'HW':
       # if the map target is Hardware, we need to compile the c code through vivado_hls 

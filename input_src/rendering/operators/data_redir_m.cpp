@@ -532,9 +532,9 @@ void data_redir_m (
 		hls::stream<ap_uint<32> > & Output_2
 		)
 {
-#pragma HLS INTERFACE ap_hs port=Input_1
-#pragma HLS INTERFACE ap_hs port=Output_1
-#pragma HLS INTERFACE ap_hs port=Output_2
+#pragma HLS INTERFACE axis register port=Input_1
+#pragma HLS INTERFACE axis register port=Output_1
+#pragma HLS INTERFACE axis register port=Output_2
 
   bit32 input_lo;
   bit32 input_mi;

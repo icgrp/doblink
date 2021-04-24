@@ -108,7 +108,7 @@ class _shell:
     return ([
       '#!/bin/bash -e',
       'source ' + vivado_dir,
-      'vivado_hls -f ' + tcl_file,
+      'vitis_hls -f ' + tcl_file,
       ''])
 
 
@@ -315,14 +315,14 @@ class _verilog:
       lines_list.append('        .ap_idle(),')
       lines_list.append('        .ap_ready(),')
       for i in range(int(input_num),0,-1): 
-        lines_list.append('        .Input_'+str(i)+'_V_V(dout_leaf_interface2user_'+str(i)+'),')
-        lines_list.append('        .Input_'+str(i)+'_V_V_ap_vld(vld_interface2user_'+str(i)+'),')
-        lines_list.append('        .Input_'+str(i)+'_V_V_ap_ack(ack_user2interface_'+str(i)+'),')
+        lines_list.append('        .Input_'+str(i)+'_V_TDATA(dout_leaf_interface2user_'+str(i)+'),')
+        lines_list.append('        .Input_'+str(i)+'_V_TVALID(vld_interface2user_'+str(i)+'),')
+        lines_list.append('        .Input_'+str(i)+'_V_TREADY(ack_user2interface_'+str(i)+'),')
       for i in range(int(output_num),0,-1): 
-        lines_list.append('        .Output_'+str(i)+'_V_V(din_leaf_user2interface_'+str(i)+'),')
-        lines_list.append('        .Output_'+str(i)+'_V_V_ap_vld(vld_user2interface_'+str(i)+'),')
-        lines_list.append('        .Output_'+str(i)+'_V_V_ap_ack(ack_interface2user_'+str(i)+'),')
-      lines_list.append('        .ap_rst(reset)')
+        lines_list.append('        .Output_'+str(i)+'_V_TDATA(din_leaf_user2interface_'+str(i)+'),')
+        lines_list.append('        .Output_'+str(i)+'_V_TVALID(vld_user2interface_'+str(i)+'),')
+        lines_list.append('        .Output_'+str(i)+'_V_TREADY(ack_interface2user_'+str(i)+'),')
+      lines_list.append('        .ap_rst_n(!reset)')
       lines_list.append('        );  ')
     lines_list.append('    ')
     lines_list.append('endmodule')
@@ -604,8 +604,7 @@ class _tcl:
     lines_list.append('set start_time [clock seconds]')
     lines_list.append('open_checkpoint ./floorplan_static.dcp')
     # for i in range(2, int(self.prflow_params['nl'])):
-    lines_list.append('read_checkpoint -cell floorplan_static_i/leaf_empty_3/inst ./dummy_repo/riscv_32bram/page_netlist.dcp')
-    for i in range(4, 9):
+    for i in range(3, 9):
       lines_list.append('read_checkpoint -cell floorplan_static_i/leaf_empty_' + str(i) + '/inst ./dummy_repo/user_kernel/page_netlist.dcp')
     lines_list.append('set end_time [clock seconds]')
     lines_list.append('set total_seconds [expr $end_time - $start_time]')
