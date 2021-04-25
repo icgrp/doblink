@@ -277,9 +277,9 @@ void user_kernel(
 		)
 
 {
-#pragma HLS INTERFACE ap_hs port=Input_1
-#pragma HLS INTERFACE ap_hs port=Output_1
-		Output_1.write(Input_1.read()+5);
+#pragma HLS INTERFACE axis register port=Input_1
+#pragma HLS INTERFACE axis register port=Output_1
+		Output_1.write(Input_1.read()+1);
 }
 
 void user_fifo(
