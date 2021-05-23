@@ -155,6 +155,10 @@ can directly copy the application cpp files to the correct directory later.
 
 ![](images/vitis_workspace.png)
 
+Create a new platform from hardware (XSA).
+
+![](images/xsa_platform.png)
+
 Create an empty C++ application project as below.
 
 ![](images/empty_cpp.png)
