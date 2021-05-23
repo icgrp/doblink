@@ -34,6 +34,8 @@ as below.
     ../configure --with-arch=rv32i --prefix=/opt/RISC-V32i
     make -j$(nproc)
 
+**You don't need to install RISC-V toolchain if you only need to run hardware 
+implementation.**
 
 ## 2 Benchmark Preparation
 1. To get our [Makefile](./Makefile) to work, you need to copy your application cpp
@@ -213,6 +215,9 @@ RISC-V core.
 
 5. Type '**Make config**", the instr_data will make copied to Vitis project,
 and the cpp source will also be updated.
+Remember to re-compile the vitis project with new source code, because vitis does
+not automatically 
+re-compile the project as SDK does.
 
 6. Type '**Make download**' to download the bitstreams into the board,
 and launch the Vitis project to run the project. You can see the results
