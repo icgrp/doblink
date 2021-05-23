@@ -5,10 +5,10 @@ This is a temporary repo for DIRC with [picorv32](https://github.com/cliffordwol
 ## 1 Tool Setup
 
 ### 1.1 Vitis Preparation
-The demo is developed with [Vitis 2020.1](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/2020-1.html) 
+The demo is developed with [Vitis 2020.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/2020-2.html) 
 and [Ultra96v2 board](https://www.96boards.org/product/ultra96/).
 The default Vitis does not include Ultra96v2 BSP. You can copy the dir **ultra96v2**
-under [BSP](./BSP) to \<Vitis Installation DIR\>/Vivado/2020.1/data/boards/board_files.
+under [BSP](./BSP) to \<Vitis Installation DIR\>/Vivado/2020.2/data/boards/board_files.
 
 ### 1.2 RISC-V Tool Praparation
 
@@ -44,6 +44,48 @@ name as the benchmark under '**./input_src**'.
 3. We create one cpp file and one header file for each operator. In 
 [./input_src/rendering/operators](./input_src/rendering/operators), we
 can see 6 operators to be mapped to partial reconfigurable pages.
+The directory structure is as below.
+
+```c
+├── input_src
+│   └── rendering
+│       ├── host
+│       │   ├── 3d_rendering_host.cpp
+│       │   ├── ap_uint.h
+│       │   ├── check_result.cpp
+│       │   ├── check_result.h
+│       │   ├── data_gen.cpp
+│       │   ├── input_data.h
+│       │   ├── top.cpp
+│       │   ├── top.h
+│       │   ├── typedefs.h
+│       │   ├── utils.cpp
+│       │   └── utils.h
+│       ├── operators
+│       │   ├── coloringFB_bot_m.cpp
+│       │   ├── coloringFB_bot_m.h
+│       │   ├── coloringFB_top_m.cpp
+│       │   ├── coloringFB_top_m.h
+│       │   ├── data_redir_m.cpp
+│       │   ├── data_redir_m.h
+│       │   ├── rasterization2_m.cpp
+│       │   ├── rasterization2_m.h
+│       │   ├── zculling_bot.cpp
+│       │   ├── zculling_bot.h
+│       │   ├── zculling_top.cpp
+│       │   └── zculling_top.h
+│       └── sdk
+│           ├── dma_driver.cc
+│           ├── dma_driver.h
+│           ├── host.cc
+│           ├── input_data.h
+│           ├── my_timer.cc
+│           ├── my_timer.h
+│           ├── stream.cc
+│           ├── stream.h
+│           └── typedefs.h
+```
+
 4. We can set the page number and target (HW or RISC-V) in the header file
 for each [operator](input_src/rendering/operators/data_redir_m.h).
 
