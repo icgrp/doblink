@@ -105,7 +105,7 @@ and generate the configuration packets.
 1. After you set up all the necessary tools, you need set the directory 
 for Vitis and RISC-V toolchain in [configure.xml](./common/configure/configure.xml).
 ```c
-    <spec name = "Xilinx_dir" value = "/scratch/unsafe/SDSoC/Vivado/2020.1/settings64.sh" />
+    <spec name = "Xilinx_dir" value = "/scratch/unsafe/SDSoC/Vivado/2020.2/settings64.sh" />
     <spec name = "RISC-V_dir"  value = "/scratch/unsafe/RISCV/RISC-V32" />
 ```
 
@@ -124,14 +124,28 @@ memory.
 Make -j$(nproc)
 ```
 
-4. Type **Make mono_prj -j$(nproc)**. It will generate floorplan_staitc_wrapper.xsa
+4. Next step is to prepare the **floorplan_staitc_wrapper.xsa** for vitis application
+project, which is similar to hdf file for SDK application project. There are two 
+methods to create the xsa file.
+
+**Method A**:
+Type **Make mono_prj -j$(nproc)**. It will generate floorplan_staitc_wrapper.xsa
 file for Vitis project under ./workspace/F007_mono_bft_rendering/prj/.
 This is a one-time compilation to get the xsa file for Vitis. You don't 
 need to compile the xsa when you make changes to the operators later.
-To save time, you can also copy the floorplan_staitc_wrapper.xsa [here](./BSP).
+
 ```c
 Make mono_prj -j$(nproc)
 ```
+
+**Method B**:
+To save time, you can also copy the floorplan_staitc_wrapper.xsa [here](./BSP).
+You can use Makefile to copy it automatically.
+
+```c
+make cp_mono_prj
+```
+
 
 5. I recomend you set your Vitis directory to ./workspace/vitis, and create
 an empty cpp application with the same name as the benchmark, so that our Makefile

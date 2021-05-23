@@ -100,6 +100,12 @@ $(ws_sdk): $(src)/*.cc $(src)/*.h
 	cp -rf  $^ $@
 
 
+cp_mono_prj: ./workspace/vitis/floorplan_static_wrapper.xsa 
+
+./workspace/vitis/floorplan_static_wrapper.xsa: ./BSP/floorplan_static_wrapper.xsa
+	mkdir -p workspace/vitis
+	cp ./BSP/floorplan_static_wrapper.xsa ./workspace/vitis
+
 
 
 
