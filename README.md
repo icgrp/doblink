@@ -129,6 +129,7 @@ project, which is similar to hdf file for SDK application project. There are two
 methods to create the xsa file.
 
 **Method A**:
+
 Type **Make mono_prj -j$(nproc)**. It will generate floorplan_staitc_wrapper.xsa
 file for Vitis project under ./workspace/F007_mono_bft_rendering/prj/.
 This is a one-time compilation to get the xsa file for Vitis. You don't 
@@ -139,6 +140,7 @@ Make mono_prj -j$(nproc)
 ```
 
 **Method B**:
+
 To save time, you can also copy the floorplan_staitc_wrapper.xsa [here](./BSP).
 You can use Makefile to copy it automatically.
 
@@ -150,9 +152,15 @@ make cp_mono_prj
 5. I recomend you set your Vitis directory to ./workspace/vitis, and create
 an empty cpp application with the same name as the benchmark, so that our Makefile
 can directly copy the application cpp files to the correct directory later.
-Change the stack and heap size to 0x20000 in lscript.ld file.
+
+![](images/vitis_workspace.png)
+
+Create an empty C++ application project as below.
 
 ![](images/empty_cpp.png)
+
+Change the stack and heap size to 0x20000 in lscript.ld file.
+
 
 6. Type '**Make config**'. It will generate all the necessary cpp files
 for the Vitis project under './workspace/F008_sdk_rendering/cpp_src'.
