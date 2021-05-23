@@ -151,7 +151,7 @@ make cp_mono_prj
 ```
 
 
-5. I recomend you set your Vitis directory to ./workspace/vitis, and create
+5. I recommend you set your Vitis directory to ./workspace/vitis, and create
 an empty cpp application with the same name as the benchmark, so that our Makefile
 can directly copy the application cpp files to the correct directory later.
 
