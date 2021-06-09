@@ -1,0 +1,35 @@
+config_webtalk -user off
+config_webtalk -install off
+config_webtalk -info
+set_param general.maxThreads 8
+
+set dir {{ common_src_dir }}
+set contents [glob -nocomplain -directory $dir *]
+foreach item $contents {
+  if { [regexp {.*\.tcl} $item] } {
+    source $item
+  } else {
+    add_files -norecurse $item
+  }
+}
+
+set dir {{ src_dir }}
+set contents [glob -nocomplain -directory $dir *]
+foreach item $contents {
+  if { [regexp {.*\.tcl} $item] } {
+    source $item
+  } else {
+    add_files -norecurse $item
+  }
+}
+
+set_property XPM_LIBRARIES {XPM_CDC XPM_MEMORY XPM_FIFO} [current_project]
+set logFileId [open ./run_synth.log "w"]
+set start_time [clock seconds]
+
+synth_design -top top -part  {{ part }} -mode out_of_context -directive RuntimeOptimized
+write_checkpoint -force page_netlist.dcp
+set end_time [clock seconds]
+set total_seconds [expr $end_time - $start_time]
+puts $logFileId "syn: $total_seconds seconds"
+report_utilization -hierarchical > utilization.rpts

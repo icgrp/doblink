@@ -1,0 +1,27 @@
+# @package _global_
+defaults:
+  - override /do_blink/fig1a@do_blink.fig.fig1a: ["7010", "7020", "at200"]
+  - override /do_blink/fig2a@do_blink.fig.fig2a: ["1600", "3200", "6400", "12800"]
+  - override /do_blink/spam_filter@do_blink.fig.spam_filter: []
+  - override /do_blink/digit_recognition@do_blink.fig.digit_recognition: []
+  - override /do_blink/rendering@do_blink.fig.rendering: []
+  - override /hydra/launcher: submitit_slurm
+
+do_blink:
+  vpr_options:
+    acc_fac: 0.6945376395492697
+    astar_fac: 2.279400199810299
+    bb_factor: 22
+    initial_pres_fac: 12.378228811343504
+    max_criticality: 0.9262639953463516
+    place_algorithm: bounding_box
+    pres_fac_mult: 1.0598174299133545
+    target_ext_pin_util.input: 0.6706852117645277
+    target_ext_pin_util.output: 0.9336375756659466
+
+hydra:
+  launcher:
+    cpus_per_task: 8
+    mem_per_cpu: 7500mb
+    nodes: 1
+    timeout_min: 120

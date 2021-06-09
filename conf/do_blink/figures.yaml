@@ -1,0 +1,56 @@
+defaults:
+  - fig2a@fig.fig2a:
+    - "1600"
+    - "3200"
+    - "6400"
+    - "12800"
+  - fig1a@fig.fig1a:
+    - "7010"
+    - "7020"
+    - "at200"
+  - spam_filter@fig.spam_filter:
+    - "data_1_4_1"
+    - "data_1_4_2"
+    - "data_1_4_3"
+    - "data_1_4_4"
+    - "data_2_1"
+    - "data_in_redir"
+    - "dotProduct_1"
+    - "dotProduct_2"
+    - "dotProduct_3"
+    - "dotProduct_4"
+    - "Sigmoid_axi"
+  - digit_recognition@fig.digit_recognition:
+    - "update_knn1"
+    - "update_knn2"
+    - "update_knn3"
+    - "update_knn4"
+    - "update_knn5"
+    - "update_knn6"
+    - "update_knn7"
+    - "update_knn8"
+    - "update_knn9"
+    - "update_knn10"
+  - rendering@fig.rendering:
+    - "coloringFB_bot_m"
+    - "coloringFB_top_m"
+    - "data_redir_m"
+    - "rasterization2_m"
+    - "zculling_bot"
+    - "zculling_top"
+
+vpr_options:
+  bb_factor: 20
+  acc_fac: 0.7
+  astar_fac: 1.8
+  initial_pres_fac: 2.828
+  pres_fac_mult: 1.2
+  max_criticality: 0.999
+  target_ext_pin_util:
+    input: 1.0
+    output: 1.0
+  place_algorithm: criticality_timing
+
+load_vivado: "module load xilinx/2020.2"
+num_trials: 50
+rrgraph_install_dir: build/share/symbiflow/arch

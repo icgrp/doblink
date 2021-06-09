@@ -1,0 +1,6 @@
+[submodule "third_party/symbiflow-arch-defs"]
+	path = third_party/symbiflow-arch-defs
+	url = https://github.com/icgrp/symbiflow-arch-defs.git
+[submodule "third_party/vtr-verilog-to-routing"]
+	path = third_party/vtr-verilog-to-routing
+	url = https://github.com/icgrp/vtr-verilog-to-routing.git

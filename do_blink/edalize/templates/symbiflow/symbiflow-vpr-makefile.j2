@@ -1,0 +1,238 @@
+doblink_dir?={{ doblink_source_dir }}
+verilog_src={{ verilog_src_dir }}
+base=$(abspath .)
+
+symb_dir?=$(doblink_dir)/third_party/symbiflow-arch-defs
+YOSYS = $(symb_dir)/env/conda/envs/symbiflow_arch_def_base/bin/yosys
+VPR?=$(doblink_dir)/third_party/vtr-verilog-to-routing/vpr/vpr
+GENFASM = $(symb_dir)/env/conda/envs/symbiflow_arch_def_base/bin/genfasm
+XCFASM = $(symb_dir)/env/conda/envs/symbiflow_arch_def_base/bin/xcfasm
+PYTHON = $(symb_dir)/env/conda/envs/symbiflow_arch_def_base/bin/python
+
+SYNTH_TCL = $(symb_dir)/xc/xc7/yosys/conv.tcl
+YOSYS_SYNTH_SCRIPT = $(symb_dir)/xc/xc7/yosys/synth.tcl
+
+DEVICE_ARCH?={{ arch }}
+PART_ARCH=$(word 1, $(subst _, ,$(DEVICE_ARCH)))
+DEVICE_FAMILY?={{ device_family }}
+DEVICE_NAME?={{ device_name }}
+DEVICE_SPEED?={{ device_speed }}
+BOARD?={{ board }}
+DEVICE = $(DEVICE_FAMILY)-$(DEVICE_NAME)-test
+PART = $(DEVICE_FAMILY)$(DEVICE_SPEED)
+
+MERGE_PORTS = $(doblink_dir)/symbiflow/memory/yosys/merge_ports.perl
+YOSYS_MEMORY_PATCH = $(doblink_dir)/symbiflow/memory/yosys/yosys_memory_patch.sh
+
+targets=$(notdir $(wildcard $(verilog_src)/*))
+targets:=$(filter-out flow_calc_1 flow_calc_2 leaf_Interface,$(targets))
+
+tmp_pref:=$(shell mktemp -u)
+
+export symb_dir
+
+all: $(addsuffix /out.route.wrap,$(targets))
+
+
+%.wrap:
+	- $(MAKE) $*
+
+
+.PRECIOUS: %.eblif %.net %.place %.route %.fasm $(targets:=/out.eblif) $(targets:=/out.net) $(targets:=/out.place) $(targets:=/out.route) $(targets:=/top.fasm)
+.SECONDARY: %.eblif %.net %.place %.route %.fasm $(targets:=/out.eblif) $(targets:=/out.net) $(targets:=/out.place) $(targets:=/out.route) $(targets:=/top.fasm)
+
+$(abspath $(targets)):
+	@ mkdir $@
+
+
+%/top_io.place: %/out.eblif %/out.net
+	cd $* && PYTHONPATH=$(symb_dir)/utils \
+	  /usr/bin/time --output=$(@F).time $(PYTHON) \
+	  $(symb_dir)/xc/common/utils/prjxray_create_ioplace.py \
+	  --map {{ pinmap_csv }} \
+	  --blif out.eblif \
+	  --pcf {{ top_pcf }} \
+	  --net out.net \
+	  --out top_io.place || (echo "$(@F) failed $$?"; exit 1)
+
+%/out.net: %/out.eblif
+	@echo "Running VPR Packing Only"
+	-@ cd $* && /usr/bin/time --output=$(@F).time $(VPR) {{ arch_xml }} out.eblif --device $(DEVICE) \
+	 --read_rr_graph {{ rrgraph_bin }} \
+	 --max_router_iterations 500 \
+	 --routing_failure_predictor off \
+	 --router_high_fanout_threshold -1 \
+	 --constant_net_method route \
+	 --route_chan_width 500 \
+	 --router_heap bucket \
+	 --clock_modeling route \
+	 --place_delta_delay_matrix_calculation_method dijkstra \
+	 --place_delay_model delta_override \
+	 --router_lookahead extended_map \
+	 --clustering_pin_feasibility_filter on \
+	 --check_route quick \
+	 --strict_checks off \
+	 --allow_dangling_combinational_nodes on \
+	 --disable_errors check_unbuffered_edges:check_route \
+	 --congested_routing_iteration_threshold 0.8 \
+	 --incremental_reroute_delay_ripup off \
+	 --base_cost_type delay_normalized_length_bounded \
+	 --num_workers 8 \
+	 {{ vpr_options }} \
+	 --check_rr_graph off \
+	 --suppress_warnings noisy_warnings.log,sum_pin_class:check_unbuffered_edges:load_rr_indexed_data_T_values:check_rr_node:trans_per_R:check_route \
+	 --read_router_lookahead {{ lookahead_bin }} \
+	 --read_placement_delay_lookup {{ place_delay_bin }} \
+	 --balance_block_type_utilization off \
+	 --pack || (echo "$(@F) failed $$?"; exit 1)
+
+%/out.place: %/out.net %/top_io.place
+	@echo "Running VPR Placing Only"
+	-@ cd $* && /usr/bin/time --output=$(@F).time $(VPR) {{ arch_xml }} out.eblif --device $(DEVICE) \
+	 --read_rr_graph {{ rrgraph_bin }} \
+	 --max_router_iterations 500 \
+	 --routing_failure_predictor off \
+	 --router_high_fanout_threshold -1 \
+	 --constant_net_method route \
+	 --route_chan_width 500 \
+	 --router_heap bucket \
+	 --clock_modeling route \
+	 --timing_tradeoff 0.9 \
+	 --place_delta_delay_matrix_calculation_method dijkstra \
+	 --place_delay_model delta_override \
+	 --router_lookahead extended_map \
+	 --check_route quick \
+	 --strict_checks off \
+	 --allow_dangling_combinational_nodes on \
+	 --disable_errors check_unbuffered_edges:check_route \
+	 --congested_routing_iteration_threshold 0.8 \
+	 --incremental_reroute_delay_ripup off \
+	 --base_cost_type delay_normalized_length_bounded \
+	 --num_workers 8 \
+	 {{ vpr_options }} \
+	 --check_rr_graph off \
+	 --suppress_warnings noisy_warnings.log,sum_pin_class:check_unbuffered_edges:load_rr_indexed_data_T_values:check_rr_node:trans_per_R:check_route \
+	 --read_router_lookahead {{ lookahead_bin }} \
+	 --read_placement_delay_lookup {{ place_delay_bin }} \
+	 --balance_block_type_utilization off \
+	 --fix_clusters top_io.place \
+	 --place || (echo "$(@F) failed $$?"; exit 1)
+
+%/out.route: %/out.place
+	@echo "Running VPR Routing Only"
+	-@ cd $* && /usr/bin/time --output=$(@F).time $(VPR) {{ arch_xml }} out.eblif --device $(DEVICE) \
+	 --read_rr_graph {{ rrgraph_bin }} \
+	 --max_router_iterations 500 \
+	 --routing_failure_predictor off \
+	 --router_high_fanout_threshold -1 \
+	 --constant_net_method route \
+	 --route_chan_width 500 \
+	 --router_heap bucket \
+	 --clock_modeling route \
+	 --place_delta_delay_matrix_calculation_method dijkstra \
+	 --place_delay_model delta_override \
+	 --router_lookahead extended_map \
+	 --check_route quick \
+	 --strict_checks off \
+	 --allow_dangling_combinational_nodes on \
+	 --disable_errors check_unbuffered_edges:check_route \
+	 --congested_routing_iteration_threshold 0.8 \
+	 --incremental_reroute_delay_ripup off \
+	 --base_cost_type delay_normalized_length_bounded \
+	 --num_workers 8 \
+	 {{ vpr_options }} \
+	 --check_rr_graph off \
+	 --suppress_warnings noisy_warnings.log,sum_pin_class:check_unbuffered_edges:load_rr_indexed_data_T_values:check_rr_node:trans_per_R:check_route \
+	 --read_router_lookahead {{ lookahead_bin }} \
+	 --read_placement_delay_lookup {{ place_delay_bin }} \
+	 --route || (echo "$(@F) failed $$?"; exit 1)
+
+%/top.fasm: %/out.route
+	@ echo "Generating FASM"
+	- cd $* && /usr/bin/time --output=$(@F).time $(GENFASM) {{ arch_xml }} out.eblif \
+		--device $(DEVICE) \
+		--read_rr_graph {{ rrgraph_bin }} \
+		--max_router_iterations 500 \
+		--routing_failure_predictor off \
+		--router_high_fanout_threshold -1 \
+		--constant_net_method route \
+		--route_chan_width   500 \
+		--router_heap bucket \
+		--clock_modeling route \
+		--place_delta_delay_matrix_calculation_method dijkstra \
+		--place_delay_model delta_override \
+		--router_lookahead extended_map \
+		--check_route off \
+		--strict_checks off \
+		--allow_dangling_combinational_nodes on \
+		--disable_errors check_unbuffered_edges:check_route \
+		--congested_routing_iteration_threshold 0.8 \
+		--incremental_reroute_delay_ripup off \
+		--base_cost_type delay_normalized_length_bounded \
+		--num_workers 8 \
+		{{ vpr_options }} \
+		--check_rr_graph off \
+		--suppress_warnings noisy_warnings.log,sum_pin_class:check_unbuffered_edges:load_rr_indexed_data_T_values:check_rr_node:trans_per_R:check_route || (echo "$(@F) failed $$?"; exit 1)
+	- cd $* && /usr/bin/cmake -E copy top.fasm genfasm.fasm
+	- cd $* && cat top.fasm top_fasm_extra.fasm > top.concat.fasm
+	- cd $* && /usr/bin/cmake -E rename top.concat.fasm top.fasm
+
+%/top.bit: %/top.fasm
+	- cd $* && PYTHONPATH=$(symb_dir)/env/conda/envs/symbiflow_arch_def_base/lib/python3.7/site-packages/:$(symb_dir)/third_party/prjxray:$(symb_dir)/third_party/prjxray/third_party/fasm \
+		&& /usr/bin/time --output=$(@F).time $(XCFASM) \
+		--db-root $(shell $(symb_dir)/env/conda/envs/symbiflow_arch_def_base/bin/prjxray-config)/$(PART_ARCH) \
+		--sparse \
+		--emit_pudc_b_pullup \
+		--fn_in top.fasm \
+		--bit_out top.bit \
+		--frm2bit $(symb_dir)/env/conda/envs/symbiflow_arch_def_base/bin/xc7frames2bit \
+		--part_file $(shell $(symb_dir)/env/conda/envs/symbiflow_arch_def_base/bin/prjxray-config)/$(PART_ARCH)/$(PART)/part.yaml \
+		--part	$(PART) || (echo "$(@F) failed $$?"; exit 1)
+
+summary:
+	@ ./summary.sh
+
+%/out.eblif: %/top_synth.json
+	- cd $* && $(PYTHON) $(symb_dir)/utils/split_inouts.py -i top_synth.json -o top.json
+	- cd $* && OUT_EBLIF=out.pre_eblif \
+	OUT_SYNTH_V=synth.vout \
+	$(symb_dir)/utils/quiet_cmd.sh \
+	/usr/bin/time --output=$(@F).time $(YOSYS) -p "read_json top.json ; tcl $(SYNTH_TCL)" -l out.eblif.log || (echo "$(@F) failed $$?"; exit 1)
+	- $(MERGE_PORTS) $*/out.pre_eblif $*/out.eblif
+
+%/splitio: %/top_synth.json
+	- cd $* && $(PYTHON) $(symb_dir)/utils/split_inouts.py -i top_synth.json -o top.json
+
+$(targets:=.clean): %.clean:
+	- @ rm -rf $*/out.eblif $*/out.net $*/out.place $*/out.route
+
+clean: $(targets:=.clean)
+
+echo_ap_%:
+	echo $(abspath $*)
+
+echo_%:
+	@ echo $($*)
+
+-include $(targets:=/.deps)
+
+.SECONDEXPANSION:
+
+$(foreach d,$(wildcard $(verilog_src)/*/*.dat),$(notdir $(patsubst %/,%,$(dir $d)))/$(notdir $d)): %.dat: $(verilog_src)/%.dat | $$(abspath $$(dir %))
+	- cp $< $@
+
+$(foreach d,$(wildcard $(verilog_src)/*/*.sv),$(notdir $(patsubst %/,%,$(dir $d)))/$(notdir $d)): %.sv: $(verilog_src)/%.sv | $$(abspath $$(dir %))
+	- cp $< $@
+
+$(foreach d,$(wildcard $(verilog_src)/*/*.vh),$(notdir $(patsubst %/,%,$(dir $d)))/$(notdir $d)): %.vh: $(verilog_src)/%.vh | $$(abspath $$(dir %))
+	- cp $< $@
+
+$(foreach d,$(wildcard $(verilog_src)/*/*.v),$(notdir $(patsubst %/,%,$(dir $d)))/$(notdir $d)): %.v: $(verilog_src)/%.v | $$(abspath $$(dir %))
+	- $(YOSYS_MEMORY_PATCH) $< $@
+
+$(targets:=/top_synth.json): %/top_synth.json: $$(addprefix %/,$$(notdir $$(wildcard $(verilog_src)/%/*.dat))) $$(addprefix %/,$$(notdir $$(wildcard $(verilog_src)/%/*.v))) $$(addprefix %/,$$(notdir $$(wildcard $(verilog_src)/%/*.sv))) $$(addprefix %/,$$(notdir $$(wildcard $(verilog_src)/%/*.vh))) | $$(abspath %)
+	@ echo $*
+	- cd $* && /usr/bin/cmake -E env PYTHON3=$(PYTHON) UTILS_PATH=$(symb_dir)/utils TECHMAP_PATH=$(symb_dir)/xc/xc7/techmap symbiflow-arch-defs_SOURCE_DIR=$(symb_dir) symbiflow-arch-defs_BINARY_DIR=$(doblink_dir)/build/third_party/symbiflow-arch-defs OUT_JSON=top_synth.json OUT_SDC=top_synth.sdc OUT_SYNTH_V=top_synth.vout OUT_FASM_EXTRA=top_fasm_extra.fasm PART_JSON= INPUT_XDC_FILE= USE_ROI=TRUE PCF_FILE={{ top_pcf }} PINMAP_FILE={{ pinmap_csv }} /usr/bin/time --output=$(@F).time $(YOSYS) -p "tcl $(YOSYS_SYNTH_SCRIPT)" -l top_synth.json.log *.v || (echo "$(@F) failed $$?"; exit 1)
+	- cd $* && /usr/bin/cmake -E touch top_fasm_extra.fasm
+	- cd $* && /usr/bin/cmake -E touch_nocreate top_fasm_extra.fasm
+	- cd $* && mv top_synth.vout.premap.v top_synth.vout.premap.vout

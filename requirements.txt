@@ -1,0 +1,11 @@
+git+https://github.com/olofk/edalize.git@v0.2.5#egg=edalize[reporting]
+hydra-core==1.1.0rc1
+hydra-ax-sweeper==1.1.5rc1
+hydra-optuna-sweeper==1.1.0.dev2
+hydra-joblib-launcher==1.1.5.dev2
+hydra-submitit-launcher==1.1.5.dev2
+hydra-colorlog==1.1.0.dev1
+-e .
+nmigen
+numpy
+ortools

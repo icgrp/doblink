@@ -1,0 +1,10 @@
+# @package _global_
+do_blink:
+  backend: vivado
+  figure: fig1
+  sub_figure: b
+  device: 3eg
+  part: xczu3eg-sbva484-2-e
+  num_luts: 2400
+  bft: bft8
+  use_abs: True

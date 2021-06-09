@@ -1,0 +1,10 @@
+# @package _global_
+do_blink:
+  backend: vivado
+  figure: fig2
+  sub_figure: b
+  device: 6eg
+  part: xczu6eg-ffvb1156-2-e
+  num_luts: 1920
+  bft: bft32
+  use_abs: False

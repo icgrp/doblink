@@ -1,0 +1,1 @@
+add_subdirectory(xc7z020-fig1)

@@ -1,0 +1,135 @@
+# @package _global_
+defaults:
+  - override /do_blink/fig1a@do_blink.fig.fig1a: ["7010", "7020", "at200"]
+  - override /do_blink/fig2a@do_blink.fig.fig2a: ["1600", "3200", "6400", "12800"]
+  - override /do_blink/spam_filter@do_blink.fig.spam_filter: []
+  - override /do_blink/digit_recognition@do_blink.fig.digit_recognition: []
+  - override /do_blink/rendering@do_blink.fig.rendering: []
+  - override /hydra/sweeper: optuna
+  - override /hydra/launcher: submitit_slurm
+
+hydra:
+  launcher:
+    cpus_per_task: 8
+    mem_per_cpu: 7500mb
+    nodes: 1
+    timeout_min: 120
+  sweeper:
+    optuna_config:
+      direction: minimize
+      study_name: do_blink_figs
+      storage: sqlite:///optuna.db
+      n_trials: 1000
+      n_jobs: 40
+      sampler: tpe
+      seed: 123
+    search_space:
+      do_blink.vpr_options.bb_factor:
+        type: int
+        low: 3
+        high: 30
+      do_blink.vpr_options.acc_fac:
+        type: float
+        low: 0.0
+        high: 0.8
+      do_blink.vpr_options.astar_fac:
+        type: float
+        low: 1.8
+        high: 30.0
+      do_blink.vpr_options.initial_pres_fac:
+        type: float
+        low: 2.828
+        high: 1000.0
+      do_blink.vpr_options.pres_fac_mult:
+        type: float
+        low: 1.0
+        high: 30.0
+      do_blink.vpr_options.max_criticality:
+        type: float
+        low: 0.0
+        high: 0.9999
+      do_blink.vpr_options.target_ext_pin_util.input:
+        type: float
+        low: 0.0
+        high: 1.001
+      do_blink.vpr_options.target_ext_pin_util.output:
+        type: float
+        low: 0.0
+        high: 1.001
+      do_blink.vpr_options.place_algorithm:
+        type: categorical
+        choices:
+          - bounding_box
+          - criticality_timing
+          - slack_timing
+    enqueue_trial_vals:
+      sample_0:
+        do_blink.vpr_options.bb_factor: 20
+        do_blink.vpr_options.acc_fac: 0.7
+        do_blink.vpr_options.astar_fac: 1.8
+        do_blink.vpr_options.initial_pres_fac: 2.828
+        do_blink.vpr_options.pres_fac_mult: 1.2
+        do_blink.vpr_options.max_criticality: 0.999
+        do_blink.vpr_options.target_ext_pin_util.input: 1.0
+        do_blink.vpr_options.target_ext_pin_util.output: 1.0
+        do_blink.vpr_options.place_algorithm: criticality_timing
+      sample_1:
+        do_blink.vpr_options.acc_fac: 0.5142454037425065
+        do_blink.vpr_options.astar_fac: 2.8258395874133884
+        do_blink.vpr_options.bb_factor: 9
+        do_blink.vpr_options.initial_pres_fac: 3.6108188137452295
+        do_blink.vpr_options.max_criticality: 0.14843861976373668
+        do_blink.vpr_options.place_algorithm: bounding_box
+        do_blink.vpr_options.pres_fac_mult: 2.43616071269636
+        do_blink.vpr_options.target_ext_pin_util.input: 0.9128803964545275
+        do_blink.vpr_options.target_ext_pin_util.output: 0.7177194376951295
+      sample_2:
+        do_blink.vpr_options.acc_fac: 0.5888961006274134
+        do_blink.vpr_options.astar_fac: 4.44425577215095
+        do_blink.vpr_options.bb_factor: 14
+        do_blink.vpr_options.initial_pres_fac: 5.708008626289507
+        do_blink.vpr_options.max_criticality: 0.857093043688675
+        do_blink.vpr_options.place_algorithm: bounding_box
+        do_blink.vpr_options.pres_fac_mult: 2.140512533013114
+        do_blink.vpr_options.target_ext_pin_util.input: 0.7904056170799812
+        do_blink.vpr_options.target_ext_pin_util.output: 0.6424876824519163
+      sample_3:
+        do_blink.vpr_options.acc_fac: 0.596250776360891
+        do_blink.vpr_options.astar_fac: 2.436544968882927
+        do_blink.vpr_options.bb_factor: 15
+        do_blink.vpr_options.initial_pres_fac: 6.1782498518525335
+        do_blink.vpr_options.max_criticality: 0.9426811745984208
+        do_blink.vpr_options.place_algorithm: bounding_box
+        do_blink.vpr_options.pres_fac_mult: 1.0863560895369713
+        do_blink.vpr_options.target_ext_pin_util.input: 0.7173967251881876
+        do_blink.vpr_options.target_ext_pin_util.output: 0.7620163114072525
+      sample_4:
+        do_blink.vpr_options.acc_fac: 0.5245439205291662
+        do_blink.vpr_options.astar_fac: 3.4334896234773358
+        do_blink.vpr_options.bb_factor: 6
+        do_blink.vpr_options.initial_pres_fac: 9.937635440171075
+        do_blink.vpr_options.max_criticality: 0.793946658266621
+        do_blink.vpr_options.place_algorithm: bounding_box
+        do_blink.vpr_options.pres_fac_mult: 1.2500603531379246
+        do_blink.vpr_options.target_ext_pin_util.input: 0.6923924038599798
+        do_blink.vpr_options.target_ext_pin_util.output: 0.4743545973005494
+      sample_5:
+        do_blink.vpr_options.acc_fac: 0.6291752175775304
+        do_blink.vpr_options.astar_fac: 1.8197908267707177
+        do_blink.vpr_options.bb_factor: 4
+        do_blink.vpr_options.initial_pres_fac: 7.192148677062079
+        do_blink.vpr_options.max_criticality: 0.6455699208166761
+        do_blink.vpr_options.place_algorithm: criticality_timing
+        do_blink.vpr_options.pres_fac_mult: 3.218498012225311
+        do_blink.vpr_options.target_ext_pin_util.input: 0.678960725797688
+        do_blink.vpr_options.target_ext_pin_util.output: 0.8342095477055226
+      sample_6:
+        do_blink.vpr_options.acc_fac: 0.6945376395492697
+        do_blink.vpr_options.astar_fac: 2.279400199810299
+        do_blink.vpr_options.bb_factor: 22
+        do_blink.vpr_options.initial_pres_fac: 12.378228811343504
+        do_blink.vpr_options.max_criticality: 0.9262639953463516
+        do_blink.vpr_options.place_algorithm: bounding_box
+        do_blink.vpr_options.pres_fac_mult: 1.0598174299133545
+        do_blink.vpr_options.target_ext_pin_util.input: 0.6706852117645277
+        do_blink.vpr_options.target_ext_pin_util.output: 0.9336375756659466

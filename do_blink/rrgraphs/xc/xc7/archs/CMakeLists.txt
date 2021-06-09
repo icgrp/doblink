@@ -1,0 +1,3 @@
+add_subdirectory(zynq7_z020)
+add_subdirectory(artix7_200t)
+add_subdirectory(zynq7)

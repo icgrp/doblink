@@ -1,0 +1,53 @@
+{
+    "info":
+        {
+        "name": "pr13",
+        "pins_per_tile": 10,
+        "GRID_X_MAX": 48,
+        "GRID_X_MIN": 10,
+        "GRID_Y_MAX": 207,
+        "GRID_Y_MIN": 157
+        },
+    "ports": [
+        {
+            "name": "clk",
+            "type": "clk",
+            "data_type": "scalar",
+            "side": "east"
+        },
+        {
+            "name": "resend",
+            "type": "in",
+            "data_type": "scalar",
+            "side": "east"
+        },
+        {
+            "name": "reset",
+            "type": "in",
+            "data_type": "scalar",
+            "side": "east"
+        },
+        {
+            "name": "dout_leaf_interface2bft",
+            "type": "out",
+            "data_type": "bus",
+            "msb": 48,
+            "lsb": 0,
+            "side": "east"
+        },
+        {
+            "name": "din_leaf_bft2interface",
+            "type": "in",
+            "data_type": "bus",
+            "msb": 48,
+            "lsb": 0,
+            "side": "east"
+        },
+        {
+            "name": "ap_start",
+            "type": "in",
+            "data_type": "scalar",
+            "side": "east"
+        }
+    ]
+}

@@ -1,0 +1,8 @@
+"at200":
+  arch: "artix7_200t"
+  device_family: "xc7a200t"
+  device_name: "fig1"
+  device_speed: "ffg1156-1"
+  device: "xc7a200t-fig1-roi-virt"
+  board: "nexys_video"
+  timeout: 200

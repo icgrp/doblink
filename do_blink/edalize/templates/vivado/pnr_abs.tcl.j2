@@ -1,0 +1,56 @@
+config_webtalk -user off
+config_webtalk -install off
+config_webtalk -info
+set logFileId [open ./run_abs.log "w"]
+set_param general.maxThreads 8
+
+#####################
+## read_checkpoint ##
+#####################
+set start_time [clock seconds]
+open_checkpoint {{ overlay_dir }}/page_0_abstract_shell.dcp
+read_checkpoint -cell design_1_i/page_0/inst ./page_netlist.dcp
+set end_time [clock seconds]
+set total_seconds [expr $end_time - $start_time]
+puts $logFileId "read_checkpoint: $total_seconds seconds"
+
+
+####################
+## implementation ##
+####################
+set start_time [clock seconds]
+#reset_timing 
+opt_design -directive RuntimeOptimized
+set end_time [clock seconds]
+set total_seconds [expr $end_time - $start_time]
+puts $logFileId "opt: $total_seconds seconds"
+write_checkpoint  -force  opt.dcp
+
+set start_time [clock seconds]
+place_design -directive Quick 
+set end_time [clock seconds]
+set total_seconds [expr $end_time - $start_time]
+puts $logFileId "place: $total_seconds seconds"
+write_checkpoint  -force  placed.dcp
+
+set start_time [clock seconds]
+route_design -directive Quick 
+set end_time [clock seconds]
+set total_seconds [expr $end_time - $start_time]
+puts $logFileId "route: $total_seconds seconds"
+write_checkpoint -force   routed.dcp
+
+
+###############
+## bitstream ##
+###############
+set_param bitstream.enablePR 2341
+set start_time [clock seconds]
+write_bitstream  -force  -cell design_1_i/page_0/inst ./page_0
+set end_time [clock seconds]
+set total_seconds [expr $end_time - $start_time]
+puts $logFileId "bit_gen: $total_seconds seconds"
+report_utilization -pblocks pblock_1 > utilization.rpt
+report_timing_summary > timing.rpt
+
+

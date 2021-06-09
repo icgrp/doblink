@@ -1,0 +1,8 @@
+"6400":
+  arch: "artix7_200t"
+  device_family: "xc7a200t"
+  device_name: "fig2-6400"
+  device_speed: "ffg1156-1"
+  device: "xc7a200t-fig2-6400-roi-virt"
+  board: "nexys_video"
+  timeout: 800

@@ -1,0 +1,9 @@
+# @package _global_
+do_blink:
+  backend: vivado
+  figure: fig2
+  sub_figure: a
+  device: at200
+  part: xc7a200tiffg1156-1L
+  num_luts: 6400
+  bft: bft8

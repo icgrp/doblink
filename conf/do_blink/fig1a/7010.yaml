@@ -1,0 +1,8 @@
+"7010":
+  arch: "zynq7"
+  device_family: "xc7z010"
+  device_name: "fig1"
+  device_speed: "clg400-1"
+  device: "xc7z010-fig1-roi-virt"
+  board: "zybo"
+  timeout: 200

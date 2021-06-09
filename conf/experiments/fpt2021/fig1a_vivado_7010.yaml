@@ -1,0 +1,10 @@
+# @package _global_
+do_blink:
+  backend: vivado
+  figure: fig1
+  sub_figure: a
+  device: 7010
+  part: xc7z010clg400-1
+  num_luts: 2400
+  bft: bft8
+
