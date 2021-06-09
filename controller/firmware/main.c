@@ -90,9 +90,6 @@ static void reboot(void) {
 
 static void axi_led_test(void) {
   axi_led_write(0xffffffff);
-  busy_wait(200);
-  axi_led_write(0x00000000);
-  busy_wait(200);
 }
 
 static void axi_sw_test(void) {
@@ -178,10 +175,14 @@ static void console_service(void)
 	str = readstr();
 	if(str == NULL) return;
 	token = get_token(&str);
-	if(strcmp(token, "help") == 0)
-		help();
-	else if(strcmp(token, "reboot") == 0)
-		reboot();
+  if(strcmp(token, "help") == 0)
+    help();
+  else if(strcmp(token, "reboot") == 0)
+    reboot();
+  else if(strcmp(token, "rendering") == 0)
+    rendering_test();
+  else if(strcmp(token, "led") == 0)
+    axi_led_test();
 	prompt();
 }
 
@@ -195,14 +196,9 @@ int main(void)
 
 	puts("\nrvpld - CPU testing software built "__DATE__" "__TIME__"\n");
 
-  printf("DMA test\n");
-  uart_sync();
-  rendering_test();
-
-	printf("led_test...\n");
 
   while(1) {
-    axi_led_test();
+    console_service();
   }
 
 	return 0;

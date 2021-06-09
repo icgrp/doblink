@@ -16,23 +16,6 @@ class Leaf(Module):
         self.resend = Signal(1, name='resend')
         self.din_leaf_bft2interface = Signal(49, name='din_leaf_bft2interface')
         self.dout_leaf_interface2bft = Signal(49, name='dout_leaf_interface2bft')
-        self.platform.add_source('rtl/leaf_interface/Config_Controls.v')
-        self.platform.add_source('rtl/leaf_interface/converge_ctrl.v')
-        self.platform.add_source('rtl/leaf_interface/ExtractCtrl.v')
-        self.platform.add_source('rtl/leaf_interface/Input_Port_Cluster.v')
-        self.platform.add_source('rtl/leaf_interface/Input_Port.v')
-        self.platform.add_source('rtl/leaf_interface/leaf_interface.v')
-        self.platform.add_source('rtl/leaf_interface/Output_Port_Cluster.v')
-        self.platform.add_source('rtl/leaf_interface/Output_Port.v')
-        self.platform.add_source('rtl/leaf_interface/read_b_in.v')
-        self.platform.add_source('rtl/leaf_interface/Stream_Flow_Control.v')
-        self.platform.add_source('rtl/leaf_interface/write_b_in.v')
-        self.platform.add_source('rtl/leaf_interface/write_b_out.v')
-        self.platform.add_source('rtl/leaf_interface/user_kernel.v')
-        self.platform.add_source('rtl/leaf_interface/InterfaceWrapper.v')
-        self.platform.add_source('rtl/leaf_interface/single_ram.v')
-        self.platform.add_source('rtl/leaf_interface/ram0.v')
-        self.platform.add_source('rtl/rendering_6_page/regslice_core.v')
 
     def connect(self, din, dout, resend):
         self.comb += self.din_leaf_bft2interface.eq(din)
@@ -178,17 +161,27 @@ class Rendering6Page(Module):
         leaf_5.connect(bft.din_leaf_5, bft.dout_leaf_5, bft.resend_5)
         leaf_6.connect(bft.din_leaf_6, bft.dout_leaf_6, bft.resend_6)
         leaf_7.connect(bft.din_leaf_7, bft.dout_leaf_7, bft.resend_7)
+        self.platform.add_source('rtl/leaf_interface/Config_Controls.v')
+        self.platform.add_source('rtl/leaf_interface/converge_ctrl.v')
+        self.platform.add_source('rtl/leaf_interface/ExtractCtrl.v')
+        self.platform.add_source('rtl/leaf_interface/Input_Port_Cluster.v')
+        self.platform.add_source('rtl/leaf_interface/Input_Port.v')
+        self.platform.add_source('rtl/leaf_interface/leaf_interface.v')
+        self.platform.add_source('rtl/leaf_interface/Output_Port_Cluster.v')
+        self.platform.add_source('rtl/leaf_interface/Output_Port.v')
+        self.platform.add_source('rtl/leaf_interface/read_b_in.v')
+        self.platform.add_source('rtl/leaf_interface/Stream_Flow_Control.v')
+        self.platform.add_source('rtl/leaf_interface/write_b_in.v')
+        self.platform.add_source('rtl/leaf_interface/write_b_out.v')
+        self.platform.add_source('rtl/leaf_interface/user_kernel.v')
+        self.platform.add_source('rtl/leaf_interface/InterfaceWrapper.v')
+        self.platform.add_source('rtl/leaf_interface/single_ram.v')
+        self.platform.add_source('rtl/leaf_interface/ram0.v')
+        self.platform.add_source('rtl/rendering_6_page/regslice_core.v')
 
     def connect_input(self, stream, clock_domain='sys'):
         assert isinstance(stream, Endpoint)
         input_stream = stream
-
-        if stream.payload.data.nbits != 32:
-            self.submodules.input_converter = input_converter = Converter(stream.payload.data.nbits, 32, reverse=True)
-            self.comb += input_stream.connect(input_converter.sink)
-            mm2s_axis = AXIStreamInterface(32)
-            self.comb += input_converter.source.connect(mm2s_axis)
-            input_stream = mm2s_axis
 
         if clock_domain != self.clock_domain:
             self.submodules.input_cross_domain_converter = input_cross_domain_converter = \
@@ -203,13 +196,6 @@ class Rendering6Page(Module):
     def connect_output(self, stream, clock_domain='sys'):
         assert isinstance(stream, Endpoint)
         output_stream = stream
-
-        if stream.payload.data.nbits != 32:
-            self.submodules.output_converter = output_converter = Converter(32, stream.payload.data.nbits, reverse=True)
-            self.comb += output_converter.source.connect(output_stream)
-            s2mm_axis = AXIStreamInterface(32)
-            self.comb += s2mm_axis.connect(output_converter.sink)
-            output_stream = s2mm_axis
 
         if clock_domain != self.clock_domain:
             self.submodules.output_cross_domain_converter = output_cross_domain_converter = \

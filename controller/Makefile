@@ -2,12 +2,13 @@
 
 CPU=vexriscv
 BUS=axi-lite
+TOOLCHAIN=vivado
 
 ifdef DEBUG
 	DEBUG_ARGS=--with-ethernet --csr-csv csr.csv
 endif
 
-LITEX_ARGS=--cpu-type $(CPU) --output-dir ./build --bus-standard $(BUS) --toolchain symbiflow
+LITEX_ARGS=--cpu-type $(CPU) --output-dir ./build --bus-standard $(BUS) --toolchain $(TOOLCHAIN)
 
 .PHONY: load clean firmware gateware prog
 
@@ -32,7 +33,7 @@ load: build/gateware/nexys_video.bit
 	python3 ./rvpld-soc/nexys_video.py $(LITEX_ARGS) --load $(DEBUG_ARGS)
 
 prog: firmware/firmware.bin
-	lxterm /dev/ttyUSB2 --kernel firmware/firmware.bin
+	lxterm /dev/ttyUSB0 --kernel firmware/firmware.bin
 
 clean:
 	-@ cd firmware && (make clean 2> /dev/null || true)

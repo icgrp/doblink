@@ -14,7 +14,6 @@ from migen import *
 from litex.soc.cores.clock import *
 from litex.soc.integration.soc_core import *
 from litex.soc.integration.soc import *
-from litex.soc.integration.soc_sdram import *
 from litex.soc.integration.builder import *
 from litex.soc.interconnect.stream import Converter, Endpoint, ClockDomainCrossing
 from litex.soc.interconnect import wishbone
@@ -32,6 +31,7 @@ from litex.build.generic_platform import Subsignal, Pins
 from litesata.phy import LiteSATAPHY
 
 from liteeth.phy.s7rgmii import LiteEthPHYRGMII
+from litescope import LiteScopeAnalyzer
 
 from pld_axi import PldAXILiteInterface
 from axilite2led import AxiLite2Led
@@ -99,12 +99,14 @@ class BaseSoC(SoCCore):
             )
 
         # Ethernet ---------------------------------------------------------------------------------
-        if with_ethernet:
-            self.submodules.ethphy = LiteEthPHYRGMII(
-                clock_pads = self.platform.request("eth_clocks"),
-                pads       = self.platform.request("eth"))
-            self.add_csr("ethphy")
-            self.add_ethernet(phy=self.ethphy)
+        self.submodules.ethphy = LiteEthPHYRGMII(
+            clock_pads = self.platform.request("eth_clocks"),
+            pads       = self.platform.request("eth"))
+        self.add_csr("ethphy")
+        self.add_etherbone(
+            phy=self.ethphy,
+            ip_address = "192.168.1.50"
+        )
 
         rst = self.crg.cd_sys.rst
         rstn = ~rst
@@ -130,14 +132,22 @@ class BaseSoC(SoCCore):
         self.bus.add_slave(name="axilite2bft", slave=axi_bft_bus, region=axilite2bft_region)
 
         # mm2s -------------------------------------------------------------------------------------
-        self.submodules.mm2s = mm2s = LiteDRAMDMAReader(self.sdram.crossbar.get_port())
+        self.submodules.mm2s = mm2s = LiteDRAMDMAReader(self.sdram.crossbar.get_port(data_width=32))
         mm2s.add_csr()
         self.add_csr("mm2s")
 
         # s2mm -------------------------------------------------------------------------------------
-        self.submodules.s2mm = s2mm = LiteDRAMDMAWriter(self.sdram.crossbar.get_port())
+        self.submodules.s2mm = s2mm = LiteDRAMDMAWriter(self.sdram.crossbar.get_port(data_width=32))
         s2mm.add_csr()
         self.add_csr("s2mm")
+
+        # Debug ------------------------------------------------------------------------------------
+        analyzer_signals = [s2mm.sink]
+        self.submodules.analyzer = LiteScopeAnalyzer(analyzer_signals,
+                                                     depth = 2048,
+                                                     clock_domain = "sys",
+                                                     csr_csv = "analyzer.csv")
+        self.add_csr("analyzer")
 
         #self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 100, True)
         #self.comb += mm2s.source.connect(sync_fifo.sink)
@@ -168,7 +178,7 @@ def main():
     parser.add_argument("--with-sdcard",     action="store_true", help="Enable SDCard support")
     parser.add_argument("--with-sata",       action="store_true", help="Enable SATA support (over FMCRAID)")
     builder_args(parser)
-    soc_sdram_args(parser)
+    soc_core_args(parser)
     args = parser.parse_args()
 
     soc = BaseSoC(
@@ -176,7 +186,7 @@ def main():
         sys_clk_freq  = int(float(args.sys_clk_freq)),
         with_ethernet = args.with_ethernet,
         with_sata     = args.with_sata,
-        **soc_sdram_argdict(args)
+        **soc_core_argdict(args)
     )
 
     assert not (args.with_spi_sdcard and args.with_sdcard)

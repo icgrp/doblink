@@ -15,22 +15,6 @@ class InterfaceWrapper(Module):
         self.platform = platform
         source_sigs = self.source.get_signals()
         sink_sigs = self.sink.get_signals()
-        self.platform.add_source('rtl/leaf_interface/Config_Controls.v')
-        self.platform.add_source('rtl/leaf_interface/converge_ctrl.v')
-        self.platform.add_source('rtl/leaf_interface/ExtractCtrl.v')
-        self.platform.add_source('rtl/leaf_interface/Input_Port_Cluster.v')
-        self.platform.add_source('rtl/leaf_interface/Input_Port.v')
-        self.platform.add_source('rtl/leaf_interface/leaf_interface.v')
-        self.platform.add_source('rtl/leaf_interface/Output_Port_Cluster.v')
-        self.platform.add_source('rtl/leaf_interface/Output_Port.v')
-        self.platform.add_source('rtl/leaf_interface/read_b_in.v')
-        self.platform.add_source('rtl/leaf_interface/Stream_Flow_Control.v')
-        self.platform.add_source('rtl/leaf_interface/write_b_in.v')
-        self.platform.add_source('rtl/leaf_interface/write_b_out.v')
-        self.platform.add_source('rtl/leaf_interface/user_kernel.v')
-        self.platform.add_source('rtl/leaf_interface/InterfaceWrapper.v')
-        self.platform.add_source('rtl/leaf_interface/single_ram.v')
-        self.platform.add_source('rtl/leaf_interface/ram0.v')
         self.specials += Instance("InterfaceWrapper1",
                             i_clk = self.clk,
                             i_reset = self.rst,

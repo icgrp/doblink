@@ -23,8 +23,6 @@
 #define CHECK_ACK 2
 void read_from_fifo(int * ctrl_reg)
 {
-  int rev_0, rev_1;
-
   //check if the input fifo is empty
   while((lx_read32(SLV_REG3)>>1)&&1);
 
@@ -34,8 +32,8 @@ void read_from_fifo(int * ctrl_reg)
   lx_write32(SLV_REG7, *ctrl_reg);
 
   //bft2arm_packet = {1'b1, SLV_REG1[15:0], SLV_REG0[31:0]}
-  rev_0 = lx_read32(SLV_REG0);
-  rev_1 = lx_read32(SLV_REG1);
+  // rev_0 = lx_read32(SLV_REG0);
+  // rev_1 = lx_read32(SLV_REG1);
 
   //xil_printf( "The received data is %08x_%08d \n", rev_1, rev_0);
 
@@ -52,7 +50,7 @@ static void write_to_fifo(int high_32_bits, int low_32_bits, int * ctrl_reg)
 }
 
 
-void init_regs()
+void init_regs(void)
 {
    int i = 0;
    static int ctrl_reg = 0;
