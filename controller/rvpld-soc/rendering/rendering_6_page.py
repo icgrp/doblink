@@ -184,6 +184,7 @@ class Rendering6Page(Module):
         input_stream = stream
 
         if clock_domain != self.clock_domain:
+            from IPython import embed; embed()
             self.submodules.input_cross_domain_converter = input_cross_domain_converter = \
                 ClockDomainCrossing(input_stream.description, cd_from=clock_domain, cd_to=self.clock_domain, depth=8)
             mm2s_axis_bft = AXIStreamInterface(32)
@@ -198,6 +199,7 @@ class Rendering6Page(Module):
         output_stream = stream
 
         if clock_domain != self.clock_domain:
+            from IPython import embed; embed()
             self.submodules.output_cross_domain_converter = output_cross_domain_converter = \
                 ClockDomainCrossing(output_stream.description, cd_from=self.clock_domain, cd_to=clock_domain, depth=8)
             s2mm_axis_bft = AXIStreamInterface(32)

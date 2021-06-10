@@ -99,14 +99,14 @@ class BaseSoC(SoCCore):
             )
 
         # Ethernet ---------------------------------------------------------------------------------
-        self.submodules.ethphy = LiteEthPHYRGMII(
-            clock_pads = self.platform.request("eth_clocks"),
-            pads       = self.platform.request("eth"))
-        self.add_csr("ethphy")
-        self.add_etherbone(
-            phy=self.ethphy,
-            ip_address = "192.168.1.50"
-        )
+        # self.submodules.ethphy = LiteEthPHYRGMII(
+        #     clock_pads = self.platform.request("eth_clocks"),
+        #     pads       = self.platform.request("eth"))
+        # self.add_csr("ethphy")
+        # self.add_etherbone(
+        #     phy=self.ethphy,
+        #     ip_address = "192.168.1.50"
+        # )
 
         rst = self.crg.cd_sys.rst
         rstn = ~rst
@@ -120,8 +120,8 @@ class BaseSoC(SoCCore):
         axilite2led_region = SoCRegion(origin=0x02000000, size=0x10000)
         self.bus.add_slave(name="axilite2led", slave=axilite2led.bus, region=axilite2led_region)
 
-        #led_pads = Cat([platform.request("user_led", 0), platform.request("user_led", 1)])
-        #self.comb += led_pads.eq(axilite2led.led)
+        led_pads = Cat([platform.request("user_led", 0), platform.request("user_led", 1)])
+        self.comb += led_pads.eq(axilite2led.led)
 
         sw_pads = Cat([platform.request("user_sw", 0), platform.request("user_sw", 1)])
         self.comb += axilite2led.sw.eq(sw_pads)
@@ -132,22 +132,22 @@ class BaseSoC(SoCCore):
         self.bus.add_slave(name="axilite2bft", slave=axi_bft_bus, region=axilite2bft_region)
 
         # mm2s -------------------------------------------------------------------------------------
-        self.submodules.mm2s = mm2s = LiteDRAMDMAReader(self.sdram.crossbar.get_port(data_width=32))
+        self.submodules.mm2s = mm2s = LiteDRAMDMAReader(self.sdram.crossbar.get_port(data_width=32, reverse=True))
         mm2s.add_csr()
         self.add_csr("mm2s")
 
         # s2mm -------------------------------------------------------------------------------------
-        self.submodules.s2mm = s2mm = LiteDRAMDMAWriter(self.sdram.crossbar.get_port(data_width=32))
+        self.submodules.s2mm = s2mm = LiteDRAMDMAWriter(self.sdram.crossbar.get_port(data_width=32, reverse=True))
         s2mm.add_csr()
         self.add_csr("s2mm")
 
         # Debug ------------------------------------------------------------------------------------
-        analyzer_signals = [s2mm.sink]
-        self.submodules.analyzer = LiteScopeAnalyzer(analyzer_signals,
-                                                     depth = 2048,
-                                                     clock_domain = "sys",
-                                                     csr_csv = "analyzer.csv")
-        self.add_csr("analyzer")
+        # analyzer_signals = [s2mm.sink]
+        # self.submodules.analyzer = LiteScopeAnalyzer(analyzer_signals,
+        #                                              depth = 2048,
+        #                                              clock_domain = "sys",
+        #                                              csr_csv = "analyzer.csv")
+        # self.add_csr("analyzer")
 
         #self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 100, True)
         #self.comb += mm2s.source.connect(sync_fifo.sink)
@@ -160,7 +160,7 @@ class BaseSoC(SoCCore):
         #self.comb += platform.request_all('user_led').eq(sync_fifo.level)
 
         # Rendering6Page -------------------------------------------------------------------------------
-        self.submodules.rendering = rendering = Rendering6Page(clk_bft, rst_bft, platform, 'bft')
+        self.submodules.rendering = rendering = Rendering6Page(clk, rst, platform, 'sys')
         rendering.connect_input(mm2s.source)
         rendering.connect_output(s2mm.sink)
         rendering.connect_axil(axi_bft_bus)
