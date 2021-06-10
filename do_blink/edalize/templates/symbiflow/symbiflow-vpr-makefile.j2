@@ -10,7 +10,8 @@ XCFASM = $(symb_dir)/env/conda/envs/symbiflow_arch_def_base/bin/xcfasm
 PYTHON = $(symb_dir)/env/conda/envs/symbiflow_arch_def_base/bin/python
 
 SYNTH_TCL = $(symb_dir)/xc/xc7/yosys/conv.tcl
-YOSYS_SYNTH_SCRIPT = $(symb_dir)/xc/xc7/yosys/synth.tcl
+YOSYS_SYNTH_SCRIPT = $(doblink_dir)/do_blink/symbiflow_benchmark/common/synth.tcl
+#YOSYS_SYNTH_SCRIPT = $(symb_dir)/xc/xc7/yosys/synth.tcl
 
 DEVICE_ARCH?={{ arch }}
 PART_ARCH=$(word 1, $(subst _, ,$(DEVICE_ARCH)))

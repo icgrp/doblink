@@ -5,7 +5,7 @@ defaults:
   - override /do_blink/spam_filter@do_blink.fig.spam_filter: []
   - override /do_blink/digit_recognition@do_blink.fig.digit_recognition: []
   - override /do_blink/rendering@do_blink.fig.rendering: ["data_redir_m"]
-  - override /hydra/launcher: submitit_slurm
+  # - override /hydra/launcher: submitit_slurm
 
 do_blink:
   vpr_options:
@@ -19,8 +19,8 @@ do_blink:
     target_ext_pin_util.input: 0.7173967251881876
     target_ext_pin_util.output: 0.7620163114072525
 
-hydra:
-  launcher:
-    cpus_per_task: 8
-    mem_per_cpu: 7500mb
-    nodes: 1
+# hydra:
+#   launcher:
+#     cpus_per_task: 8
+#     mem_per_cpu: 7500mb
+#     nodes: 1

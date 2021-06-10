@@ -5,7 +5,7 @@ defaults:
   - override /do_blink/spam_filter@do_blink.fig.spam_filter: []
   - override /do_blink/digit_recognition@do_blink.fig.digit_recognition: ["update_knn3"]
   - override /do_blink/rendering@do_blink.fig.rendering: []
-#   - override /hydra/launcher: submitit_slurm
+  - override /hydra/launcher: joblib
 
 # hydra:
 #   launcher:
