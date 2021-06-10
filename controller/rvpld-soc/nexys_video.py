@@ -37,6 +37,9 @@ from pld_axi import PldAXILiteInterface
 from axilite2led import AxiLite2Led
 from rendering.rendering_mono import RenderingMono
 from rendering.rendering_6_page import Rendering6Page
+from axil_cdc import AxilCDC
+from axilite2bft import AxiLite2Bft
+from litedram.frontend.adapter import LiteDRAMNativePortConverter
 
 from platforms import nexys_video
 # CRG ----------------------------------------------------------------------------------------------
@@ -127,19 +130,39 @@ class BaseSoC(SoCCore):
         self.comb += axilite2led.sw.eq(sw_pads)
 
         # AXILite2BFT ------------------------------------------------------------------------------
-        axi_bft_bus = AXILiteInterface(data_width=32, address_width=5, clock_domain="sys")
+        axi_bft_bus_sys = axi.AXILiteInterface(data_width=32, address_width=5, clock_domain="sys")
+        axi_bft_bus_bft = axi.AXILiteInterface(data_width=32, address_width=5, clock_domain="bft")
+        self.submodules.axil_cdc_sys2bft = axil_cdc_sys2bft = AxilCDC(clk, rst, clk_bft, rst_bft, self.platform, 'sys', 'bft')
+        self.comb += axi_bft_bus_sys.connect(axil_cdc_sys2bft.slave)
+        self.comb += axil_cdc_sys2bft.master.connect(axi_bft_bus_bft)
         axilite2bft_region = SoCRegion(origin=0x02010000, size=0x10000)
-        self.bus.add_slave(name="axilite2bft", slave=axi_bft_bus, region=axilite2bft_region)
+        self.bus.add_slave(name="axilite2bft", slave=axi_bft_bus_sys, region=axilite2bft_region)
 
         # mm2s -------------------------------------------------------------------------------------
-        self.submodules.mm2s = mm2s = LiteDRAMDMAReader(self.sdram.crossbar.get_port(data_width=32, reverse=True))
+        litedram_read_32 = LiteDRAMNativePort('both', 27, 32)
+        self.submodules.dram_read_converter = LiteDRAMNativePortConverter(litedram_read_32, self.sdram.crossbar.get_port(), reverse=True)
+        self.submodules.mm2s = mm2s = LiteDRAMDMAReader(litedram_read_32)
         mm2s.add_csr()
         self.add_csr("mm2s")
+        mm2s_axis = axi.AXIStreamInterface(32)
+        self.comb += mm2s.source.connect(mm2s_axis)
+        self.submodules.input_cross_domain_converter = input_cross_domain_converter = ClockDomainCrossing(mm2s_axis.description, cd_from="sys", cd_to="bft", depth=8)
+        mm2s_axis_bft = axi.AXIStreamInterface(32)
+        self.comb += mm2s_axis.connect(input_cross_domain_converter.sink)
+        self.comb += input_cross_domain_converter.source.connect(mm2s_axis_bft)
 
         # s2mm -------------------------------------------------------------------------------------
-        self.submodules.s2mm = s2mm = LiteDRAMDMAWriter(self.sdram.crossbar.get_port(data_width=32, reverse=True))
+        litedram_write_32 = LiteDRAMNativePort('both', 27, 32)
+        self.submodules.dram_write_converter = LiteDRAMNativePortConverter(litedram_write_32, self.sdram.crossbar.get_port(), reverse=True)
+        self.submodules.s2mm = s2mm = LiteDRAMDMAWriter(litedram_write_32)
         s2mm.add_csr()
         self.add_csr("s2mm")
+        s2mm_axis = axi.AXIStreamInterface(32)
+        self.comb += s2mm_axis.connect(s2mm.sink)
+        self.submodules.output_cross_domain_converter = output_cross_domain_converter = ClockDomainCrossing(s2mm_axis.description, cd_from="bft", cd_to="sys", depth=8)
+        s2mm_axis_bft = axi.AXIStreamInterface(32)
+        self.comb += output_cross_domain_converter.source.connect(s2mm_axis)
+        self.comb += s2mm_axis_bft.connect(output_cross_domain_converter.sink)
 
         # Debug ------------------------------------------------------------------------------------
         # analyzer_signals = [s2mm.sink]
@@ -160,10 +183,10 @@ class BaseSoC(SoCCore):
         #self.comb += platform.request_all('user_led').eq(sync_fifo.level)
 
         # Rendering6Page -------------------------------------------------------------------------------
-        self.submodules.rendering = rendering = Rendering6Page(clk, rst, platform, 'sys')
-        rendering.connect_input(mm2s.source)
-        rendering.connect_output(s2mm.sink)
-        rendering.connect_axil(axi_bft_bus)
+        self.submodules.rendering = rendering = Rendering6Page(clk_bft, rst_bft, platform, 'bft')
+        rendering.connect_input(mm2s_axis_bft)
+        rendering.connect_output(s2mm_axis_bft)
+        rendering.connect_axil(axi_bft_bus_bft)
 
 # Build --------------------------------------------------------------------------------------------
 

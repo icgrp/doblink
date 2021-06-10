@@ -183,14 +183,14 @@ class Rendering6Page(Module):
         assert isinstance(stream, Endpoint)
         input_stream = stream
 
-        if clock_domain != self.clock_domain:
-            from IPython import embed; embed()
-            self.submodules.input_cross_domain_converter = input_cross_domain_converter = \
-                ClockDomainCrossing(input_stream.description, cd_from=clock_domain, cd_to=self.clock_domain, depth=8)
-            mm2s_axis_bft = AXIStreamInterface(32)
-            self.comb += input_stream.connect(input_cross_domain_converter.sink)
-            self.comb += input_cross_domain_converter.source.connect(mm2s_axis_bft)
-            input_stream = mm2s_axis_bft
+        # if clock_domain != self.clock_domain:
+        #     from IPython import embed; embed()
+        #     self.submodules.input_cross_domain_converter = input_cross_domain_converter = \
+        #         ClockDomainCrossing(input_stream.description, cd_from=clock_domain, cd_to=self.clock_domain, depth=8)
+        #     mm2s_axis_bft = AXIStreamInterface(32)
+        #     self.comb += input_stream.connect(input_cross_domain_converter.sink)
+        #     self.comb += input_cross_domain_converter.source.connect(mm2s_axis_bft)
+        #     input_stream = mm2s_axis_bft
 
         self.interface_wrapper.connect_input(input_stream)
 
@@ -198,14 +198,14 @@ class Rendering6Page(Module):
         assert isinstance(stream, Endpoint)
         output_stream = stream
 
-        if clock_domain != self.clock_domain:
-            from IPython import embed; embed()
-            self.submodules.output_cross_domain_converter = output_cross_domain_converter = \
-                ClockDomainCrossing(output_stream.description, cd_from=self.clock_domain, cd_to=clock_domain, depth=8)
-            s2mm_axis_bft = AXIStreamInterface(32)
-            self.comb += output_cross_domain_converter.source.connect(output_stream)
-            self.comb += s2mm_axis_bft.connect(output_cross_domain_converter.sink)
-            output_stream = s2mm_axis_bft
+        # if clock_domain != self.clock_domain:
+        #     from IPython import embed; embed()
+        #     self.submodules.output_cross_domain_converter = output_cross_domain_converter = \
+        #         ClockDomainCrossing(output_stream.description, cd_from=self.clock_domain, cd_to=clock_domain, depth=8)
+        #     s2mm_axis_bft = AXIStreamInterface(32)
+        #     self.comb += output_cross_domain_converter.source.connect(output_stream)
+        #     self.comb += s2mm_axis_bft.connect(output_cross_domain_converter.sink)
+        #     output_stream = s2mm_axis_bft
 
         self.interface_wrapper.connect_output(output_stream)
 
@@ -214,8 +214,10 @@ class Rendering6Page(Module):
 
         clock_domain = axil.clock_domain
 
-        if clock_domain != self.clock_domain:
-            self.submodules.axil_cdc_sys2bft = axil_cdc_sys2bft = \
-                AxilCDC(ClockSignal(clock_domain), ResetSignal(clock_domain), self.clk, self.rst, self.platform, clock_domain, self.clock_domain)
-            self.comb += axil.connect(axil_cdc_sys2bft.slave)
-            self.comb += axil_cdc_sys2bft.master.connect(self.axil)
+        # if clock_domain != self.clock_domain:
+        #     self.submodules.axil_cdc_sys2bft = axil_cdc_sys2bft = \
+        #         AxilCDC(ClockSignal(clock_domain), ResetSignal(clock_domain), self.clk, self.rst, self.platform, clock_domain, self.clock_domain)
+        #     self.comb += axil.connect(axil_cdc_sys2bft.slave)
+        #     self.comb += axil_cdc_sys2bft.master.connect(self.axil)
+
+        self.comb += axil.connect(self.axil)

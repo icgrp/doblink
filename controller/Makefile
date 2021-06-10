@@ -2,7 +2,7 @@
 
 CPU=vexriscv
 BUS=axi-lite
-TOOLCHAIN=vivado
+TOOLCHAIN=symbiflow
 
 ifdef DEBUG
 	DEBUG_ARGS=--with-ethernet --csr-csv csr.csv
