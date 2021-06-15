@@ -25,6 +25,7 @@ add_xc_device_define_type(
     SLICEL
     SLICEM
     BRAM_L
+    BRAM_R
     IOPAD
     IOPAD_M
     IOPAD_S
