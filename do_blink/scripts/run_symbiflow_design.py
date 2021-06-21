@@ -29,10 +29,14 @@ def build_do_blink_designs(cfg):
       device_files_dir = os.path.join(project_dir, f"{cfg.do_blink.rrgraph_install_dir}/{design_cfg.device_family}-{design_cfg.device_name}_test")
       device_files_out_dir = os.path.join('/tmp', f"symbiflow")
 
+      xdc_path = os.path.join(verilog_src_dir, "output_fun/nexys_video.xdc")
+      input_xdc_file = "nexys_video.xdc" if os.path.isfile(xdc_path) else ""
+
       name = "_".join([figure, num_luts, re.sub("\D", "", os.getcwd())])
       work_root = tempfile.mkdtemp(prefix=name + "_")
 
       tool_options = {
+        "input_xdc_file": f"{input_xdc_file}",
         "top_pcf": f"{device_files_out_dir}/{design_cfg.device_family}-{design_cfg.device_name}_test/top.pcf",
         "place_delay_bin": f"{device_files_out_dir}/{design_cfg.device_family}-{design_cfg.device_name}_test/rr_graph_{design_cfg.device_family}-{design_cfg.device_name}_test.place_delay.bin",
         "lookahead_bin": f"{device_files_out_dir}/{design_cfg.device_family}-{design_cfg.device_name}_test/rr_graph_{design_cfg.device_family}-{design_cfg.device_name}_test.lookahead.bin",

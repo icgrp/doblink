@@ -196,6 +196,7 @@ class SymbiflowMake(Edatool):
         if has_vhdl or has_vhdl2008:
             logger.error("VHDL files are not supported in Yosys")
 
+        input_xdc_file = self.tool_options.get('input_xdc_file', None)
         top_pcf = self.tool_options.get('top_pcf', None)
         place_delay_bin = self.tool_options.get('place_delay_bin', None)
         lookahead_bin = self.tool_options.get('lookahead_bin', None)
@@ -215,6 +216,7 @@ class SymbiflowMake(Edatool):
 
         vpr_options = self.tool_options.get("vpr_options", None)
         make_params = {
+            "input_xdc_file": input_xdc_file,
             "top_pcf": top_pcf,
             "place_delay_bin": place_delay_bin,
             "lookahead_bin": lookahead_bin,

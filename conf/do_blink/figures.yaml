@@ -38,6 +38,8 @@ defaults:
     - "rasterization2_m"
     - "zculling_bot"
     - "zculling_top"
+  - overlay@fig.overlay:
+    - "top"
 
 vpr_options:
   bb_factor: 20
