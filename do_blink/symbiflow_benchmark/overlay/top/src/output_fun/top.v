@@ -367,7 +367,7 @@ assign clk_bft_3 = clk_bft;
   assign user_sw0_0_1 = user_sw0;
   assign user_sw1_0_1 = user_sw1;
   assign xlconstant_0_dout1 = dout_leaf_15[48:0];
-  top_bft_0_0 bft_0
+  bft bft_0
        (.clk(clk_wiz_1_clk_out2),
         .din_leaf_0(bft_0_din_leaf_0),
         .din_leaf_1(bft_0_din_leaf_1),
@@ -414,7 +414,7 @@ assign clk_bft_3 = clk_bft;
         .resend_8(bft_0_resend_8),
         .resend_9(bft_0_resend_9),
         .reset(reset_bft_peripheral_reset));
-  top_nexys_video_0_0 nexys_video_0
+  nexys_video nexys_video_0
        (.axilite2bft_host_bft2interface(bft_0_din_leaf_0),
         .axilite2bft_host_interface2bft(nexys_video_0_axilite2bft_host_interface2bft),
         .axilite2bft_resend_0(bft_0_resend_0),
