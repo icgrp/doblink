@@ -1,0 +1,239 @@
+---
+##################################################################################
+overlay:
+  # The name of this specific overlay configuration
+  name: "my-first-overlay"
+
+  # The specific part that this overlay targets
+  part: "xc7a200tsbg484-1"
+
+  # The coordinate system used is that (0,0) is in the top left hand corner
+  # of the chip as viewed in Vivado, with the positive x-axis extending to
+  # the right, and the positive y-axis extending down
+
+  # These specify the maximum x and y dimensions of the chip.
+  # These numbers will be used by the algorithem which chooses sides for
+  # the pblock's port pins
+  max_x_dimension: null
+  max_y_diminsion: null
+
+  # The x-coordinate of the main clock spine. This is needed for selecting
+  # which side of a pblock to route a clock into.
+  spine_x_coordinate: null
+  ################################################################################
+  # This describes the BFT structure
+  BFT:
+    # This is a list of all the switchboxes which compose the BFT
+    - switchbox:
+      # The name of the switchbox
+      name: "top"
+
+      # The bounds of the switchbox
+      x_min: null
+      x_max: null
+      y_min: null
+      y_max: null
+
+    - switchbox:
+      name: "stub1"
+      x_min: null
+      x_max: null
+      y_min: null
+      y_max: null
+
+    - switchbox:
+      name: "stub2"
+      x_min: null
+      x_max: null
+      y_min: null
+      y_max: null
+
+    - switchbox:
+      name: "stub3"
+      x_min: null
+      x_max: null
+      y_min: null
+      y_max: null
+
+    - switchbox:
+      name: "stub4"
+      x_min: null
+      x_max: null
+      y_min: null
+      y_max: null
+  ################################################################################
+  # This describes the location of other static regions
+  # in the overlay, other than the BFT. Non rectangular regions should be
+  # discretized. This will simplify the port selection algorithem for the pblocks. 
+  static_blocks:
+    - static_block:
+      # The name of the static_block
+      name: "controller"
+
+      # The bounds of the static_block
+      x_min: null
+      x_max: null
+      y_min: null
+      y_max: null
+  ################################################################################
+  # This describes the partial reconfiguration blocks
+  pblocks:
+    # This describes the common interface that all
+    # of the pblocks have
+    interface:
+      # A list of clocks for a pblock
+      clocks:
+        - clock:
+          # The name of the specific clock
+          name: "clk"
+
+      # A list of ports for a pblock
+      ports:  
+        - port:
+          # The name of the port
+          name: "resend"
+          # The direction of the port ("in", "out")
+          direction: "in"
+          # How many bits wide the port is
+          width: 1
+
+        - port:
+          name: "reset"
+          direction: "in"
+          width: 1
+
+        - port:
+          name: "ap_start"
+          direction: "in"
+          width: 1
+
+        - port:
+          name: "dout_leaf_interface2bft"
+          direction: "out"
+          width: 48
+
+        - port:
+          name: "din_leaf_bft2interface"
+          direction: "in"
+          width: 48
+
+    # This is a list of the actual pblocks
+    pblocks:
+      - pblock:
+        # The name of the pblock
+        name: "pblock2"
+        
+        # The bounds of the pblock
+        x_min: 10
+        x_max: 85
+        y_min: 1
+        y_max: 51
+
+        # Describes the number of pins per tile the pblock has
+        pins_per_tile: 10
+
+        # Describes the switchbox which the pblock connects to.
+        # This string should be the name of one of the switchblocks
+        # defined in the BFT section above.
+        parent_switchbox: "stub1"
+
+      - pblock:
+        name: "pblock3"
+        x_min: 141
+        x_max: 188
+        y_min: 53
+        y_max: 103
+        pins_per_tile: 10
+        parent_switchbox: "stub2"
+
+      - pblock:
+        name: "pblock4"
+        x_min: 87
+        x_max: 134
+        y_min: 53
+        y_max: 103
+        pins_per_tile: 10
+        parent_switchbox: "stub1"
+
+      - pblock:
+        name: "pblock5"
+        x_min: 10
+        x_max: 48
+        y_min: 53
+        y_max: 103
+        pins_per_tile: 10
+        parent_switchbox: "stub1"
+
+      - pblock:
+        name: "pblock6"
+        x_min: 87
+        x_max: 134
+        y_min: 157
+        y_max: 207
+        pins_per_tile: 10
+        parent_switchbox: "stub4"
+
+      - pblock:
+        name: "pblock7"
+        x_min: 10
+        x_max: 85
+        y_min: 209
+        y_max: 259
+        pins_per_tile: 10
+        parent_switchbox: "stub4"
+
+      - pblock:
+        name: "pblock8"
+        x_min: 190
+        x_max: 254
+        y_min: 209
+        y_max: 259
+        pins_per_tile: 10
+        parent_switchbox: "stub3"
+
+      - pblock:
+        name: "pblock9"
+        x_min: 190
+        x_max: 254
+        y_min: 1
+        y_max: 51
+        pins_per_tile: 10
+        parent_switchbox: "stub2"
+
+      - pblock:
+        name: "pblock10"
+        x_min: 216
+        x_max: 254
+        y_min: 157
+        y_max: 207
+        pins_per_tile: 10
+        parent_switchbox: "stub3"
+
+      - pblock:
+        name: "pblock11"
+        x_min: 141
+        x_max: 188
+        y_min: 157
+        y_max: 207
+        pins_per_tile: 10
+        parent_switchbox: "stub3"
+
+      - pblock:
+        name: "pblock12"
+        x_min: 10
+        x_max: 48
+        y_min: 105
+        y_max: 155
+        pins_per_tile: 10
+        parent_switchbox: "stub1"
+
+      - pblock:
+        name: "pblock13"
+        x_min: 10
+        x_max: 48
+        y_min: 157
+        y_max: 207
+        pins_per_tile: 10
+        parent_switchbox: "stub4"
+##################################################################################
+...
