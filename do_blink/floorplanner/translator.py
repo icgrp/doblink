@@ -59,8 +59,11 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
 			"GRID_Y_MAX": pblock["y_max"],
 			"GRID_Y_MIN": pblock["y_min"],
 		},
-		"ports": interface_list
+		"ports": interface_list.copy()
 	}
+
+	# Assign a port side for each clock
+	#for clock in definition_dict["ports"]
 
 	definitions.append(definition_dict)
 ###############################################################################
@@ -71,40 +74,50 @@ for definition in definitions:
 ###############################################################################
 # Plot the pblocks:
 
-# Setup the axis
+# Setup the plot
 ax = plt.gca()
-plt.xlim([0, 300])
-plt.ylim([0, 300])
+plt.xlim([-10, yaml_data["overlay"]["max_x_dimension"] + 10])
+plt.ylim([-10, yaml_data["overlay"]["max_y_dimension"] + 10])
 plt.gca().invert_yaxis()
 ax.set_aspect('equal')
+plt.title(yaml_data["overlay"]["name"])
+plt.xlabel("Part: " + yaml_data["overlay"]["part"])
 
 # Create the pblock rectangles
-rects = []
 for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
-	rects.append(patches.Rectangle((pblock["x_min"],pblock["y_min"]),
-								   pblock["x_max"] - pblock["x_min"],
-								   pblock["y_max"] - pblock["y_min"],
-								   fill = False,
-								   color = "blue",
-								   linewidth = 1)
-	)
+	rect = patches.Rectangle((pblock["x_min"],pblock["y_min"]),
+							  pblock["x_max"] - pblock["x_min"],
+							  pblock["y_max"] - pblock["y_min"],
+							  fill = False,
+							  color = "blue",
+							  linewidth = 1)
+
+	# Add pblock rectangle to the plot
+	ax.add_patch(rect)
 
 	# Find the center of the pblock rectangle
-	rx, ry = rects[-1].get_xy()
-	cx = rx + (rects[-1].get_width()/2.0)
-	cy = ry + (rects[-1].get_height()/2.0)
+	rx, ry = rect.get_xy()
+	cx = rx + (rect.get_width()/2.0)
+	cy = ry + (rect.get_height()/2.0)
 
 	# Lable the pblock rectangle
 	ax.annotate(pblock["name"], (cx, cy),
-			    color="black",
-			    fontsize=5,
-			    ha="center",
-			    va="center"
-	)
+			    color = "black",
+			    fontsize = 6,
+			    fontfamily = "sans-serif",
+			    ha = "center",
+			    va = "center")
 
-# Add the pblock rectangles to the plot
-for rect in rects:
-	ax.add_patch(rect)
+# Create a rectangle for the chip's perimeter
+rect = patches.Rectangle((0,0),
+					      yaml_data["overlay"]["max_x_dimension"],
+					      yaml_data["overlay"]["max_y_dimension"],
+					      fill = False,
+					      color = "red",
+					      linewidth = 1)
+
+# Add the perimeter rectangle to the plot
+ax.add_patch(rect)
 
 # Display the plot
 plt.show()

@@ -14,12 +14,12 @@ overlay:
   # These specify the maximum x and y dimensions of the chip.
   # These numbers will be used by the algorithem which chooses sides for
   # the pblock's port pins
-  max_x_dimension: null
-  max_y_diminsion: null
+  max_x_dimension: 264
+  max_y_dimension: 260
 
   # The x-coordinate of the main clock spine. This is needed for selecting
   # which side of a pblock to route a clock into.
-  spine_x_coordinate: null
+  spine_x_coordinate: 139
   ################################################################################
   # This describes the BFT structure
   BFT:
