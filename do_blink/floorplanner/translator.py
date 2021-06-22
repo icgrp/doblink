@@ -2,6 +2,7 @@ import yaml
 import json
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import copy
 ###############################################################################
 # Read the yaml file
 yaml_data = None
@@ -17,9 +18,8 @@ with open("draft.yaml", 'r') as yaml_file:
 # a definition.json file for each pblock
 
 # First get the interface information which is common to all pblocks
-interface_list = []
-
 # Here we get the clocks
+clocks = []
 for clock in yaml_data["overlay"]["pblocks"]["interface"]["clocks"]:
 	clock_dict = {
 		"name": clock["name"],
@@ -27,9 +27,10 @@ for clock in yaml_data["overlay"]["pblocks"]["interface"]["clocks"]:
 		"data_type": "scalar",
 		"side": None
 	}
-	interface_list.append(clock_dict)
+	clocks.append(clock_dict)
 
 # And here we get the ports
+ports = []
 for port in yaml_data["overlay"]["pblocks"]["interface"]["ports"]:
 	port_dict = {
 		"name": port["name"],
@@ -37,13 +38,14 @@ for port in yaml_data["overlay"]["pblocks"]["interface"]["ports"]:
 		"data_type": "scalar" if port["width"] == 1 else "bus",
 	}
 
+	# Only insert a mapping for msb and lsb if its a bus
 	if port_dict["data_type"] == "bus":
 		port_dict["msb"] = port["width"]
 		port_dict["lsb"] = 0
 
 	port_dict["side"] = None
 
-	interface_list.append(port_dict)
+	ports.append(port_dict)
 
 # This list will hold the definition dictionaries that we will create
 # for each pblock
@@ -54,7 +56,8 @@ definitions = []
 for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
 
 	# Create a definition dictionary and populate it with data from a
-	# specific pblock description in the yaml file.
+	# specific pblock description in the yaml file. Note we don't
+	# populate the "ports" list yet
 	definition_dict = {
 		"info": {
 			"name": pblock["name"],
@@ -64,11 +67,19 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
 			"GRID_Y_MAX": pblock["y_max"],
 			"GRID_Y_MIN": pblock["y_min"],
 		},
-		"ports": interface_list.copy()
+		"ports": None
 	}
 
-	# Assign a port side for each clock
-	#for clock in definition_dict["ports"]
+	# Assign a side for each clock
+	pblock_clocks = copy.deepcopy(clocks)
+	for clock in pblock_clocks:
+		if(pblock["x_max"] < yaml_data["overlay"]["clock_spine_x_coordinate"]):
+			clock["side"] = "east"
+		elif(pblock["x_min"] > yaml_data["overlay"]["clock_spine_x_coordinate"]):
+			clock["side"] = "west"
+
+	interface_list = pblock_clocks + copy.deepcopy(ports)
+	definition_dict["ports"] = interface_list
 
 	definitions.append(definition_dict)
 ###############################################################################

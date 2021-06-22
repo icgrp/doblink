@@ -19,7 +19,7 @@ overlay:
 
   # The x-coordinate of the main clock spine. This is needed for selecting
   # which side of a pblock to route a clock into.
-  spine_x_coordinate: 139
+  clock_spine_x_coordinate: 139
   ################################################################################
   # This describes the BFT structure
   BFT:
