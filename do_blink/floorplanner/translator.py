@@ -25,7 +25,7 @@ for clock in yaml_data["overlay"]["pblocks"]["interface"]["clocks"]:
 		"name": clock["name"],
 		"type": "clk",
 		"data_type": "scalar",
-		"side": None,
+		"side": None
 	}
 	interface_list.append(clock_dict)
 
@@ -35,8 +35,13 @@ for port in yaml_data["overlay"]["pblocks"]["interface"]["ports"]:
 		"name": port["name"],
 		"type": port["direction"],
 		"data_type": "scalar" if port["width"] == 1 else "bus",
-		"side": None,
 	}
+
+	if port_dict["data_type"] == "bus":
+		port_dict["msb"] = port["width"]
+		port_dict["lsb"] = 0
+
+	port_dict["side"] = None
 
 	interface_list.append(port_dict)
 
