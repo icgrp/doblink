@@ -29,38 +29,38 @@ overlay:
       name: "top"
 
       # The bounds of the switchbox
-      x_min: null
-      x_max: null
-      y_min: null
-      y_max: null
+      x_min: 66
+      x_max: 214
+      y_min: 105
+      y_max: 155
 
     - switchbox:
       name: "stub1"
-      x_min: null
-      x_max: null
-      y_min: null
-      y_max: null
+      x_min: 66
+      x_max: 85
+      y_min: 53
+      y_max: 103
 
     - switchbox:
       name: "stub2"
-      x_min: null
-      x_max: null
-      y_min: null
-      y_max: null
+      x_min: 190
+      x_max: 214
+      y_min: 53
+      y_max: 103
 
     - switchbox:
       name: "stub3"
-      x_min: null
-      x_max: null
-      y_min: null
-      y_max: null
+      x_min: 190
+      x_max: 214
+      y_min: 157
+      y_max: 207
 
     - switchbox:
       name: "stub4"
-      x_min: null
-      x_max: null
-      y_min: null
-      y_max: null
+      x_min: 66
+      x_max: 85
+      y_min: 157
+      y_max: 207
   ################################################################################
   # This describes the location of other static regions
   # in the overlay, other than the BFT. Non rectangular regions should be
@@ -71,10 +71,10 @@ overlay:
       name: "controller"
 
       # The bounds of the static_block
-      x_min: null
-      x_max: null
-      y_min: null
-      y_max: null
+      x_min: 216
+      x_max: 254
+      y_min: 53
+      y_max: 155
   ################################################################################
   # This describes the partial reconfiguration blocks
   pblocks:

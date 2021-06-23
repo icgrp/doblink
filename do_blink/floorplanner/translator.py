@@ -1,8 +1,8 @@
 import yaml
 import json
+import copy
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-import copy
 ###############################################################################
 # Read the yaml file
 yaml_data = None
@@ -90,8 +90,40 @@ for definition in definitions:
     print(json.dumps(definition,indent=1))
     print()
 ###############################################################################
-# Plot the pblocks:
+# Plots a single rectangle 
+def plot_rect(axis, x_min, x_max, y_min, y_max, color, fill=False):
+    rect = patches.Rectangle((x_min,y_min),
+                              x_max - x_min,
+                              y_max - y_min,
+                              fill = fill,
+                              color = color,
+                              linewidth = 1)
+    axis.add_patch(rect)
+    return rect
+###############################################################################
+# Plots a set of labeled rectangles, given a list of objects
+# from the yaml file
+def plot_rects(axis, lst, color, label_color="black"):
+    for element in lst:
+        rect = plot_rect(axis,element["x_min"],element["x_max"],
+                              element["y_min"],element["y_max"],
+                              color = color,
+                              fill=True)
 
+        axis.add_patch(rect)
+        # find the center of the rectangle
+        rx, ry = rect.get_xy()
+        cx = rx + (rect.get_width()/2.0)
+        cy = ry + (rect.get_height()/2.0)
+
+        # Label the switchbox rectangle
+        ax.annotate(element["name"], (cx, cy),
+                    color = label_color,
+                    fontsize = 6,
+                    fontfamily = "sans-serif",
+                    ha = "center",
+                    va = "center")
+###############################################################################
 # Setup the plot
 ax = plt.gca()
 plt.xlim([-10, yaml_data["overlay"]["max_x_dimension"] + 10])
@@ -101,42 +133,15 @@ ax.set_aspect('equal')
 plt.title(yaml_data["overlay"]["name"])
 plt.xlabel("Part: " + yaml_data["overlay"]["part"])
 
-# Create the pblock rectangles
-for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
-    rect = patches.Rectangle((pblock["x_min"],pblock["y_min"]),
-                              pblock["x_max"] - pblock["x_min"],
-                              pblock["y_max"] - pblock["y_min"],
-                              fill = False,
-                              color = "blue",
-                              linewidth = 1)
+# Plot the BFT, static blocks, and pblocks
+plot_rects(ax, yaml_data["overlay"]["BFT"], "darkred")
+plot_rects(ax, yaml_data["overlay"]["static_blocks"], "darkgoldenrod")
+plot_rects(ax, yaml_data["overlay"]["pblocks"]["pblocks"], "teal")
 
-    # Add pblock rectangle to the plot
-    ax.add_patch(rect)
+# Plot an outline of the chip
+plot_rect(ax, 0, yaml_data["overlay"]["max_x_dimension"],
+              0, yaml_data["overlay"]["max_y_dimension"],
+              color = "black")
 
-    # Find the center of the pblock rectangle
-    rx, ry = rect.get_xy()
-    cx = rx + (rect.get_width()/2.0)
-    cy = ry + (rect.get_height()/2.0)
-
-    # Lable the pblock rectangle
-    ax.annotate(pblock["name"], (cx, cy),
-                color = "black",
-                fontsize = 6,
-                fontfamily = "sans-serif",
-                ha = "center",
-                va = "center")
-
-# Create a rectangle for the chip's perimeter
-rect = patches.Rectangle((0,0),
-                          yaml_data["overlay"]["max_x_dimension"],
-                          yaml_data["overlay"]["max_y_dimension"],
-                          fill = False,
-                          color = "red",
-                          linewidth = 1)
-
-# Add the perimeter rectangle to the plot
-ax.add_patch(rect)
-
-# Display the plot
 plt.show()
 ###############################################################################
