@@ -74,9 +74,46 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
             clock["side"] = "east"
         elif(pblock["x_min"] > yaml_data["overlay"]["clock_spine_x_coordinate"]):
             clock["side"] = "west"
+        else:
+            print("Error: pblock crosses the clock spine!")
+            exit(1)
     ###########################################################################
     # Now we make a deep copy of the list of ports
     pblock_ports = copy.deepcopy(ports)
+
+    # Then we get the pblock's parent switchbox
+    parent = None
+    for switchbox in yaml_data["overlay"]["BFT"]:
+        if(switchbox["name"] == pblock["parent_switchbox"]):
+            parent = switchbox
+            break
+
+    # Next we figure out which side of the pblock to assign the ports to
+    side = None
+    # If the parent's x-range overlaps with the pblock's x-range
+    if(parent["x_min"] <= pblock["x_max"] and parent["x_max"] >= pblock["x_min"]):
+        if(pblock["y_min"] > parent["y_max"]):
+            side = "north"
+        elif(pblock["y_max"] < parent["y_min"]):
+            side = "south"
+        else:
+            print("Error: pblock intersects with parent switchbox!")
+            exit(1)
+    # Else if the parent's y-range overlaps with the pblock's y-range
+    elif(parent["y_min"] <= pblock["y_max"] and parent["y_max"] >= pblock["y_min"]):
+        if(pblock["x_max"] < parent["x_min"]):
+            side = "east"
+        elif(pblock["x_min"] > parent["x_max"]):
+            side = "west"
+        else:
+            print("Error: pblock intersects with parent switchbox!")
+            exit(1)
+    # Else if there is no overlap
+    else:
+        print("Warning: " + pblock["name"] + " has no direct path")
+
+    for port in pblock_ports:
+        port["side"] = side
 
     # We now create an interface list, and put it into the definition_dict
     interface_list = pblock_clocks + pblock_ports
@@ -86,6 +123,7 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
     definitions.append(definition_dict)
 ###############################################################################
 # Now we can print the json definitions for each pblock:
+print()
 for definition in definitions:
     print(json.dumps(definition,indent=1))
     print()
