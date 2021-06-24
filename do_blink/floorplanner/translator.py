@@ -62,6 +62,7 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
             "GRID_Y_MAX": pblock["y_max"],
             "GRID_Y_MIN": pblock["y_min"],
         },
+        "synth_tiles_range": None,
         "ports": None
     }
     ###########################################################################
@@ -89,11 +90,13 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
             break
 
     ###########################################################################
-    def expand_front(direction, pblock, parent, yaml_data):
+    def get_synth_tiles(direction, pblock, parent, yaml_data):
+        #######################################################################
+        # first get some information about how we will expand
 
-        front_dim = None
-        exp_dim = None
-        exp_dir = None
+        front_dim = None        # the dimension the front spans
+        exp_dim = None          # the dimension the front will expand along
+        exp_dir = None          # the direction the front will expand along the dimension
 
         if(direction == "north"):
             front_dim, exp_dim, exp_dir = "x" , "y", -1
@@ -118,11 +121,13 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
             front_exp_coord = pblock[exp_dim_max]
         else: 
             front_exp_coord = pblock[exp_dim_min]
-
+        #######################################################################
+        # then generate a list of potential hazards
         hazards =  [blk for blk in yaml_data["overlay"]["BFT"] if blk["name"] != parent["name"]]
         hazards += [blk for blk in yaml_data["overlay"]["static_blocks"]]
         hazards += [blk for blk in yaml_data["overlay"]["pblocks"]["pblocks"] if blk["name"] != pblock["name"]]
-
+        #######################################################################
+        # Now expand the front
         while(True):
             # check each hazard to see if it intersects with the front
             for hazard in hazards:
@@ -130,7 +135,7 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
                 if(front_exp_coord >= hazard[exp_dim_min] and front_exp_coord <= hazard[exp_dim_max]):
                     # if the hazard completely blocks the front:
                     if(hazard[front_dim_min] <= front_min and hazard[front_dim_max] >= front_max):
-                        print("Error: " + pblock["name"] + " has no clear path to " + parent["name"] + " a")
+                        print("Error: " + pblock["name"] + " has no clear path to " + parent["name"])
                         exit(1)
                     # if the hazard creates a split front (possible to solve, but not supported now)
                     elif(hazard[front_dim_min] > front_min and hazard[front_dim_max] < front_max):
@@ -141,14 +146,14 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
                         # adjust the front if possible
                         front_min = hazard[front_dim_max] + 2
                         if(front_min >= front_max):
-                            print("Error: " + pblock["name"] + " has no clear path to " + parent["name"]  + " b")
+                            print("Error: " + pblock["name"] + " has no clear path to " + parent["name"])
                             exit(1)
                     # if hazard blocks the max side of the front
                     elif(hazard[front_dim_max] >= front_max and hazard[front_dim_min] < front_max):
                         # adjust the front if possible
                         front_max = hazard[front_dim_min] - 2
                         if(front_max <= front_min):
-                            print("Error: " + pblock["name"] + " has no clear path to " + parent["name"]  + " c")
+                            print("Error: " + pblock["name"] + " has no clear path to " + parent["name"])
                             exit(1)
             # if we're here, the currently the front does not intersect with a hazard
             # so we check to see if it has intersected with the target
@@ -157,32 +162,40 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
                 break
             # otherwise we expand the front
             front_exp_coord += exp_dir
-
+        synth_tiles_range = {
+            "GRID_" + exp_dim_max.upper(): pblock[exp_dim_max],
+            "GRID_" + exp_dim_min.upper(): pblock[exp_dim_min],
+            "GRID_" + front_dim_max.upper(): front_max,
+            "GRID_" + front_dim_min.upper(): front_min,
+        }
+        return synth_tiles_range
     ###########################################################################
     # Next we figure out which side of the pblock to assign the ports to
     side = None
+    synth_tiles_range = None
     # If the parent's x-range overlaps with the pblock's x-range
     if(parent["x_min"] <= pblock["x_max"] and parent["x_max"] >= pblock["x_min"]):
         if(pblock["y_min"] > parent["y_max"]):
             side = "north"
-            expand_front(side,pblock,parent,yaml_data)
+            synth_tiles_range = get_synth_tiles(side,pblock,parent,yaml_data)
         elif(pblock["y_max"] < parent["y_min"]):
             side = "south"
-            expand_front(side,pblock,parent,yaml_data)
+            synth_tiles_range = get_synth_tiles(side,pblock,parent,yaml_data)
+
     # Else if the parent's y-range overlaps with the pblock's y-range
     elif(parent["y_min"] <= pblock["y_max"] and parent["y_max"] >= pblock["y_min"]):
         if(pblock["x_max"] < parent["x_min"]):
             side = "east"
-            expand_front(side,pblock,parent,yaml_data)
+            synth_tiles_range = get_synth_tiles(side,pblock,parent,yaml_data)
         elif(pblock["x_min"] > parent["x_max"]):
             side = "west"
-            expand_front(side,pblock,parent,yaml_data)
+            synth_tiles_range = get_synth_tiles(side,pblock,parent,yaml_data)
         else:
             print("Error: pblock intersects with parent switchbox!")
             exit(1)
     # Else if there is no overlap
     else:
-        print("Warning: " + pblock["name"] + " has no direct path")
+        print("Warning: " + pblock["name"] + " has no direct path to " + parent["name"])
 
     for port in pblock_ports:
         port["side"] = side
@@ -191,14 +204,16 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
     interface_list = pblock_clocks + pblock_ports
     definition_dict["ports"] = interface_list
 
+    definition_dict["synth_tiles_range"] = synth_tiles_range
+
     # Finally we add our new definition to the definitions list
     definitions.append(definition_dict)
 ###############################################################################
 # Now we can print the json definitions for each pblock:
 print()
-# for definition in definitions:
-#     print(json.dumps(definition,indent=1))
-#     print()
+for definition in definitions:
+    print(json.dumps(definition,indent=1))
+    print()
 ###############################################################################
 # This function plots a single rectangle 
 def plot_rect(axis, x_min, x_max, y_min, y_max, color, fill=False):
