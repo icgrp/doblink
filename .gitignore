@@ -73,3 +73,5 @@ riscv/core/output/*
 .DS_Store
 *.jou
 vivado.log
+build-*/
+leaf/

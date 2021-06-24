@@ -40,6 +40,7 @@ from rendering.rendering_6_page import Rendering6Page
 from axil_cdc import AxilCDC
 from axilite2bft import AxiLite2Bft
 from litedram.frontend.adapter import LiteDRAMNativePortConverter
+from start import StartWriter
 
 from platforms import nexys_video
 # CRG ----------------------------------------------------------------------------------------------
@@ -64,7 +65,7 @@ class _CRG(Module):
         pll.create_clkout(self.cd_sys4x_dqs, 4*sys_clk_freq, phase=90)
         pll.create_clkout(self.cd_idelay,    200e6)
         pll.create_clkout(self.cd_clk100,    100e6)
-        pll.create_clkout(self.cd_bft,    10e6)
+        pll.create_clkout(self.cd_bft,    30e6)
         platform.add_false_path_constraints(self.cd_sys.clk, pll.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
 
         self.submodules.idelayctrl = S7IDELAYCTRL(self.cd_idelay)
@@ -119,15 +120,15 @@ class BaseSoC(SoCCore):
         clk_bft = self.crg.cd_bft.clk
 
         # AXILite2Led ------------------------------------------------------------------------------
-        self.submodules.axilite2led = axilite2led = AxiLite2Led(self.crg.cd_sys.clk, ~self.crg.cd_sys.clk, platform, "sys")
-        axilite2led_region = SoCRegion(origin=0x02000000, size=0x10000)
-        self.bus.add_slave(name="axilite2led", slave=axilite2led.bus, region=axilite2led_region)
+        # self.submodules.axilite2led = axilite2led = AxiLite2Led(self.crg.cd_sys.clk, ~self.crg.cd_sys.clk, platform, "sys")
+        # axilite2led_region = SoCRegion(origin=0x02000000, size=0x10000)
+        # self.bus.add_slave(name="axilite2led", slave=axilite2led.bus, region=axilite2led_region)
 
-        led_pads = Cat([platform.request("user_led", 0), platform.request("user_led", 1)])
-        self.comb += led_pads.eq(axilite2led.led)
+        # led_pads = Cat([platform.request("user_led", 0), platform.request("user_led", 1)])
+        # self.comb += led_pads.eq(axilite2led.led)
 
-        sw_pads = Cat([platform.request("user_sw", 0), platform.request("user_sw", 1)])
-        self.comb += axilite2led.sw.eq(sw_pads)
+        # sw_pads = Cat([platform.request("user_sw", 0), platform.request("user_sw", 1)])
+        # self.comb += axilite2led.sw.eq(sw_pads)
 
         # AXILite2BFT ------------------------------------------------------------------------------
         axi_bft_bus_sys = axi.AXILiteInterface(data_width=32, address_width=5, clock_domain="sys")
@@ -164,26 +165,14 @@ class BaseSoC(SoCCore):
         self.comb += output_cross_domain_converter.source.connect(s2mm_axis)
         self.comb += s2mm_axis_bft.connect(output_cross_domain_converter.sink)
 
-        # Debug ------------------------------------------------------------------------------------
-        # analyzer_signals = [s2mm.sink]
-        # self.submodules.analyzer = LiteScopeAnalyzer(analyzer_signals,
-        #                                              depth = 2048,
-        #                                              clock_domain = "sys",
-        #                                              csr_csv = "analyzer.csv")
-        # self.add_csr("analyzer")
+        # start ------------------------------------------------------------------------------------
+        start_signal = Signal()
+        self.submodules.start = start = StartWriter(start_signal)
+        self.add_csr('start')
+        self.comb += platform.request("user_led", 0).eq(start_signal)
 
-        #self.submodules.sync_fifo = sync_fifo = SyncFIFO([("data", 128)], 100, True)
-        #self.comb += mm2s.source.connect(sync_fifo.sink)
-        #self.comb += sync_fifo.source.connect(s2mm.sink)
-
-        #self.comb += platform.request('user_led', 0).eq(s2mm.sink.valid)
-        #self.comb += platform.request('user_led', 1).eq(s2mm.sink.ready)
-        #self.comb += platform.request('user_led', 2).eq(mm2s.source.valid)
-        #self.comb += platform.request('user_led', 3).eq(mm2s.source.ready)
-        #self.comb += platform.request_all('user_led').eq(sync_fifo.level)
-
-        # Rendering6Page -------------------------------------------------------------------------------
-        self.submodules.rendering = rendering = Rendering6Page(clk_bft, rst_bft, platform, 'bft')
+        # Rendering6Page ---------------------------------------------------------------------------
+        self.submodules.rendering = rendering = Rendering6Page(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
         rendering.connect_input(mm2s_axis_bft)
         rendering.connect_output(s2mm_axis_bft)
         rendering.connect_axil(axi_bft_bus_bft)

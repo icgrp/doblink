@@ -13,8 +13,8 @@
 
 #include "axi_lite_driver.h"
 
-#define LED AXILITE2LED_BASE+16
-#define SW  AXILITE2LED_BASE+8
+// #define LED AXILITE2LED_BASE+16
+// #define SW  AXILITE2LED_BASE+8
 
 void lx_write32(uintptr_t addr, uint32_t val) {
   volatile uint32_t *LocalAddr = (volatile uint32_t *)addr;
@@ -25,15 +25,15 @@ uint32_t lx_read32(uintptr_t addr) {
   return *(volatile uint32_t *)addr;
 }
 
-void axi_led_write(uint32_t val) {
-  lx_write32(LED, val);
-}
+// void axi_led_write(uint32_t val) {
+//   lx_write32(LED, val);
+// }
 
-uint32_t axi_led_read(void) {
-  return lx_read32(LED);
-}
+// uint32_t axi_led_read(void) {
+//   return lx_read32(LED);
+// }
 
-uint32_t axi_sw_read(void) {
-  return lx_read32(SW);
-}
+// uint32_t axi_sw_read(void) {
+//   return lx_read32(SW);
+// }
 

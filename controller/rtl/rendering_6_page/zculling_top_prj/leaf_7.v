@@ -3,7 +3,8 @@ module leaf_7(
     input wire [48 : 0] din_leaf_bft2interface,
     output wire [48 : 0] dout_leaf_interface2bft,
     input wire resend,
-    input wire reset
+    input wire reset,
+    input wire ap_start
     );
 
     wire [31:0] dout_leaf_interface2user_1;
@@ -41,7 +42,7 @@ module leaf_7(
     zculling_top zculling_top_inst(
         .ap_clk(clk),
         .ap_rst(reset),
-        .ap_start(1'b1),
+        .ap_start(ap_start),
         .ap_done(),
         .ap_idle(),
         .Input_1_V_V(dout_leaf_interface2user_1),

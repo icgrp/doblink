@@ -9,10 +9,11 @@ from axil_cdc import AxilCDC
 
 
 class Leaf(Module):
-    def __init__(self, clk, rst, platform):
+    def __init__(self, clk, rst, start, platform):
         self.platform = platform
         self.clk = clk
         self.reset = rst
+        self.start = start
         self.resend = Signal(1, name='resend')
         self.din_leaf_bft2interface = Signal(49, name='din_leaf_bft2interface')
         self.dout_leaf_interface2bft = Signal(49, name='dout_leaf_interface2bft')
@@ -25,8 +26,8 @@ class Leaf(Module):
 
 
 class Leaf2(Leaf):
-    def __init__(self, clk, rst, platform):
-        super().__init__(clk, rst, platform)
+    def __init__(self, clk, rst, start, platform):
+        super().__init__(clk, rst, start, platform)
         self.platform.add_source('rtl/rendering_6_page/coloringFB_top_m_prj/leaf_2.v')
         self.platform.add_source('rtl/rendering_6_page/coloringFB_top_m_prj/coloringFB_top_m.v')
         self.platform.add_source('rtl/rendering_6_page/coloringFB_top_m_prj/coloringFB_top_m_bkb.v')
@@ -36,12 +37,13 @@ class Leaf2(Leaf):
                                   i_din_leaf_bft2interface = self.din_leaf_bft2interface,
                                   o_dout_leaf_interface2bft = self.dout_leaf_interface2bft,
                                   i_resend = self.resend,
+                                  i_ap_start = self.start,
                                   i_reset = self.reset
                                   )
 
 class Leaf3(Leaf):
-    def __init__(self, clk, rst, platform):
-        super().__init__(clk, rst, platform)
+    def __init__(self, clk, rst, start, platform):
+        super().__init__(clk, rst, start, platform)
         self.platform.add_source('rtl/rendering_6_page/data_redir_m_prj/data_redir_m_am_submul_8ns_8ns_9s_16_1_1.v')
         self.platform.add_source('rtl/rendering_6_page/data_redir_m_prj/data_redir_m_am_submul_8ns_8ns_9s_18_1_1.v')
         self.platform.add_source('rtl/rendering_6_page/data_redir_m_prj/data_redir_m.v')
@@ -55,12 +57,13 @@ class Leaf3(Leaf):
                                   i_din_leaf_bft2interface = self.din_leaf_bft2interface,
                                   o_dout_leaf_interface2bft = self.dout_leaf_interface2bft,
                                   i_resend = self.resend,
+                                  i_ap_start = self.start,
                                   i_reset = self.reset
                                   )
 
 class Leaf4(Leaf):
-    def __init__(self, clk, rst, platform):
-        super().__init__(clk, rst, platform)
+    def __init__(self, clk, rst, start, platform):
+        super().__init__(clk, rst, start, platform)
         self.platform.add_source('rtl/rendering_6_page/coloringFB_bot_m_prj/coloringFB_bot_m.v')
         self.platform.add_source('rtl/rendering_6_page/coloringFB_bot_m_prj/coloringFB_bot_m_bkb.v')
         self.platform.add_source('rtl/rendering_6_page/coloringFB_bot_m_prj/coloringFB_bot_m_bkb_ram.dat')
@@ -70,12 +73,13 @@ class Leaf4(Leaf):
                                   i_din_leaf_bft2interface = self.din_leaf_bft2interface,
                                   o_dout_leaf_interface2bft = self.dout_leaf_interface2bft,
                                   i_resend = self.resend,
+                                  i_ap_start = self.start,
                                   i_reset = self.reset
                                   )
 
 class Leaf5(Leaf):
-    def __init__(self, clk, rst, platform):
-        super().__init__(clk, rst, platform)
+    def __init__(self, clk, rst, start, platform):
+        super().__init__(clk, rst, start, platform)
         self.platform.add_source('rtl/rendering_6_page/zculling_bot_prj/zculling_bot.v')
         self.platform.add_source('rtl/rendering_6_page/zculling_bot_prj/zculling_bot_pixecud.v')
         self.platform.add_source('rtl/rendering_6_page/zculling_bot_prj/zculling_bot_z_bubkb.v')
@@ -86,12 +90,13 @@ class Leaf5(Leaf):
                                   i_din_leaf_bft2interface = self.din_leaf_bft2interface,
                                   o_dout_leaf_interface2bft = self.dout_leaf_interface2bft,
                                   i_resend = self.resend,
+                                  i_ap_start = self.start,
                                   i_reset = self.reset
                                   )
 
 class Leaf6(Leaf):
-    def __init__(self, clk, rst, platform):
-        super().__init__(clk, rst, platform)
+    def __init__(self, clk, rst, start, platform):
+        super().__init__(clk, rst, start, platform)
         self.platform.add_source('rtl/rendering_6_page/rasterization2_m_prj/leaf_6.v')
         self.platform.add_source('rtl/rendering_6_page/rasterization2_m_prj/rasterization2_m.v')
         self.platform.add_source('rtl/rendering_6_page/rasterization2_m_prj/rasterization2_odd.v')
@@ -107,12 +112,13 @@ class Leaf6(Leaf):
                                   i_din_leaf_bft2interface = self.din_leaf_bft2interface,
                                   o_dout_leaf_interface2bft = self.dout_leaf_interface2bft,
                                   i_resend = self.resend,
+                                  i_ap_start = self.start,
                                   i_reset = self.reset
                                   )
 
 class Leaf7(Leaf):
-    def __init__(self, clk, rst, platform):
-        super().__init__(clk, rst, platform)
+    def __init__(self, clk, rst, start, platform):
+        super().__init__(clk, rst, start, platform)
         self.platform.add_source('rtl/rendering_6_page/zculling_top_prj/leaf_7.v')
         self.platform.add_source('rtl/rendering_6_page/zculling_top_prj/zculling_top.v')
         self.platform.add_source('rtl/rendering_6_page/zculling_top_prj/zculling_top_pixecud.v')
@@ -123,25 +129,27 @@ class Leaf7(Leaf):
                                   i_din_leaf_bft2interface = self.din_leaf_bft2interface,
                                   o_dout_leaf_interface2bft = self.dout_leaf_interface2bft,
                                   i_resend = self.resend,
+                                  i_ap_start = self.start,
                                   i_reset = self.reset
                                   )
 
 class Rendering6Page(Module):
-    def __init__(self, clk, rst, platform, clock_domain='bft'):
+    def __init__(self, clk, rst, platform, start=1, clock_domain='bft'):
         self.axil = AXILiteInterface(data_width=32, address_width=5, clock_domain=clock_domain)
         self.clk = clk
         self.rst = rst
+        self.start = start
         self.platform = platform
         self.clock_domain = clock_domain
         self.submodules.axilite2bft = axilite2bft = AxiLite2Bft(clk, rst, platform, clock_domain)
         self.submodules.bft = bft = Bft(clk, rst, platform)
         self.submodules.interface_wrapper = interface_wrapper = InterfaceWrapper(clk, rst, platform)
-        self.submodules.leaf_2 = leaf_2 = Leaf2(clk, rst, platform)
-        self.submodules.leaf_3 = leaf_3 = Leaf3(clk, rst, platform)
-        self.submodules.leaf_4 = leaf_4 = Leaf4(clk, rst, platform)
-        self.submodules.leaf_5 = leaf_5 = Leaf5(clk, rst, platform)
-        self.submodules.leaf_6 = leaf_6 = Leaf6(clk, rst, platform)
-        self.submodules.leaf_7 = leaf_7 = Leaf7(clk, rst, platform)
+        self.submodules.leaf_2 = leaf_2 = Leaf2(clk, rst, start, platform)
+        self.submodules.leaf_3 = leaf_3 = Leaf3(clk, rst, start, platform)
+        self.submodules.leaf_4 = leaf_4 = Leaf4(clk, rst, start, platform)
+        self.submodules.leaf_5 = leaf_5 = Leaf5(clk, rst, start, platform)
+        self.submodules.leaf_6 = leaf_6 = Leaf6(clk, rst, start, platform)
+        self.submodules.leaf_7 = leaf_7 = Leaf7(clk, rst, start, platform)
 
         # axilite2bft
         self.comb += self.axil.connect(axilite2bft.bus)

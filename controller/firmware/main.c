@@ -13,7 +13,7 @@
 #include <generated/mem.h>
 
 #include "dma_driver.h"
-#include "axi_lite_driver.h"
+// #include "axi_lite_driver.h"
 #include "config_rendering.h"
 
 static char *readstr(void)
@@ -88,14 +88,14 @@ static void reboot(void) {
 	ctrl_reset_write(1);
 }
 
-static void axi_led_test(void) {
-  axi_led_write(0xffffffff);
-}
+// static void axi_led_test(void) {
+//   axi_led_write(0xffffffff);
+// }
 
-static void axi_sw_test(void) {
-  printf("%#08x\n", axi_sw_read());
-  busy_wait(100);
-}
+// static void axi_sw_test(void) {
+//   printf("%#08x\n", axi_sw_read());
+//   busy_wait(100);
+// }
 
 #define SEND_LEN 9576
 #define RECV_LEN 16384
@@ -144,14 +144,16 @@ volatile uint32_t TxBufferPtr[SEND_LEN]  __attribute__((aligned(16)));
 volatile uint32_t RxBufferPtr[RECV_LEN]  __attribute__((aligned(16)));
 
 static void rendering_test(void) {
-  printf("Write LED value 3!\r\n");
-  uart_sync();
-  axi_led_write(3);
+  // printf("Write LED value 3!\r\n");
+  // uart_sync();
+  // axi_led_write(3);
 
+  busy_wait(1000);
   printf("Begin Configuring BFT!\r\n");
   uart_sync();
   init_regs();
   printf("Configuring BFT Done\r\n");
+
 
   for(int i = 0; i < SEND_LEN; i++) {
     TxBufferPtr[i] = input_data[i];
@@ -161,10 +163,20 @@ static void rendering_test(void) {
     RxBufferPtr[i] = 0;
   }
 
+  busy_wait(1000);
+  printf("Start!\r\n");
+  start_start_write(1);
+
+  busy_wait(1000);
   run_dma(TxBufferPtr, SEND_LEN, RxBufferPtr, RECV_LEN);
 
   printf("Checking Results\n");
   check_results((uint32_t *) RxBufferPtr + 16);
+  start_start_write(0);
+
+  // for(int i = 0; i < RECV_LEN; i++) {
+  //   printf("got: %d\n", RxBufferPtr[i]);
+  // }
 }
 
 static void console_service(void)
@@ -181,8 +193,8 @@ static void console_service(void)
     reboot();
   else if(strcmp(token, "rendering") == 0)
     rendering_test();
-  else if(strcmp(token, "led") == 0)
-    axi_led_test();
+  // else if(strcmp(token, "led") == 0)
+  //   axi_led_test();
 	prompt();
 }
 
@@ -195,6 +207,7 @@ int main(void)
 	uart_init();
 
 	puts("\nrvpld - CPU testing software built "__DATE__" "__TIME__"\n");
+  start_start_write(0);
 
 
   while(1) {
