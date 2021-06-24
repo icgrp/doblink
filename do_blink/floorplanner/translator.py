@@ -96,6 +96,53 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
             side = "north"
         elif(pblock["y_max"] < parent["y_min"]):
             side = "south"
+            ###################################################################
+            dangerlist = []
+            for blk in yaml_data["overlay"]["BFT"]:
+                if(blk["name"] != parent["name"]):
+                    dangerlist.append(blk)
+            for blk in yaml_data["overlay"]["static_blocks"]:
+                dangerlist.append(blk)
+            for blk in yaml_data["overlay"]["pblocks"]["pblocks"]:
+                if(blk["name"] != pblock["name"]):
+                    dangerlist.append(blk)
+            ###################################################################
+            f_x_min, f_x_max = pblock["x_min"], pblock["x_max"]
+            f_y = pblock["y_max"]
+            # In this loop we will slowly expand the front
+            while(True):
+                # Check each hazard to see if it intersects with the front
+                for blk in dangerlist:
+                    # If we have a possible intersection because of the y data
+                    if(f_y >= blk["y_min"] and f_y <= blk["y_max"]):
+                        # If we have a complete blockage:
+                        if(blk["x_min"] <= f_x_min and blk["x_max"] >= f_x_max):
+                            print("Error: " + pblock["name"] + " has no clear path to " + parent["name"])
+                            exit(1)
+                        # If the intersection creates a split front:
+                        elif(blk["x_min"] > f_x_min and blk["x_max"] < f_x_max):
+                            print("Error: routing " + pblock["name"] + " to " + parent["name"] + "creates split front")
+                            exit(1)
+                        # If the intersection blocks the left side of the front
+                        elif(blk["x_min"] <= f_x_min and blk["x_max"] > f_x_min):
+                            # Adjust the front if possible
+                            f_x_min = blk["x_max"] + 2
+                            if(f_x_min >= f_x_max):
+                                print("Error: " + pblock["name"] + " has no clear path to " + parent["name"])
+                                exit(1)
+                        # If the intersection blocks the right side of the front
+                        elif(blk["x_max"] >= f_x_max and blk["x_min"] < f_x_max):
+                            # Adjust the front if possible
+                            f_x_max = blk["x_min"] - 2
+                            if(f_x_max <= f_x_min):
+                                print("Error: " + pblock["name"] + " has no clear path to " + parent["name"])
+                                exit(1)
+                # If we're here, then currently the front does not intersect with a hazard
+                # so check to see if it intersects with the target 
+                if(f_y >= parent["y_min"] and f_y <= parent["y_max"]):
+                    print("Reached target! front: " + str(f_x_min) + " " + str(f_x_max))
+                    break
+                f_y += 1
         else:
             print("Error: pblock intersects with parent switchbox!")
             exit(1)
