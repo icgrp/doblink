@@ -88,70 +88,95 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
             parent = switchbox
             break
 
+    ###########################################################################
+    def expand_front(direction, pblock, parent, yaml_data):
+
+        front_dim = None
+        exp_dim = None
+        exp_dir = None
+
+        if(direction == "north"):
+            front_dim, exp_dim, exp_dir = "x" , "y", -1
+        elif(direction == "south"):
+            front_dim, exp_dim, exp_dir = "x" , "y", 1
+        elif(direction == "east"):
+            front_dim, exp_dim, exp_dir = "y" , "x", 1
+        elif(direction == "west"):
+            front_dim, exp_dim, exp_dir = "y" , "x", -1
+
+        front_dim_min = front_dim + "_min"
+        front_dim_max = front_dim + "_max"
+
+        exp_dim_min = exp_dim + "_min"
+        exp_dim_max = exp_dim + "_max"
+
+        front_min = pblock[front_dim_min]
+        front_max = pblock[front_dim_max]
+
+        front_exp_coord = None
+        if(direction == "south" or direction == "east"):
+            front_exp_coord = pblock[exp_dim_max]
+        else: 
+            front_exp_coord = pblock[exp_dim_min]
+
+        hazards =  [blk for blk in yaml_data["overlay"]["BFT"] if blk["name"] != parent["name"]]
+        hazards += [blk for blk in yaml_data["overlay"]["static_blocks"]]
+        hazards += [blk for blk in yaml_data["overlay"]["pblocks"]["pblocks"] if blk["name"] != pblock["name"]]
+
+        while(True):
+            # check each hazard to see if it intersects with the front
+            for hazard in hazards:
+                # if we have a possible intersection because of the expansion coordinate data
+                if(front_exp_coord >= hazard[exp_dim_min] and front_exp_coord <= hazard[exp_dim_max]):
+                    # if the hazard completely blocks the front:
+                    if(hazard[front_dim_min] <= front_min and hazard[front_dim_max] >= front_max):
+                        print("Error: " + pblock["name"] + " has no clear path to " + parent["name"] + " a")
+                        exit(1)
+                    # if the hazard creates a split front (possible to solve, but not supported now)
+                    elif(hazard[front_dim_min] > front_min and hazard[front_dim_max] < front_max):
+                        print("Error: routing " + pblock["name"] + " to " + parent["name"] + "creates split front")
+                        exit(1)
+                    # if the hazard blocks the min side of the front
+                    elif(hazard[front_dim_min] <= front_min and hazard[front_dim_max] > front_min):
+                        # adjust the front if possible
+                        front_min = hazard[front_dim_max] + 2
+                        if(front_min >= front_max):
+                            print("Error: " + pblock["name"] + " has no clear path to " + parent["name"]  + " b")
+                            exit(1)
+                    # if hazard blocks the max side of the front
+                    elif(hazard[front_dim_max] >= front_max and hazard[front_dim_min] < front_max):
+                        # adjust the front if possible
+                        front_max = hazard[front_dim_min] - 2
+                        if(front_max <= front_min):
+                            print("Error: " + pblock["name"] + " has no clear path to " + parent["name"]  + " c")
+                            exit(1)
+            # if we're here, the currently the front does not intersect with a hazard
+            # so we check to see if it has intersected with the target
+            if(front_exp_coord >= parent[exp_dim_min] and front_exp_coord <= parent[exp_dim_max]):
+                print("Reached target! front: " + str(front_min) + " " + str(front_max))
+                break
+            # otherwise we expand the front
+            front_exp_coord += exp_dir
+
+    ###########################################################################
     # Next we figure out which side of the pblock to assign the ports to
     side = None
     # If the parent's x-range overlaps with the pblock's x-range
     if(parent["x_min"] <= pblock["x_max"] and parent["x_max"] >= pblock["x_min"]):
         if(pblock["y_min"] > parent["y_max"]):
             side = "north"
+            expand_front(side,pblock,parent,yaml_data)
         elif(pblock["y_max"] < parent["y_min"]):
             side = "south"
-            ###################################################################
-            dangerlist = []
-            for blk in yaml_data["overlay"]["BFT"]:
-                if(blk["name"] != parent["name"]):
-                    dangerlist.append(blk)
-            for blk in yaml_data["overlay"]["static_blocks"]:
-                dangerlist.append(blk)
-            for blk in yaml_data["overlay"]["pblocks"]["pblocks"]:
-                if(blk["name"] != pblock["name"]):
-                    dangerlist.append(blk)
-            ###################################################################
-            f_x_min, f_x_max = pblock["x_min"], pblock["x_max"]
-            f_y = pblock["y_max"]
-            # In this loop we will slowly expand the front
-            while(True):
-                # Check each hazard to see if it intersects with the front
-                for blk in dangerlist:
-                    # If we have a possible intersection because of the y data
-                    if(f_y >= blk["y_min"] and f_y <= blk["y_max"]):
-                        # If we have a complete blockage:
-                        if(blk["x_min"] <= f_x_min and blk["x_max"] >= f_x_max):
-                            print("Error: " + pblock["name"] + " has no clear path to " + parent["name"])
-                            exit(1)
-                        # If the intersection creates a split front:
-                        elif(blk["x_min"] > f_x_min and blk["x_max"] < f_x_max):
-                            print("Error: routing " + pblock["name"] + " to " + parent["name"] + "creates split front")
-                            exit(1)
-                        # If the intersection blocks the left side of the front
-                        elif(blk["x_min"] <= f_x_min and blk["x_max"] > f_x_min):
-                            # Adjust the front if possible
-                            f_x_min = blk["x_max"] + 2
-                            if(f_x_min >= f_x_max):
-                                print("Error: " + pblock["name"] + " has no clear path to " + parent["name"])
-                                exit(1)
-                        # If the intersection blocks the right side of the front
-                        elif(blk["x_max"] >= f_x_max and blk["x_min"] < f_x_max):
-                            # Adjust the front if possible
-                            f_x_max = blk["x_min"] - 2
-                            if(f_x_max <= f_x_min):
-                                print("Error: " + pblock["name"] + " has no clear path to " + parent["name"])
-                                exit(1)
-                # If we're here, then currently the front does not intersect with a hazard
-                # so check to see if it intersects with the target 
-                if(f_y >= parent["y_min"] and f_y <= parent["y_max"]):
-                    print("Reached target! front: " + str(f_x_min) + " " + str(f_x_max))
-                    break
-                f_y += 1
-        else:
-            print("Error: pblock intersects with parent switchbox!")
-            exit(1)
+            expand_front(side,pblock,parent,yaml_data)
     # Else if the parent's y-range overlaps with the pblock's y-range
     elif(parent["y_min"] <= pblock["y_max"] and parent["y_max"] >= pblock["y_min"]):
         if(pblock["x_max"] < parent["x_min"]):
             side = "east"
+            expand_front(side,pblock,parent,yaml_data)
         elif(pblock["x_min"] > parent["x_max"]):
             side = "west"
+            expand_front(side,pblock,parent,yaml_data)
         else:
             print("Error: pblock intersects with parent switchbox!")
             exit(1)
@@ -171,9 +196,9 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
 ###############################################################################
 # Now we can print the json definitions for each pblock:
 print()
-for definition in definitions:
-    print(json.dumps(definition,indent=1))
-    print()
+# for definition in definitions:
+#     print(json.dumps(definition,indent=1))
+#     print()
 ###############################################################################
 # This function plots a single rectangle 
 def plot_rect(axis, x_min, x_max, y_min, y_max, color, fill=False):
