@@ -30,7 +30,8 @@ class Bft(Module):
         self.resend_7 = Signal(1, name='resend_7')
         self.platform = platform
 
-        self.platform.add_source('rtl/bft.v')
+        self.platform.add_source('rtl/bft16.v')
+        self.platform.add_source('rtl/gen_nw_vivado.v')
         self.specials += Instance("bft",
                           i_clk = self.clk,
                           i_reset = self.rst,

@@ -141,7 +141,7 @@ static void check_results(uint32_t * output)
 }
 
 volatile uint32_t TxBufferPtr[SEND_LEN]  __attribute__((aligned(16)));
-volatile uint32_t RxBufferPtr[RECV_LEN]  __attribute__((aligned(16)));
+volatile uint32_t RxBufferPtr[RECV_LEN + 16]  __attribute__((aligned(16)));
 
 static void rendering_test(void) {
   // printf("Write LED value 3!\r\n");
@@ -159,7 +159,7 @@ static void rendering_test(void) {
     TxBufferPtr[i] = input_data[i];
   }
 
-  for(int i = 0; i < RECV_LEN; i++) {
+  for(int i = 0; i < RECV_LEN + 16; i++) {
     RxBufferPtr[i] = 0;
   }
 

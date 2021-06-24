@@ -13,7 +13,6 @@ class AxiLite2Bft(Module):
         axil_sigs = self.bus.get_signals()
         self.platform.add_source('rtl/AxiLite2Bft_v2_0.v')
         self.platform.add_source('rtl/SynFIFO.v')
-        self.platform.add_source('rtl/gen_nw8.v')
         self.specials += Instance("AxiLite2Bft_v2_0",
                           i_resend = self.resend,
                           i_host_bft2interface = self.host_bft2interface,

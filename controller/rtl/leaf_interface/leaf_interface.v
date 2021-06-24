@@ -12,7 +12,7 @@ module leaf_interface #(
     
     parameter PACKET_BITS = 49,
     parameter PAYLOAD_BITS = 32, 
-    parameter NUM_LEAF_BITS = 3,
+    parameter NUM_LEAF_BITS = 4,
     parameter NUM_PORT_BITS = 4,
     parameter NUM_ADDR_BITS = 7,
     parameter NUM_IN_PORTS = 1, 
