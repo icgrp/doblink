@@ -1,17 +1,22 @@
+###############################################################################
+import sys
 import yaml
 import json
 import copy
+import argparse
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 ###############################################################################
 # First we read the yaml file
-yaml_data = None
-with open("draft.yaml", 'r') as yaml_file:
-    try:
-        yaml_data = yaml.safe_load(yaml_file)
+def read_yaml():
+    yaml_data = None
+    with open("draft.yaml", 'r') as yaml_file:
+        try:
+            yaml_data = yaml.safe_load(yaml_file)
 
-    except yaml.YAMLError as exc:
-        print(exc)
+        except yaml.YAMLError as exc:
+            print(exc)
+    return yaml_data
 
 ###############################################################################
 # Next we get the interface information which is common to all pblocks
@@ -326,7 +331,6 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
 
         else:
             print("    We're going " + fronts[1][0])
-            side = fronts[1][0]
             synth_tiles_range = fronts[1][2]
         ###########################################################################
     # Now we assign the sides to each port
@@ -343,15 +347,16 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
     # Finally we add our new definition to the definitions list
     definitions.append(definition_dict)
 ###############################################################################
-# Now we can print the json definitions for each pblock:
-print()
-for definition in definitions:
-    print(json.dumps(definition,indent=1))
-    print()
+# Now we can output the json definitions for each pblock:
+def output_json(definitions, filename):
 
-    filename = definition["info"]["name"]+".json"
-    out_file = open(filename,'w')
-    print(json.dumps(definition,indent=1),file=out_file)
+    for definition in definitions:
+        print(json.dumps(definition,indent=1))
+        print()
+
+        filename = definition["info"]["name"]+".json"
+        open(filename,'w')
+        print(json.dumps(definition,indent=1),file=filename)
 ###############################################################################
 # This function plots a single rectangle 
 def plot_rect(axis, x_min, x_max, y_min, y_max, color,
@@ -389,25 +394,35 @@ def plot_rects(axis, lst, color, fill=True, label_color="black"):
                     va="center")
 ###############################################################################
 # Now we can plot our results
+def plot_overlay():
 
-# First we set up the plot
-ax = plt.gca()
-plt.xlim([-10, yaml_data["overlay"]["max_x_dimension"] + 10])
-plt.ylim([-10, yaml_data["overlay"]["max_y_dimension"] + 10])
-plt.gca().invert_yaxis()
-ax.set_aspect('equal')
-plt.title(yaml_data["overlay"]["name"])
-plt.xlabel("Part: " + yaml_data["overlay"]["part"])
+    # First we set up the plot
+    ax = plt.gca()
+    plt.xlim([-10, yaml_data["overlay"]["max_x_dimension"] + 10])
+    plt.ylim([-10, yaml_data["overlay"]["max_y_dimension"] + 10])
+    plt.gca().invert_yaxis()
+    ax.set_aspect('equal')
+    plt.title(yaml_data["overlay"]["name"])
+    plt.xlabel("Part: " + yaml_data["overlay"]["part"])
 
-# Now we plot the BFT, static blocks, and pblocks
-plot_rects(ax, yaml_data["overlay"]["BFT"], "darkred")
-plot_rects(ax, yaml_data["overlay"]["static_blocks"], "darkgoldenrod")
-plot_rects(ax, yaml_data["overlay"]["pblocks"]["pblocks"], "teal")
+    # Now we plot the BFT, static blocks, and pblocks
+    plot_rects(ax, yaml_data["overlay"]["BFT"], "darkred")
+    plot_rects(ax, yaml_data["overlay"]["static_blocks"], "darkgoldenrod")
+    plot_rects(ax, yaml_data["overlay"]["pblocks"]["pblocks"], "teal")
 
-#Finally we plot an outline of the chip
-plot_rect(ax, 0, yaml_data["overlay"]["max_x_dimension"],
-              0, yaml_data["overlay"]["max_y_dimension"],
-              color="black")
+    # Finally we plot an outline of the chip
+    plot_rect(ax, 0, yaml_data["overlay"]["max_x_dimension"],
+                  0, yaml_data["overlay"]["max_y_dimension"],
+                  color="black")
 
-plt.show()
+    plt.show()
 ###############################################################################
+# main
+
+description = "A script to create definition.json files from an overlay.yaml file"
+p = argparse.ArgumentParser(description = description)
+p.add_argument("overlay", help="overlay yaml file")
+args = p.parse_args()
+
+read_yaml()
+
