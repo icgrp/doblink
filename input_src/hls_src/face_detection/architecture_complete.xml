@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <!--specifications for pr_flow tool-->
+  <spec name = "Xilinx_dir" value = "~/Xilinx/SDx/2018.2/settings64.sh" />
+  <spec name = "p" value = "0.5" />
+  <spec name = "pks" value = "49" />
+  <spec name = "nl" value = "32" />
+  <spec name = "qsub_Xilinx_dir" value = "/scratch/safe/SDSoC/SDx/2018.2/settings64.sh" />
+  <spec name = "email" value = "youID@seas.upenn.edu" />
+  <spec name = "bft_regen"         value = "1" />
+  <spec name = "static_regen"      value = "1" />
+  <spec name = "hls_regen"         value = "0" />
+  <spec name = "leaf_syn_regen"    value = "0" />
+  <spec name = "leaf_impl_regen"   value = "0" />
+  <spec name = "bit_gen_regen"     value = "0" />
+  <spec name = "platform_regen"    value = "1" />
+  <spec name = "mono_bft_regen"    value = "0" />
+  <spec name = "mono_regen"        value = "0" />
+  <spec name = "config_regen"      value = "1" />
+  <spec name = "qsub_grid"         value = "70s" />
+  <spec name = "maxThreads"        value = "4" />
+  <spec name = "qsub_Nodes"        value = "4" />
+  <spec name = "MEM"               value = "2G" />
+  <spec name = "PR_mode"           value = "timing" />
+  
+  
+  <spec name = "packet_bits" value = "49" />
+  <spec name = "addr_bits" value = "5" />
+  <spec name = "port_bits" value = "4" />
+  <spec name = "bram_addr_bits" value = "7" />
+  <spec name = "payload_bits" value = "32" />
+  <spec name = "bram_addr" value = "0" />
+  <spec name = "freespace" value = "" />
+  <spec name = "input_port_offset" value = "2" />
+  <spec name = "output_port_offset" value = "9" />
+
+
+  <clock name = 'clk_bft' period = "3.3" />
+  <clock name = 'clk_user' period = "4" />
+
+
+  <spec name = "mono_function"               value = "face_detect_mono" />
+
+
+
+
+
+  <!--functions to be synthesized-->
+  <function name = "imageScaler_top" inputs = "1" outputs = "1" page = "Function18" datawidth = "32" ramtype = "block"/>
+  <function name = "imageScaler_bot" inputs = "1" outputs = "2" page = "Function19" datawidth = "32" ramtype = "block"/>
+
+  
+  <function name = "sfilter0" inputs = "1" outputs = "2" page = "Function26" datawidth = "32" ramtype = "block"/>
+  <function name = "sfilter1" inputs = "2" outputs = "3" page = "Function23" datawidth = "32" ramtype = "block"/>
+  <function name = "sfilter2" inputs = "2" outputs = "3" page = "Function24" datawidth = "32" ramtype = "block"/>
+  <function name = "sfilter3" inputs = "2" outputs = "3" page = "Function25" datawidth = "32" ramtype = "block"/>
+  <function name = "sfilter4" inputs = "2" outputs = "2" page = "Function22" datawidth = "32" ramtype = "block"/>
+
+  <function name = "wfilter0" inputs = "2" outputs = "2" page = "Function27" datawidth = "32" ramtype = "block"/>
+  <function name = "wfilter1" inputs = "3" outputs = "3" page = "Function28" datawidth = "32" ramtype = "block"/>
+  <function name = "wfilter2" inputs = "3" outputs = "3" page = "Function29" datawidth = "32" ramtype = "block"/>
+  <function name = "wfilter3" inputs = "3" outputs = "3" page = "Function30" datawidth = "32" ramtype = "block"/>
+  <function name = "wfilter4" inputs = "3" outputs = "2" page = "Function31" datawidth = "32" ramtype = "block"/>
+
+
+  <function name = "wfilter0_process" inputs = "1" outputs = "1" page = "Function13" datawidth = "32" ramtype = "block"/>
+  <function name = "wfilter1_process" inputs = "1" outputs = "1" page = "Function14" datawidth = "32" ramtype = "block"/>
+  <function name = "wfilter2_process" inputs = "1" outputs = "1" page = "Function15" datawidth = "32" ramtype = "block"/>
+  <function name = "wfilter3_process" inputs = "1" outputs = "1" page = "Function17" datawidth = "32" ramtype = "block"/>
+  <function name = "wfilter4_process" inputs = "1" outputs = "1" page = "Function20" datawidth = "32" ramtype = "block"/>
+
+  <!--function name = "process_II_SII_weak_classifier12_11" inputs = "2" outputs = "3" page = "Function22" datawidth = "32" ramtype = "block"/-->
+
+
+
+  <function name = "weak_data_req_simple" inputs = "1" outputs = "5" page = "Function12" datawidth = "32" ramtype = "block"/>
+  <function name = "strong_classifier" inputs = "5" outputs = "1" page = "Function16" datawidth = "32" ramtype = "block"/>
+  <function name = "weak_process_new" inputs = "6" outputs = "2" page = "Function11" datawidth = "32" ramtype = "block"/>
+
+
+
+  <!--functions connections-->
+  <link source = "Function1.0" destination = "Function18.0" />
+  <link source = "Function18.0" destination = "Function19.0" />
+  <link source = "Function19.0" destination = "Function22.0" />
+  <link source = "Function19.1" destination = "Function31.0" />
+  <link source = "Function22.0" destination = "Function16.4" />
+  <link source = "Function22.1" destination = "Function25.0" />
+  <link source = "Function25.0" destination = "Function16.3" />
+  <link source = "Function25.1" destination = "Function24.0" />
+  <link source = "Function25.2" destination = "Function22.1" />
+  <link source = "Function24.0" destination = "Function16.2" />
+  <link source = "Function24.1" destination = "Function23.0" />
+  <link source = "Function24.2" destination = "Function25.1" />
+  <link source = "Function23.0" destination = "Function16.1" />
+  <link source = "Function23.1" destination = "Function26.0" />
+  <link source = "Function23.2" destination = "Function24.1" />
+  <link source = "Function26.0" destination = "Function16.0" />
+  <link source = "Function26.1" destination = "Function23.1" />
+  <link source = "Function16.0" destination = "Function11.0" />
+  <link source = "Function11.0" destination = "Function1.0" />
+  <link source = "Function11.1" destination = "Function12.0" />
+  <link source = "Function12.0" destination = "Function27.1" />
+  <link source = "Function12.1" destination = "Function28.2" />
+  <link source = "Function12.2" destination = "Function29.2" />
+  <link source = "Function12.3" destination = "Function30.2" />
+  <link source = "Function12.4" destination = "Function31.2" />
+  <link source = "Function27.0" destination = "Function13.0" />
+  <link source = "Function13.0" destination = "Function11.1" />
+  <link source = "Function27.1" destination = "Function28.1" />
+  <link source = "Function28.0" destination = "Function14.0" />
+  <link source = "Function14.0" destination = "Function11.2" />
+  <link source = "Function28.1" destination = "Function27.0" />
+  <link source = "Function28.2" destination = "Function29.1" />
+  <link source = "Function29.0" destination = "Function15.0" />
+  <link source = "Function15.0" destination = "Function11.3" />
+  <link source = "Function29.1" destination = "Function28.0" />
+  <link source = "Function29.2" destination = "Function30.1" />
+  <link source = "Function30.0" destination = "Function17.0" />
+  <link source = "Function17.0" destination = "Function11.4" />
+  <link source = "Function30.1" destination = "Function29.0" />
+  <link source = "Function30.2" destination = "Function31.1" />
+  <link source = "Function31.0" destination = "Function20.0" />
+  <link source = "Function20.0" destination = "Function11.5" />
+  <link source = "Function31.1" destination = "Function30.0" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</configuration>

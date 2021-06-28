@@ -13,6 +13,8 @@
 #include "../operators/zculling_bot.h"
 #include "../operators/coloringFB_bot_m.h"
 #include "../operators/coloringFB_top_m.h"
+
+
 //#define PROFILE
 
 #ifdef PROFILE
@@ -78,6 +80,9 @@ void top (
   hls::stream<ap_uint<32> > Output_redir_odd("sb1");
 #pragma HLS STREAM variable=Output_redir_odd depth=default_depth
 
+
+
+
   hls::stream<ap_uint<32> > Output_redir_even("sb2");
 #pragma HLS STREAM variable=Output_redir_even depth=default_depth
 
@@ -110,6 +115,10 @@ void top (
 #pragma HLS STREAM variable=Output_cfb_bot depth=default_depth
 
   hls::stream<ap_uint<32> > Output_pp("sb15");
+
+
+  hls::stream<ap_uint<32> > Output_data_m("data_1");
+
 
   // processing NUM_3D_TRI 3D triangles
   TRIANGLES: for (int i = 0; i < NUM_3D_TRI/2; i++)
@@ -277,9 +286,9 @@ void user_kernel(
 		)
 
 {
-#pragma HLS INTERFACE axis register port=Input_1
-#pragma HLS INTERFACE axis register port=Output_1
-		Output_1.write(Input_1.read()+1);
+#pragma HLS INTERFACE ap_hs port=Input_1
+#pragma HLS INTERFACE ap_hs port=Output_1
+		Output_1.write(Input_1.read()+5);
 }
 
 void user_fifo(

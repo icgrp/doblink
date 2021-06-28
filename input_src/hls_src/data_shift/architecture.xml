@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <!--specifications for pr_flow tool-->
+  <spec name = "Xilinx_dir" value = "~/Xilinx/SDx/2018.2/settings64.sh" />
+  <spec name = "p" value = "0.5" />
+  <spec name = "pks" value = "49" />
+  <spec name = "nl" value = "32" />
+  <spec name = "qsub_Xilinx_dir" value = "/scratch/safe/SDSoC/SDx/2018.2/settings64.sh" />
+  <spec name = "email" value = "(youemail)@seas.upenn.edu" />
+  <spec name = "bft_regen"         value = "1" />
+  <spec name = "static_regen"      value = "1" />
+  <spec name = "hls_regen"         value = "1" />
+  <spec name = "leaf_syn_regen"    value = "1" />
+  <spec name = "leaf_impl_regen"   value = "1" />
+  <spec name = "bit_gen_regen"     value = "1" />
+  <spec name = "platform_regen"    value = "1" />
+  <spec name = "config_regen"      value = "1" />
+  <spec name = "qsub_grid"         value = "70s" />
+  <spec name = "maxThreads"        value = "2" />
+  <spec name = "qsub_Nodes"        value = "4" />
+  <spec name = "MEM"               value = "2G" />
+
+
+  <spec name = "packet_bits" value = "49" />
+  <spec name = "addr_bits" value = "5" />
+  <spec name = "port_bits" value = "4" />
+  <spec name = "bram_addr_bits" value = "7" />
+  <spec name = "payload_bits" value = "32" />
+  <spec name = "bram_addr" value = "0" />
+  <spec name = "freespace" value = "" />
+  <spec name = "input_port_offset" value = "2" />
+  <spec name = "output_port_offset" value = "9" />
+
+
+  <clock period = "6.4" />
+
+
+
+  <!--functions to be synthesized-->
+  <function name = "add_io" inputs = "1" outputs = "1" page = "Function7" datawidth = "64" ramtype = "block"/>
+
+  
+
+
+  
+  <!--functions connections-->
+  <link source = "Function1.0" destination = "Function18.0" />
+  <link source = "Function18.0" destination = "Function1.0" />
+
+</configuration>

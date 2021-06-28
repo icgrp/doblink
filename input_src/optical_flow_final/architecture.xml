@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <spec name = "bft_regen"          value = "1" />
+  <spec name = "static_regen"       value = "1" />
+  <spec name = "hls_regen"          value = "1" />
+  <spec name = "leaf_syn_regen"     value = "1" />
+  <spec name = "leaf_impl_regen"    value = "1" />
+  <spec name = "bit_gen_regen"      value = "1" />
+  <spec name = "platform_regen"     value = "0" />
+  <spec name = "mono_bft_regen"     value = "1" />
+  <spec name = "mono_regen"         value = "0" />
+  <spec name = "config_regen"       value = "1" />
+  <spec name = "qsub_grid"          value = "70s" />
+  <spec name = "maxThreads"         value = "8" />
+  <spec name = "qsub_Nodes"         value = "4" />
+  <spec name = "MEM"                value = "2G" />
+  <spec name = "PR_mode"            value = "noquick" />
+ 
+
+  <clock name = 'clk_bft' period = "3.3" />
+  <clock name = 'clk_user' period = "4" />
+
+
+  <spec name = "mono_function"               value = "optical_flow_mono" />
+  <!--functions to be synthesized-->
+  <function name = "gradient_xyz_calc"        inputs = "1" outputs = "3" page = "Function8"  ramtype = "block"/>
+  <function name = "gradient_weight_y_1"      inputs = "1" outputs = "1" page = "Function9" ramtype = "block" />
+  <function name = "gradient_weight_y_2"      inputs = "1" outputs = "1" page = "Function11" ramtype = "block" />
+  <function name = "gradient_weight_y_3"      inputs = "1" outputs = "1" page = "Function12" ramtype = "block" />
+  <function name = "gradient_weight_x1"       inputs = "1" outputs = "2" page = "Function5" ramtype = "block"/>
+  <function name = "gradient_weight_x2"       inputs = "1" outputs = "2" page = "Function7" ramtype = "block" />
+  <function name = "gradient_weight_x3"       inputs = "1" outputs = "2" page = "Function6" ramtype = "block" />
+  <function name = "outer_product1"           inputs = "3" outputs = "1" page = "Function15" ramtype = "block" />
+  <function name = "outer_product2"           inputs = "3" outputs = "1" page = "Function14" ramtype = "block" />
+  <function name = "tensor_weight_y1"         inputs = "1" outputs = "1" page = "Function16" ramtype = "block" />
+  <function name = "tensor_weight_y2"         inputs = "1" outputs = "1" page = "Function13" ramtype = "block" />
+  <function name = "tensor_weight_x1"         inputs = "1" outputs = "2" page = "Function18" ramtype = "block" />
+  <function name = "tensor_weight_x2"         inputs = "1" outputs = "2" page = "Function19" ramtype = "block" />
+  <function name = "flow_calc_1"              inputs = "2" outputs = "1" page = "Function20" ramtype = "block" />
+  <function name = "flow_calc_2"      	      inputs = "2" outputs = "1" page = "Function3" ramtype = "block" />
+  <function name = "output_fun"               inputs = "2" outputs = "1" page = "Function4"  ramtype = "block" />
+
+
+
+
+  <!--functions connections-->
+ 
+  <!--dma-->
+  <link source = "DMA.0" destination = "gradient_xyz_calc.0" />
+  <!--input_unpacki-->
+  <link source = "gradient_xyz_calc.0" destination = "gradient_weight_y_1.0" />
+  <link source = "gradient_xyz_calc.1" destination = "gradient_weight_y_2.0" />
+  <link source = "gradient_xyz_calc.2" destination = "gradient_weight_y_3.0" />
+  
+  <!--gradient_weight_y_1-->
+  <link source = "gradient_weight_y_1.0" destination = "gradient_weight_x1.0" />
+
+  <!--gradient_weight_y_2-->
+  <link source = "gradient_weight_y_2.0" destination = "gradient_weight_x2.0" />
+  
+  <!--gradient_weight_y_2-->
+  <link source = "gradient_weight_y_3.0" destination = "gradient_weight_x3.0" />
+  <!--gradient_weight_x1-->
+  <link source = "gradient_weight_x1.0" destination = "outer_product1.0" />
+  <link source = "gradient_weight_x1.1" destination = "outer_product2.0" />
+  <!--gradient_weight_x2-->
+  <link source = "gradient_weight_x2.0" destination = "outer_product1.1" />
+  <link source = "gradient_weight_x2.1" destination = "outer_product2.1" />
+  <!--gradient_weight_x3-->
+  <link source = "gradient_weight_x3.0" destination = "outer_product1.2" />
+  <link source = "gradient_weight_x3.1" destination = "outer_product2.2" />
+  <!--input_unpacki-->
+  <link source = "outer_product1.0" destination = "tensor_weight_y1.0" />
+  <link source = "outer_product2.0" destination = "tensor_weight_y2.0" />
+  <!--tensor_weight_y1-->
+  <link source = "tensor_weight_y1.0" destination = "tensor_weight_x1.0" />
+  <!--tensor_weight_y2-->
+  <link source = "tensor_weight_y2.0" destination = "tensor_weight_x2.0" />
+  <!--tensor_weight_x1-->
+  <link source = "tensor_weight_x1.0" destination = "flow_calc_1.0" />
+  <link source = "tensor_weight_x1.1" destination = "flow_calc_2.0" />
+  <!--tensor_weight_xi2-->
+  <link source = "tensor_weight_x2.0" destination = "flow_calc_1.1" />
+  <link source = "tensor_weight_x2.1" destination = "flow_calc_2.1" />
+  <!--flow_calc1-->
+  <link source = "flow_calc_1.0" destination = "output_fun.0" />
+  <!--flow_calc1-->
+  <link source = "flow_calc_2.0" destination = "output_fun.1" />
+  <!--output_fun-->
+  <link source = "output_fun.0" destination = "DMA.0" />
+
+
+
+  <!--network datawidth-->
+  <!--network port = "net0_net1" datawidth = "120" num= "4"-->
+  <!--network port = "net0_net2" datawidth = "77" num= "5"-->
+  <!--network port = "net0_net3" datawidth = "32" num= "1"-->
+  <!--network port = "net0_net4" datawidth = "109" num= "5"-->
+  <!--network port = "net0_net5" datawidth = "80" num= "4"-->
+  <!--network port = "page0_net"  datawidth = "32" num= "1"-->
+  <!--network port = "page1_net"  datawidth = "128" num= "1"-->
+  <!--network port = "page2_net"  datawidth = "160" num= "2"-->
+  <!--network port = "page3_net"  datawidth = "160" num= "2"-->
+  <!--network port = "page4_net"  datawidth = "160" num= "2"-->
+  <!--network port = "page5_net"  datawidth = "160" num= "1"-->
+  <!--network port = "page6_net"  datawidth = "64" num= "2"-->
+  <!--network port = "page7_net"  datawidth = "43" num= "3"-->
+  <!--network port = "page8_net"  datawidth = "32" num= "1"-->
+  <!--network port = "page9_net"  datawidth = "32" num= "1"-->
+  <!--network port = "page10_net"  datawidth = "32" num= "1"-->
+  <!--network port = "page11_net"  datawidth = "32" num= "1"-->
+  <!--network port = "page12_net"  datawidth = "32" num= "1"-->
+  <!--network port = "page13_net"  datawidth = "32" num= "1"-->
+  <!--network port = "page14_net"  datawidth = "32" num= "1"-->
+  <!--network port = "page15_net"  datawidth = "32" num= "1"-->
+  <!--network port = "page16_net"  datawidth = "32" num= "1"-->
+  <!--network port = "page17_net"  datawidth = "32" num= "1"-->
+  <!--network port = "page18_net"  datawidth = "32" num= "1"-->
+  <!--network port = "page19_net"  datawidth = "32" num= "1"-->
+  <!--network port = "page20_net"  datawidth = "160" num= "1"-->
+  <!--network port = "page21_net"  datawidth = "160" num= "2"-->
+  <!--network port = "page22_net"  datawidth = "32" num= "1"-->
+  <!--network port = "page23_net"  datawidth = "32" num= "2"-->
+  <!--network port = "page24_net"  datawidth = "32" num= "2"-->
+  <!--network port = "page25_net"  datawidth = "54" num= "3"-->
+  <!--network port = "page26_net"  datawidth = "54" num= "3"-->
+  <!--network port = "page27_net"  datawidth = "32" num= "1"-->
+  <!--network port = "page28_net"  datawidth = "32" num= "2"-->
+  <!--network port = "page29_net"  datawidth = "32" num= "1"-->
+  <!--network port = "page30_net"  datawidth = "32" num= "1"-->
+  <!--network port = "page31_net"  datawidth = "32" num= "1"-->
+
+
+
+
+
+
+
+
+
+
+
+
+</configuration>

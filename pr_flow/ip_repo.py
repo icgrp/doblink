@@ -32,6 +32,8 @@ class ip_repo(gen_basic):
               '../../src/read_b_in.v',
               '../../src/Stream_Flow_Control.v',
               '../../src/write_b_in.v',
+              '../../src/instr_config.v',
+              '../../src/rise_detect.v',
               '../../src/write_b_out.v',
               '../../src/user_kernel.v',
     ]

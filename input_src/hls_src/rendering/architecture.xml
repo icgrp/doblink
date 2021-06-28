@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <spec name = "mono_function"      value = "rendering_mono" />
+  <!--functions to be synthesized-->
+  <function name = "data_redir_m"          inputs = "1" outputs = "2" page = "Function4"  ramtype = "block"/>
+  <function name = "rasterization2_m"      inputs = "2" outputs = "4" page = "Function5"  ramtype = "block" />
+  <function name = "zculling_top"          inputs = "2" outputs = "1" page = "Function6"  ramtype = "block"/>
+  <function name = "zculling_bot"          inputs = "2" outputs = "1" page = "Function7"  ramtype = "block"/>
+  <function name = "coloringFB_bot_m"      inputs = "1" outputs = "1" page = "Function3"  ramtype = "block"/>
+  <function name = "coloringFB_top_m"      inputs = "2" outputs = "1" page = "Function11"  ramtype = "block"/>
+
+
+  <!--functions connections-->
+  <link source = "DMA.0" destination = "data_redir_m.0" />
+  <link source = "data_redir_m.0" destination = "rasterization2_m.0" />
+  <link source = "data_redir_m.1" destination = "rasterization2_m.1" />
+  <link source = "rasterization2_m.0" destination = "zculling_top.0" />
+  <link source = "rasterization2_m.1" destination = "zculling_bot.0" />
+  <link source = "rasterization2_m.2" destination = "zculling_top.1" />
+  <link source = "rasterization2_m.3" destination = "zculling_bot.1" />
+  <link source = "zculling_top.0" destination = "coloringFB_top_m.0" />
+  <link source = "zculling_bot.0" destination = "coloringFB_bot_m.0" />
+  <link source = "coloringFB_bot_m.0" destination = "coloringFB_top_m.1" />
+  <link source = "coloringFB_top_m.0" destination = "DMA.0" />
+
+
+  <link source = "dirc.0" destination = "dirc.0" />
+  <link source = "dirc.1" destination = "dirc.1" />
+  <link source = "dirc.2" destination = "dirc.2" />
+  <link source = "dirc.3" destination = "dirc.3" />
+  <link source = "dirc.4" destination = "dirc.4" />
+  <link source = "dirc.5" destination = "dirc.5" />
+
+
+</configuration>

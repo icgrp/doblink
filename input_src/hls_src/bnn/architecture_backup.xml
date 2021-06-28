@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <spec name = "bft_regen"         value = "1" />
+  <spec name = "static_regen"      value = "1" />
+  <spec name = "hls_regen"         value = "0" />
+  <spec name = "leaf_syn_regen"    value = "0" />
+  <spec name = "leaf_impl_regen"   value = "1" />
+  <spec name = "bit_gen_regen"     value = "1" />
+  <spec name = "platform_regen"    value = "0" />
+  <spec name = "mono_bft_regen"    value = "1" />
+  <spec name = "mono_regen"   	   value = "0" />
+  <spec name = "config_regen"      value = "1" />
+  <spec name = "qsub_grid"         value = "70s" />
+  <spec name = "maxThreads"        value = "8" />
+  <spec name = "qsub_Nodes"        value = "4" />
+  <spec name = "PR_mode"           value = "noquick" />
+  <spec name = "MEM"               value = "2G" />
+
+
+  <spec name = "mono_function"               value = "top" />  
+
+  <!--functions to be synthesized-->
+  <function name = "mem"             inputs = "7" outputs = "7" page = "Function6" datawidth = "32" ramtype = "block"/>
+  <function name = "fp_conv"         inputs = "1" outputs = "2"  page = "Function3" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_conv"        inputs = "2" outputs = "2"  page = "Function12" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_dense"       inputs = "3" outputs = "2"  page = "Function21" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_conv_wt_0"   inputs = "1" outputs = "1"  page = "Function4" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_conv_wt_1"   inputs = "1" outputs = "1"  page = "Function31" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_conv_wt_2"   inputs = "1" outputs = "1"  page = "Function7" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_conv_wt_3"   inputs = "1" outputs = "1"  page = "Function8" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_conv_wt_4"   inputs = "1" outputs = "1"  page = "Function9" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_conv_wt_5"   inputs = "1" outputs = "1"  page = "Function11" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_conv_wt_6"   inputs = "1" outputs = "1"  page = "Function13" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_conv_wt_7"   inputs = "1" outputs = "1"  page = "Function14" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_conv_wt_8"   inputs = "1" outputs = "1"  page = "Function10" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_dense_wt_0"  inputs = "1" outputs = "1"  page = "Function15" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_dense_wt_1"  inputs = "1" outputs = "1"  page = "Function16" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_dense_wt_2"  inputs = "1" outputs = "1"  page = "Function17" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_dense_wt_3"  inputs = "1" outputs = "1"  page = "Function18" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_dense_wt_4"  inputs = "1" outputs = "1"  page = "Function19" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_dense_wt_5"  inputs = "1" outputs = "1"  page = "Function22" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_dense_wt_6"  inputs = "1" outputs = "1"  page = "Function23" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_dense_wt_7"  inputs = "1" outputs = "1"  page = "Function20" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_dense_wt_8"  inputs = "1" outputs = "1"  page = "Function24" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_dense_wt_9"  inputs = "1" outputs = "1"  page = "Function30" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_dense_wt_10" inputs = "1" outputs = "1"  page = "Function26" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_dense_wt_11" inputs = "1" outputs = "1"  page = "Function27" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_dense_wt_12" inputs = "1" outputs = "1"  page = "Function28" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_dense_wt_13" inputs = "1" outputs = "1"  page = "Function29" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_dense_wt_14" inputs = "1" outputs = "1"  page = "Function25" datawidth = "32" ramtype = "block"/>
+  <function name = "bin_dense_wt_15" inputs = "1" outputs = "1"  page = "Function5" datawidth = "32" ramtype = "block"/>
+
+
+  <!--functions connections-->
+  <link source = "DMA.0" destination = "mem.0" />
+  <link source = "mem.0" destination = "fp_conv.0" />
+  <link source = "mem.1" destination = "bin_conv.0" />
+  <link source = "mem.2" destination = "bin_dense.0" />
+  <link source = "mem.3" destination = "DMA.0" />
+  <link source = "mem.4" destination = "bin_conv_wt_0.0" />
+  <link source = "mem.5" destination = "bin_dense_wt_0.0" />
+  <link source = "mem.6" destination = "bin_dense_wt_8.0" />
+
+  <link source = "fp_conv.0" destination = "mem.1" />
+  <link source = "fp_conv.1" destination = "mem.2" />
+  <link source = "bin_conv.0" destination = "mem.3" />
+  <link source = "bin_conv.1" destination = "mem.4" />
+  <link source = "bin_dense.0" destination = "mem.5" />
+  <link source = "bin_dense.1" destination = "mem.6" />
+
+  <link source = "bin_conv_wt_0.0" destination = "bin_conv_wt_1.0" />
+  <link source = "bin_conv_wt_1.0" destination = "bin_conv_wt_2.0" />
+  <link source = "bin_conv_wt_2.0" destination = "bin_conv_wt_3.0" />
+  <link source = "bin_conv_wt_3.0" destination = "bin_conv_wt_4.0" />
+  <link source = "bin_conv_wt_4.0" destination = "bin_conv_wt_5.0" />
+  <link source = "bin_conv_wt_5.0" destination = "bin_conv_wt_6.0" /> 
+  <link source = "bin_conv_wt_6.0" destination = "bin_conv_wt_7.0" />
+  <link source = "bin_conv_wt_7.0" destination = "bin_conv_wt_8.0" />
+  <link source = "bin_conv_wt_8.0" destination = "bin_conv.1" />
+
+  <link source = "bin_dense_wt_0.0" destination = "bin_dense_wt_1.0" />
+  <link source = "bin_dense_wt_1.0" destination = "bin_dense_wt_2.0" />
+  <link source = "bin_dense_wt_2.0" destination = "bin_dense_wt_3.0" />
+  <link source = "bin_dense_wt_3.0" destination = "bin_dense_wt_4.0" />
+  <link source = "bin_dense_wt_4.0" destination = "bin_dense_wt_5.0" />
+  <link source = "bin_dense_wt_5.0" destination = "bin_dense_wt_6.0" />
+  <link source = "bin_dense_wt_6.0" destination = "bin_dense_wt_7.0" />
+  <link source = "bin_dense_wt_7.0" destination = "bin_dense.1" />
+
+  <link source = "bin_dense_wt_8.0" destination = "bin_dense_wt_9.0" />
+  <link source = "bin_dense_wt_9.0" destination = "bin_dense_wt_10.0" />
+  <link source = "bin_dense_wt_10.0" destination = "bin_dense_wt_11.0" />
+  <link source = "bin_dense_wt_11.0" destination = "bin_dense_wt_12.0" />
+  <link source = "bin_dense_wt_12.0" destination = "bin_dense_wt_13.0" />
+  <link source = "bin_dense_wt_13.0" destination = "bin_dense_wt_14.0" />
+  <link source = "bin_dense_wt_14.0" destination = "bin_dense_wt_15.0" />
+  <link source = "bin_dense_wt_15.0" destination = "bin_dense.2" />
+
+
+</configuration>

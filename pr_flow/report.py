@@ -35,9 +35,10 @@ class report(gen_basic):
         file_name = './workspace/F003_syn_'+benchmark_name+'/' + fun_name + '/runLog_' + fun_name + '.log'
         file_in = open(file_name, 'r')
         for line in file_in:
-          run_time = re.findall(r"\d+", line)
-          time_report_dict[fun_name] += '\t' + run_time[0]
-          time_data_dict[fun_name].append(int(run_time[0]))
+          #run_time = re.findall(r"\d+", line)
+          run_time = line.split()
+          time_report_dict[fun_name] += '\t' + run_time[1]
+          time_data_dict[fun_name].append(run_time[1])
         file_in.close()
       except:
         print ('Something is wrong with '+file_name) 
@@ -54,8 +55,8 @@ class report(gen_basic):
         file_in.close()
         for i in range(4): time_report_dict[fun_name] += '\t' + str(run_time_list[i])
         total_time = 0
-        for i in range(6): total_time += time_data_dict[fun_name][i]
-        run_time_list.append(total_time)
+        for i in range(6): total_time += float(time_data_dict[fun_name][i])
+        run_time_list.append(float(total_time))
         time_report_dict[fun_name] += '\t' + str(run_time_list[5])
         time_report_dict[fun_name] += '\t\t' + str(run_time_list[4])
       except:
@@ -109,7 +110,7 @@ class report(gen_basic):
     self.shell.mkdir(self.rpt_dir)
     benchmark_name = self.prflow_params['benchmark_name']
     operators_list = operators_str.split() 
-    self.gen_compile_time_report(benchmark_name, operators_list)
     self.gen_resource_report(benchmark_name, operators_list)
-    print 'You can find the compile time report and resource report under: ./workspace/report' 
+    self.gen_compile_time_report(benchmark_name, operators_list)
+    print 'You can fine the comile time report and resource report under: ./workspace/report' 
 

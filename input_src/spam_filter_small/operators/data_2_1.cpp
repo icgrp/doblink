@@ -5,9 +5,9 @@ void data_2_1(
 			hls::stream<ap_uint<32> > & Output_1
 			)
 {
-#pragma HLS INTERFACE ap_hs port=Input_1
-#pragma HLS INTERFACE ap_hs port=Input_2
-#pragma HLS INTERFACE ap_hs port=Output_1
+#pragma HLS INTERFACE axis register  port=Input_1
+#pragma HLS INTERFACE axis register  port=Input_2
+#pragma HLS INTERFACE axis register  port=Output_1
 
 
 	static unsigned int theta[NUM_FEATURES / F_VECTOR_SIZE * 2];

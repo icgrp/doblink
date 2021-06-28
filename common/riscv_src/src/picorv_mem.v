@@ -1,6 +1,7 @@
 module picorv_mem#(
   //parameter MEM_SIZE=128*1024/4,
   parameter MEM_SIZE=262144,
+  parameter IS_TRIPLE = 0,
   parameter ADDR_BITS=18,
   parameter RAM_TYPE = "block"
   )(
@@ -371,7 +372,8 @@ always@(*) begin
 end
     
 
-    
+generate
+  if(IS_TRIPLE==0) begin    
     
   xram2 #(
     .RAM_WIDTH(8),                       // Specify RAM data width
@@ -464,6 +466,103 @@ end
     .douta(do[31:24]),   // Port A RAM output data, width determined from RAM_WIDTH
     .doutb()    // Port B RAM output data, width determined from RAM_WIDTH
   );
+
+  else begin
+    
+    
+  xram_triple #(
+    .RAM_WIDTH(8),                       // Specify RAM data width
+    .RAM_DEPTH(2**ADDR_BITS),                     // Specify RAM depth (number of entries)
+    .RAM_PERFORMANCE("LOW_LATENCY"), // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
+    .INIT_FILE("./firmware0.hex")                        // Specify name/location of RAM initialization file if using one (leave blank if not)
+  ) ram_inst_0 (
+    .addra(true_addr),   // Port A address bus, width determined from RAM_DEPTH
+    .addrb(instr_config_addr[ADDR_BITS+1:2]),   // Port B address bus, width determined from RAM_DEPTH
+    .dina(mem_wdata[ 7: 0]),     // Port A RAM input data, width determined from RAM_WIDTH
+    .dinb(instr_config_din),     // Port B RAM input data, width determined from RAM_WIDTH
+    .clka(clk),     // Clock
+    .wea((mem_valid && !mem_ready)&&(mem_wstrb[0])),       // Port A write enable
+    .web(instr_config_wr_en && (instr_config_addr[1:0]==2'b00)),       // Port B write enable
+    .ena(1'b1),       // Port A RAM Enable, for additional power savings, disable port when not in use
+    .enb(1'b1),       // Port B RAM Enable, for additional power savings, disable port when not in use
+    .rsta(!resetn),     // Port A output reset (does not affect memory contents)
+    .rstb(!resetn),     // Port B output reset (does not affect memory contents)
+    .regcea(mem_valid && !mem_ready), // Port A output register enable
+    .regceb(1'b0), // Port B output register enable
+    .douta(do[7:0]),   // Port A RAM output data, width determined from RAM_WIDTH
+    .doutb()    // Port B RAM output data, width determined from RAM_WIDTH
+  );
+
+  xram_triple #(
+    .RAM_WIDTH(8),                       // Specify RAM data width
+    .RAM_DEPTH(2**ADDR_BITS),                     // Specify RAM depth (number of entries)
+    .RAM_PERFORMANCE("LOW_LATENCY"), // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
+    .INIT_FILE("./firmware1.hex")                        // Specify name/location of RAM initialization file if using one (leave blank if not)
+  ) ram_inst_1 (
+    .addra(true_addr),   // Port A address bus, width determined from RAM_DEPTH
+    .addrb(instr_config_addr[ADDR_BITS+1:2]),   // Port B address bus, width determined from RAM_DEPTH
+    .dina(mem_wdata[ 15: 8]),     // Port A RAM input data, width determined from RAM_WIDTH
+    .dinb(instr_config_din),     // Port B RAM input data, width determined from RAM_WIDTH
+    .clka(clk),     // Clock
+    .wea((mem_valid && !mem_ready)&&(mem_wstrb[1])),       // Port A write enable
+    .web(instr_config_wr_en && (instr_config_addr[1:0]==2'b01)),       // Port B write enable
+    .ena(1'b1),       // Port A RAM Enable, for additional power savings, disable port when not in use
+    .enb(1'b1),       // Port B RAM Enable, for additional power savings, disable port when not in use
+    .rsta(!resetn),     // Port A output reset (does not affect memory contents)
+    .rstb(!resetn),     // Port B output reset (does not affect memory contents)
+    .regcea(mem_valid && !mem_ready), // Port A output register enable
+    .regceb(1'b0), // Port B output register enable
+    .douta(do[15: 8]),   // Port A RAM output data, width determined from RAM_WIDTH
+    .doutb()    // Port B RAM output data, width determined from RAM_WIDTH
+  );
+
+  xram_triple #(
+    .RAM_WIDTH(8),                       // Specify RAM data width
+    .RAM_DEPTH(2**ADDR_BITS),                     // Specify RAM depth (number of entries)
+    .RAM_PERFORMANCE("LOW_LATENCY"), // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
+    .INIT_FILE("./firmware2.hex")                        // Specify name/location of RAM initialization file if using one (leave blank if not)
+  ) ram_inst_2 (
+    .addra(true_addr),   // Port A address bus, width determined from RAM_DEPTH
+    .addrb(instr_config_addr[ADDR_BITS+1:2]),   // Port B address bus, width determined from RAM_DEPTH
+    .dina(mem_wdata[ 23: 16]),     // Port A RAM input data, width determined from RAM_WIDTH
+    .dinb(instr_config_din),     // Port B RAM input data, width determined from RAM_WIDTH
+    .clka(clk),     // Clock
+    .wea((mem_valid && !mem_ready)&&(mem_wstrb[2])),       // Port A write enable
+    .web(instr_config_wr_en && (instr_config_addr[1:0]==2'b10)),       // Port B write enable
+    .ena(1'b1),       // Port A RAM Enable, for additional power savings, disable port when not in use
+    .enb(1'b1),       // Port B RAM Enable, for additional power savings, disable port when not in use
+    .rsta(!resetn),     // Port A output reset (does not affect memory contents)
+    .rstb(!resetn),     // Port B output reset (does not affect memory contents)
+    .regcea(mem_valid && !mem_ready), // Port A output register enable
+    .regceb(1'b0), // Port B output register enable
+    .douta(do[23:16]),   // Port A RAM output data, width determined from RAM_WIDTH
+    .doutb()    // Port B RAM output data, width determined from RAM_WIDTH
+  );
+
+  xram_triple #(
+    .RAM_WIDTH(8),                       // Specify RAM data width
+    .RAM_DEPTH(2**ADDR_BITS),                     // Specify RAM depth (number of entries)
+    .RAM_PERFORMANCE("LOW_LATENCY"), // Select "HIGH_PERFORMANCE" or "LOW_LATENCY" 
+    .INIT_FILE("./firmware3.hex")                        // Specify name/location of RAM initialization file if using one (leave blank if not)
+  ) ram_inst_3 (
+    .addra(true_addr),   // Port A address bus, width determined from RAM_DEPTH
+    .addrb(instr_config_addr[ADDR_BITS+1:2]),   // Port B address bus, width determined from RAM_DEPTH
+    .dina(mem_wdata[31:24]),     // Port A RAM input data, width determined from RAM_WIDTH
+    .dinb(instr_config_din),     // Port B RAM input data, width determined from RAM_WIDTH
+    .clka(clk),     // Clock
+    .wea((mem_valid && !mem_ready)&&(mem_wstrb[3])),       // Port A write enable
+    .web(instr_config_wr_en && (instr_config_addr[1:0]==2'b11)),       // Port B write enable
+    .ena(1'b1),       // Port A RAM Enable, for additional power savings, disable port when not in use
+    .enb(1'b1),       // Port B RAM Enable, for additional power savings, disable port when not in use
+    .rsta(!resetn),     // Port A output reset (does not affect memory contents)
+    .rstb(!resetn),     // Port B output reset (does not affect memory contents)
+    .regcea(mem_valid && !mem_ready), // Port A output register enable
+    .regceb(1'b0), // Port B output register enable
+    .douta(do[31:24]),   // Port A RAM output data, width determined from RAM_WIDTH
+    .doutb()    // Port B RAM output data, width determined from RAM_WIDTH
+  );
+  end
+endgenerate
 
 
 endmodule

@@ -13,6 +13,7 @@ class mbft(gen_basic):
     operator_list =[(i.replace(".h","")) for i in header_file_list] 
     # map of reset source for each pages
     # distributed resetting is good for timing
+    net_list = self.net_list
     lines_list = []                    
     lines_list.append('set_property  ip_repo_paths  {./ip_repo ./dirc_ip} [current_project]\n')
     lines_list.append('update_ip_catalog\n')
@@ -23,13 +24,12 @@ class mbft(gen_basic):
       lines_list.append(self.tcl.return_delete_bd_objs_tcl_str('leaf_empty_' + page_num))
       lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf'+page_num+'/clk_bft', '/zynq_ultra_ps_e_0/pl_clk1'))
       lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf'+page_num+'/clk_user', '/zynq_ultra_ps_e_0/pl_clk0'))
-
-      lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/ap_start', 'bft_leaf/ap_start'))       
-      lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset_bft', 'reset_bft/peripheral_reset'))
-      lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset', 'reset_user/peripheral_reset'))
-      lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/dout_leaf_interface2bft', 'bft_leaf/dout_leaf_'+str(page_num)))
-      lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/din_leaf_bft2interface', 'bft_leaf/din_leaf_'+str(page_num)))
-      lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/resend', 'bft_leaf/resend_'+str(page_num)))
+      lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/ap_start', 'bft'+str(int(page_num)/8)+'/ap_start'))       
+      lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset_bft', 'bft'+str(int(page_num)/8)+'/bft_reset'))
+      lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/reset', 'bft0/user_reset'))
+      lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/dout_leaf_interface2bft', 'bft'+str(int(page_num)/8)+'/leaf_'+str(int(page_num)&7)+'_in'))
+      lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/din_leaf_bft2interface', 'bft'+str(int(page_num)/8)+'/leaf_'+str(int(page_num)&7)+'_out'))
+      lines_list.append(self.tcl.return_connect_bd_net_tcl_str('leaf' + page_num + '/resend', 'bft'+str(int(page_num)/8)+'/resend_'+str(int(page_num)&7)))
   
     return lines_list
 
@@ -38,12 +38,6 @@ class mbft(gen_basic):
     lines_list = []
     lines_list.append('#!/bin/bash -e')
     lines_list.append('source '+self.prflow_params['Xilinx_dir'])
-    # compile the IP for each page
-    for fun_name in self.prflow_params['syn_fun_list']:
-      if (fun_name !='user_kernel'): 
-        lines_list.append('cd ./ip_repo/' + fun_name) 
-        lines_list.append('./run.sh') 
-        lines_list.append('cd -') 
     lines_list.append('vivado -mode batch -source project_syn2gen.tcl')
     lines_list.append('vivado -mode batch -source project_syn2bits.tcl')
     return lines_list
@@ -107,8 +101,11 @@ class mbft(gen_basic):
                   '../../src/Stream_Flow_Control.v',
                   '../../src/write_b_in.v',
                   '../../src/write_b_out.v',
+                  '../../src/instr_config.v',
+                  '../../src/rise_detect.v',
                   '../../src/user_kernel.v',
         ]
+        print "========================================="
         self.shell.write_lines(self.mono_bft_dir+'/ip_repo/'+fun_name+'/ip_page.tcl', self.tcl.return_ip_page_tcl_list(fun_name, page_num, file_list))
         self.shell.write_lines(self.mono_bft_dir+'/ip_repo/'+fun_name+'/run.sh',      self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'ip_page.tcl'), True)
         self.shell.write_lines(self.mono_bft_dir+'/ip_repo/'+fun_name+'/qsub_run.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'ip_page.tcl'), True)
@@ -129,15 +126,15 @@ class mbft(gen_basic):
    
     self.shell.cp_dir(self.overlay_dir + '/project_syn2gen.tcl', self.mono_bft_dir+'/project_syn2gen.tcl')
     self.shell.add_lines(self.mono_bft_dir+'/project_syn2gen.tcl', '# Create address segments', self.return_syn2gen_tcl_list_local())
-    self.shell.write_lines(self.mono_bft_dir+'/project_syn2bits.tcl', self.tcl.return_syn2bits_tcl_list(self.prflow_params['maxThreads']), False)
+    self.shell.write_lines(self.mono_bft_dir+'/project_syn2bits.tcl', self.tcl.return_syn2bits_tcl_list(self.prflow_params['maxJobs']), False)
     replace_dict={'set Benchmark_name': "set Benchmark_name " + self.prflow_params['benchmark_name']}
     self.shell.replace_lines(self.mono_bft_dir+'/project_xsdk_core.tcl', replace_dict)
     self.shell.write_lines(self.mono_bft_dir+'/main.sh', self.return_main_sh_list_local(), True)
-    #self.shell.write_lines(self.mono_bft_dir+'/qsub_main.sh', self.return_qsub_main_sh_list_local(), True)
-    #self.shell.write_lines(self.mono_bft_dir+'/qsub_project_syn2gen.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'project_syn2gen.tcl'), True)    
-    #self.shell.write_lines(self.mono_bft_dir+'/qsub_sub_syn.sh', self.return_sub_syn_sh_list_local(), True)
-    #self.shell.write_lines(self.mono_bft_dir+'/qsub_project_syn2bits.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'project_syn2bits.tcl'), True)    
-    #self.shell.write_lines(self.mono_bft_dir+'/qsub_project_xsdk.sh', self.return_run_sdk_sh_list_local(self.prflow_params['Xilinx_dir'], 'project_xsdk_core.tcl'), True)    
+    self.shell.write_lines(self.mono_bft_dir+'/qsub_main.sh', self.return_qsub_main_sh_list_local(), True)
+    self.shell.write_lines(self.mono_bft_dir+'/qsub_project_syn2gen.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'project_syn2gen.tcl'), True)    
+    self.shell.write_lines(self.mono_bft_dir+'/qsub_sub_syn.sh', self.return_sub_syn_sh_list_local(), True)
+    self.shell.write_lines(self.mono_bft_dir+'/qsub_project_syn2bits.sh', self.shell.return_run_sh_list(self.prflow_params['Xilinx_dir'], 'project_syn2bits.tcl'), True)    
+    self.shell.write_lines(self.mono_bft_dir+'/qsub_project_xsdk.sh', self.return_run_sdk_sh_list_local(self.prflow_params['Xilinx_dir'], 'project_xsdk_core.tcl'), True)    
 
 
   def uncomment_page_empty(self):
@@ -161,14 +158,14 @@ class mbft(gen_basic):
 
 
     # copy the xsdk tcl to local directory
-    # self.shell.cp_dir('./common/script_src/project_xsdk_core.tcl ', self.mono_bft_dir)
+    self.shell.cp_dir('./common/script_src/project_xsdk_core.tcl ', self.mono_bft_dir)
 
     # enable the logic inside paage, so that vivado can 
     # implement it
     self.uncomment_page_empty()
 
     # clear up the xdc file
-    self.shell.write_lines(self.mono_bft_dir+'/src/pblocks.xdc', [''])
+    self.shell.write_lines(self.mono_bft_dir+'/src/pblocks_32.xdc', [''])
 
     # generate shell files for qsub run and local run
     self.create_shell_file() 

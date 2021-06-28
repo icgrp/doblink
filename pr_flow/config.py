@@ -34,10 +34,19 @@ class config(gen_basic):
     self.src_page_offset    = self.payload_bits - self.port_bits - self.addr_bits
     self.src_port_offset    = self.payload_bits - self.port_bits - self.addr_bits - self.port_bits
     self.freespace_offset   = self.payload_bits - self.port_bits - self.addr_bits - self.port_bits - self.bram_addr_bits - self.bram_addr_bits
+
+  # from the source header file, find the input or output number
+  def return_io_num(self, io_pattern, file_list):
+    max_num = 0
+    for line in file_list:
+      num_list = re.findall(r""+io_pattern+"\d*", line)
+      if(len(num_list)>0 and int(num_list[0].replace(io_pattern,''))): max_num = int(num_list[0].replace(io_pattern,''))
+    return max_num
+ 
   # find all the operators page num  
   def return_page_num_dict_local(self, operators):
     operator_list = operators.split()
-    page_num_dict = {'DMA':1, 'ARM':0, 'DEBUG':2}
+    page_num_dict = {'DMA':1, 'DMA2': 7, 'ARM':0, 'DEBUG':2}
     for operator in operator_list:
       HW_exist, target = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'map_target')
       page_exist, page_num = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h', 'page_num')
@@ -120,11 +129,16 @@ class config(gen_basic):
       debug_exist, debug_port = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+key_a+'.h', 'debug_port')
       map_target_exist, map_target = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+key_a+'.h', 'map_target')
       if debug_exist:
-        tmp_str = key_a+'.Output_5->DEBUG.Input_'+str(debug_port) 
+        src_list = self.shell.file_to_list('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+operator+'.h')
+        output_num = self.return_io_num('Output_', src_list)
+        tmp_str = key_a+'.Output_'+str(output_num+1)+'->DEBUG.Input_'+str(debug_port) 
         connection_list.append(tmp_str)
       for i_a, var_value_a in enumerate(operator_var_dict[key_a]):
         if var_value_a == 'Input_1': 
           tmp_str='DMA.Output_1->'+key_a+'.Input_1' 
+          connection_list.append(tmp_str)
+        if var_value_a == 'Input_2': 
+          tmp_str='DMA2.Output_1->'+key_a+'.Input_1' 
           connection_list.append(tmp_str)
         if var_value_a == 'Output_1': 
           tmp_str=key_a+'.Output_1->'+'DMA.Input_1'
@@ -213,12 +227,12 @@ class config(gen_basic):
  
  
   def run(self, operators):
-    self.shell.re_mkdir(self.sdk_dir+'/')
+    self.shell.mkdir(self.sdk_dir+'/')
     self.shell.re_mkdir(self.sdk_dir+'/cpp_src')
-    #self.shell.cp_dir(self.mono_bft_dir+'/prj/floorplan_static.sdk/floorplan_static_wrapper.hdf', self.sdk_dir)
+    # self.shell.cp_dir(self.mono_bft_dir+'/prj/floorplan_static.sdk/floorplan_static_wrapper.hdf', self.sdk_dir)
     self.shell.cp_dir('./common/driver_src/config.cpp', self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.cpp')
     self.shell.cp_dir('./common/driver_src/config.h', self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.h')
-    #self.shell.cp_dir('./common/script_src/project_xsdk_core.tcl', self.sdk_dir)
+    self.shell.cp_dir('./common/script_src/project_xsdk_core.tcl', self.sdk_dir)
     self.shell.cp_dir('./input_src/'+self.prflow_params['benchmark_name']+'/sdk/*', self.sdk_dir+'/cpp_src')
 
     page_num_dict = self.return_page_num_dict_local(operators)
@@ -247,7 +261,7 @@ class config(gen_basic):
     self.shell.add_lines(self.sdk_dir+'/cpp_src/config_'+self.prflow_params['benchmark_name']+'.cpp', '#include "config.h"', ['#include "config_'+self.prflow_params['benchmark_name']+'.h"']) 
 
     replace_dict={'set Benchmark_name': "set Benchmark_name " + self.prflow_params['benchmark_name']}
-    #self.shell.replace_lines(self.sdk_dir+'/project_xsdk_core.tcl', replace_dict)
+    # self.shell.replace_lines(self.sdk_dir+'/project_xsdk_core.tcl', replace_dict)
 
     self.shell.write_lines(self.sdk_dir+'/run_project_xsdk.sh', self.return_run_sdk_sh_list_local(self.prflow_params['Xilinx_dir'], 'project_xsdk_core.tcl'), True)    
     self.shell.write_lines(self.sdk_dir+'/main.sh', self.shell.return_main_sh_list('run_project_xsdk.sh'), True)

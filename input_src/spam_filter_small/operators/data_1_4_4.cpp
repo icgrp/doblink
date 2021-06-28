@@ -8,12 +8,12 @@ void data_1_4_4(
 			hls::stream<ap_uint<32> > & Output_3
 			)
 {
-#pragma HLS INTERFACE ap_hs port=Input_1
-#pragma HLS INTERFACE ap_hs port=Input_2
-#pragma HLS INTERFACE ap_hs port=Input_3
-#pragma HLS INTERFACE ap_hs port=Output_1
-#pragma HLS INTERFACE ap_hs port=Output_2
-#pragma HLS INTERFACE ap_hs port=Output_3
+#pragma HLS INTERFACE axis register  port=Input_1
+#pragma HLS INTERFACE axis register  port=Input_2
+#pragma HLS INTERFACE axis register  port=Input_3
+#pragma HLS INTERFACE axis register  port=Output_1
+#pragma HLS INTERFACE axis register  port=Output_2
+#pragma HLS INTERFACE axis register  port=Output_3
 
 	static char ExecuteAdd = 1;
 

@@ -60,6 +60,7 @@
  ***************************************************************/
 
 module picorv32 #(
+        parameter MEM_SIZE = 65536,
 	parameter [ 0:0] ENABLE_COUNTERS = 1,
 	parameter [ 0:0] ENABLE_COUNTERS64 = 1,
 	parameter [ 0:0] ENABLE_REGS_16_31 = 1,
@@ -207,7 +208,7 @@ module picorv32 #(
 		if (REGS_INIT_ZERO) begin
 			for (i = 0; i < regfile_size; i = i+1) begin
 			    if(i==2) 
-                               cpuregs[i] = 262140;
+                               cpuregs[i] = MEM_SIZE-4;
 			    else
 				  cpuregs[i] = 0;
 	        end

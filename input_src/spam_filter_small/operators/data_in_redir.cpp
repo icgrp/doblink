@@ -5,9 +5,9 @@ void data_in_redir( hls::stream<ap_uint<32> > & Input_1,
 			hls::stream<ap_uint<32> > & Output_2
 			)
 {
-#pragma HLS INTERFACE ap_hs port=Input_1
-#pragma HLS INTERFACE ap_hs port=Output_1
-#pragma HLS INTERFACE ap_hs port=Output_2
+#pragma HLS INTERFACE axis register  port=Input_1
+#pragma HLS INTERFACE axis register  port=Output_1
+#pragma HLS INTERFACE axis register  port=Output_2
 	bit32 tmp_data;
   // intermediate variables
   // local buffer of labels

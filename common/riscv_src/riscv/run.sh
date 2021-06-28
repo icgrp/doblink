@@ -16,7 +16,8 @@ IDIR='-fno-threadsafe-statics -lstdc++'
 OPT_LEVEL=-O3
 
 
-start=`date +%s`
+#start=`date +%s`
+start=$(date +%s.%N) 
 
 echo ${GCC_WARNS} 
 ${TOOLCHAIN_PREFIX}g++ -c -march=rv32im -o start.o start.S
@@ -30,10 +31,12 @@ ${TOOLCHAIN_PREFIX}objcopy -O binary firmware.elf firmware.bin
 chmod -x firmware.bin
 ${PYTHON} makehex.py firmware.bin ${MEM_SIZE} ${PAGE_NUM}  > firmware.hex
 
-end=`date +%s`
-runtime=$((end-start))
+#end=`date +%s`
+#runtime=$((end-start))
+#echo syn: ${runtime} seconds > runLog_${operator}.log
+dur=$(echo "$(date +%s.%N) - $start" | bc)
+printf "syn: %.3f seconds" $dur > runLog_${operator}.log
 
-echo syn: ${runtime} seconds > ./runLog_${operator}.log
 
 vivado
 

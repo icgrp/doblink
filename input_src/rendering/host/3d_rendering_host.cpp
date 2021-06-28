@@ -165,7 +165,7 @@ int main(int argc, char ** argv)
     for(int sb=0; sb<16; sb++){
     	tmp=Output_1.read();
     }
-    printf("We should receive %d values\n", tmp);
+    printf("We should receive %d values\n", tmp.to_int());
     for ( int i = 0; i < NUM_FB; i++)
     {
       tmp = Output_1.read();
