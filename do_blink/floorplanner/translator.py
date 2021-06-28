@@ -158,10 +158,13 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
             # if we're here, the currently the front does not intersect with a hazard
             # so we check to see if it has intersected with the target
             if(front_exp_coord >= parent[exp_dim_min] and front_exp_coord <= parent[exp_dim_max]):
-                print("Reached target! front: " + str(front_min) + " " + str(front_max))
+                # We've hit our target, so we can leave now
                 break
             # otherwise we expand the front
             front_exp_coord += exp_dir
+        #######################################################################
+        # Now we create the synth_tiles_range dict that is to be
+        # added to the definition_dict by the caller of this function
         synth_tiles_range = {
             "GRID_" + exp_dim_max.upper(): pblock[exp_dim_max],
             "GRID_" + exp_dim_min.upper(): pblock[exp_dim_min],
@@ -171,6 +174,7 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
         return synth_tiles_range
     ###########################################################################
     # Next we figure out which side of the pblock to assign the ports to
+    # and what the synth tiles range should be
     side = None
     synth_tiles_range = None
     # If the parent's x-range overlaps with the pblock's x-range
@@ -197,13 +201,27 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
     else:
         print("Warning: " + pblock["name"] + " has no direct path to " + parent["name"])
 
+        sides = []
+        if(parent["y_max"] <= pblock["y_min"]):
+            print("    Exploring north side of " + pblock["name"])
+        else:
+            print("    Exploring south side of " + pblock["name"])
+        
+        if(parent["x_min"] >= pblock["x_max"]):
+            print("    Exploring east side of " + pblock["name"])
+        else:
+            print("    Exploring west side of " + pblock["name"])
+
+            
+    # Now we assign the sides to each port
     for port in pblock_ports:
         port["side"] = side
 
-    # We now create an interface list, and put it into the definition_dict
+    # Then we create an interface list, and put it into the definition_dict
     interface_list = pblock_clocks + pblock_ports
     definition_dict["ports"] = interface_list
 
+    # Then we add the synth tiles range to the definition_dict
     definition_dict["synth_tiles_range"] = synth_tiles_range
 
     # Finally we add our new definition to the definitions list
@@ -216,24 +234,25 @@ for definition in definitions:
     print()
 ###############################################################################
 # This function plots a single rectangle 
-def plot_rect(axis, x_min, x_max, y_min, y_max, color, fill=False):
+def plot_rect(axis, x_min, x_max, y_min, y_max, color,
+              fill=False, linewidth=1):
     rect = patches.Rectangle((x_min,y_min),
                               x_max - x_min,
                               y_max - y_min,
-                              fill = fill,
-                              color = color,
-                              linewidth = 1)
+                              fill=fill,
+                              color=color,
+                              linewidth=linewidth)
     axis.add_patch(rect)
     return rect
 ###############################################################################
 # This function plots a set of labeled rectangles, given
 # a list of objects from the yaml file
-def plot_rects(axis, lst, color, label_color="black"):
+def plot_rects(axis, lst, color, fill=True, label_color="black"):
     for element in lst:
         rect = plot_rect(axis,element["x_min"],element["x_max"],
                               element["y_min"],element["y_max"],
-                              color = color,
-                              fill=True)
+                              color=color,
+                              fill=fill)
 
         axis.add_patch(rect)
         # find the center of the rectangle
@@ -243,15 +262,15 @@ def plot_rects(axis, lst, color, label_color="black"):
 
         # Label the switchbox rectangle
         ax.annotate(element["name"], (cx, cy),
-                    color = label_color,
-                    fontsize = 6,
-                    fontfamily = "sans-serif",
-                    ha = "center",
-                    va = "center")
+                    color=label_color,
+                    fontsize=6,
+                    fontfamily="sans-serif",
+                    ha="center",
+                    va="center")
 ###############################################################################
 # Now we can plot our results
 
-# First we setup the plot
+# First we set up the plot
 ax = plt.gca()
 plt.xlim([-10, yaml_data["overlay"]["max_x_dimension"] + 10])
 plt.ylim([-10, yaml_data["overlay"]["max_y_dimension"] + 10])
@@ -265,10 +284,10 @@ plot_rects(ax, yaml_data["overlay"]["BFT"], "darkred")
 plot_rects(ax, yaml_data["overlay"]["static_blocks"], "darkgoldenrod")
 plot_rects(ax, yaml_data["overlay"]["pblocks"]["pblocks"], "teal")
 
-# Finally we plot an outline of the chip
+#Finally we plot an outline of the chip
 plot_rect(ax, 0, yaml_data["overlay"]["max_x_dimension"],
               0, yaml_data["overlay"]["max_y_dimension"],
-              color = "black")
+              color="black")
 
 plt.show()
 ###############################################################################
