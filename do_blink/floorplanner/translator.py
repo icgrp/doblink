@@ -200,19 +200,134 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
     # Else if there is no overlap
     else:
         print("Warning: " + pblock["name"] + " has no direct path to " + parent["name"])
+        ###########################################################################
+        def explore(direction, pblock, parent, yaml_data):
+            area = 0
+            first_front_min = 0
+            first_front_max = 0
+            #######################################################################
+            # first get some information about how we will expand
 
-        sides = []
+            front_dim = None        # the dimension the front spans
+            exp_dim = None          # the dimension the front will expand along
+            exp_dir = None          # the direction the front will expand along the dimension
+
+            if(direction == "north"):
+                front_dim, exp_dim, exp_dir = "x" , "y", -1
+            elif(direction == "south"):
+                front_dim, exp_dim, exp_dir = "x" , "y", 1
+            elif(direction == "east"):
+                front_dim, exp_dim, exp_dir = "y" , "x", 1
+            elif(direction == "west"):
+                front_dim, exp_dim, exp_dir = "y" , "x", -1
+
+            front_dim_min = front_dim + "_min"
+            front_dim_max = front_dim + "_max"
+
+            exp_dim_min = exp_dim + "_min"
+            exp_dim_max = exp_dim + "_max"
+
+            front_min = pblock[front_dim_min]
+            front_max = pblock[front_dim_max]
+
+            first = True
+            first_front_min = front_min
+            first_front_max = front_max
+
+
+            front_exp_coord = None
+            if(direction == "south" or direction == "east"):
+                front_exp_coord = pblock[exp_dim_max]
+            else: 
+                front_exp_coord = pblock[exp_dim_min]
+            #######################################################################
+            # then generate a list of potential hazards
+            hazards =  [blk for blk in yaml_data["overlay"]["BFT"] if blk["name"] != parent["name"]]
+            hazards += [blk for blk in yaml_data["overlay"]["static_blocks"]]
+            hazards += [blk for blk in yaml_data["overlay"]["pblocks"]["pblocks"] if blk["name"] != pblock["name"]]
+            #######################################################################
+            # Now expand the front
+            clear = True
+            while(True):
+                # check each hazard to see if it intersects with the front
+                for hazard in hazards:
+                    # if we have a possible intersection because of the expansion coordinate data
+                    if(front_exp_coord >= hazard[exp_dim_min] and front_exp_coord <= hazard[exp_dim_max]):
+                        # if the hazard completely blocks the front:
+                        if(hazard[front_dim_min] <= front_min and hazard[front_dim_max] >= front_max):
+                            clear = False
+                            break
+                        # if the hazard creates a split front (possible to solve, but not supported now)
+                        elif(hazard[front_dim_min] > front_min and hazard[front_dim_max] < front_max):
+                            clear = False
+                            break
+                        # if the hazard blocks the min side of the front
+                        elif(hazard[front_dim_min] <= front_min and hazard[front_dim_max] > front_min):
+                            # adjust the front if possible
+                            front_min = hazard[front_dim_max] + 2
+                            if(front_min >= front_max):
+                                clear = False
+                                break
+                            elif(first == True):
+                                first_front_min = front_min
+                                first = False
+
+                        # if hazard blocks the max side of the front
+                        elif(hazard[front_dim_max] >= front_max and hazard[front_dim_min] < front_max):
+                            # adjust the front if possible
+                            front_max = hazard[front_dim_min] - 2
+                            if(front_max <= front_min):
+                                clear = False
+                                break
+                            elif(first == True):
+                                first_front_max = front_max
+                                first = False
+                if(clear == True):
+                    area += (front_max - front_min)
+                    front_exp_coord += exp_dir
+                else:
+                    break
+            #######################################################################
+            # Now we create the synth_tiles_range dict that is to be
+            # added to the definition_dict by the caller of this function
+            synth_tiles_range = {
+                "GRID_" + exp_dim_max.upper(): pblock[exp_dim_max],
+                "GRID_" + exp_dim_min.upper(): pblock[exp_dim_min],
+                "GRID_" + front_dim_max.upper(): first_front_max,
+                "GRID_" + front_dim_min.upper(): first_front_min,
+            }
+            return (direction, area, synth_tiles_range)
+        ###########################################################################
+        fronts = []
         if(parent["y_max"] <= pblock["y_min"]):
             print("    Exploring north side of " + pblock["name"])
+            front = explore("north",pblock,parent,yaml_data)
+            fronts.append(front)
+            print("    " + str(front))
         else:
             print("    Exploring south side of " + pblock["name"])
-        
+            front = explore("south",pblock,parent,yaml_data)
+            fronts.append(front)
+            print("    " + str(front))
         if(parent["x_min"] >= pblock["x_max"]):
             print("    Exploring east side of " + pblock["name"])
+            front = explore("east",pblock,parent,yaml_data)
+            fronts.append(front)
+            print("    " + str(front))
         else:
             print("    Exploring west side of " + pblock["name"])
+            front = explore("west",pblock,parent,yaml_data)
+            fronts.append(front)
+            print("    " + str(front))
 
-            
+        if(fronts[0][1] >= fronts[1][1]):
+            print("    We're going " + fronts[0][0])
+            synth_tiles_range = fronts[0][2]
+
+        else:
+            print("    We're going " + fronts[1][0])
+            synth_tiles_range = fronts[1][2]
+        ###########################################################################
     # Now we assign the sides to each port
     for port in pblock_ports:
         port["side"] = side
