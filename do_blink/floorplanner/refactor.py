@@ -267,12 +267,16 @@ args = p.parse_args()
 #******************************************************************************
 # Next read the yaml file
 yaml_data = None
-with open("draft.yaml", 'r') as yaml_file:
-    try:
-        yaml_data = yaml.safe_load(yaml_file)
+try:
+    with open(args.overlay, 'r') as yaml_file:
+        try:
+            yaml_data = yaml.safe_load(yaml_file)
 
-    except yaml.YAMLError as exc:
-        print(exc)
+        except yaml.YAMLError as exc:
+            print(exc)
+except FileNotFoundError:
+        print("File \"" + args.overlay + "\" not found!")
+        sys.exit(2)
 #******************************************************************************
 # Now we need to get the interface information which is common to all pblocks
 
