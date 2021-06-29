@@ -172,6 +172,8 @@ def explore(direction, pblock, parent, yaml_data):
                         first_front_max = front_max
                         first = False
         if(clear == True):
+            if(front_exp_coord < 0 or front_exp_coord > yaml_data["overlay"]["max_"+front_dim+"_dimension"]):
+                break
             area += (front_max - front_min)
             front_exp_coord += exp_dir
         else:
@@ -191,8 +193,8 @@ def explore(direction, pblock, parent, yaml_data):
 def output_json(definitions):
     print()
     for definition in definitions:
-        print(json.dumps(definition,indent=1))
-        print()
+        #print(json.dumps(definition,indent=1))
+        #print()
 
         filename = definition["info"]["name"]+".json"
         out_file = open(filename,'w')
@@ -257,7 +259,7 @@ def plot_overlay(yaml_data):
 
     plt.show()
 ###############################################################################
-# main
+# Main
 #******************************************************************************
 # First we get the command line arguments
 description = "A script to create definition.json files from an overlay.yaml file"
@@ -382,33 +384,29 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
         #**********************************************************************
         fronts = []
         if(parent["y_max"] <= pblock["y_min"]):
-            print("    Exploring north side of " + pblock["name"])
+            print("    Exploring to the north")
             front = explore("north",pblock,parent,yaml_data)
             fronts.append(front)
-            print("    " + str(front))
         else:
-            print("    Exploring south side of " + pblock["name"])
+            print("    Exploring to the south")
             front = explore("south",pblock,parent,yaml_data)
             fronts.append(front)
-            print("    " + str(front))
         if(parent["x_min"] >= pblock["x_max"]):
-            print("    Exploring east side of " + pblock["name"])
+            print("    Exploring to the east")
             front = explore("east",pblock,parent,yaml_data)
             fronts.append(front)
-            print("    " + str(front))
         else:
-            print("    Exploring west side of " + pblock["name"])
+            print("    Exploring to the west")
             front = explore("west",pblock,parent,yaml_data)
             fronts.append(front)
-            print("    " + str(front))
 
         if(fronts[0][1] >= fronts[1][1]):
-            print("    We're going " + fronts[0][0])
+            print("    Selecting the " + fronts[0][0] + " side")
             side = fronts[1][0]
             synth_tiles_range = fronts[0][2]
 
         else:
-            print("    We're going " + fronts[1][0])
+            print("    Selecting the " + fronts[1][0] + " side")
             side = fronts[1][0]
             synth_tiles_range = fronts[1][2]
     #******************************************************************************
