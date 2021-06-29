@@ -202,11 +202,12 @@ def output_json(definitions):
 ###############################################################################
 # This function plots a single rectangle 
 def plot_rect(axis, x_min, x_max, y_min, y_max, color,
-              fill=False, linewidth=1):
+              fill=False, hatch=None, linewidth=1):
     rect = patches.Rectangle((x_min,y_min),
                               x_max - x_min,
                               y_max - y_min,
                               fill=fill,
+                              hatch=hatch,
                               color=color,
                               linewidth=linewidth)
     axis.add_patch(rect)
@@ -214,12 +215,13 @@ def plot_rect(axis, x_min, x_max, y_min, y_max, color,
 ###############################################################################
 # This function plots a set of labeled rectangles, given
 # a list of objects from the yaml file
-def plot_rects(axis, lst, color, fill=True, label_color="black"):
+def plot_rects(axis, lst, color, fill=True, hatch=None, label_color="black"):
     for element in lst:
         rect = plot_rect(axis,element["x_min"],element["x_max"],
                               element["y_min"],element["y_max"],
                               color=color,
-                              fill=fill)
+                              fill=fill,
+                              hatch=hatch)
 
         axis.add_patch(rect)
         # find the center of the rectangle
@@ -236,7 +238,7 @@ def plot_rects(axis, lst, color, fill=True, label_color="black"):
                       va="center")
 ###############################################################################
 # Now we can plot our results
-def plot_overlay(yaml_data):
+def plot_overlay(yaml_data, definitions):
 
     # First we set up the plot
     ax = plt.gca()
@@ -250,7 +252,17 @@ def plot_overlay(yaml_data):
     # Now we plot the BFT, static blocks, and pblocks
     plot_rects(ax, yaml_data["overlay"]["BFT"], "darkred")
     plot_rects(ax, yaml_data["overlay"]["static_blocks"], "darkgoldenrod")
+
     plot_rects(ax, yaml_data["overlay"]["pblocks"]["pblocks"], "teal")
+    plot_rects(ax, yaml_data["overlay"]["pblocks"]["pblocks"], "grey", fill=False, hatch="x")
+    for pblock in definitions:
+        plot_rect(ax,
+                  pblock["synth_tiles_range"]["GRID_X_MIN"],
+                  pblock["synth_tiles_range"]["GRID_X_MAX"],
+                  pblock["synth_tiles_range"]["GRID_Y_MIN"],
+                  pblock["synth_tiles_range"]["GRID_Y_MAX"],
+                  "teal",
+                  fill=True)
 
     # Finally we plot an outline of the chip
     plot_rect(ax, 0, yaml_data["overlay"]["max_x_dimension"],
@@ -429,5 +441,5 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
 # Now we output our json and plot our overlay
 output_json(definitions)
 
-plot_overlay(yaml_data)
+plot_overlay(yaml_data, definitions)
 ###############################################################################
