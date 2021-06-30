@@ -31,7 +31,7 @@ class Leaf2(Leaf):
         self.platform.add_source('rtl/rendering_6_page/coloringFB_top_m_prj/leaf_2.v')
         self.platform.add_source('rtl/rendering_6_page/coloringFB_top_m_prj/coloringFB_top_m.v')
         self.platform.add_source('rtl/rendering_6_page/coloringFB_top_m_prj/coloringFB_top_m_bkb.v')
-        self.platform.add_source('rtl/rendering_6_page/coloringFB_top_m_prj/coloringFB_top_m_bkb_ram.dat')
+        # self.platform.add_source('rtl/rendering_6_page/coloringFB_top_m_prj/coloringFB_top_m_bkb_ram.dat')
         self.specials += Instance('leaf_2',
                                   i_clk = self.clk,
                                   i_din_leaf_bft2interface = self.din_leaf_bft2interface,
@@ -66,7 +66,7 @@ class Leaf4(Leaf):
         super().__init__(clk, rst, start, platform)
         self.platform.add_source('rtl/rendering_6_page/coloringFB_bot_m_prj/coloringFB_bot_m.v')
         self.platform.add_source('rtl/rendering_6_page/coloringFB_bot_m_prj/coloringFB_bot_m_bkb.v')
-        self.platform.add_source('rtl/rendering_6_page/coloringFB_bot_m_prj/coloringFB_bot_m_bkb_ram.dat')
+        # self.platform.add_source('rtl/rendering_6_page/coloringFB_bot_m_prj/coloringFB_bot_m_bkb_ram.dat')
         self.platform.add_source('rtl/rendering_6_page/coloringFB_bot_m_prj/leaf_4.v')
         self.specials += Instance('leaf_4',
                                   i_clk = self.clk,
@@ -83,7 +83,7 @@ class Leaf5(Leaf):
         self.platform.add_source('rtl/rendering_6_page/zculling_bot_prj/zculling_bot.v')
         self.platform.add_source('rtl/rendering_6_page/zculling_bot_prj/zculling_bot_pixecud.v')
         self.platform.add_source('rtl/rendering_6_page/zculling_bot_prj/zculling_bot_z_bubkb.v')
-        self.platform.add_source('rtl/rendering_6_page/zculling_bot_prj/zculling_bot_z_bubkb_ram.dat')
+        # self.platform.add_source('rtl/rendering_6_page/zculling_bot_prj/zculling_bot_z_bubkb_ram.dat')
         self.platform.add_source('rtl/rendering_6_page/zculling_bot_prj/leaf_5.v')
         self.specials += Instance('leaf_5',
                                   i_clk = self.clk,
@@ -104,7 +104,7 @@ class Leaf6(Leaf):
         self.platform.add_source('rtl/rendering_6_page/rasterization2_m_prj/rasterization2_odd_fragment_x_V_1.v')
         self.platform.add_source('rtl/rendering_6_page/rasterization2_m_prj/rasterization2_m_udiv_16ns_8ns_8_20_1.v')
         self.platform.add_source('rtl/rendering_6_page/rasterization2_m_prj/rasterization2_m_urem_16ns_8ns_8_20_1.v')
-        self.platform.add_source('rtl/rendering_6_page/rasterization2_m_prj/rasterization2_odd_fragment_x_V_1_ram.dat')
+        # self.platform.add_source('rtl/rendering_6_page/rasterization2_m_prj/rasterization2_odd_fragment_x_V_1_ram.dat')
         self.platform.add_source('rtl/rendering_6_page/rasterization2_m_prj/rasterization2_m_am_submul_8ns_8ns_9s_18_1_1.v')
         self.platform.add_source('rtl/rendering_6_page/rasterization2_m_prj/rasterization2_m_ama_submul_sub_8ns_8ns_9s_18s_18_1_1.v')
         self.specials += Instance('leaf_6',
@@ -123,7 +123,7 @@ class Leaf7(Leaf):
         self.platform.add_source('rtl/rendering_6_page/zculling_top_prj/zculling_top.v')
         self.platform.add_source('rtl/rendering_6_page/zculling_top_prj/zculling_top_pixecud.v')
         self.platform.add_source('rtl/rendering_6_page/zculling_top_prj/zculling_top_z_bubkb.v')
-        self.platform.add_source('rtl/rendering_6_page/zculling_top_prj/zculling_top_z_bubkb_ram.dat')
+        # self.platform.add_source('rtl/rendering_6_page/zculling_top_prj/zculling_top_z_bubkb_ram.dat')
         self.specials += Instance('leaf_7',
                                   i_clk = self.clk,
                                   i_din_leaf_bft2interface = self.din_leaf_bft2interface,

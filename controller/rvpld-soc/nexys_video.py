@@ -172,7 +172,8 @@ class BaseSoC(SoCCore):
         self.comb += platform.request("user_led", 0).eq(start_signal)
 
         # Rendering6Page ---------------------------------------------------------------------------
-        self.submodules.rendering = rendering = Rendering6Page(clk_bft, rst_bft, platform, clock_domain='bft')
+        self.submodules.rendering = rendering = Rendering6Page(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
+        # self.submodules.rendering = rendering = Rendering6Page(clk_bft, rst_bft, platform, clock_domain='bft')
         rendering.connect_input(mm2s_axis_bft)
         rendering.connect_output(s2mm_axis_bft)
         rendering.connect_axil(axi_bft_bus_bft)
