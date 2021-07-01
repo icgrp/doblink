@@ -4,7 +4,10 @@ overlay:
   # The name of this specific overlay configuration
   name: "my-first-overlay"
 
-  # The specific part that this overlay targets
+  # The architecture of the part that this overlay targets
+  arch: "artix7_200t"
+
+  # The specific part number of the device that this overlay targets
   part: "xc7a200tsbg484-1"
 
   # The coordinate system used is that (0,0) is in the top left hand corner

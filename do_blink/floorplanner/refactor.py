@@ -3,6 +3,7 @@ import sys
 import yaml
 import json
 import copy
+import pathlib
 import argparse
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -192,11 +193,12 @@ def explore(direction, pblock, parent, yaml_data):
 # Now we can output the json definitions for each pblock:
 def output_json(definitions):
     print()
+    pathlib.Path("build").mkdir(exist_ok = True)
     for definition in definitions:
         #print(json.dumps(definition,indent=1))
         #print()
 
-        filename = definition["info"]["name"]+".json"
+        filename = "build/"+definition["info"]["name"]+".json"
         out_file = open(filename,'w')
         print(json.dumps(definition,indent=1),file=out_file)
 ###############################################################################
@@ -276,7 +278,7 @@ def plot_overlay(yaml_data, definitions):
 # First we get the command line arguments
 description = "A script to create definition.json files from an overlay.yaml file"
 p = argparse.ArgumentParser(description = description)
-p.add_argument("overlay", help="overlay yaml file")
+p.add_argument("overlay", help="The overlay yaml file")
 args = p.parse_args()
 #******************************************************************************
 # Next read the yaml file
