@@ -197,10 +197,11 @@ def output_json(definitions):
     for definition in definitions:
         #print(json.dumps(definition,indent=1))
         #print()
-
-        filename = "build/"+definition["info"]["name"]+".json"
-        out_file = open(filename,'w')
-        print(json.dumps(definition,indent=1),file=out_file)
+        p = pathlib.Path("build/"+yaml_data["overlay"]["arch"]+"-doblink-" + definition["info"]["name"])
+        p.mkdir(exist_ok = True)
+        q = p / 'definition.json'
+        with q.open('w') as out_file:
+            print(json.dumps(definition,indent=1),file=out_file)
 ###############################################################################
 # This function plots a single rectangle 
 def plot_rect(axis, x_min, x_max, y_min, y_max, color,
@@ -279,6 +280,8 @@ def plot_overlay(yaml_data, definitions):
 description = "A script to create definition.json files from an overlay.yaml file"
 p = argparse.ArgumentParser(description = description)
 p.add_argument("overlay", help="The overlay yaml file")
+p.add_argument("-g", "--gui", help="Run with GUI", action="store_true")
+
 args = p.parse_args()
 #******************************************************************************
 # Next read the yaml file
@@ -443,5 +446,6 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
 # Now we output our json and plot our overlay
 output_json(definitions)
 
-plot_overlay(yaml_data, definitions)
+if(args.gui):
+    plot_overlay(yaml_data, definitions)
 ###############################################################################

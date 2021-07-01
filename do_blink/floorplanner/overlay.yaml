@@ -124,7 +124,7 @@ overlay:
     pblocks:
       - pblock:
         # The name of the pblock
-        name: "pblock2"
+        name: "pblock-2"
         
         # The bounds of the pblock
         x_min: 10
@@ -141,7 +141,7 @@ overlay:
         parent_switchbox: "stub1"
 
       - pblock:
-        name: "pblock3"
+        name: "pblock-3"
         x_min: 141
         x_max: 188
         y_min: 53
@@ -150,7 +150,7 @@ overlay:
         parent_switchbox: "stub2"
 
       - pblock:
-        name: "pblock4"
+        name: "pblock-4"
         x_min: 87
         x_max: 134
         y_min: 53
@@ -159,7 +159,7 @@ overlay:
         parent_switchbox: "stub1"
 
       - pblock:
-        name: "pblock5"
+        name: "pblock-5"
         x_min: 10
         x_max: 48
         y_min: 53
@@ -168,7 +168,7 @@ overlay:
         parent_switchbox: "stub1"
 
       - pblock:
-        name: "pblock6"
+        name: "pblock-6"
         x_min: 87
         x_max: 134
         y_min: 157
@@ -177,7 +177,7 @@ overlay:
         parent_switchbox: "stub4"
 
       - pblock:
-        name: "pblock7"
+        name: "pblock-7"
         x_min: 10
         x_max: 85
         y_min: 209
@@ -186,7 +186,7 @@ overlay:
         parent_switchbox: "stub4"
 
       - pblock:
-        name: "pblock8"
+        name: "pblock-8"
         x_min: 190
         x_max: 254
         y_min: 209
@@ -195,7 +195,7 @@ overlay:
         parent_switchbox: "stub3"
 
       - pblock:
-        name: "pblock9"
+        name: "pblock-9"
         x_min: 190
         x_max: 254
         y_min: 1
@@ -204,7 +204,7 @@ overlay:
         parent_switchbox: "stub2"
 
       - pblock:
-        name: "pblock10"
+        name: "pblock-10"
         x_min: 216
         x_max: 254
         y_min: 157
@@ -213,7 +213,7 @@ overlay:
         parent_switchbox: "stub3"
 
       - pblock:
-        name: "pblock11"
+        name: "pblock-11"
         x_min: 141
         x_max: 188
         y_min: 157
@@ -222,7 +222,7 @@ overlay:
         parent_switchbox: "stub3"
 
       - pblock:
-        name: "pblock12"
+        name: "pblock-12"
         x_min: 10
         x_max: 48
         y_min: 105
@@ -231,7 +231,7 @@ overlay:
         parent_switchbox: "stub1"
 
       - pblock:
-        name: "pblock13"
+        name: "pblock-13"
         x_min: 10
         x_max: 48
         y_min: 157
