@@ -7,8 +7,11 @@ overlay:
   # The architecture of the part that this overlay targets
   arch: "artix7_200t"
 
-  # The specific part number of the device that this overlay targets
-  part: "xc7a200tsbg484-1"
+  # The part being targeted
+  part: "xc7a200t"
+
+  # The package for the specific device being targeted 
+  package: "sbg484-1"
 
   # The coordinate system used is that (0,0) is in the top left hand corner
   # of the chip as viewed in Vivado, with the positive x-axis extending to

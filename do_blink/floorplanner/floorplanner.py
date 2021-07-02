@@ -198,11 +198,10 @@ def output_json(definitions):
         #print(json.dumps(definition,indent=1))
         #print()
 
-        part = yaml_data["overlay"]["part"]
+        part = yaml_data["overlay"]["part"]+yaml_data["overlay"]["package"]
         arch = yaml_data["overlay"]["arch"]
         pblock_name = definition["info"]["name"]
-        device = arch +"-doblink-" + pblock_name
-        board = "nexys_video-doblink-"+pblock_name
+        device = yaml_data["overlay"]["part"]+"-doblink-"+pblock_name
 
         # create directory structure
         p1 = pathlib.Path("build/"+device)
@@ -215,7 +214,7 @@ def output_json(definitions):
             file_data = file_data.replace('<arch>',arch)
             file_data = file_data.replace('<part>',part)
             file_data = file_data.replace('<device>',device)
-            file_data = file_data.replace('<board>',board)
+            file_data = file_data.replace('<pblock_name>',pblock_name)
             f = p1 / 'CMakeLists.txt'
             with f.open('w') as cmake_file:
                 cmake_file.write(file_data)
@@ -272,7 +271,7 @@ def plot_overlay(yaml_data, definitions):
     plt.gca().invert_yaxis()
     ax.set_aspect('equal')
     plt.title(yaml_data["overlay"]["name"])
-    plt.xlabel("Part: " + yaml_data["overlay"]["part"])
+    plt.xlabel("Part: " + yaml_data["overlay"]["part"]+yaml_data["overlay"]["package"])
 
     # Now we plot the BFT, static blocks, and pblocks
     plot_rects(ax, yaml_data["overlay"]["BFT"], "darkred")

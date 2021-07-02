@@ -6,7 +6,7 @@ add_xc_device_define(
 )
 
 add_xc_board(
-	BOARD <board>
+	BOARD nexys_video-doblink-<pblock_name>
 	DEVICE <device>
 	PACKAGE test
 	PART <part>
