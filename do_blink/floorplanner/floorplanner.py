@@ -197,9 +197,25 @@ def output_json(definitions):
     for definition in definitions:
         #print(json.dumps(definition,indent=1))
         #print()
-        p = pathlib.Path("build/"+yaml_data["overlay"]["arch"]+"-doblink-" + definition["info"]["name"])
-        p.mkdir(exist_ok = True)
-        q = p / 'definition.json'
+
+        # create directory structure
+        p1 = pathlib.Path("build/"+yaml_data["overlay"]["arch"]+"-doblink-" + definition["info"]["name"])
+        p2 = p1 / (yaml_data["overlay"]["arch"]+"-doblink-" + definition["info"]["name"]+"-roi-virt/")
+        p2.mkdir(parents = True, exist_ok = True)
+
+        # copy cmake.txt template
+        with open('template.txt', 'r') as template_file:
+            file_data = template_file.read()
+            file_data = file_data.replace('<arch>',yaml_data["overlay"]["arch"])
+            file_data = file_data.replace('<part>',yaml_data["overlay"]["part"])
+            file_data = file_data.replace('<device>',yaml_data["overlay"]["arch"]+"-doblink-"+definition["info"]["name"])
+            file_data = file_data.replace('<board>',"nexys_video-doblink-"+definition["info"]["name"])
+            f = p1 / 'CMakeLists.txt'
+            with f.open('w') as cmake_file:
+                cmake_file.write(file_data)
+                
+        # create definition.json
+        q = p2 / 'definition.json'
         with q.open('w') as out_file:
             print(json.dumps(definition,indent=1),file=out_file)
 ###############################################################################
