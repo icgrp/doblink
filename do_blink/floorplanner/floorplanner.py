@@ -198,22 +198,28 @@ def output_json(definitions):
         #print(json.dumps(definition,indent=1))
         #print()
 
+        part = yaml_data["overlay"]["part"]
+        arch = yaml_data["overlay"]["arch"]
+        pblock_name = definition["info"]["name"]
+        device = arch +"-doblink-" + pblock_name
+        board = "nexys_video-doblink-"+pblock_name
+
         # create directory structure
-        p1 = pathlib.Path("build/"+yaml_data["overlay"]["arch"]+"-doblink-" + definition["info"]["name"])
-        p2 = p1 / (yaml_data["overlay"]["arch"]+"-doblink-" + definition["info"]["name"]+"-roi-virt/")
+        p1 = pathlib.Path("build/"+device)
+        p2 = p1 / (device+"-roi-virt/")
         p2.mkdir(parents = True, exist_ok = True)
 
         # copy cmake.txt template
         with open('template.txt', 'r') as template_file:
             file_data = template_file.read()
-            file_data = file_data.replace('<arch>',yaml_data["overlay"]["arch"])
-            file_data = file_data.replace('<part>',yaml_data["overlay"]["part"])
-            file_data = file_data.replace('<device>',yaml_data["overlay"]["arch"]+"-doblink-"+definition["info"]["name"])
-            file_data = file_data.replace('<board>',"nexys_video-doblink-"+definition["info"]["name"])
+            file_data = file_data.replace('<arch>',arch)
+            file_data = file_data.replace('<part>',part)
+            file_data = file_data.replace('<device>',device)
+            file_data = file_data.replace('<board>',board)
             f = p1 / 'CMakeLists.txt'
             with f.open('w') as cmake_file:
                 cmake_file.write(file_data)
-                
+
         # create definition.json
         q = p2 / 'definition.json'
         with q.open('w') as out_file:

@@ -10,5 +10,5 @@ add_xc_board(
 	DEVICE <device>
 	PACKAGE test
 	PART <part>
-	PROG_CMD "${OPENOCD}" -f board/digilent_nexys_video.cfg -c \\\"init $<SEMICOLON> doblink load 0 \${OUT_BIN} $<SEMICOLON> exit\\\""
+	PROG_CMD "${OPENOCD} -f board/digilent_nexys_video.cfg -c \\\"init $<SEMICOLON> doblink load 0 \${OUT_BIN} $<SEMICOLON> exit\\\""
 )
