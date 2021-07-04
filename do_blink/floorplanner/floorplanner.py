@@ -196,8 +196,6 @@ def output_json(definitions):
     print()
     pathlib.Path("build").mkdir(exist_ok = True)
     for definition in definitions:
-        #print(json.dumps(definition,indent=1))
-        #print()
 
         # create some strings we will need
         part = yaml_data["overlay"]["part"]+yaml_data["overlay"]["package"]
@@ -211,7 +209,7 @@ def output_json(definitions):
         p2.mkdir(parents = True, exist_ok = True)
 
         # copy cmake.txt template
-        with open('cmake_template_1.txt', 'r') as template_file:
+        with open('cmake_templates/cmake_template_1.txt', 'r') as template_file:
             file_data = template_file.read()
             file_data = file_data.replace('<arch>',arch)
             file_data = file_data.replace('<part>',part)
@@ -222,7 +220,7 @@ def output_json(definitions):
                 cmake_file.write(file_data)
 
         # copy cmake.txt template
-        with open('cmake_template_2.txt', 'r') as template_file:
+        with open('cmake_templates/cmake_template_2.txt', 'r') as template_file:
             file_data = template_file.read()
             file_data = file_data.replace('<arch>',arch)
             file_data = file_data.replace('<device>',device)
