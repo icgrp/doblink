@@ -1,3 +1,4 @@
+#!/usr/local/bin/python3
 ###############################################################################
 import sys
 import yaml
@@ -198,6 +199,7 @@ def output_json(definitions):
         #print(json.dumps(definition,indent=1))
         #print()
 
+        # create some strings we will need
         part = yaml_data["overlay"]["part"]+yaml_data["overlay"]["package"]
         arch = yaml_data["overlay"]["arch"]
         pblock_name = definition["info"]["name"]
@@ -209,7 +211,7 @@ def output_json(definitions):
         p2.mkdir(parents = True, exist_ok = True)
 
         # copy cmake.txt template
-        with open('template.txt', 'r') as template_file:
+        with open('cmake_template_1.txt', 'r') as template_file:
             file_data = template_file.read()
             file_data = file_data.replace('<arch>',arch)
             file_data = file_data.replace('<part>',part)
@@ -219,10 +221,21 @@ def output_json(definitions):
             with f.open('w') as cmake_file:
                 cmake_file.write(file_data)
 
+        # copy cmake.txt template
+        with open('cmake_template_2.txt', 'r') as template_file:
+            file_data = template_file.read()
+            file_data = file_data.replace('<arch>',arch)
+            file_data = file_data.replace('<device>',device)
+            f = p2 / 'CMakeLists.txt'
+            with f.open('w') as cmake_file:
+                cmake_file.write(file_data)
+
         # create definition.json
         q = p2 / 'definition.json'
         with q.open('w') as out_file:
             print(json.dumps(definition,indent=1),file=out_file)
+
+    print("Successfully generated devices!")
 ###############################################################################
 # This function plots a single rectangle 
 def plot_rect(axis, x_min, x_max, y_min, y_max, color,
