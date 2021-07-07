@@ -234,6 +234,28 @@ def output_json(definitions):
             print(json.dumps(definition,indent=1),file=out_file)
 
     print("Successfully generated devices!")
+
+    net = "insert-net-name-here"
+    f = pathlib.Path("build/overlay.xdc")
+    with f.open('w') as xdc_file:
+        for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
+            xdc_file.write("set_property DONT_TOUCH true [get_cells "+net+"]\n")
+            xdc_file.write("set_property HD.RECONFIGURABLE true [get_cells "+net+"]\n")
+        xdc_file.write("\n\n")
+       
+        for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
+            xdc_file.write("create_pblock " + pblock["name"]+"\n")
+            xdc_file.write("add_cells_to_pblock [get_pblocks "+pblock["name"]+"] [get_cells -quiet [list " + net + "]]\n")
+            xdc_file.write("resize_pblock" + pblock["name"] + " -add_rect {"+str(pblock["x_min"])+" "+str(pblock["y_min"])+" "+str(pblock["x_max"])+" "+str(pblock["y_max"])+"}\n")
+            xdc_file.write("set_property SNAPPING_MODE ON [get_pblocks "+pblock["name"]+"]\n")
+        xdc_file.write("\n")
+       
+        xdc_file.write("create_pblock bft\n")
+        xdc_file.write("add_cells_to_pblock [get_pblocks bft] [get_cells -quiet [list " + net + "]]\n")
+        for switchbox in yaml_data["overlay"]["BFT"]:
+            xdc_file.write("resize_pblock bft -add_rect {"+str(switchbox["x_min"])+" "+str(switchbox["y_min"])+" "+str(switchbox["x_max"])+" "+str(switchbox["y_max"])+"}\n")
+        xdc_file.write("set_property SNAPPING_MODE ON [get_pblocks bft]\n")
+    print("Successfully generated xdc file!")
 ###############################################################################
 # This function plots a single rectangle 
 def plot_rect(axis, x_min, x_max, y_min, y_max, color,
@@ -474,7 +496,7 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
 
     # Finally we add our new definition to the definitions list
     definitions.append(definition_dict)
-#**************************************************************************
+#******************************************************************************
 # Now we output our json and plot our overlay
 output_json(definitions)
 
