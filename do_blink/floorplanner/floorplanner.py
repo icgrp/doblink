@@ -1,5 +1,6 @@
 #!/usr/local/bin/python3
 ###############################################################################
+import re
 import sys
 import yaml
 import json
@@ -235,21 +236,23 @@ def output_json(definitions):
 
     print("Successfully generated devices!")
 
-    net = "insert-net-name-here"
     f = pathlib.Path("build/overlay.xdc")
     with f.open('w') as xdc_file:
         for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
+            net = "floorplan_static_i/leaf_empty_"+re.search(r'\d+$',pblock["name"]).group()+"/inst"
             xdc_file.write("set_property DONT_TOUCH true [get_cells "+net+"]\n")
             xdc_file.write("set_property HD.RECONFIGURABLE true [get_cells "+net+"]\n")
         xdc_file.write("\n\n")
        
         for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
+            net = "floorplan_static_i/leaf_empty_"+re.search(r'\d+$',pblock["name"]).group()+"/inst"
             xdc_file.write("create_pblock " + pblock["name"]+"\n")
             xdc_file.write("add_cells_to_pblock [get_pblocks "+pblock["name"]+"] [get_cells -quiet [list " + net + "]]\n")
             xdc_file.write("resize_pblock" + pblock["name"] + " -add_rect {"+str(pblock["x_min"])+" "+str(pblock["y_min"])+" "+str(pblock["x_max"])+" "+str(pblock["y_max"])+"}\n")
             xdc_file.write("set_property SNAPPING_MODE ON [get_pblocks "+pblock["name"]+"]\n")
         xdc_file.write("\n")
        
+        net = "floorplan_static_i/bft"
         xdc_file.write("create_pblock bft\n")
         xdc_file.write("add_cells_to_pblock [get_pblocks bft] [get_cells -quiet [list " + net + "]]\n")
         for switchbox in yaml_data["overlay"]["BFT"]:
