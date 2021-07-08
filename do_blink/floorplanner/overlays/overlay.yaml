@@ -241,5 +241,11 @@ overlay:
         y_max: 207
         pins_per_tile: 10
         parent_switchbox: "stub4"
+  ################################################################################
+  options:
+    snapping_mode: "ON"
+    pblock_net_name: "floorplan_static_i/leaf_empty_<pblock_number>/inst"
+    bft_net_name:    "floorplan_static_i/bft"
+
 ##################################################################################
 ...
