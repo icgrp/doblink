@@ -519,6 +519,12 @@ begin
     if (ce0) begin
         if (we0) 
             ram[addr0] <= d0; 
+    end
+end
+
+always @(posedge clk)  
+begin 
+    if (ce0 & ~we0) begin
         q0 <= ram[addr0];
     end
 end
@@ -529,6 +535,12 @@ begin
     if (ce1) begin
         if (we1) 
             ram[addr1] <= d1; 
+    end
+end
+
+always @(posedge clk)  
+begin 
+    if (ce1 & ~we1) begin
         q1 <= ram[addr1];
     end
 end
@@ -4432,10 +4444,7 @@ end
 always @(posedge clk) begin
     if (push)
         mem[waddr] <= if_din;
-end
-
 // q_buf
-always @(posedge clk) begin
     q_buf <= mem[rnext];
 end
 

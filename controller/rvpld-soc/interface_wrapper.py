@@ -28,6 +28,7 @@ class InterfaceWrapper(Module):
                             o_Input_1_V_V_ap_ack = sink_sigs['tready'],
                             o_Output_1_V_V = source_sigs['tpayload'].data,
                             o_Output_1_V_V_ap_vld = source_sigs['tvalid'],
+                            # i_Output_1_V_V_ap_ack = 1,
                             i_Output_1_V_V_ap_ack = source_sigs['tready'],
                             )
 

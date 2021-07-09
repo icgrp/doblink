@@ -148,11 +148,7 @@ static void rendering_test(void) {
   // uart_sync();
   // axi_led_write(3);
 
-  busy_wait(1000);
-  printf("Begin Configuring BFT!\r\n");
-  uart_sync();
-  init_regs();
-  printf("Configuring BFT Done\r\n");
+  // busy_wait(1000);
 
 
   for(int i = 0; i < SEND_LEN; i++) {
@@ -160,7 +156,7 @@ static void rendering_test(void) {
   }
 
   for(int i = 0; i < RECV_LEN + 16; i++) {
-    RxBufferPtr[i] = 0;
+    RxBufferPtr[i] = 1;
   }
 
   busy_wait(1000);
@@ -171,11 +167,22 @@ static void rendering_test(void) {
   run_dma(TxBufferPtr, SEND_LEN, RxBufferPtr, RECV_LEN);
 
   printf("Checking Results\n");
-  check_results((uint32_t *) RxBufferPtr + 16);
+  check_results((uint32_t *) RxBufferPtr);
   start_start_write(0);
 
+  // int zeros = 100;
   // for(int i = 0; i < RECV_LEN; i++) {
-  //   printf("got: %d\n", RxBufferPtr[i]);
+  //   if (RxBufferPtr[i] == 1) {
+  //     zeros--;
+  //   } else {
+  //     zeros = 100;
+  //   }
+
+  //   if (zeros == 0) {
+  //     break;
+  //   }
+  //   if (RxBufferPtr[i] != 0)
+  //     printf("got: %d\n", RxBufferPtr[i]);
   // }
 }
 
@@ -208,6 +215,10 @@ int main(void)
 
 	puts("\nrvpld - CPU testing software built "__DATE__" "__TIME__"\n");
   start_start_write(0);
+  printf("Begin Configuring BFT!\r\n");
+  uart_sync();
+  init_regs();
+  printf("Configuring BFT Done\r\n");
 
 
   while(1) {
