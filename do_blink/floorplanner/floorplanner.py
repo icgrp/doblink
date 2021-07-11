@@ -193,17 +193,21 @@ def explore(direction, pblock, parent, yaml_data):
     return (direction, area, synth_tiles_range)
 ###############################################################################
 # creates a build directory and creates files for both symbiflow and vivado
-def create_output_files(definitions, top_dir, name):
+def create_output_files(definitions, top_dir, out_dir):
     print()
-    target = top_dir+name+"/"
+
+    top_dir = top_dir if top_dir[-1] == "/" else top_dir + "/"
+    out_dir = out_dir if out_dir[-1] == "/" else out_dir + "/"
+
+    target = top_dir+out_dir
     pathlib.Path(target).mkdir(parents = True, exist_ok = True)
 
-    # create top level cmake file
+    # append to the top level cmake file in the top directory
     f = pathlib.Path(top_dir+"CMakeLists.txt")
     with f.open('a') as cmake_file:
-        cmake_file.write("add_subdirectory("+name+")\n")
+        cmake_file.write("add_subdirectory("+out_dir[:-1]+")\n")
 
-    # create top level cmake file
+    # create the cmake file for the output directory
     f = pathlib.Path(target+"CMakeLists.txt")
     with f.open('w') as cmake_file:
         cmake_file.write("add_subdirectory(devices)\n")
@@ -365,8 +369,8 @@ def plot_overlay(yaml_data, definitions):
 description = "A script to create definition.json files from an overlay.yaml file"
 p = argparse.ArgumentParser(description = description)
 p.add_argument("overlay", help="The overlay yaml file")
-p.add_argument("top", help="The parent directory which will hold the output directory")
-p.add_argument("name", help="The build name")
+p.add_argument("top_dir", help="The parent directory which holds the top level CMakeLists.txt, and which will hold the output directory")
+p.add_argument("out_dir", help="The name of the output directory")
 p.add_argument("-g", "--gui", help="Run with GUI", action="store_true")
 
 args = p.parse_args()
@@ -531,7 +535,7 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
     definitions.append(definition_dict)
 #******************************************************************************
 # Now we output our json and plot our overlay
-create_output_files(definitions, args.top, args.name)
+create_output_files(definitions, args.top_dir, args.out_dir)
 
 if(args.gui):
     plot_overlay(yaml_data, definitions)
