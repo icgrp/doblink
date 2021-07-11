@@ -193,9 +193,21 @@ def explore(direction, pblock, parent, yaml_data):
     return (direction, area, synth_tiles_range)
 ###############################################################################
 # creates a build directory and creates files for both symbiflow and vivado
-def create_output_files(definitions):
+def create_output_files(definitions, top_dir, name):
     print()
-    pathlib.Path("build").mkdir(exist_ok = True)
+    target = top_dir+name+"/"
+    pathlib.Path(target).mkdir(parents = True, exist_ok = True)
+
+    # create top level cmake file
+    f = pathlib.Path(top_dir+"CMakeLists.txt")
+    with f.open('a') as cmake_file:
+        cmake_file.write("add_subdirectory("+name+")\n")
+
+    # create top level cmake file
+    f = pathlib.Path(target+"CMakeLists.txt")
+    with f.open('w') as cmake_file:
+        cmake_file.write("add_subdirectory(devices)\n")
+
     for definition in definitions:
 
         # create some strings we will need
@@ -205,7 +217,7 @@ def create_output_files(definitions):
         device = yaml_data["overlay"]["part"]+"-doblink-"+pblock_name
 
         # create directory structure
-        p1 = pathlib.Path("build/"+device)
+        p1 = pathlib.Path(target+"devices/"+device)
         p2 = p1 / (device+"-roi-virt/")
         p2.mkdir(parents = True, exist_ok = True)
 
@@ -234,9 +246,14 @@ def create_output_files(definitions):
         with q.open('w') as out_file:
             print(json.dumps(definition,indent=1),file=out_file)
 
+        # create the cmake file for the devices directory
+        f = pathlib.Path(target+"/devices/CMakeLists.txt")
+        with f.open('a') as cmake_file:
+            cmake_file.write("add_subdirectory("+device+")\n")
+
     print("Successfully generated devices!")
 
-    f = pathlib.Path("build/overlay.xdc")
+    f = pathlib.Path(target+"overlay.xdc")
     with f.open('w') as xdc_file:
         snapping_mode = yaml_data["overlay"]["options"]["snapping_mode"]
         for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
@@ -256,7 +273,7 @@ def create_output_files(definitions):
                                                                              str(pblock["y_min"])+" "+
                                                                              str(pblock["x_max"])+" "+
                                                                              str(pblock["y_max"])+"}\n")
-            xdc_file.write("set_property SNAPPING_MODE " + snapping_mode + " [get_pblocks "+pblock["name"]+"]\n")
+            xdc_file.write("set_property SNAPPING_MODE " + snapping_mode + " [get_pblocks "+pblock["name"]+"]\n\n")
         xdc_file.write("\n")
        
         bft_net_name = yaml_data["overlay"]["options"]["bft_net_name"]
@@ -348,6 +365,8 @@ def plot_overlay(yaml_data, definitions):
 description = "A script to create definition.json files from an overlay.yaml file"
 p = argparse.ArgumentParser(description = description)
 p.add_argument("overlay", help="The overlay yaml file")
+p.add_argument("top", help="The parent directory which will hold the output directory")
+p.add_argument("name", help="The build name")
 p.add_argument("-g", "--gui", help="Run with GUI", action="store_true")
 
 args = p.parse_args()
@@ -512,7 +531,7 @@ for pblock in yaml_data["overlay"]["pblocks"]["pblocks"]:
     definitions.append(definition_dict)
 #******************************************************************************
 # Now we output our json and plot our overlay
-create_output_files(definitions)
+create_output_files(definitions, args.top, args.name)
 
 if(args.gui):
     plot_overlay(yaml_data, definitions)
