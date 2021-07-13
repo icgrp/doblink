@@ -37,6 +37,7 @@ from pld_axi import PldAXILiteInterface
 from axilite2led import AxiLite2Led
 from rendering.rendering_mono import RenderingMono
 from rendering.rendering_6_no_bft import Rendering6Mono
+from rendering.rendering_6_no_bft_vitis import Rendering6MonoVitis
 from rendering.rendering_6_page import Rendering6Page
 from rendering.rendering_6_page_vitis import Rendering6PageVitis
 from axil_cdc import AxilCDC
@@ -178,6 +179,7 @@ class BaseSoC(SoCCore):
         # self.submodules.rendering = rendering = Rendering6Mono(clk_bft, rst_bft, platform, start=start_signal, clock_domain='bft')
         # self.submodules.rendering = rendering = Rendering6Mono(clk_bft, rst_bft, platform, clock_domain='bft')
         self.submodules.rendering = rendering = Rendering6PageVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
+        # self.submodules.rendering = rendering = Rendering6MonoVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
         rendering.connect_input(mm2s_axis_bft)
         rendering.connect_output(s2mm_axis_bft)
         self.comb += platform.request("user_led", 1).eq(rst_bft)
