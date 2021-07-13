@@ -164,10 +164,10 @@ static void rendering_test(void) {
   start_start_write(1);
 
   busy_wait(1000);
-  run_dma(TxBufferPtr, SEND_LEN, RxBufferPtr, RECV_LEN);
+  run_dma(TxBufferPtr, SEND_LEN, RxBufferPtr, RECV_LEN + 16);
 
   printf("Checking Results\n");
-  check_results((uint32_t *) RxBufferPtr);
+  check_results((uint32_t *) RxBufferPtr + 16);
   start_start_write(0);
 
   // int zeros = 100;

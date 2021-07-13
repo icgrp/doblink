@@ -175,10 +175,10 @@ class BaseSoC(SoCCore):
         self.comb += platform.request("user_led", 0).eq(start_signal)
 
         # Rendering6Page ---------------------------------------------------------------------------
-        # self.submodules.rendering = rendering = Rendering6Page(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
+        self.submodules.rendering = rendering = Rendering6Page(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
         # self.submodules.rendering = rendering = Rendering6Mono(clk_bft, rst_bft, platform, start=start_signal, clock_domain='bft')
         # self.submodules.rendering = rendering = Rendering6Mono(clk_bft, rst_bft, platform, clock_domain='bft')
-        self.submodules.rendering = rendering = Rendering6PageVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
+        # self.submodules.rendering = rendering = Rendering6PageVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
         # self.submodules.rendering = rendering = Rendering6MonoVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
         rendering.connect_input(mm2s_axis_bft)
         rendering.connect_output(s2mm_axis_bft)
@@ -203,6 +203,7 @@ def main():
     parser.add_argument("--with-sata",       action="store_true", help="Enable SATA support (over FMCRAID)")
     builder_args(parser)
     soc_core_args(parser)
+    vivado_build_args(parser)
     args = parser.parse_args()
 
     soc = BaseSoC(
@@ -219,7 +220,8 @@ def main():
     if args.with_sdcard:
         soc.add_sdcard()
     builder = Builder(soc, **builder_argdict(args))
-    builder.build(run=args.build)
+    builder_kwargs = vivado_build_argdict(args) if args.toolchain == "vivado" else {}
+    builder.build(**builder_kwargs, run=args.build)
 
     if args.load:
         prog = soc.platform.create_programmer()
