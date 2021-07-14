@@ -2,8 +2,8 @@
 
 CPU=vexriscv
 BUS=axi-lite
-# TOOLCHAIN=vivado
-TOOLCHAIN=vivado --synth-mode yosys
+TOOLCHAIN=vivado
+# TOOLCHAIN=vivado --synth-mode yosys
 # TOOLCHAIN=symbiflow
 
 ifdef DEBUG
