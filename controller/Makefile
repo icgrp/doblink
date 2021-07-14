@@ -5,12 +5,13 @@ BUS=axi-lite
 TOOLCHAIN=vivado
 # TOOLCHAIN=vivado --synth-mode yosys
 # TOOLCHAIN=symbiflow
+BENCHMARK=rendering
 
 ifdef DEBUG
 	DEBUG_ARGS=--with-ethernet --csr-csv csr.csv
 endif
 
-LITEX_ARGS=--cpu-type $(CPU) --output-dir ./build --bus-standard $(BUS) --toolchain $(TOOLCHAIN) $(DEBUG_ARGS)
+LITEX_ARGS=--bench $(BENCHMARK) --cpu-type $(CPU) --output-dir ./build --bus-standard $(BUS) --toolchain $(TOOLCHAIN) $(DEBUG_ARGS)
 
 .PHONY: load clean firmware gateware prog
 
