@@ -177,7 +177,7 @@ class BaseSoC(SoCCore):
         self.comb += platform.request("user_led", 0).eq(start_signal)
 
         # Rendering6Page ---------------------------------------------------------------------------
-        self.submodules.rendering = rendering = RenderingLeafOnly(clk, rst, platform, clock_domain='sys', start=start_signal)
+        self.submodules.rendering = rendering = RenderingLeafOnly(clk, rst, platform, clock_domain='sys')
         # self.submodules.rendering = rendering = Rendering6Mono(clk_bft, rst_bft, platform, start=start_signal, clock_domain='bft')
         # self.submodules.rendering = rendering = Rendering6Mono(clk_bft, rst_bft, platform, clock_domain='bft')
         # self.submodules.rendering = rendering = Rendering6PageVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
