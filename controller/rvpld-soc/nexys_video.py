@@ -39,6 +39,8 @@ from rendering.rendering_mono import RenderingMono
 from rendering.rendering_6_no_bft import Rendering6Mono
 from rendering.rendering_6_no_bft_vitis import Rendering6MonoVitis
 from rendering.rendering_6_page import Rendering6Page
+from rendering.rendering_4_page import Rendering4Page
+from rendering.rendering_leaf_only import RenderingLeafOnly
 from rendering.rendering_6_page_vitis import Rendering6PageVitis
 from axil_cdc import AxilCDC
 from axilite2bft import AxiLite2Bft
@@ -175,7 +177,7 @@ class BaseSoC(SoCCore):
         self.comb += platform.request("user_led", 0).eq(start_signal)
 
         # Rendering6Page ---------------------------------------------------------------------------
-        self.submodules.rendering = rendering = Rendering6Page(clk, rst, platform, clock_domain='sys', start=start_signal)
+        self.submodules.rendering = rendering = RenderingLeafOnly(clk, rst, platform, clock_domain='sys')
         # self.submodules.rendering = rendering = Rendering6Mono(clk_bft, rst_bft, platform, start=start_signal, clock_domain='bft')
         # self.submodules.rendering = rendering = Rendering6Mono(clk_bft, rst_bft, platform, clock_domain='bft')
         # self.submodules.rendering = rendering = Rendering6PageVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
@@ -186,7 +188,7 @@ class BaseSoC(SoCCore):
         self.comb += platform.request("user_led", 2).eq(mm2s_axis.valid)
         self.comb += platform.request("user_led", 3).eq(s2mm_axis.ready)
         self.comb += platform.request("user_led", 4).eq(s2mm_axis.valid)
-        rendering.connect_axil(axi_bft_bus_sys)
+        # rendering.connect_axil(axi_bft_bus_sys)
 
 # Build --------------------------------------------------------------------------------------------
 

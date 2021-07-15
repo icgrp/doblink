@@ -1,4 +1,4 @@
-module page4(
+module leaf_3(
     input wire clk,
     input wire [48 : 0] din_leaf_bft2interface,
     output wire [48 : 0] dout_leaf_interface2bft,
@@ -15,7 +15,7 @@ module page4(
     leaf_interface #(
         .PACKET_BITS(49),
         .PAYLOAD_BITS(32), 
-        .NUM_LEAF_BITS(5),
+        .NUM_LEAF_BITS(4),
         .NUM_PORT_BITS(4),
         .NUM_ADDR_BITS(7),
         .NUM_IN_PORTS(1), 
@@ -35,7 +35,7 @@ module page4(
         .din_leaf_user2interface({din_leaf_user2interface_1}),
         .resend(resend)
     );
-    zculling_top zculling_top_inst(
+    rasterization2_m rasterization2_m_inst(
         .ap_clk(clk),
         .ap_rst_n(~reset),
         .ap_start(1'b1),

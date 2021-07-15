@@ -1,4 +1,4 @@
-module page5(
+module leaf_5(
     input wire clk,
     input wire [48 : 0] din_leaf_bft2interface,
     output wire [48 : 0] dout_leaf_interface2bft,
@@ -15,7 +15,7 @@ module page5(
     leaf_interface #(
         .PACKET_BITS(49),
         .PAYLOAD_BITS(32), 
-        .NUM_LEAF_BITS(5),
+        .NUM_LEAF_BITS(4),
         .NUM_PORT_BITS(4),
         .NUM_ADDR_BITS(7),
         .NUM_IN_PORTS(1), 

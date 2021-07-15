@@ -2,9 +2,9 @@
 
 CPU=vexriscv
 BUS=axi-lite
-TOOLCHAIN=vivado
+# TOOLCHAIN=vivado
 # TOOLCHAIN=vivado --synth-mode yosys
-# TOOLCHAIN=symbiflow
+TOOLCHAIN=symbiflow
 
 ifdef DEBUG
 	DEBUG_ARGS=--with-ethernet --csr-csv csr.csv

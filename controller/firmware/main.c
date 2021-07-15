@@ -109,7 +109,7 @@ static void check_results(uint32_t * output)
   for (int i = 0, j = 0, n = 0; n < 16384; n ++ )
   {
     uint32_t temp = output[n];
-    //printf("n = %d, val = %#X\n", n, temp);
+    // printf("n = %d, val = %d\n", n, temp);
 
     frame_buffer_print[i][j++] = (char) (temp & 0x000000ff);
     frame_buffer_print[i][j++] = (char) ((temp & 0x0000ff00) >> 8);
@@ -156,7 +156,7 @@ static void rendering_test(void) {
   }
 
   for(int i = 0; i < RECV_LEN + 16; i++) {
-    RxBufferPtr[i] = 1;
+    RxBufferPtr[i] = 0;
   }
 
   busy_wait(1000);
@@ -164,23 +164,23 @@ static void rendering_test(void) {
   start_start_write(1);
 
   busy_wait(1000);
-  run_dma(TxBufferPtr, SEND_LEN, RxBufferPtr, RECV_LEN + 16);
+  run_dma(TxBufferPtr, SEND_LEN, RxBufferPtr, RECV_LEN);
 
   printf("Checking Results\n");
-  check_results((uint32_t *) RxBufferPtr + 16);
+  check_results((uint32_t *) RxBufferPtr);
   start_start_write(0);
 
   // int zeros = 100;
   // for(int i = 0; i < RECV_LEN; i++) {
-  //   if (RxBufferPtr[i] == 1) {
+  //   if (RxBufferPtr[i] == 0) {
   //     zeros--;
   //   } else {
   //     zeros = 100;
   //   }
 
-  //   if (zeros == 0) {
-  //     break;
-  //   }
+  //   // if (zeros == 0) {
+  //   //   break;
+  //   // }
   //   if (RxBufferPtr[i] != 0)
   //     printf("got: %d\n", RxBufferPtr[i]);
   // }
@@ -215,10 +215,10 @@ int main(void)
 
 	puts("\nrvpld - CPU testing software built "__DATE__" "__TIME__"\n");
   start_start_write(0);
-  printf("Begin Configuring BFT!\r\n");
-  uart_sync();
-  init_regs();
-  printf("Configuring BFT Done\r\n");
+  // printf("Begin Configuring BFT!\r\n");
+  // uart_sync();
+  // init_regs();
+  // printf("Configuring BFT Done\r\n");
 
 
   while(1) {
