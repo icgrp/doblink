@@ -37,6 +37,7 @@ class Leaf2(Leaf):
                                   o_dout_leaf_interface2bft_1 = self.dout_leaf_interface2bft_1,
                                   i_din_leaf_bft2interface_2 = self.din_leaf_bft2interface_2,
                                   o_dout_leaf_interface2bft_2 = self.dout_leaf_interface2bft_2,
+                                  i_start = self.start,
                                   i_resend = self.resend,
                                   i_reset = self.reset
                                   )
@@ -50,6 +51,7 @@ class Leaf3(Leaf):
                                   o_dout_leaf_interface2bft_1 = self.dout_leaf_interface2bft_1,
                                   i_din_leaf_bft2interface_2 = self.din_leaf_bft2interface_2,
                                   o_dout_leaf_interface2bft_2 = self.dout_leaf_interface2bft_2,
+                                  i_start = self.start,
                                   i_resend = self.resend,
                                   i_reset = self.reset
                                   )
@@ -63,6 +65,7 @@ class Leaf4(Leaf):
                                   o_dout_leaf_interface2bft_1 = self.dout_leaf_interface2bft_1,
                                   i_din_leaf_bft2interface_2 = self.din_leaf_bft2interface_2,
                                   o_dout_leaf_interface2bft_2 = self.dout_leaf_interface2bft_2,
+                                  i_start = self.start,
                                   i_resend = self.resend,
                                   i_reset = self.reset
                                   )
@@ -76,6 +79,7 @@ class Leaf5(Leaf):
                                   o_dout_leaf_interface2bft_1 = self.dout_leaf_interface2bft_1,
                                   i_din_leaf_bft2interface_2 = self.din_leaf_bft2interface_2,
                                   o_dout_leaf_interface2bft_2 = self.dout_leaf_interface2bft_2,
+                                  i_start = self.start,
                                   i_resend = self.resend,
                                   i_reset = self.reset
                                   )

@@ -4,6 +4,7 @@ module leaf_3(
     output wire [48 : 0] dout_leaf_interface2bft_1,
     input wire [48 : 0] din_leaf_bft2interface_2,
     output wire [48 : 0] dout_leaf_interface2bft_2,
+    input wire start,
     input wire resend,
     input wire reset
     );
@@ -59,7 +60,7 @@ module leaf_3(
     rasterization2_m rasterization2_m_inst(
         .ap_clk(clk),
         .ap_rst_n(~reset),
-        .ap_start(1'b1),
+        .ap_start(start),
         .ap_done(),
         .ap_idle(),
         .Input_1_V_TDATA(dout_leaf_interface2user_1),
