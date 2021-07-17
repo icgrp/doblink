@@ -27,13 +27,17 @@ void run_dma(volatile uint32_t *send_buffer, uint32_t send_len,
     s2mm_enable_write(1);
     printf("Waiting for s2mm to finish\n");
     // while(!s2mm_done_read());
-    busy_wait(3000);
+    busy_wait(5000);
   }
   
 
+  printf("mm2s done: %d\n", mm2s_done_read());
+  printf("s2mm done: %d\n", s2mm_done_read());
   printf("mm2s offset: %d\n", mm2s_offset_read());
   printf("s2mm offset: %d\n", s2mm_offset_read());
   printf("DMA done\n");
 
+  // mm2s_enable_write(0);
+  // s2mm_enable_write(0);
   flush_l2_cache();
 }

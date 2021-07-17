@@ -99,6 +99,7 @@ static void reboot(void) {
 
 #define SEND_LEN 9576
 #define RECV_LEN 16384
+// #define RECV_LEN 100
 
 static char frame_buffer_print[256][256];
 
@@ -141,7 +142,7 @@ static void check_results(uint32_t * output)
 }
 
 volatile uint32_t TxBufferPtr[SEND_LEN]  __attribute__((aligned(16)));
-volatile uint32_t RxBufferPtr[RECV_LEN + 16]  __attribute__((aligned(16)));
+volatile uint32_t RxBufferPtr[RECV_LEN]  __attribute__((aligned(16)));
 
 static void rendering_test(void) {
   // printf("Write LED value 3!\r\n");
@@ -150,39 +151,30 @@ static void rendering_test(void) {
 
   // busy_wait(1000);
 
+  printf("TxBufferPtr: %#X\n", (int) TxBufferPtr);
+  printf("RxBufferPtr: %#X\n", (int) RxBufferPtr);
 
   for(int i = 0; i < SEND_LEN; i++) {
     TxBufferPtr[i] = input_data[i];
   }
 
-  for(int i = 0; i < RECV_LEN + 16; i++) {
+  for(int i = 0; i < RECV_LEN; i++) {
     RxBufferPtr[i] = 0;
   }
 
-  busy_wait(1000);
-  printf("Start!\r\n");
-  start_start_write(1);
+  // busy_wait(1000);
+  // printf("Start!\r\n");
+  // start_start_write(1);
 
-  busy_wait(1000);
+  // busy_wait(1000);
   run_dma(TxBufferPtr, SEND_LEN, RxBufferPtr, RECV_LEN);
 
   printf("Checking Results\n");
   check_results((uint32_t *) RxBufferPtr);
-  start_start_write(0);
+  // start_start_write(0);
 
-  // int zeros = 100;
-  // for(int i = 0; i < RECV_LEN; i++) {
-  //   if (RxBufferPtr[i] == 0) {
-  //     zeros--;
-  //   } else {
-  //     zeros = 100;
-  //   }
-
-  //   // if (zeros == 0) {
-  //   //   break;
-  //   // }
-  //   if (RxBufferPtr[i] != 0)
-  //     printf("got: %d\n", RxBufferPtr[i]);
+  // for (int i = 0; i < 20; i++) {
+  //   printf("%#X\n", RxBufferPtr[i]);
   // }
 }
 
@@ -214,7 +206,7 @@ int main(void)
 	uart_init();
 
 	puts("\nrvpld - CPU testing software built "__DATE__" "__TIME__"\n");
-  start_start_write(0);
+  // start_start_write(0);
   // printf("Begin Configuring BFT!\r\n");
   // uart_sync();
   // init_regs();
