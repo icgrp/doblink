@@ -98,8 +98,8 @@ static void reboot(void) {
 // }
 
 #define SEND_LEN 9576
-#define RECV_LEN 16384
-// #define RECV_LEN 100
+// #define RECV_LEN 16384
+#define RECV_LEN 80000
 
 static char frame_buffer_print[256][256];
 
@@ -162,20 +162,20 @@ static void rendering_test(void) {
     RxBufferPtr[i] = 0;
   }
 
-  // busy_wait(1000);
-  // printf("Start!\r\n");
-  // start_start_write(1);
+  busy_wait(1000);
+  printf("Start!\r\n");
+  start_start_write(1);
 
   // busy_wait(1000);
   run_dma(TxBufferPtr, SEND_LEN, RxBufferPtr, RECV_LEN);
 
   printf("Checking Results\n");
-  check_results((uint32_t *) RxBufferPtr);
-  // start_start_write(0);
+  // check_results((uint32_t *) RxBufferPtr);
+  start_start_write(0);
 
-  // for (int i = 0; i < 20; i++) {
-  //   printf("%#X\n", RxBufferPtr[i]);
-  // }
+  for (int i = 0; i < 20; i++) {
+    printf("%#X\n", RxBufferPtr[i]);
+  }
 }
 
 static void console_service(void)

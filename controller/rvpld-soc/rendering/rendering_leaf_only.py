@@ -136,9 +136,9 @@ class RenderingLeafOnly(Module):
         self.clock_domain = clock_domain
         self.submodules.interface_wrapper = interface_wrapper = InterfaceWrapperLeafOnly(clk, rst, platform)
         self.submodules.leaf_2 = leaf_2 = Leaf2(clk, rst, start, platform)
-        self.submodules.leaf_3 = leaf_3 = Leaf3(clk, rst, start, platform)
-        self.submodules.leaf_4 = leaf_4 = Leaf4(clk, rst, start, platform)
-        self.submodules.leaf_5 = leaf_5 = Leaf5(clk, rst, start, platform)
+        # self.submodules.leaf_3 = leaf_3 = Leaf3(clk, rst, start, platform)
+        # self.submodules.leaf_4 = leaf_4 = Leaf4(clk, rst, start, platform)
+        # self.submodules.leaf_5 = leaf_5 = Leaf5(clk, rst, start, platform)
 
         data_1 = Signal(49)
         data_2 = Signal(49)
@@ -162,16 +162,16 @@ class RenderingLeafOnly(Module):
 
         # leaves
         leaf_2.connect_input(data_1, data_3)
-        leaf_2.connect_output(data_5, data_6)
+        leaf_2.connect_output(data_2, data_4)
 
-        leaf_3.connect_input(data_6, data_5)
-        leaf_3.connect_output(data_7, data_8)
+        # leaf_3.connect_input(data_6, data_5)
+        # leaf_3.connect_output(data_2, data_4)
 
-        leaf_4.connect_input(data_8, data_7)
-        leaf_4.connect_output(data_9, data_a)
+        # leaf_4.connect_input(data_8, data_7)
+        # leaf_4.connect_output(data_9, data_a)
 
-        leaf_5.connect_input(data_a, data_9)
-        leaf_5.connect_output(data_2, data_4)
+        # leaf_5.connect_input(data_a, data_9)
+        # leaf_5.connect_output(data_2, data_4)
 
         self.platform.add_source_dir('rtl/leaf_interface/')
         self.platform.add_source_dir('rtl/rendering_leaf_only/')
