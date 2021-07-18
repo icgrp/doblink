@@ -151,8 +151,8 @@ static void rendering_test(void) {
 
   // busy_wait(1000);
 
-  printf("TxBufferPtr: %#X\n", (int) TxBufferPtr);
-  printf("RxBufferPtr: %#X\n", (int) RxBufferPtr);
+  // printf("TxBufferPtr: %#X\n", (int) TxBufferPtr);
+  // printf("RxBufferPtr: %#X\n", (int) RxBufferPtr);
 
   for(int i = 0; i < SEND_LEN; i++) {
     TxBufferPtr[i] = input_data[i];
@@ -173,7 +173,7 @@ static void rendering_test(void) {
   // check_results((uint32_t *) RxBufferPtr);
   start_start_write(0);
 
-  for (int i = 0; i < 20; i++) {
+  for (int i = 0; i < RECV_LEN; i++) {
     printf("%#X\n", RxBufferPtr[i]);
   }
 }

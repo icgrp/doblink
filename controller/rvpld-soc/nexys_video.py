@@ -179,9 +179,9 @@ class BaseSoC(SoCCore):
         # self.comb += sync_fifo.source.connect(s2mm.sink)
 
         # Rendering6Page ---------------------------------------------------------------------------
-        self.submodules.rendering = rendering = RenderingLeafOnly(clk, rst, platform, clock_domain='sys', start=start_signal)
+        self.submodules.rendering = rendering = RenderingLeafOnly(clk, rst, platform, clock_domain='sys')
         # self.submodules.rendering = rendering = Rendering6Mono(clk_bft, rst_bft, platform, start=start_signal, clock_domain='bft')
-        # self.submodules.rendering = rendering = RenderingMono(clk, rst, platform, clock_domain='sys')
+        # self.submodules.rendering = rendering = RenderingMono(clk, rst, platform, clock_domain='sys', start=start_signal)
         # self.submodules.rendering = rendering = Rendering6PageVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
         # self.submodules.rendering = rendering = Rendering6MonoVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
         rendering.connect_input(mm2s_axis)
@@ -195,9 +195,9 @@ class BaseSoC(SoCCore):
         self.sync += If(mm2s.source.valid, mm2s_ever_valid.eq(1))
         self.sync += If(s2mm.sink.valid, s2mm_ever_valid.eq(1))
         self.sync += If(s2mm.sink.valid & s2mm.sink.ready, s2mm_handshake.eq(1))
-        self.comb += platform.request("user_led", 2).eq(mm2s_ever_valid)
+        self.comb += platform.request("user_led", 2).eq(mm2s.source.valid)
         self.comb += platform.request("user_led", 3).eq(mm2s.source.ready)
-        self.comb += platform.request("user_led", 4).eq(s2mm_ever_valid)
+        self.comb += platform.request("user_led", 4).eq(s2mm.sink.valid)
         self.comb += platform.request("user_led", 5).eq(s2mm.sink.ready)
         self.comb += platform.request("user_led", 6).eq(s2mm._sink.last)
         self.comb += platform.request("user_led", 7).eq(s2mm_handshake)
