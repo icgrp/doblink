@@ -13,8 +13,8 @@ class RenderingMono(Module):
         self.platform = platform
         source_sigs = self.source.get_signals()
         sink_sigs = self.sink.get_signals()
-        self.platform.add_source_dir('rtl/rendering_4_debug')
-        # self.platform.add_source_dir('rtl/rendering_4_page')
+        # self.platform.add_source_dir('rtl/rendering_4_debug')
+        self.platform.add_source_dir('rtl/rendering_4_page')
         # self.platform.add_source_dir('rtl/user_fifo')
         self.specials += Instance("rendering_mono",
                             i_ap_clk = self.clk,

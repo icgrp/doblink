@@ -174,7 +174,7 @@ class RenderingLeafOnly(Module):
         # leaf_5.connect_output(data_2, data_4)
 
         self.platform.add_source_dir('rtl/leaf_interface/')
-        self.platform.add_source_dir('rtl/rendering_leaf_only/')
+        self.platform.add_source_dir('rtl/rendering_leaf_debug/')
         self.platform.add_source("rtl/SynFIFO.v")
 
     def connect_input(self, stream, clock_domain='sys'):

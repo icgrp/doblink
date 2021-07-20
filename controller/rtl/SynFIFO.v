@@ -12,7 +12,7 @@ module SynFIFO (
 parameter DSIZE = 32;
 parameter ASIZE = 9;
 parameter MEMDEPTH = 1<<ASIZE;
-parameter RAM_TYPE = "block";     // Type of RAM: string; "auto", "block", or "distributed";
+parameter RAM_TYPE = "distributed";     // Type of RAM: string; "auto", "block", or "distributed";
 
 output reg [DSIZE-1:0] rdata;
 output wfull;
