@@ -218,7 +218,7 @@ single_ram#(
     .PAYLOAD_BITS(PAYLOAD_BITS), 
     .NUM_BRAM_ADDR_BITS(NUM_BRAM_ADDR_BITS-1),
     .NUM_ADDR_BITS(NUM_ADDR_BITS-1),
-    .RAM_TYPE("distributed")
+    .RAM_TYPE("block")
     )ram_1(
     .clk(clk),
     .reset(reset),
@@ -299,7 +299,7 @@ single_ram#(
     .PAYLOAD_BITS(PAYLOAD_BITS), 
     .NUM_BRAM_ADDR_BITS(NUM_BRAM_ADDR_BITS-1),
     .NUM_ADDR_BITS(NUM_ADDR_BITS-1),
-    .RAM_TYPE("distributed")
+    .RAM_TYPE("block")
     )ram_2(
     .clk(clk),
     .reset(reset),

@@ -1,7 +1,7 @@
 module ram0#(
     parameter DWIDTH=16,
     parameter AWIDTH=7,
-    parameter RAM_TYPE = "distributed"
+    parameter RAM_TYPE = "block"
     )(                                                          
     // Write port                                                     
     input wrclk,                                                      
