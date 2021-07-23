@@ -138,10 +138,10 @@ class BaseSoC(SoCCore):
 
         # AXILite2BFT ------------------------------------------------------------------------------
         axi_bft_bus_sys = axi.AXILiteInterface(data_width=32, address_width=5, clock_domain="sys")
-        # axi_bft_bus_bft = axi.AXILiteInterface(data_width=32, address_width=5, clock_domain="bft")
-        # self.submodules.axil_cdc_sys2bft = axil_cdc_sys2bft = AxilCDC(clk, rst, clk_bft, rst_bft, self.platform, 'sys', 'bft')
-        # self.comb += axi_bft_bus_sys.connect(axil_cdc_sys2bft.slave)
-        # self.comb += axil_cdc_sys2bft.master.connect(axi_bft_bus_bft)
+        axi_bft_bus_bft = axi.AXILiteInterface(data_width=32, address_width=5, clock_domain="bft")
+        self.submodules.axil_cdc_sys2bft = axil_cdc_sys2bft = AxilCDC(clk, rst, clk_bft, rst_bft, self.platform, 'sys', 'bft')
+        self.comb += axi_bft_bus_sys.connect(axil_cdc_sys2bft.slave)
+        self.comb += axil_cdc_sys2bft.master.connect(axi_bft_bus_bft)
         axilite2bft_region = SoCRegion(origin=0x02010000, size=0x10000)
         self.bus.add_slave(name="axilite2bft", slave=axi_bft_bus_sys, region=axilite2bft_region)
 
@@ -152,10 +152,10 @@ class BaseSoC(SoCCore):
         self.add_csr("mm2s")
         mm2s_axis = axi.AXIStreamInterface(32)
         self.comb += mm2s.source.connect(mm2s_axis)
-        # self.submodules.input_cross_domain_converter = input_cross_domain_converter = ClockDomainCrossing(mm2s_axis.description, cd_from="sys", cd_to="bft", depth=8)
-        # mm2s_axis_bft = axi.AXIStreamInterface(32)
-        # self.comb += mm2s_axis.connect(input_cross_domain_converter.sink)
-        # self.comb += input_cross_domain_converter.source.connect(mm2s_axis_bft)
+        self.submodules.input_cross_domain_converter = input_cross_domain_converter = ClockDomainCrossing(mm2s_axis.description, cd_from="sys", cd_to="bft", depth=8)
+        mm2s_axis_bft = axi.AXIStreamInterface(32)
+        self.comb += mm2s_axis.connect(input_cross_domain_converter.sink)
+        self.comb += input_cross_domain_converter.source.connect(mm2s_axis_bft)
 
         # s2mm -------------------------------------------------------------------------------------
         # litedram_write_32 = LiteDRAMNativePort('both', 27, 32)
@@ -164,10 +164,10 @@ class BaseSoC(SoCCore):
         self.add_csr("s2mm")
         s2mm_axis = axi.AXIStreamInterface(32)
         self.comb += s2mm_axis.connect(s2mm.sink)
-        # self.submodules.output_cross_domain_converter = output_cross_domain_converter = ClockDomainCrossing(s2mm_axis.description, cd_from="bft", cd_to="sys", depth=8)
-        # s2mm_axis_bft = axi.AXIStreamInterface(32)
-        # self.comb += output_cross_domain_converter.source.connect(s2mm_axis)
-        # self.comb += s2mm_axis_bft.connect(output_cross_domain_converter.sink)
+        self.submodules.output_cross_domain_converter = output_cross_domain_converter = ClockDomainCrossing(s2mm_axis.description, cd_from="bft", cd_to="sys", depth=8)
+        s2mm_axis_bft = axi.AXIStreamInterface(32)
+        self.comb += output_cross_domain_converter.source.connect(s2mm_axis)
+        self.comb += s2mm_axis_bft.connect(output_cross_domain_converter.sink)
 
         # start ------------------------------------------------------------------------------------
         start_signal = Signal()
@@ -180,13 +180,13 @@ class BaseSoC(SoCCore):
         # self.comb += sync_fifo.source.connect(s2mm.sink)
 
         # Rendering6Page ---------------------------------------------------------------------------
-        self.submodules.rendering = rendering = Rendering4Page(clk, rst, platform, clock_domain='sys', start=start_signal)
+        self.submodules.rendering = rendering = Rendering4Page(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
         # self.submodules.rendering = rendering = Rendering6Mono(clk_bft, rst_bft, platform, start=start_signal, clock_domain='bft')
         # self.submodules.rendering = rendering = RenderingMono(clk, rst, platform, clock_domain='sys')
         # self.submodules.rendering = rendering = Rendering6PageVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
         # self.submodules.rendering = rendering = Rendering6MonoVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
-        rendering.connect_input(mm2s_axis)
-        rendering.connect_output(s2mm_axis)
+        rendering.connect_input(mm2s_axis_bft)
+        rendering.connect_output(s2mm_axis_bft)
         self.comb += platform.request("user_led", 0).eq(s2mm.fsm.ongoing("RUN"))
         self.comb += platform.request("user_led", 1).eq(s2mm.fsm.ongoing("DONE"))
         mm2s_ever_valid = Signal()
@@ -201,7 +201,7 @@ class BaseSoC(SoCCore):
         self.comb += platform.request("user_led", 5).eq(s2mm.sink.ready)
         self.comb += platform.request("user_led", 6).eq(s2mm._sink.last)
         self.comb += platform.request("user_led", 7).eq(s2mm_handshake)
-        rendering.connect_axil(axi_bft_bus_sys)
+        rendering.connect_axil(axi_bft_bus_bft)
 
 # Build --------------------------------------------------------------------------------------------
 
