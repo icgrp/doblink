@@ -21,55 +21,55 @@
 #define WRITE_OP 0
 #define READ_OP 1
 #define CHECK_ACK 2
-//void read_from_fifo(int * ctrl_reg)
-//{
-//  //check if the input fifo is empty
-//  while((lx_read32(SLV_REG3)>>1)&&1);
+void read_from_fifo(int * ctrl_reg)
+{
+  //check if the input fifo is empty
+  while((lx_read32(SLV_REG3)>>1)&&1);
 
-//  //toggle the rd_en bits to start one reading
-//  *ctrl_reg = (*ctrl_reg) ^ 0x00000002;
-//  //input fifo rd_en = SLV_REG7[1]
-//  lx_write32(SLV_REG7, *ctrl_reg);
+  //toggle the rd_en bits to start one reading
+  *ctrl_reg = (*ctrl_reg) ^ 0x00000002;
+  //input fifo rd_en = SLV_REG7[1]
+  lx_write32(SLV_REG7, *ctrl_reg);
 
-//  //bft2arm_packet = {1'b1, SLV_REG1[15:0], SLV_REG0[31:0]}
-//  // rev_0 = lx_read32(SLV_REG0);
-//  // rev_1 = lx_read32(SLV_REG1);
+  //bft2arm_packet = {1'b1, SLV_REG1[15:0], SLV_REG0[31:0]}
+  // rev_0 = lx_read32(SLV_REG0);
+  // rev_1 = lx_read32(SLV_REG1);
 
-//  //xil_printf( "The received data is %08x_%08d \n", rev_1, rev_0);
+  //xil_printf( "The received data is %08x_%08d \n", rev_1, rev_0);
 
-//}
-
-
-//static void write_to_fifo(int high_32_bits, int low_32_bits, int * ctrl_reg)
-//{
-//    //arm2bft_packet = {SLV_REG5[16:0], SLV_REG4[31:0]}
-//    lx_write32(SLV_REG5, high_32_bits);
-//    lx_write32(SLV_REG4, low_32_bits);
-//    *ctrl_reg = (*ctrl_reg) ^ 0x00000001;
-//    lx_write32(SLV_REG7, *ctrl_reg);
-//}
+}
 
 
-//void init_regs(void)
-//{
-//   int i = 0;
-//   static int ctrl_reg = 0;
+static void write_to_fifo(int high_32_bits, int low_32_bits, int * ctrl_reg)
+{
+    //arm2bft_packet = {SLV_REG5[16:0], SLV_REG4[31:0]}
+    lx_write32(SLV_REG5, high_32_bits);
+    lx_write32(SLV_REG4, low_32_bits);
+    *ctrl_reg = (*ctrl_reg) ^ 0x00000001;
+    lx_write32(SLV_REG7, *ctrl_reg);
+}
 
-//   for (i=4; i<8; i++) {lx_write32(SLV_REG0+i*4, 0x00000000);}
 
-////coloringFB_bot_m.Output_1->DMA.Input_1
-//  write_to_fifo(0x5000, 0x91201fc0, &ctrl_reg);
-//  write_to_fifo(0x1100, 0x25900000, &ctrl_reg);
-////zculling_top.Output_1->coloringFB_bot_m.Input_1
-//  write_to_fifo(0x4000, 0x95201fc0, &ctrl_reg);
-//  write_to_fifo(0x5100, 0x24900000, &ctrl_reg);
-////data_redir_m.Output_1->rasterization2_m.Input_1
-//  write_to_fifo(0x2000, 0x93201fc0, &ctrl_reg);
-//  write_to_fifo(0x3100, 0x22900000, &ctrl_reg);
-////rasterization2_m.Output_1->zculling_top.Input_1
-//  write_to_fifo(0x3000, 0x94201fc0, &ctrl_reg);
-//  write_to_fifo(0x4100, 0x23900000, &ctrl_reg);
-////DMA.Output_1->data_redir_m.Input_1
-//  write_to_fifo(0x1000, 0x92201fc0, &ctrl_reg);
-//  write_to_fifo(0x2100, 0x21900000, &ctrl_reg);
-//}
+void init_regs(void)
+{
+   int i = 0;
+   static int ctrl_reg = 0;
+
+   for (i=4; i<8; i++) {lx_write32(SLV_REG0+i*4, 0x00000000);}
+
+//coloringFB_bot_m.Output_1->DMA.Input_1
+  write_to_fifo(0x5000, 0x91201fc0, &ctrl_reg);
+  write_to_fifo(0x1100, 0x25900000, &ctrl_reg);
+//zculling_top.Output_1->coloringFB_bot_m.Input_1
+  write_to_fifo(0x4000, 0x95201fc0, &ctrl_reg);
+  write_to_fifo(0x5100, 0x24900000, &ctrl_reg);
+//data_redir_m.Output_1->rasterization2_m.Input_1
+  write_to_fifo(0x2000, 0x93201fc0, &ctrl_reg);
+  write_to_fifo(0x3100, 0x22900000, &ctrl_reg);
+//rasterization2_m.Output_1->zculling_top.Input_1
+  write_to_fifo(0x3000, 0x94201fc0, &ctrl_reg);
+  write_to_fifo(0x4100, 0x23900000, &ctrl_reg);
+//DMA.Output_1->data_redir_m.Input_1
+  write_to_fifo(0x1000, 0x92201fc0, &ctrl_reg);
+  write_to_fifo(0x2100, 0x21900000, &ctrl_reg);
+}

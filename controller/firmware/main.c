@@ -206,11 +206,11 @@ int main(void)
 	uart_init();
 
 	puts("\nrvpld - CPU testing software built "__DATE__" "__TIME__"\n");
-  // start_start_write(0);
-  // printf("Begin Configuring BFT!\r\n");
-  // uart_sync();
-  // init_regs();
-  // printf("Configuring BFT Done\r\n");
+  start_start_write(0);
+  printf("Begin Configuring BFT!\r\n");
+  uart_sync();
+  init_regs();
+  printf("Configuring BFT Done\r\n");
 
 
   while(1) {
