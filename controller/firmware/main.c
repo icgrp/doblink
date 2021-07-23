@@ -169,13 +169,13 @@ static void rendering_test(void) {
   // busy_wait(1000);
   run_dma(TxBufferPtr, SEND_LEN, RxBufferPtr, RECV_LEN);
 
+  start_start_write(0);
   printf("Checking Results\n");
   check_results((uint32_t *) RxBufferPtr);
-  start_start_write(0);
 
-  // for (int i = 0; i < RECV_LEN; i++) {
-  //   printf("%#X\n", RxBufferPtr[i]);
-  // }
+//   for (int i = 0; i < 200; i++) {
+//     printf("%#X\n", RxBufferPtr[i]);
+//   }
 }
 
 static void console_service(void)

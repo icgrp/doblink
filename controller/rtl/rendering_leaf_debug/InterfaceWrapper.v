@@ -53,10 +53,10 @@ module InterfaceWrapperLeafOnly(
         .din_leaf_bft2interface(din_leaf_bft2interface_1),
         .dout_leaf_interface2bft(dout_leaf_interface2bft_1),
         .resend(resend),
-        .ack_user2interface(1'b0),
         .ack_interface2user({Input_1_V_V_ap_ack}),
         .vld_user2interface({Input_1_V_V_ap_vld}),
-        .din_leaf_user2interface({Input_1_V_V})
+        .din_leaf_user2interface({Input_1_V_V}),
+        .ack_user2interface(1'b0)
     );
 
     leaf_interface #(

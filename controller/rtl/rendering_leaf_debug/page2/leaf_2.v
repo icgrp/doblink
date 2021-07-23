@@ -30,12 +30,13 @@ module leaf_2(
         .reset(reset),
         .din_leaf_bft2interface(din_leaf_bft2interface_1),
         .dout_leaf_interface2bft(dout_leaf_interface2bft_1),
-        .vld_user2interface(1'b0),
         .dout_leaf_interface2user({dout_leaf_interface2user_1}),
         .vld_interface2user({vld_interface2user_1}),
         .ack_user2interface({ack_user2interface_1}),
+        .vld_user2interface(1'b0),
         .resend(resend)
     );
+
     leaf_interface #(
         .PACKET_BITS(49),
         .PAYLOAD_BITS(32), 
@@ -71,6 +72,10 @@ module leaf_2(
         .Output_1_V_TREADY(ack_interface2user_1),
         .ap_ready()
         );  
+
+    // assign din_leaf_user2interface_1 = dout_leaf_interface2user_1;
+    // assign vld_user2interface_1 = vld_interface2user_1;
+    // assign ack_user2interface_1 = ack_interface2user_1;
 
     
 endmodule

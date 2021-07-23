@@ -158,6 +158,9 @@ class RenderingLeafOnly(Module):
         self.comb += data_2.eq(interface_wrapper.dout_leaf_interface2bft_2)
         self.comb += interface_wrapper.din_leaf_bft2interface_2.eq(data_4)
 
+        # self.comb += interface_wrapper.din_leaf_bft2interface_2.eq(interface_wrapper.dout_leaf_interface2bft_1)
+        # self.comb += interface_wrapper.din_leaf_bft2interface_1.eq(interface_wrapper.dout_leaf_interface2bft_2)
+
         self.comb += interface_wrapper.resend.eq(0)
 
         # leaves

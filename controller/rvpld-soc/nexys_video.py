@@ -95,6 +95,7 @@ class BaseSoC(SoCCore):
             self.submodules.ddrphy = s7ddrphy.A7DDRPHY(platform.request("ddram"),
                 memtype      = "DDR3",
                 nphases      = 4,
+                cl           = 7,
                 sys_clk_freq = sys_clk_freq)
             self.add_csr("ddrphy")
             self.add_sdram("sdram",
@@ -179,7 +180,7 @@ class BaseSoC(SoCCore):
         # self.comb += sync_fifo.source.connect(s2mm.sink)
 
         # Rendering6Page ---------------------------------------------------------------------------
-        self.submodules.rendering = rendering = RenderingLeafOnly(clk, rst, platform, clock_domain='sys')
+        self.submodules.rendering = rendering = RenderingLeafOnly(clk, rst, platform, clock_domain='sys', start=start_signal)
         # self.submodules.rendering = rendering = Rendering6Mono(clk_bft, rst_bft, platform, start=start_signal, clock_domain='bft')
         # self.submodules.rendering = rendering = RenderingMono(clk, rst, platform, clock_domain='sys')
         # self.submodules.rendering = rendering = Rendering6PageVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)

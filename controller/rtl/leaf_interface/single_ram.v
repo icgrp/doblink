@@ -43,7 +43,14 @@ reg valid;
 
 
 
-(* ram_style = "distributed" *) reg vld_mem[0:BRAM_DEPTH-1];
+(* ram_style = "distributed" *) reg vld_mem [0:BRAM_DEPTH-1];
+
+integer i;
+initial begin
+  for(i=0; i<BRAM_DEPTH; i=i+1) begin
+    vld_mem[i] = 0;
+  end
+end
 
 
 always@(posedge clk) begin

@@ -13,26 +13,15 @@ input[AWIDTH-1:0] addr0;
 input ce0;
 input[DWIDTH-1:0] d0;
 input we0;
-output wire[DWIDTH-1:0] q0;
+output reg[DWIDTH-1:0] q0;
 input clk;
 
 reg [DWIDTH-1:0] ram[0:MEM_SIZE-1];
-reg [DWIDTH-1:0] q0_t0;
-reg [DWIDTH-1:0] q0_t1;
 
 initial begin
     $readmemh("./zculling_top_z_buffer_V_ram.dat", ram);
 end
 
-assign q0 = q0_t1;
-
-always @(posedge clk)  
-begin
-    if (ce0) 
-    begin
-        q0_t1 <= q0_t0;
-    end
-end
 
 
 always @(posedge clk)  
@@ -40,7 +29,7 @@ begin
     if (ce0) begin
         if (we0) 
             ram[addr0] <= d0; 
-        q0_t0 <= ram[addr0];
+        q0 <= ram[addr0];
     end
 end
 
