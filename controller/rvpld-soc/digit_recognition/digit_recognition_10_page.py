@@ -28,11 +28,6 @@ class Leaf(Module):
 class Leaf2(Leaf):
     def __init__(self, clk, rst, start, platform):
         super().__init__(clk, rst, start, platform)
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn1/leaf_2.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn1/update_knn1.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn1/update_knn1_trainbkb.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn1/update_knn1_trainbkb_ram.dat')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn1/popcount_knn1.v')
         self.specials += Instance('leaf_2',
                                   i_clk = self.clk,
                                   i_din_leaf_bft2interface = self.din_leaf_bft2interface,
@@ -45,11 +40,6 @@ class Leaf2(Leaf):
 class Leaf3(Leaf):
     def __init__(self, clk, rst, start, platform):
         super().__init__(clk, rst, start, platform)
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn2/update_knn2_trainbkb_ram.dat')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn2/update_knn2_trainbkb.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn2/update_knn2.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn2/leaf_3.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn2/popcount_knn2.v')
         self.specials += Instance('leaf_3',
                                   i_clk = self.clk,
                                   i_din_leaf_bft2interface = self.din_leaf_bft2interface,
@@ -62,11 +52,6 @@ class Leaf3(Leaf):
 class Leaf4(Leaf):
     def __init__(self, clk, rst, start, platform):
         super().__init__(clk, rst, start, platform)
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn3/update_knn3_trainbkb_ram.dat')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn3/update_knn3_trainbkb.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn3/update_knn3.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn3/leaf_4.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn3/popcount_knn3.v')
         self.specials += Instance('leaf_4',
                                   i_clk = self.clk,
                                   i_din_leaf_bft2interface = self.din_leaf_bft2interface,
@@ -79,11 +64,6 @@ class Leaf4(Leaf):
 class Leaf5(Leaf):
     def __init__(self, clk, rst, start, platform):
         super().__init__(clk, rst, start, platform)
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn4/update_knn4_trainbkb_ram.dat')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn4/update_knn4_trainbkb.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn4/update_knn4.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn4/leaf_5.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn4/popcount_knn4.v')
         self.specials += Instance('leaf_5',
                                   i_clk = self.clk,
                                   i_din_leaf_bft2interface = self.din_leaf_bft2interface,
@@ -96,11 +76,6 @@ class Leaf5(Leaf):
 class Leaf6(Leaf):
     def __init__(self, clk, rst, start, platform):
         super().__init__(clk, rst, start, platform)
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn5/leaf_6.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn5/update_knn5.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn5/update_knn5_trainbkb.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn5/update_knn5_trainbkb_ram.dat')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn5/popcount_knn5.v')
         self.specials += Instance('leaf_6',
                                   i_clk = self.clk,
                                   i_din_leaf_bft2interface = self.din_leaf_bft2interface,
@@ -113,11 +88,6 @@ class Leaf6(Leaf):
 class Leaf7(Leaf):
     def __init__(self, clk, rst, start, platform):
         super().__init__(clk, rst, start, platform)
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn6/leaf_7.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn6/update_knn6_trainbkb_ram.dat')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn6/update_knn6_trainbkb.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn6/update_knn6.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn6/popcount_knn6.v')
         self.specials += Instance('leaf_7',
                                   i_clk = self.clk,
                                   i_din_leaf_bft2interface = self.din_leaf_bft2interface,
@@ -130,11 +100,6 @@ class Leaf7(Leaf):
 class Leaf8(Leaf):
     def __init__(self, clk, rst, start, platform):
         super().__init__(clk, rst, start, platform)
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn7/leaf_8.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn7/update_knn7_trainbkb_ram.dat')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn7/update_knn7_trainbkb.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn7/update_knn7.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn7/popcount_knn7.v')
         self.specials += Instance('leaf_8',
                                   i_clk = self.clk,
                                   i_din_leaf_bft2interface = self.din_leaf_bft2interface,
@@ -147,11 +112,6 @@ class Leaf8(Leaf):
 class Leaf9(Leaf):
     def __init__(self, clk, rst, start, platform):
         super().__init__(clk, rst, start, platform)
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn8/leaf_9.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn8/update_knn8_trainbkb_ram.dat')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn8/update_knn8_trainbkb.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn8/update_knn8.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn8/popcount_knn8.v')
         self.specials += Instance('leaf_9',
                                   i_clk = self.clk,
                                   i_din_leaf_bft2interface = self.din_leaf_bft2interface,
@@ -164,11 +124,6 @@ class Leaf9(Leaf):
 class Leaf10(Leaf):
     def __init__(self, clk, rst, start, platform):
         super().__init__(clk, rst, start, platform)
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn9/leaf_10.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn9/update_knn9_trainbkb_ram.dat')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn9/update_knn9_trainbkb.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn9/update_knn9.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn9/popcount_knn9.v')
         self.specials += Instance('leaf_10',
                                   i_clk = self.clk,
                                   i_din_leaf_bft2interface = self.din_leaf_bft2interface,
@@ -181,13 +136,6 @@ class Leaf10(Leaf):
 class Leaf11(Leaf):
     def __init__(self, clk, rst, start, platform):
         super().__init__(clk, rst, start, platform)
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn10/leaf_11.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn10/update_knn10_traibkb_ram.dat')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn10/update_knn10_traibkb.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn10/update_knn10_mux_dEe.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn10/update_knn10_mux_eOg.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn10/update_knn10.v')
-        self.platform.add_source('rtl/digit_recognition_pages/update_knn10/popcount_knn10.v')
         self.specials += Instance('leaf_11',
                                   i_clk = self.clk,
                                   i_din_leaf_bft2interface = self.din_leaf_bft2interface,
@@ -241,22 +189,8 @@ class DigitRecognition10Page(Module):
         leaf_9.connect(bft.din_leaf_9, bft.dout_leaf_9, bft.resend_9)
         leaf_10.connect(bft.din_leaf_10, bft.dout_leaf_10, bft.resend_10)
         leaf_11.connect(bft.din_leaf_11, bft.dout_leaf_11, bft.resend_11)
-        self.platform.add_source('rtl/leaf_interface/Config_Controls.v')
-        self.platform.add_source('rtl/leaf_interface/converge_ctrl.v')
-        self.platform.add_source('rtl/leaf_interface/ExtractCtrl.v')
-        self.platform.add_source('rtl/leaf_interface/Input_Port_Cluster.v')
-        self.platform.add_source('rtl/leaf_interface/Input_Port.v')
-        self.platform.add_source('rtl/leaf_interface/leaf_interface.v')
-        self.platform.add_source('rtl/leaf_interface/Output_Port_Cluster.v')
-        self.platform.add_source('rtl/leaf_interface/Output_Port.v')
-        self.platform.add_source('rtl/leaf_interface/read_b_in.v')
-        self.platform.add_source('rtl/leaf_interface/Stream_Flow_Control.v')
-        self.platform.add_source('rtl/leaf_interface/write_b_in.v')
-        self.platform.add_source('rtl/leaf_interface/write_b_out.v')
-        self.platform.add_source('rtl/leaf_interface/user_kernel.v')
-        self.platform.add_source('rtl/leaf_interface/InterfaceWrapper.v')
-        self.platform.add_source('rtl/leaf_interface/single_ram.v')
-        self.platform.add_source('rtl/leaf_interface/ram0.v')
+        self.platform.add_source_dir('rtl/leaf_interface/')
+        self.platform.add_source_dir('rtl/digit_recognition_pages/')
 
     def connect_input(self, stream, clock_domain='sys'):
         assert isinstance(stream, Endpoint)
