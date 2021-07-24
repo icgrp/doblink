@@ -9,9 +9,9 @@
         "GRID_Y_MIN": 1,
         "synth_tiles_range":
             {
-                "GRID_X_MIN": 50,
+                "GRID_X_MIN": 10,
                 "GRID_Y_MIN": 1,
-                "GRID_X_MAX": 85,
+                "GRID_X_MAX": 48,
                 "GRID_Y_MAX": 51
             }
         },

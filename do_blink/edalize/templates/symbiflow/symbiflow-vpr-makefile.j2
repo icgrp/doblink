@@ -225,6 +225,9 @@ $(foreach d,$(wildcard $(verilog_src)/*/*.dat),$(notdir $(patsubst %/,%,$(dir $d
 $(foreach d,$(wildcard $(verilog_src)/*/*.init),$(notdir $(patsubst %/,%,$(dir $d)))/$(notdir $d)): %.init: $(verilog_src)/%.init | $$(abspath $$(dir %))
 	- cp $< $@
 
+$(foreach d,$(wildcard $(verilog_src)/*/*.sdc),$(notdir $(patsubst %/,%,$(dir $d)))/$(notdir $d)): %.sdc: $(verilog_src)/%.sdc | $$(abspath $$(dir %))
+	- cp $< $@
+
 $(foreach d,$(wildcard $(verilog_src)/*/*.xdc),$(notdir $(patsubst %/,%,$(dir $d)))/$(notdir $d)): %.xdc: $(verilog_src)/%.xdc | $$(abspath $$(dir %))
 	- cp $< $@
 
@@ -239,7 +242,7 @@ $(foreach d,$(wildcard $(verilog_src)/*/*.v),$(notdir $(patsubst %/,%,$(dir $d))
 
 $(targets:=/top_synth.json): %/top_synth.json: $$(addprefix %/,$$(notdir $$(wildcard $(verilog_src)/%/*.init))) $$(addprefix %/,$$(notdir $$(wildcard $(verilog_src)/%/*.xdc))) $$(addprefix %/,$$(notdir $$(wildcard $(verilog_src)/%/*.dat))) $$(addprefix %/,$$(notdir $$(wildcard $(verilog_src)/%/*.v))) $$(addprefix %/,$$(notdir $$(wildcard $(verilog_src)/%/*.sv))) $$(addprefix %/,$$(notdir $$(wildcard $(verilog_src)/%/*.vh))) | $$(abspath %)
 	@ echo $*
-	- cd $* && /usr/bin/cmake -E env PYTHON3=$(PYTHON) UTILS_PATH=$(symb_dir)/utils TECHMAP_PATH=$(symb_dir)/xc/xc7/techmap symbiflow-arch-defs_SOURCE_DIR=$(symb_dir) symbiflow-arch-defs_BINARY_DIR=$(doblink_dir)/build/third_party/symbiflow-arch-defs OUT_JSON=top_synth.json OUT_SDC=top_synth.sdc OUT_SYNTH_V=top_synth.vout OUT_FASM_EXTRA=top_fasm_extra.fasm PART_JSON= INPUT_XDC_FILE={{ input_xdc_file }} USE_ROI=TRUE PCF_FILE={{ top_pcf }} PINMAP_FILE={{ pinmap_csv }} /usr/bin/time --output=$(@F).time $(YOSYS) -p "tcl $(YOSYS_SYNTH_SCRIPT)" -l top_synth.json.log *.v || (echo "$(@F) failed $$?"; exit 1)
+	- cd $* && /usr/bin/cmake -E env PYTHON3=$(PYTHON) UTILS_PATH=$(symb_dir)/utils TECHMAP_PATH=$(symb_dir)/xc/xc7/techmap symbiflow-arch-defs_SOURCE_DIR=$(symb_dir) symbiflow-arch-defs_BINARY_DIR=$(doblink_dir)/build/third_party/symbiflow-arch-defs OUT_JSON=top_synth.json OUT_SDC=out.sdc OUT_SYNTH_V=top_synth.vout OUT_FASM_EXTRA=top_fasm_extra.fasm PART_JSON=$(shell $(symb_dir)/env/conda/envs/symbiflow_arch_def_base/bin/prjxray-config)/$(PART_ARCH)/$(PART)/part.json INPUT_XDC_FILE={{ input_xdc_file }} USE_ROI=TRUE PCF_FILE={{ top_pcf }} PINMAP_FILE={{ pinmap_csv }} /usr/bin/time --output=$(@F).time $(YOSYS) -p "tcl $(YOSYS_SYNTH_SCRIPT)" -l top_synth.json.log *.v || (echo "$(@F) failed $$?"; exit 1)
 	- cd $* && /usr/bin/cmake -E touch top_fasm_extra.fasm
 	- cd $* && /usr/bin/cmake -E touch_nocreate top_fasm_extra.fasm
 	- cd $* && mv top_synth.vout.premap.v top_synth.vout.premap.vout

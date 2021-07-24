@@ -6,6 +6,7 @@ defaults:
   - override /do_blink/digit_recognition@do_blink.fig.digit_recognition: []
   - override /do_blink/rendering@do_blink.fig.rendering: []
   - override /do_blink/overlay@do_blink.fig.overlay: ["top"]
+  - override /do_blink/rendering_4_page@do_blink.fig.rendering_4_page: []
   # - override /hydra/launcher: submitit_slurm
 
 do_blink:

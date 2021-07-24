@@ -4,7 +4,7 @@
         "name": "pr6",
         "pins_per_tile": 10,
         "GRID_X_MAX": 134,
-        "GRID_X_MIN": 87,
+        "GRID_X_MIN": 77,
         "GRID_Y_MAX": 207,
         "GRID_Y_MIN": 157
         },

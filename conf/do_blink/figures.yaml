@@ -38,6 +38,11 @@ defaults:
     - "rasterization2_m"
     - "zculling_bot"
     - "zculling_top"
+  - rendering_4_page@fig.rendering_4_page:
+    - "coloringFB_bot_m"
+    - "data_redir_m"
+    - "rasterization2_m"
+    - "zculling_top"
   - overlay@fig.overlay:
     - "top"
 

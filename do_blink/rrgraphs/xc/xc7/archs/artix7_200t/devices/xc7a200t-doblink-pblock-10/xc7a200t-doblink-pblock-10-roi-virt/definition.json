@@ -4,7 +4,7 @@
         "name": "pr10",
         "pins_per_tile": 10,
         "GRID_X_MAX": 254,
-        "GRID_X_MIN": 216,
+        "GRID_X_MIN": 203,
         "GRID_Y_MAX": 207,
         "GRID_Y_MIN": 157
         },
@@ -19,13 +19,13 @@
             "name": "resend",
             "type": "in",
             "data_type": "scalar",
-            "side": "west"
+            "side": "north"
         },
         {
             "name": "reset",
             "type": "in",
             "data_type": "scalar",
-            "side": "west"
+            "side": "north"
         },
         {
             "name": "dout_leaf_interface2bft",
@@ -33,7 +33,7 @@
             "data_type": "bus",
             "msb": 48,
             "lsb": 0,
-            "side": "west"
+            "side": "north"
         },
         {
             "name": "din_leaf_bft2interface",
@@ -41,13 +41,13 @@
             "data_type": "bus",
             "msb": 48,
             "lsb": 0,
-            "side": "west"
+            "side": "north"
         },
         {
             "name": "ap_start",
             "type": "in",
             "data_type": "scalar",
-            "side": "west"
+            "side": "north"
         }
     ]
 }

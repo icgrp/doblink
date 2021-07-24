@@ -6,14 +6,7 @@
         "GRID_X_MAX": 254,
         "GRID_X_MIN": 190,
         "GRID_Y_MAX": 51,
-        "GRID_Y_MIN": 1,
-        "synth_tiles_range":
-            {
-                "GRID_X_MIN": 190,
-                "GRID_Y_MIN": 1,
-                "GRID_X_MAX": 214,
-                "GRID_Y_MAX": 51
-            }
+        "GRID_Y_MIN": 1
         },
     "ports": [
         {
