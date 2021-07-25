@@ -37,6 +37,7 @@ from pld_axi import PldAXILiteInterface
 from axilite2led import AxiLite2Led
 from rendering.rendering_mono import RenderingMono
 from rendering.rendering_6_no_bft import Rendering6Mono
+from rendering.rendering_4_no_bft import Rendering4Mono
 from rendering.rendering_6_no_bft_vitis import Rendering6MonoVitis
 from rendering.rendering_6_page import Rendering6Page
 from rendering.rendering_4_page import Rendering4Page
@@ -180,7 +181,7 @@ class BaseSoC(SoCCore):
         # self.comb += sync_fifo.source.connect(s2mm.sink)
 
         # Rendering6Page ---------------------------------------------------------------------------
-        self.submodules.rendering = rendering = Rendering4Page(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
+        self.submodules.rendering = rendering = Rendering4Mono(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
         # self.submodules.rendering = rendering = Rendering6Mono(clk_bft, rst_bft, platform, start=start_signal, clock_domain='bft')
         # self.submodules.rendering = rendering = RenderingMono(clk, rst, platform, clock_domain='sys')
         # self.submodules.rendering = rendering = Rendering6PageVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
@@ -201,7 +202,7 @@ class BaseSoC(SoCCore):
         self.comb += platform.request("user_led", 5).eq(s2mm.sink.ready)
         self.comb += platform.request("user_led", 6).eq(s2mm._sink.last)
         self.comb += platform.request("user_led", 7).eq(s2mm_handshake)
-        rendering.connect_axil(axi_bft_bus_bft)
+        # rendering.connect_axil(axi_bft_bus_bft)
 
 # Build --------------------------------------------------------------------------------------------
 

@@ -99,7 +99,7 @@ static void reboot(void) {
 
 #define SEND_LEN 9576
 #define RECV_LEN 16384
-// #define RECV_LEN 80000
+// #define RECV_LEN 100000
 
 static char frame_buffer_print[256][256];
 
@@ -171,11 +171,11 @@ static void rendering_test(void) {
 
   start_start_write(0);
   printf("Checking Results\n");
-  check_results((uint32_t *) RxBufferPtr);
+  // check_results((uint32_t *) RxBufferPtr);
 
-//   for (int i = 0; i < 200; i++) {
-//     printf("%#X\n", RxBufferPtr[i]);
-//   }
+  for (int i = 0; i < RECV_LEN; i++) {
+    printf("%#X\n", RxBufferPtr[i]);
+  }
 }
 
 static void console_service(void)
@@ -207,10 +207,10 @@ int main(void)
 
 	puts("\nrvpld - CPU testing software built "__DATE__" "__TIME__"\n");
   start_start_write(0);
-  printf("Begin Configuring BFT!\r\n");
-  uart_sync();
-  init_regs();
-  printf("Configuring BFT Done\r\n");
+  // printf("Begin Configuring BFT!\r\n");
+  // uart_sync();
+  // init_regs();
+  // printf("Configuring BFT Done\r\n");
 
 
   while(1) {

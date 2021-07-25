@@ -18,6 +18,10 @@ module rendering_mono (
     wire vld_2;
     wire ack_2;
 
+    wire [31:0] data_3;
+    wire vld_3;
+    wire ack_3;
+
     // data_redir_m data_redir_m_inst(
     //     .ap_clk(ap_clk),
     //     .ap_rst_n(ap_rst_n),
@@ -102,24 +106,24 @@ module rendering_mono (
         .Input_1_V_TDATA(data_2),
         .Input_1_V_TVALID(vld_2),
         .Input_1_V_TREADY(ack_2),
+        .Output_1_V_TDATA(data_3),
+        .Output_1_V_TVALID(vld_3),
+        .Output_1_V_TREADY(ack_3),
+        .ap_ready()
+        );  
+
+    coloringFB_bot_m coloringFB_bot_m_inst(
+        .ap_clk(ap_clk),
+        .ap_rst_n(ap_rst_n),
+        .ap_start(ap_start),
+        .ap_done(),
+        .ap_idle(),
+        .Input_1_V_TDATA(data_3),
+        .Input_1_V_TVALID(vld_3),
+        .Input_1_V_TREADY(ack_3),
         .Output_1_V_TDATA(Output_1_V_TDATA),
         .Output_1_V_TVALID(Output_1_V_TVALID),
         .Output_1_V_TREADY(Output_1_V_TREADY),
         .ap_ready()
         );  
-
-    // coloringFB_bot_m coloringFB_bot_m_inst(
-    //     .ap_clk(ap_clk),
-    //     .ap_rst_n(ap_rst_n),
-    //     .ap_start(ap_start),
-    //     .ap_done(),
-    //     .ap_idle(),
-    //     .Input_1_V_TDATA(data_1),
-    //     .Input_1_V_TVALID(vld_1),
-    //     .Input_1_V_TREADY(ack_1),
-    //     .Output_1_V_TDATA(Output_1_V_TDATA),
-    //     .Output_1_V_TVALID(Output_1_V_TVALID),
-    //     .Output_1_V_TREADY(Output_1_V_TREADY),
-    //     .ap_ready()
-    //     );  
 endmodule
