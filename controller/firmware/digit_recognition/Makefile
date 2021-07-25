@@ -1,10 +1,10 @@
-BUILD_DIR=../build
+BUILD_DIR=../../build
 
 SOURCES:=$(wildcard *.c)
 OBJECTS:=$(patsubst %.c, %.o, $(SOURCES))
 
 include $(BUILD_DIR)/software/include/generated/variables.mak
-include ../common.mak
+include ../../common.mak
 
 all: clean firmware.bin
 

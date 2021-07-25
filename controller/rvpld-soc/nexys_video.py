@@ -180,14 +180,24 @@ class BaseSoC(SoCCore):
         # self.comb += mm2s.source.connect(sync_fifo.sink)
         # self.comb += sync_fifo.source.connect(s2mm.sink)
 
-        # Rendering6Page ---------------------------------------------------------------------------
-        self.submodules.rendering = rendering = Rendering4Mono(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
-        # self.submodules.rendering = rendering = Rendering6Mono(clk_bft, rst_bft, platform, start=start_signal, clock_domain='bft')
-        # self.submodules.rendering = rendering = RenderingMono(clk, rst, platform, clock_domain='sys')
-        # self.submodules.rendering = rendering = Rendering6PageVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
-        # self.submodules.rendering = rendering = Rendering6MonoVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
-        rendering.connect_input(mm2s_axis_bft)
-        rendering.connect_output(s2mm_axis_bft)
+        benchmark = kwargs.get('bench', 'rendering')
+        if benchmark == 'rendering':
+            # Rendering6Page ---------------------------------------------------------------------------
+            self.submodules.rendering = rendering = Rendering4Mono(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
+            # self.submodules.rendering = rendering = Rendering6Mono(clk_bft, rst_bft, platform, start=start_signal, clock_domain='bft')
+            # self.submodules.rendering = rendering = RenderingMono(clk, rst, platform, clock_domain='sys')
+            # self.submodules.rendering = rendering = Rendering6PageVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
+            # self.submodules.rendering = rendering = Rendering6MonoVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
+            rendering.connect_input(mm2s_axis_bft)
+            rendering.connect_output(s2mm_axis_bft)
+            # rendering.connect_axil(axi_bft_bus_bft)
+        elif benchmark == 'digit_recognition':
+            from digit_recognition.digit_recognition_10_page import DigitRecognition10Page
+            # DigitRecognition10Page ---------------------------------------------------------------------------
+            self.submodules.digit_recognition = digit_recognition = DigitRecognition10Page(clk_bft, rst_bft, platform, clock_domain='bft')
+            digit_recognition.connect_input(mm2s_axis_bft)
+            digit_recognition.connect_output(s2mm_axis_bft)
+            digit_recognition.connect_axil(axi_bft_bus_bft)
         self.comb += platform.request("user_led", 0).eq(s2mm.fsm.ongoing("RUN"))
         self.comb += platform.request("user_led", 1).eq(s2mm.fsm.ongoing("DONE"))
         mm2s_ever_valid = Signal()
@@ -202,7 +212,6 @@ class BaseSoC(SoCCore):
         self.comb += platform.request("user_led", 5).eq(s2mm.sink.ready)
         self.comb += platform.request("user_led", 6).eq(s2mm._sink.last)
         self.comb += platform.request("user_led", 7).eq(s2mm_handshake)
-        # rendering.connect_axil(axi_bft_bus_bft)
 
 # Build --------------------------------------------------------------------------------------------
 
@@ -216,6 +225,7 @@ def main():
     parser.add_argument("--with-spi-sdcard", action="store_true", help="Enable SPI-mode SDCard support")
     parser.add_argument("--with-sdcard",     action="store_true", help="Enable SDCard support")
     parser.add_argument("--with-sata",       action="store_true", help="Enable SATA support (over FMCRAID)")
+    parser.add_argument("--bench",           default="rendering", help="Benchmark use to build (default: rendering)")
     builder_args(parser)
     soc_core_args(parser)
     vivado_build_args(parser)
@@ -226,6 +236,7 @@ def main():
         sys_clk_freq  = int(float(args.sys_clk_freq)),
         with_ethernet = args.with_ethernet,
         with_sata     = args.with_sata,
+        bench         = args.bench,
         **soc_core_argdict(args)
     )
 
