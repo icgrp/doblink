@@ -11,14 +11,14 @@ HOST_OBJ=$(addsuffix .o, $(notdir $(basename $(wildcard host/*.cpp))))
 
 
 
-INCLUDE=-I /opt/Xilinx/Vivado/2018.2/include 
+INCLUDE=-I /opt/Xilinx/Vivado/2021.1/include 
 OPT_LEVEL=-O3
 CFLAGS=$(INCLUDE) $(OPT_LEVEL)
 CXX=g++
 VPATH=src
 
 all: main
-	./main > out.log
+	./main
 
 main:$(OPERATORS_OBJ) $(HOST_OBJ)
 	$(CXX) $(CFLAGS) -o main $^ 
@@ -31,7 +31,7 @@ $(OPERATORS_OBJ):%.o:./operators/%.cpp
 	$(CXX) $(CFLAGS) -o $@ -c $^
 
 run: main
-	./main 
+	./main > out.log 
 
 install:
 	echo hello

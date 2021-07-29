@@ -12,12 +12,7 @@
 #include "../operators/data_1_4_2.h"
 #include "../operators/dotProduct_1.h"
 #include "../operators/dotProduct_2.h"
-#include "../operators/dotProduct_3.h"
-#include "../operators/dotProduct_4.h"
-#include "../operators/data_1_4_3.h"
-#include "../operators/data_1_4_4.h"
 #include "../operators/Sigmoid_axi.h"
-#include "../operators/data_2_1.h"
 
 //#define PROFILE
 // wrapper for the streamin part
@@ -115,41 +110,26 @@
   	hls::stream<ap_uint<32> >  Output_1_4_1_2("sb42");
 
   	data_in_redir(Input_1, Output_1_redir, Output_2_redir);
-	data_1_4_1(Output_1_redir, Output_2_dot_1, Output_2_dot_2,
-			   Output_1_1_4_1, Output_2_1_4_1,  Output_1_4_1_1);
-	data_1_4_2(Output_2_redir, Output_2_dot_3, Output_2_dot_4,
-			   Output_3_1_4_1, Output_4_1_4_1, Output_1_4_1_2);
+	data_1_4_1(Output_1_redir, Output_2_dot_1,
+			   Output_1_1_4_1, Output_1_4_1_1);
+	data_1_4_2(Output_2_redir, Output_2_dot_2, Output_1_4_1_1,
+			   Output_2_1_4_1, Output_1);
 
   	TRAINING_INST: for( int training_id = 0; training_id < NUM_TRAINING; training_id ++ ){
   		dotProduct_1(Output_1_1_4_1, Output_1_1_4_3, Output_1_dot_1, Output_2_dot_1);
   		dotProduct_2(Output_2_1_4_1, Output_2_1_4_3, Output_1_dot_2, Output_2_dot_2);
-  		dotProduct_3(Output_3_1_4_1, Output_3_1_4_3, Output_1_dot_3, Output_2_dot_3);
-  		dotProduct_4(Output_4_1_4_1, Output_4_1_4_3, Output_1_dot_4, Output_2_dot_4);
 
-  		data_1_4_3(Output_1_dot_1, Output_1_dot_2, Output_1_sig,
-  				Output_1_add_4_1_1, Output_1_1_4_3, Output_2_1_4_3);
-  		data_1_4_4(Output_1_dot_3, Output_1_dot_4, Output_2_sig,
-  				Output_1_add_4_1_2, Output_3_1_4_3, Output_4_1_4_3);
-
-  		Sigmoid_axi(Output_1_add_4_1_1, Output_1_add_4_1_2, Output_1_sig, Output_2_sig);
-
-  		data_1_4_3(Output_1_dot_1, Output_1_dot_2, Output_1_sig,
-  				Output_1_add_4_1_1, Output_1_1_4_3, Output_2_1_4_3);
-  		data_1_4_4(Output_1_dot_3, Output_1_dot_4, Output_2_sig,
-  				Output_1_add_4_1_2, Output_3_1_4_3, Output_4_1_4_3);
+  		Sigmoid_axi(Output_1_dot_1, Output_1_dot_2, Output_1_1_4_3, Output_2_1_4_3);
 
   		dotProduct_1(Output_1_1_4_1, Output_1_1_4_3, Output_1_dot_1, Output_2_dot_1);
   		dotProduct_2(Output_2_1_4_1, Output_2_1_4_3, Output_1_dot_2, Output_2_dot_2);
-  		dotProduct_3(Output_3_1_4_1, Output_3_1_4_3, Output_1_dot_3, Output_2_dot_3);
-  		dotProduct_4(Output_4_1_4_1, Output_4_1_4_3, Output_1_dot_4, Output_2_dot_4);
   	}
   	if(epoch==4){
-  	  	data_1_4_1(Output_1_redir, Output_2_dot_1, Output_2_dot_2,
-  	  			   Output_1_1_4_1, Output_2_1_4_1,  Output_1_4_1_1);
-  	  	data_1_4_2(Output_2_redir, Output_2_dot_3, Output_2_dot_4,
-  	  			   Output_3_1_4_1, Output_4_1_4_1, Output_1_4_1_2);
+  		data_1_4_1(Output_1_redir, Output_2_dot_1,
+  				   Output_1_1_4_1, Output_1_4_1_1);
+  		data_1_4_2(Output_2_redir, Output_2_dot_2, Output_1_4_1_1,
+  				   Output_2_1_4_1, Output_1);
 
-  		data_2_1(Output_1_4_1_1, Output_1_4_1_2, Output_1);
   	}
   	epoch++;
   }

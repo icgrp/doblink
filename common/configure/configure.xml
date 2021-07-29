@@ -3,7 +3,7 @@
   <spec name = "riscv_dir"          value = "/opt/riscv32" />
   <!--specifications for pr_flow tool-->
   <!--spec name = "Xilinx_dir"         value = "/apps/xilinx/Vivado/2020.2/settings64.sh" -->
-  <spec name = "Xilinx_dir"         value = "/opt/Xilinx/Vivado/2020.2/settings64.sh" />
+  <spec name = "Xilinx_dir"         value = "/opt/Xilinx/Vivado/2021.1/settings64.sh" />
   <!--spec name = "Xilinx_dir"         value = "/scratch/unsafe/SDSoC/SDx/2018.2/settings64.sh" -->
   <spec name = "board" value = "zcu102" />
   <!--spec name = "board"              value = "u96" -->

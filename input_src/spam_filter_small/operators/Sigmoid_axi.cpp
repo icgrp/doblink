@@ -2117,15 +2117,6 @@ void Sigmoid_axi(
 #pragma HLS INTERFACE axis register  port=Input_2
 #pragma HLS INTERFACE axis register  port=Output_1
 #pragma HLS INTERFACE axis register  port=Output_2
-#ifdef RISCV1
-	static int cnt = 0;
-	if((cnt&0xff)==0){
-		print_str("cnt=");
-		print_dec(cnt);
-		print_str("\n");
-	}
-	cnt++;
-#endif
 
   #pragma HLS INLINE
 	FeatureType exponent;
@@ -2133,25 +2124,8 @@ void Sigmoid_axi(
 	FeatureType a2;
 	FeatureType c;
 	a1(31,0) = Input_1.read();
-#ifdef RISCV1
-	print_hex((unsigned int) a1(31,0), 8);
-	print_str("\n");
-#endif
-	//printf("0x%08x,\n", (unsigned int) a1(31,0));
 	a2(31,0) = Input_2.read();
-	//printf("0x%08x,\n", (unsigned int) a2(31,0));
 	exponent = a1+a2;
-#ifdef RISCV1
-	print_str("exponent=");
-	print_hex((unsigned int) exponent(31,0), 8);
-	print_str("\n");
-	print_str("a1=");
-	print_hex((unsigned int) a1(31,0), 8);
-	print_str("\n");
-	print_str("a2=");
-	print_hex((unsigned int) a2(31,0), 8);
-	print_str("\n");
-#endif
 
 	FeatureType result;
   if (exponent > 4)
@@ -2164,21 +2138,9 @@ void Sigmoid_axi(
     LutInFixed inLut;
     inLut = (LutInFixed)exponent;
     result = useLUT(inLut);
-#ifdef RISCV1
-	print_str("sb1\n");
-	print_str("inLut=");
-	print_hex((unsigned int) inLut(15,0), 8);
-	print_str("\n");
-#endif
   }
   bit32 out_tmp;
   out_tmp(31,0) = result.range(31, 0);
-#ifdef RISCV1
-  print_str("out_tmp=");
-	print_hex((unsigned int) out_tmp(31,0), 8);
-	print_str("\n");
-#endif
-  //printf("0x%08x,\n", (unsigned int) out_tmp(31,0));
   Output_1.write(out_tmp);
   Output_2.write(out_tmp);
 }

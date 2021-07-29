@@ -5,10 +5,8 @@ void data_1_4_2(
 		    hls::stream<ap_uint<32> > & Input_1,
 			hls::stream<ap_uint<32> > & Input_2,
 			hls::stream<ap_uint<32> > & Input_3,
-
 			hls::stream<ap_uint<32> > & Output_1,
-			hls::stream<ap_uint<32> > & Output_2,
-			hls::stream<ap_uint<32> > & Output_3
+			hls::stream<ap_uint<32> > & Output_2
 			)
 {
 #pragma HLS INTERFACE axis register  port=Input_1
@@ -16,7 +14,6 @@ void data_1_4_2(
 #pragma HLS INTERFACE axis register  port=Input_3
 #pragma HLS INTERFACE axis register  port=Output_1
 #pragma HLS INTERFACE axis register  port=Output_2
-#pragma HLS INTERFACE axis register  port=Output_3
 
 	static int epoch = 0;
 	bit32 tmp_data;
@@ -39,34 +36,26 @@ void data_1_4_2(
 		  tmp_data= Input_1.read();
 		  Output_1.write(tmp_data);
 		}
-		Output_2.write(tmp_label);
-		READ_TRAINING_DATA_2: for (int i = 0; i < NUM_FEATURES / D_VECTOR_SIZE / DOT_NUM; i ++ )
-		{
-#pragma HLS pipeline II=2
-			  tmp_data= Input_1.read();
-			  Output_2.write(tmp_data);
-			  tmp_data= Input_1.read();
-			  Output_2.write(tmp_data);
-		}
 	  }
 	  epoch++;
   }else{
-
+	  Output_2.write(1025);
 	  STREAM_OUT_1: for (int i = 0; i < NUM_FEATURES / F_VECTOR_SIZE / DOT_NUM; i ++ )
 	  {
 	    #pragma HLS pipeline II=2
-		  tmp_data= Input_2.read();
-		  Output_3.write(tmp_data);
-		  tmp_data= Input_2.read();
-		  Output_3.write(tmp_data);
+		  tmp_data= Input_3.read();
+		  Output_2.write(tmp_data);
+		  tmp_data= Input_3.read();
+		  Output_2.write(tmp_data);
 	  }
+
 	  STREAM_OUT_2: for (int i = 0; i < NUM_FEATURES / F_VECTOR_SIZE / DOT_NUM; i ++ )
 	  {
 	    #pragma HLS pipeline II=2
-		  tmp_data= Input_3.read();
-		  Output_3.write(tmp_data);
-		  tmp_data= Input_3.read();
-		  Output_3.write(tmp_data);
+		  tmp_data= Input_2.read();
+		  Output_2.write(tmp_data);
+		  tmp_data= Input_2.read();
+		  Output_2.write(tmp_data);
 	  }
 	  epoch = 0;
   }
