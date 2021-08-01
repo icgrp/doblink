@@ -420,7 +420,7 @@ rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-1.
 yum groupinstall "GNOME Desktop" "Graphical Administration Tools"
 ln -sf /lib/systemd/system/runlevel5.target /etc/systemd/system/default.target
 yum -y install xrdp tigervnc-serversystemctl 
-start xrdp.service 
+systemctl start xrdp.service
 netstat -antup | grep xrdp
 systemctl enable xrdp.service
 ```
