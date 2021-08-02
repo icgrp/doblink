@@ -30,6 +30,7 @@ void imageScaler_bot
 	  LOAD_i: for( i = 0; i < IMAGE_HEIGHT/2; i++){
 	    LOAD_j: for( j = 0; j < IMAGE_WIDTH; j++){
 	         Data[i][j] = Input_1.read();
+	         //printf("botData[%d][%d]=%d\n", i, j, Data[i][j]);
 	    }
 	  }
 
@@ -57,9 +58,11 @@ void imageScaler_bot
 	        	  //COUNT_OUT++;
 	        	  Output_1.write(tmp);
 	        	  Output_2.write(tmp);
+	        	  //printf("factor=%d, i=%d, j=%d\n", factor, i, j);
 	          }else{
 	        	  Output_1.write(Data[x-IMAGE_HEIGHT/2][y]);
 	        	  Output_2.write(Data[x-IMAGE_HEIGHT/2][y]);
+	        	  //printf("factor=%d, i=%d, j=%d\n", factor, i, j);
                   //TOP_CNT++;
 	        	  //COUNT_OUT++;
 	          }

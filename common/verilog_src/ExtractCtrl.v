@@ -40,22 +40,15 @@ module Extract_Control # (
     input [PACKET_BITS-1:0] stream_in,
     
     //Config Control side
-    output reg [PACKET_BITS-1:0] configure_out,
-    
-    // instruction configuration for riscv 
-    output reg [31:0] instr_packet, 
-    output reg instr_wr_en
+    output reg [PACKET_BITS-1:0] configure_out
     );
     
     
     wire vldBit;
     wire [NUM_LEAF_BITS-1:0] leaf;
     wire [NUM_PORT_BITS-1:0] port;
-    wire is_riscv;
     
     assign vldBit = din_leaf_bft2interface[PACKET_BITS-1]; // 1 bit
-    assign is_riscv = din_leaf_bft2interface[32];
-    
     assign leaf = din_leaf_bft2interface[PACKET_BITS-2:PACKET_BITS-1-NUM_LEAF_BITS];
     assign port = din_leaf_bft2interface[PACKET_BITS-1-NUM_LEAF_BITS-1:PACKET_BITS-1-NUM_LEAF_BITS-NUM_PORT_BITS];
 
@@ -67,30 +60,10 @@ module Extract_Control # (
         if(reset)
             configure_out <= 0;
         else if(vldBit && ((port == 0) || (port == 1) || (port >= `OUTPUT_PORT_MIN_NUM)))
-            if(is_riscv) begin
-                configure_out <= 0;
-            end else begin
-                configure_out <= din_leaf_bft2interface;
-            end
+            configure_out <= din_leaf_bft2interface;
         else 
             configure_out <= 0; 
     end
-
-
-    //outputs for instruction memory configuration for riscv
-    always@(posedge clk) begin
-        if(reset) begin
-            instr_wr_en <= 0;
-            instr_packet <= 0;
-        end else if(vldBit && (port==0) && is_riscv) begin
-            instr_wr_en <= 1;
-            instr_packet <= din_leaf_bft2interface[31:0];
-        end else begin
-            instr_wr_en <= 0;
-            instr_packet <= 0;
-        end
-    end
-
 
     //outputs for stream flow control
     always@(posedge clk) begin

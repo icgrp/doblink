@@ -30,8 +30,8 @@ module  converge_ctrl#(
     localparam MAX_NUM_IN_PORTS = 7,
     localparam FIFO_DEPTH = 16       
     )(
-    input clk_bft,
-    input reset_bft,
+    input clk,
+    input reset,
     output reg [MAX_NUM_OUT_PORTS-1:0] outport_sel,
     output reg [PACKET_BITS-1:0] stream_out,
     input [NUM_IN_PORTS-1:0] freespace_update,
@@ -63,8 +63,8 @@ module  converge_ctrl#(
     wire [NUM_IN_PORTS-1:0] freespace_update_en;  
 
     //stream_out is the output of converged stream out
-    always@(posedge clk_bft) begin
-        if(reset_bft)
+    always@(posedge clk) begin
+        if(reset)
         begin
             stream_out <= 0;
         end
@@ -159,8 +159,8 @@ module  converge_ctrl#(
             
     //poll_reg_delay: this is used to generate the stream_out
     //resend_delay: this is used to determine the input for stream_out
-    always@(posedge clk_bft) begin
-        if(reset_bft) begin
+    always@(posedge clk) begin
+        if(reset) begin
             FreeUpdateValid <= 0;
             poll_reg_delay <= 0;
             resend_delay <= 0;
@@ -173,8 +173,8 @@ module  converge_ctrl#(
     end
     
     //poll_reg: this is used to determine which outp port provides data for stream_out        
-    always@(posedge clk_bft) begin
-        if(reset_bft) 
+    always@(posedge clk) begin
+        if(reset) 
             poll_reg <= 0;
         else
             if(FreeUpdateEmpty && (!resend) && (!resend_delay))
@@ -226,12 +226,12 @@ module  converge_ctrl#(
     end
 
 
-//clk_bft clock domain    
+//clk clock domain    
 /////////////////////////////////////////////////////////////////////////////////    
 
 
 
-
+/*
 xpm_fifo_sync #(
       .DOUT_RESET_VALUE("0"),    // String
       .ECC_MODE("no_ecc"),       // String
@@ -265,12 +265,24 @@ xpm_fifo_sync #(
       .injectdbiterr(1'b0),
       .injectsbiterr(1'b0),
       .rd_en(rd_update_en),
-      .rst(reset_bft), 
+      .rst(reset), 
       .sleep(1'b0), 
-      .wr_clk(clk_bft),
+      .wr_clk(clk),
       .wr_en(wr_update_en));
-
- 
+*/
+ SynFIFO #(
+    .DSIZE(PACKET_BITS),
+    .ASIZE(4)
+    )SynFIFO_inst (
+	.clk(clk),
+	.rst_n(~reset),
+	.rdata(fifo_dout), 
+	.wfull(), 
+	.rempty(FreeUpdateEmpty), 
+	.wdata(fifo_din),
+	.winc(wr_update_en), 
+	.rinc(rd_update_en)
+	);
   
     //detect the rising edge of the update signals
     rise_detect #(
@@ -278,13 +290,13 @@ xpm_fifo_sync #(
     )rise_detect_u(
         .data_out(freespace_update_en),
         .data_in(freespace_update),
-        .clk(clk_bft),
-        .reset(reset_bft)
+        .clk(clk),
+        .reset(reset)
     );        
   
     //queue_reg: this reg is used to see whether any update requirements exist
-    always@(posedge clk_bft) begin
-        if(reset_bft) 
+    always@(posedge clk) begin
+        if(reset) 
             queue_reg <= 0;
         else
             if(queue_reg == NUM_IN_PORTS-1)
@@ -394,8 +406,8 @@ xpm_fifo_sync #(
     genvar gv_i;
     generate
     for(gv_i = 0; gv_i < NUM_IN_PORTS; gv_i = gv_i + 1) begin: updata_reg
-        always@(posedge clk_bft) begin
-            if(reset_bft)
+        always@(posedge clk) begin
+            if(reset)
                 update_packet[gv_i] <= 0;
             else if(freespace_update_en[gv_i])
                 update_packet[gv_i] <= packet_from_input_ports[PACKET_BITS*(gv_i+1)-1: PACKET_BITS*gv_i];

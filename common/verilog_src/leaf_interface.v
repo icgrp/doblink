@@ -12,7 +12,7 @@ module leaf_interface #(
     
     parameter PACKET_BITS = 49,
     parameter PAYLOAD_BITS = 32, 
-    parameter NUM_LEAF_BITS = 5,
+    parameter NUM_LEAF_BITS = 3,
     parameter NUM_PORT_BITS = 4,
     parameter NUM_ADDR_BITS = 7,
     parameter NUM_IN_PORTS = 1, 
@@ -23,10 +23,8 @@ module leaf_interface #(
     localparam IN_PORTS_REG_BITS = NUM_LEAF_BITS+NUM_PORT_BITS,
     localparam REG_CONTROL_BITS = OUT_PORTS_REG_BITS*NUM_OUT_PORTS+IN_PORTS_REG_BITS*NUM_IN_PORTS
     )(
-    input clk_bft,
-    input clk_user,
+    input clk,
     input reset,
-    input reset_bft,
     
     //data from BFT
     input [PACKET_BITS-1:0] din_leaf_bft2interface,
@@ -43,12 +41,7 @@ module leaf_interface #(
     //data from USER
     output [NUM_OUT_PORTS-1:0] ack_interface2user,
     input [NUM_OUT_PORTS-1:0] vld_user2interface,
-    input [PAYLOAD_BITS*NUM_OUT_PORTS-1:0] din_leaf_user2interface,
-    
-    // interface to configure the instruction mem for riscv
-    output [23:0] riscv_addr,
-    output [7:0] riscv_dout,
-    output instr_wr_en_out
+    input [PAYLOAD_BITS*NUM_OUT_PORTS-1:0] din_leaf_user2interface
     );
    
     
@@ -57,41 +50,23 @@ module leaf_interface #(
     wire [PACKET_BITS-1:0] configure_ExCtrl2ConCtrl;
     wire [REG_CONTROL_BITS-1:0] control_reg;
     wire resend_ExCtrl2sfc; 
-    wire instr_wr_en_in;
-    wire [31:0] instr_packet;
     
     Extract_Control # (
         .PACKET_BITS(PACKET_BITS),
         .NUM_LEAF_BITS(NUM_LEAF_BITS),
         .NUM_PORT_BITS(NUM_PORT_BITS)
     )ExCtrl(
-        .clk(clk_bft),
-        .reset(reset_bft),
+        .clk(clk),
+        .reset(reset),
         .din_leaf_bft2interface(din_leaf_bft2interface),
         .dout_leaf_interface2bft(dout_leaf_interface2bft),
         .resend(resend),
         .resend_out(resend_ExCtrl2sfc),
         .stream_in(stream_sfc2ExCtrl),
         .stream_out(stream_ExCtrl2sfc),
-        .configure_out(configure_ExCtrl2ConCtrl),
-        .instr_wr_en(instr_wr_en_in),
-        .instr_packet(instr_packet)
+        .configure_out(configure_ExCtrl2ConCtrl)
     );
 
-
-instr_config riscv_config(
-    .clk_bft(clk_bft),
-    .clk_user(clk_user),
-    .instr_wr_en_in(instr_wr_en_in),
-    .instr_packet(instr_packet),
-    .addr(riscv_addr),
-    .dout(riscv_dout),
-    .instr_wr_en_out(instr_wr_en_out),
-    .reset_bft(reset_bft),
-    .reset(reset)
-  );
-  
-  
 
     Config_Controls # (
         .PACKET_BITS(PACKET_BITS),
@@ -104,8 +79,8 @@ instr_config riscv_config(
         .NUM_BRAM_ADDR_BITS(NUM_BRAM_ADDR_BITS)
     )ConCtrl(
         .control_reg(control_reg),
-        .clk(clk_bft),
-        .reset(reset_bft),
+        .clk(clk),
+        .reset(reset),
         .configure_in(configure_ExCtrl2ConCtrl)
     );
     
@@ -124,9 +99,7 @@ instr_config riscv_config(
         .FREESPACE_UPDATE_SIZE(FREESPACE_UPDATE_SIZE)
     )sfc(
         .resend(resend_ExCtrl2sfc),
-        .clk_bft(clk_bft),
-        .reset_bft(reset_bft),
-        .clk_user(clk_user),
+        .clk(clk),
         .reset(reset),
         .stream_in(stream_ExCtrl2sfc),
         .stream_out(stream_sfc2ExCtrl),
@@ -140,7 +113,7 @@ instr_config riscv_config(
     );
     
 endmodule
-/*
+
 module rise_detect #(
         parameter integer data_width = 8
     )
@@ -154,7 +127,7 @@ module rise_detect #(
         reg [data_width-1:0] data_in_1;
         reg [data_width-1:0] data_in_2;
         
-        always@(posedge clk or negedge reset) begin 
+        always@(posedge clk) begin 
             if(reset) begin
                 {data_in_2, data_in_1} <= 0;
             end else begin
@@ -165,7 +138,7 @@ module rise_detect #(
         wire [data_width-1:0] data_out_comb;
         assign data_out_comb = (~data_in_2) & (data_in_1);
         
-        always@(posedge clk or negedge reset) begin 
+        always@(posedge clk) begin 
             if(reset) begin
                 data_out <= 0;
             end else begin
@@ -177,7 +150,7 @@ module rise_detect #(
         
         
     endmodule
-
+/*
 module toggle_detect #(
         parameter integer data_width = 8
     )
@@ -191,7 +164,7 @@ module toggle_detect #(
         reg [data_width-1:0] data_in_1;
         reg [data_width-1:0] data_in_2;
         
-        always@(posedge clk or negedge reset) begin 
+        always@(posedge clk) begin 
             if(reset) begin
                 {data_in_2, data_in_1} <= 0;
             end else begin
@@ -202,7 +175,7 @@ module toggle_detect #(
         wire [data_width-1:0] data_out_comb;
         assign data_out_comb = data_in_2 ^ data_in_1;
         
-        always@(posedge clk or negedge reset) begin 
+        always@(posedge clk) begin 
             if(reset) begin
                 data_out <= 0;
             end else begin

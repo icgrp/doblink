@@ -33,10 +33,8 @@ module Input_Port#(
     parameter FREESPACE_UPDATE_SIZE = 64,
     localparam BRAM_DEPTH = 2**(NUM_BRAM_ADDR_BITS-1)*(PAYLOAD_BITS+1)
     )(
-    input clk_bft,
-    input clk_user,
+    input clk,
     input reset,
-    input reset_bft,
     //internal interface
     output freespace_update,
     output [PACKET_BITS-1:0] packet_from_input_port,
@@ -119,8 +117,8 @@ module Input_Port#(
         .NUM_ADDR_BITS(NUM_ADDR_BITS),
         .PORT_No(PORT_No)
         )wbi(
-        .clk(clk_bft), 
-        .reset(reset_bft), 
+        .clk(clk), 
+        .reset(reset), 
         .port(port), 
         .addr(addr), 
         .vldBit(vldBit), 
@@ -152,7 +150,7 @@ module Input_Port#(
        */ 
 wire [PAYLOAD_BITS:0] b_in_dinb;
 assign b_in_dinb = 0;
-
+/*
       
 xpm_memory_tdpram # (
   // Common module parameters
@@ -189,8 +187,8 @@ xpm_memory_tdpram # (
   // Common module ports
   .sleep          (1'b0),
   // Port A module ports
-  .clka           (clk_bft),
-  .rsta           (reset_bft),
+  .clka           (clk),
+  .rsta           (reset),
   .ena            (1'b1),
   .regcea         (1'b1),
   .wea            (wea_0),
@@ -202,8 +200,8 @@ xpm_memory_tdpram # (
   .sbiterra       (),
   .dbiterra       (),
   // Port B module ports
-  .clkb           (clk_bft),
-  .rstb           (reset_bft),
+  .clkb           (clk),
+  .rstb           (reset),
   .enb            (1'b1),
   .regceb         (1'b1),
   .web            (web_0),
@@ -215,9 +213,26 @@ xpm_memory_tdpram # (
   .sbiterrb       (),
   .dbiterrb       ()
 );
-
-
-
+*/
+single_ram#(
+    .PAYLOAD_BITS(PAYLOAD_BITS), 
+    .NUM_BRAM_ADDR_BITS(NUM_BRAM_ADDR_BITS-1),
+    .NUM_ADDR_BITS(NUM_ADDR_BITS-1),
+    .RAM_TYPE("block")
+    )ram_1(
+    .clk(clk),
+    .reset(reset),
+    .wea(wea_0),
+    .web(web_0),
+    .addra(addra[NUM_ADDR_BITS-1:1]),
+    .addrb(addrb_0),
+    .dina(dina),
+    .dinb(0),
+    .doutb(doutb_0)
+    );
+    
+    
+/*
 xpm_memory_tdpram # (
   // Common module parameters
   .MEMORY_SIZE        (BRAM_DEPTH),            //positive integer
@@ -253,8 +268,8 @@ xpm_memory_tdpram # (
   // Common module ports
   .sleep          (1'b0),
   // Port A module ports
-  .clka           (clk_bft),
-  .rsta           (reset_bft),
+  .clka           (clk),
+  .rsta           (reset),
   .ena            (1'b1),
   .regcea         (1'b1),
   .wea            (wea_1),
@@ -266,8 +281,8 @@ xpm_memory_tdpram # (
   .sbiterra       (),
   .dbiterra       (),
   // Port B module ports
-  .clkb           (clk_bft),
-  .rstb           (reset_bft),
+  .clkb           (clk),
+  .rstb           (reset),
   .enb            (1'b1),
   .regceb         (1'b1),
   .web            (web_1),
@@ -279,8 +294,25 @@ xpm_memory_tdpram # (
   .sbiterrb       (),
   .dbiterrb       ()
 );
-
-
+*/
+single_ram#(
+    .PAYLOAD_BITS(PAYLOAD_BITS), 
+    .NUM_BRAM_ADDR_BITS(NUM_BRAM_ADDR_BITS-1),
+    .NUM_ADDR_BITS(NUM_ADDR_BITS-1),
+    .RAM_TYPE("block")
+    )ram_2(
+    .clk(clk),
+    .reset(reset),
+    .wea(wea_1),
+    .web(web_1),
+    .addra(addra[NUM_ADDR_BITS-1:1]),
+    .addrb(addrb_1),
+    .dina(dina),
+    .dinb(0),
+    .doutb(doutb_1)
+    );
+    
+    
     wire [PAYLOAD_BITS-1:0] din_bram2fifo;
     wire vld_bram2fifo;
     wire ack_fifo2bram;
@@ -291,8 +323,8 @@ xpm_memory_tdpram # (
         .PAYLOAD_BITS(PAYLOAD_BITS),
         .NUM_ADDR_BITS(NUM_ADDR_BITS)        
         )rbi(
-        .clk(clk_bft), 
-        .reset(reset_bft), 
+        .clk(clk), 
+        .reset(reset), 
         .ack_user2b_in(ack_fifo2bram), 
         .doutb_0(doutb_0),
         .doutb_1(doutb_1),
@@ -307,10 +339,8 @@ xpm_memory_tdpram # (
 data_converter # (
     .PAYLOAD_BITS(PAYLOAD_BITS) 
     ) data_converter_inst(
-    .clk_user(clk_user),
+    .clk(clk),
     .reset(reset),
-    .clk_bft(clk_bft),
-    .reset_bft(reset_bft), 
     .din_bram2fifo(din_bram2fifo),
     .vld_bram2fifo(vld_bram2fifo),
     .ack_fifo2bram(ack_fifo2bram),
@@ -325,10 +355,8 @@ endmodule
 module data_converter # (
     parameter PAYLOAD_BITS = 64
     )(
-    input clk_user,
+    input clk,
     input reset,
-    input clk_bft,
-    input reset_bft,
     
     input [PAYLOAD_BITS-1:0] din_bram2fifo,
     input vld_bram2fifo,
@@ -350,6 +378,7 @@ module data_converter # (
     assign wr_en = (~full) && vld_bram2fifo;
     assign fifo_in = din_bram2fifo;
     
+    /*
 xpm_fifo_async # (
     
       .FIFO_MEMORY_TYPE          ("block"),           //string; "auto", "block", or "distributed";
@@ -371,14 +400,14 @@ xpm_fifo_async # (
     
     ) xpm_fifo_async2user (
     
-      .rst              (reset_bft),
-      .wr_clk           (clk_bft),
+      .rst              (reset),
+      .wr_clk           (clk),
       .wr_en            (wr_en),
       .din              (fifo_in),
       .full             (full),
       .overflow         (overflow),
       .wr_rst_busy      (wr_rst_busy),
-      .rd_clk           (clk_user),
+      .rd_clk           (clk),
       .rd_en            (rd_en),
       .dout             (fifo_out),
       .empty            (empty),
@@ -395,7 +424,23 @@ xpm_fifo_async # (
       .dbiterr          ()
     
     );    
-    
+    */
+    SynFIFO #(
+    .DSIZE(PAYLOAD_BITS),
+    .ASIZE(4)
+    )SynFIFO_inst (
+	.clk(clk),
+	.rst_n(!reset),
+	.rdata(fifo_out), 
+	.wfull(full), 
+	.rempty(empty), 
+	.wdata(fifo_in),
+	.winc(wr_en), 
+	.rinc(rd_en)
+	);
+	
+	
+	
     assign dout_interface2user = fifo_out;
     
     //rd_en
@@ -412,7 +457,7 @@ xpm_fifo_async # (
     end
         
     //vld_interface2user
-    always@(posedge clk_user) begin
+    always@(posedge clk) begin
         if(reset) begin
             vld_interface2user <= 0;
         end else begin

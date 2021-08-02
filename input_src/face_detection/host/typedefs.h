@@ -32,6 +32,7 @@ const int SIZE = 2913;
 extern long int FIRST;
 
 typedef ap_uint<128> bit128;
+typedef ap_uint<64> bit64;
 typedef ap_uint<32> bit32;
 
 #ifdef OCL

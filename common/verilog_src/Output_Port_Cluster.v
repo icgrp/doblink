@@ -32,10 +32,8 @@ module Output_Port_Cluster #(
     parameter FREESPACE_UPDATE_SIZE = 64,
     localparam OUT_PORTS_REG_BITS = NUM_LEAF_BITS+NUM_PORT_BITS+NUM_ADDR_BITS+NUM_ADDR_BITS+3
     )(
-    input clk_bft,
-    input clk_user,
+    input clk,
     input reset,
-    input reset_bft,
     input [OUT_PORTS_REG_BITS*NUM_OUT_PORTS-1:0] out_control_reg,  
     output [PACKET_BITS*NUM_OUT_PORTS-1:0] internal_out,
     output [NUM_OUT_PORTS-1:0] empty,
@@ -60,10 +58,8 @@ module Output_Port_Cluster #(
             .NUM_BRAM_ADDR_BITS(NUM_BRAM_ADDR_BITS),
             .FREESPACE_UPDATE_SIZE(FREESPACE_UPDATE_SIZE)
         )OPort(
-            .clk_bft(clk_bft),
-            .clk_user(clk_user),
+            .clk(clk),
             .reset(reset),
-            .reset_bft(reset_bft),
             .update_freespace_en(out_control_reg[OUT_PORTS_REG_BITS*gv_i+NUM_ADDR_BITS+NUM_ADDR_BITS+NUM_PORT_BITS+NUM_LEAF_BITS+2]),
             .update_fifo_addr_en(out_control_reg[OUT_PORTS_REG_BITS*gv_i+NUM_ADDR_BITS+NUM_ADDR_BITS+NUM_PORT_BITS+NUM_LEAF_BITS+1]),
             .add_freespace_en(out_control_reg[OUT_PORTS_REG_BITS*gv_i+NUM_ADDR_BITS+NUM_ADDR_BITS+NUM_PORT_BITS+NUM_LEAF_BITS]),

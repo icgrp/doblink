@@ -1,11 +1,11 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
-| Date         : Mon Apr 19 16:38:43 2021
-| Host         : ylxiao-OptiPlex-7050 running 64-bit Ubuntu 18.04.2 LTS
+| Date         : Tue Jul 20 13:41:47 2021
+| Host         : ylxiao-OptiPlex-7050 running 64-bit Ubuntu 18.04.5 LTS
 | Command      : report_utilization -pblocks p_3
-| Design       : floorplan_static_wrapper
-| Device       : xczu9egffvb1156-2
+| Design       : level0_wrapper
+| Device       : xcu50fsvh2104-2
 | Design State : Routed
 ------------------------------------------------------------------------------------
 
@@ -26,6 +26,10 @@ Table of Contents
 10. Primitives
 11. Black Boxes
 12. Instantiated Netlists
+13. SLR Connectivity
+14. SLR Connectivity Matrix
+15. SLR CLB Logic and Dedicated Block Utilization
+16. SLR IO Utilization
 
 1. Pblock Summary
 -----------------
@@ -43,8 +47,7 @@ Table of Contents
 +-------------+--------------------+
 | CLOCKREGION | Pblock Sites in CR |
 +-------------+--------------------+
-| X1Y0        |             56.73% |
-| X2Y0        |             43.27% |
+| X0Y1        |            100.00% |
 +-------------+--------------------+
 
 
@@ -54,16 +57,16 @@ Table of Contents
 +-------------------------+--------+-------+--------------+------+-------+-----------+-------+
 |        Site Type        | Parent | Child | Non-Assigned | Used | Fixed | Available | Util% |
 +-------------------------+--------+-------+--------------+------+-------+-----------+-------+
-| CLB LUTs*               |    102 |     0 |            0 |  102 |     0 |      8496 |  1.20 |
-|   LUT as Logic          |    102 |     0 |            0 |  102 |     0 |      8496 |  1.20 |
-|   LUT as Memory         |      0 |     0 |            0 |    0 |     0 |      4720 |  0.00 |
-| CLB Registers           |      2 |     0 |            0 |    2 |     0 |     16992 |  0.01 |
-|   Register as Flip Flop |      2 |     0 |            0 |    2 |     0 |     16992 |  0.01 |
-|   Register as Latch     |      0 |     0 |            0 |    0 |     0 |     16992 |  0.00 |
-| CARRY8                  |      0 |     0 |            0 |    0 |     0 |      1062 |  0.00 |
-| F7 Muxes                |      0 |     0 |            0 |    0 |     0 |      4248 |  0.00 |
-| F8 Muxes                |      0 |     0 |            0 |    0 |     0 |      2124 |  0.00 |
-| F9 Muxes                |      0 |     0 |            0 |    0 |     0 |      1062 |  0.00 |
+| CLB LUTs*               |    100 |     0 |            0 |  100 |     0 |      8352 |  1.20 |
+|   LUT as Logic          |    100 |     0 |            0 |  100 |     0 |      8352 |  1.20 |
+|   LUT as Memory         |      0 |     0 |            0 |    0 |     0 |      4176 |  0.00 |
+| CLB Registers           |      1 |     0 |            0 |    1 |     0 |     16704 | <0.01 |
+|   Register as Flip Flop |      1 |     0 |            0 |    1 |     0 |     16704 | <0.01 |
+|   Register as Latch     |      0 |     0 |            0 |    0 |     0 |     16704 |  0.00 |
+| CARRY8                  |      0 |     0 |            0 |    0 |     0 |      1044 |  0.00 |
+| F7 Muxes                |      0 |     0 |            0 |    0 |     0 |      4176 |  0.00 |
+| F8 Muxes                |      0 |     0 |            0 |    0 |     0 |      2088 |  0.00 |
+| F9 Muxes                |      0 |     0 |            0 |    0 |     0 |      1044 |  0.00 |
 +-------------------------+--------+-------+--------------+------+-------+-----------+-------+
 * Warning! The Final LUT count, after physical optimizations and full implementation, is typically lower. Run opt_design after synthesis, if not already completed, for a more realistic count.
 
@@ -81,7 +84,7 @@ Table of Contents
 | 0     |            _ |       Reset |            - |
 | 0     |          Yes |           - |            - |
 | 0     |          Yes |           - |          Set |
-| 2     |          Yes |           - |        Reset |
+| 1     |          Yes |           - |        Reset |
 | 0     |          Yes |         Set |            - |
 | 0     |          Yes |       Reset |            - |
 +-------+--------------+-------------+--------------+
@@ -106,7 +109,7 @@ Table of Contents
 +-----------+--------+-------+--------------+------+-------+-----------+-------+
 | Site Type | Parent | Child | Non-Assigned | Used | Fixed | Available | Util% |
 +-----------+--------+-------+--------------+------+-------+-----------+-------+
-| DSPs      |      0 |     0 |            0 |    0 |     0 |        96 |  0.00 |
+| DSPs      |      0 |     0 |            0 |    0 |     0 |        48 |  0.00 |
 +-----------+--------+-------+--------------+------+-------+-----------+-------+
 
 
@@ -149,125 +152,109 @@ Table of Contents
 +----------+------+---------------------+
 | Ref Name | Used | Functional Category |
 +----------+------+---------------------+
-| LUT1     |  102 |                 CLB |
-| FDCE     |    2 |            Register |
+| LUT1     |  100 |                 CLB |
+| FDCE     |    1 |            Register |
 +----------+------+---------------------+
 
 
 11. Black Boxes
 ---------------
 
-+-----------------+------+
-|     Ref Name    | Used |
-+-----------------+------+
-| leaf_HD95890_bb |    1 |
-| leaf_HD86195_bb |    1 |
-| leaf_HD787_bb   |    1 |
-| leaf_HD77019_bb |    1 |
-| leaf_HD7389_bb  |    1 |
-| leaf_HD68362_bb |    1 |
-| leaf_HD60224_bb |    1 |
-| leaf_HD52605_bb |    1 |
-| leaf_HD4960_bb  |    1 |
-| leaf_HD45505_bb |    1 |
-| leaf_HD38924_bb |    1 |
-| leaf_HD32862_bb |    1 |
-| leaf_HD3050_bb  |    1 |
-| leaf_HD27319_bb |    1 |
-| leaf_HD22295_bb |    1 |
-| leaf_HD17790_bb |    1 |
-| leaf_HD1659_bb  |    1 |
-| leaf_HD13804_bb |    1 |
-| leaf_HD10337_bb |    1 |
-+-----------------+------+
++----------+------+
+| Ref Name | Used |
++----------+------+
 
 
 12. Instantiated Netlists
 -------------------------
 
-+------------------------------------------+------+
-|                 Ref Name                 | Used |
-+------------------------------------------+------+
-| leaf_bb_bb                               |    1 |
-| floorplan_static_zynq_ultra_ps_e_0_0     |    1 |
-| floorplan_static_xbar_0                  |    1 |
-| floorplan_static_t_cluster_0_1_0         |    1 |
-| floorplan_static_t_cluster_0_0_0         |    1 |
-| floorplan_static_subtree_212_wrapper_3_0 |    1 |
-| floorplan_static_subtree_212_wrapper_2_0 |    1 |
-| floorplan_static_subtree_212_wrapper_1_0 |    1 |
-| floorplan_static_subtree_212_wrapper_0_0 |    1 |
-| floorplan_static_rst_user_0              |    1 |
-| floorplan_static_rst_bft_center_0        |    1 |
-| floorplan_static_rst_bft_12              |    1 |
-| floorplan_static_rst_bft_11_0            |    1 |
-| floorplan_static_rst_bft_10_0            |    1 |
-| floorplan_static_rst_bft_01_0            |    1 |
-| floorplan_static_rst_bft_00_0            |    1 |
-| floorplan_static_rst_axi_0               |    1 |
-| floorplan_static_pipe_ff_1_9_0           |    1 |
-| floorplan_static_pipe_ff_1_8_0           |    1 |
-| floorplan_static_pipe_ff_1_7_0           |    1 |
-| floorplan_static_pipe_ff_1_6_0           |    1 |
-| floorplan_static_pipe_ff_1_5_0           |    1 |
-| floorplan_static_pipe_ff_1_4_0           |    1 |
-| floorplan_static_pipe_ff_1_3_0           |    1 |
-| floorplan_static_pipe_ff_1_2_0           |    1 |
-| floorplan_static_pipe_ff_1_1_0           |    1 |
-| floorplan_static_pipe_ff_1_11_0          |    1 |
-| floorplan_static_pipe_ff_1_10_0          |    1 |
-| floorplan_static_pipe_ff_1_0_0           |    1 |
-| floorplan_static_pi_cluster_0_0_0        |    1 |
-| floorplan_static_leaf_empty_9_0          |    1 |
-| floorplan_static_leaf_empty_8_0          |    1 |
-| floorplan_static_leaf_empty_6_0          |    1 |
-| floorplan_static_leaf_empty_5_0          |    1 |
-| floorplan_static_leaf_empty_4_0          |    1 |
-| floorplan_static_leaf_empty_3_0          |    1 |
-| floorplan_static_leaf_empty_31_0         |    1 |
-| floorplan_static_leaf_empty_30_0         |    1 |
-| floorplan_static_leaf_empty_29_0         |    1 |
-| floorplan_static_leaf_empty_28_0         |    1 |
-| floorplan_static_leaf_empty_27_0         |    1 |
-| floorplan_static_leaf_empty_26_0         |    1 |
-| floorplan_static_leaf_empty_24_0         |    1 |
-| floorplan_static_leaf_empty_20_0         |    1 |
-| floorplan_static_leaf_empty_19_0         |    1 |
-| floorplan_static_leaf_empty_18_0         |    1 |
-| floorplan_static_leaf_empty_17_0         |    1 |
-| floorplan_static_leaf_empty_16_0         |    1 |
-| floorplan_static_leaf_empty_11_0         |    1 |
-| floorplan_static_leaf_empty_10_0         |    1 |
-| floorplan_static_dma_converter_1_0       |    1 |
-| floorplan_static_dma_converter_0_0       |    1 |
-| floorplan_static_axi_smc_1_0             |    1 |
-| floorplan_static_axi_smc_0               |    1 |
-| floorplan_static_axi_dma_1_0             |    1 |
-| floorplan_static_axi_dma_0_0             |    1 |
-| floorplan_static_axi2stream_v1_0_0_0     |    1 |
-| floorplan_static_auto_pc_1               |    1 |
-| floorplan_static_auto_pc_0               |    1 |
-| floorplan_static_auto_ds_1               |    1 |
-| floorplan_static_auto_ds_0               |    1 |
-| floorplan_static_ap_start_top_0          |    1 |
-| floorplan_static_ap_start_source_0       |    1 |
-| floorplan_static_ap_start_dummy_0        |    1 |
-| floorplan_static_ap_start_112_0          |    1 |
-| floorplan_static_ap_start_111_0          |    1 |
-| floorplan_static_ap_start_110_0          |    1 |
-| floorplan_static_ap_start_102_0          |    1 |
-| floorplan_static_ap_start_101_0          |    1 |
-| floorplan_static_ap_start_100_0          |    1 |
-| floorplan_static_ap_start_012_0          |    1 |
-| floorplan_static_ap_start_011_0          |    1 |
-| floorplan_static_ap_start_010_0          |    1 |
-| floorplan_static_ap_start_002_0          |    1 |
-| floorplan_static_ap_start_001_0          |    1 |
-| floorplan_static_ap_start_000_0          |    1 |
-| floorplan_static_InterfaceWrapper7_0_0   |    1 |
-| floorplan_static_InterfaceWrapper1_1_0   |    1 |
-| floorplan_static_InterfaceWrapper1_0_0   |    1 |
-| floorplan_static_AxiLite2Bft_v2_0_0_0    |    1 |
-+------------------------------------------+------+
++--------------------------+------+
+|         Ref Name         | Used |
++--------------------------+------+
+| page_bb_bb               |   26 |
+| xsdbm                    |    1 |
+| ulp                      |    1 |
+| level0_ii_level0_pipe_0  |    1 |
+| level0_cma_hbm_aclk_0    |    1 |
+| level0_cma_clk_kernel_0  |    1 |
+| level0_cma_clk_kernel2_0 |    1 |
+| blp_wrapper              |    1 |
++--------------------------+------+
 
 
+13. SLR Connectivity
+--------------------
+
++----------------------------------+------+-------+-----------+-------+
+|                                  | Used | Fixed | Available | Util% |
++----------------------------------+------+-------+-----------+-------+
+| SLR1 <-> SLR0                    | 6091 |       |     23040 | 26.44 |
+|   SLR0 -> SLR1                   | 3045 |       |           | 13.22 |
+|     Using TX_REG only            |    0 |     0 |           |       |
+|     Using RX_REG only            |    3 |     3 |           |       |
+|     Using Both TX_REG and RX_REG |    0 |     0 |           |       |
+|   SLR1 -> SLR0                   | 3046 |       |           | 13.22 |
+|     Using TX_REG only            |    1 |     1 |           |       |
+|     Using RX_REG only            |    9 |     9 |           |       |
+|     Using Both TX_REG and RX_REG |    1 |     1 |           |       |
++----------------------------------+------+-------+-----------+-------+
+| Total SLLs Used                  | 6091 |       |           |       |
++----------------------------------+------+-------+-----------+-------+
+
+
+14. SLR Connectivity Matrix
+---------------------------
+
++-----------+------+------+
+| FROM \ TO | SLR1 | SLR0 |
++-----------+------+------+
+| SLR1      |    0 | 3046 |
+| SLR0      | 3045 |    0 |
++-----------+------+------+
+
+
+15. SLR CLB Logic and Dedicated Block Utilization
+-------------------------------------------------
+
++----------------------------+------+------+--------+--------+
+|          Site Type         | SLR0 | SLR1 | SLR0 % | SLR1 % |
++----------------------------+------+------+--------+--------+
+| CLB                        |    0 |    0 |   0.00 |   0.00 |
+|   CLBL                     |    0 |    0 |   0.00 |   0.00 |
+|   CLBM                     |    0 |    0 |   0.00 |   0.00 |
+| CLB LUTs                   |    0 |    0 |   0.00 |   0.00 |
+|   LUT as Logic             |    0 |    0 |   0.00 |   0.00 |
+|   LUT as Memory            |    0 |    0 |   0.00 |   0.00 |
+|     LUT as Distributed RAM |    0 |    0 |   0.00 |   0.00 |
+|     LUT as Shift Register  |    0 |    0 |   0.00 |   0.00 |
+| CLB Registers              |    0 |    0 |   0.00 |   0.00 |
+| CARRY8                     |    0 |    0 |   0.00 |   0.00 |
+| F7 Muxes                   |    0 |    0 |   0.00 |   0.00 |
+| F8 Muxes                   |    0 |    0 |   0.00 |   0.00 |
+| F9 Muxes                   |    0 |    0 |   0.00 |   0.00 |
+| Block RAM Tile             |    0 |    0 |   0.00 |   0.00 |
+|   RAMB36/FIFO              |    0 |    0 |   0.00 |   0.00 |
+|   RAMB18                   |    0 |    0 |   0.00 |   0.00 |
+| URAM                       |    0 |    0 |   0.00 |   0.00 |
+| DSPs                       |    0 |    0 |   0.00 |   0.00 |
+| PLL                        |    0 |    0 |   0.00 |   0.00 |
+| MMCM                       |    0 |    0 |   0.00 |   0.00 |
+| Unique Control Sets        |    0 |    0 |   0.00 |   0.00 |
++----------------------------+------+------+--------+--------+
+* Note: Available Control Sets based on CLB Registers / 8
+
+
+16. SLR IO Utilization
+----------------------
+
++-----------+-----------+---------+------------+----------+------------+----------+-----+
+| SLR Index | Used IOBs | (%)IOBs | Used IPADs | (%)IPADs | Used OPADs | (%)OPADs | GTs |
++-----------+-----------+---------+------------+----------+------------+----------+-----+
+| SLR1      |         0 |    0.00 |          0 |     0.00 |          0 |     0.00 |   0 |
+| SLR0      |         0 |    0.00 |          0 |     0.00 |          0 |     0.00 |   0 |
++-----------+-----------+---------+------------+----------+------------+----------+-----+
+| Total     |         0 |         |          0 |          |          0 |          |   0 |
++-----------+-----------+---------+------------+----------+------------+----------+-----+
+
+
+report_utilization: Time (s): cpu = 00:00:13 ; elapsed = 00:00:13 . Memory (MB): peak = 12331.066 ; gain = 0.000 ; free physical = 13953 ; free virtual = 24022

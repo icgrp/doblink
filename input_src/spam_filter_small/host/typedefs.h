@@ -11,7 +11,7 @@
 
 #define SDSOC
 
-#define DOT_NUM 2
+#define DOT_NUM 4
 // dataset information
 const int NUM_FEATURES  = 1024;
 const int NUM_SAMPLES   = 5000;

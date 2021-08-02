@@ -237,6 +237,7 @@ void top
 	//while ( IMAGE_WIDTH/factor > WINDOW_SIZE && IMAGE_HEIGHT/factor > WINDOW_SIZE )
 	while(sb < 12)
 	{
+		printf("frame=%d\n", sb);
 
 		unsigned char data_in;
 		MyPoint p;
@@ -276,7 +277,7 @@ void top
 		/** Loop over each point in the Image ( scaled ) **/
 		Pixely: for( y = 0; y < height; y++ ){
 		  Pixelx : for ( x = 0; x < width; x++ ){
-
+			//printf("sb=%d, y=%d, x=%d\n", sb, y, x);
 			sfilter4(scaler_bot_out_1, p3_output_3, p4_output1, p4_output2);
 			sfilter3(p4_output2, p2_output3, p3_output1, p3_output2, p3_output_3);
 			sfilter2(p3_output2, p1_output3, p2_output1, p2_output2, p2_output3);
@@ -328,7 +329,7 @@ void top
 									Input_noface);
 
 
-					noface = strong_classifier_output1.read();
+					noface = Input_noface.read();
 					Input_noface.write(noface);
 
 					weak_process_new(
@@ -447,3 +448,44 @@ void top
 }
 
 
+extern "C" {
+	void ydma (
+			bit64 * input1,
+			bit32 * input2,
+			bit64 * output1,
+			bit32 * output2,
+			int config_size,
+			int input_size,
+			int output_size
+			)
+	{
+#pragma HLS INTERFACE m_axi port=input1 bundle=aximm1
+#pragma HLS INTERFACE m_axi port=input2 bundle=aximm2
+#pragma HLS INTERFACE m_axi port=output1 bundle=aximm1
+#pragma HLS INTERFACE m_axi port=output2 bundle=aximm2
+	#pragma HLS DATAFLOW
+
+	  bit64 v1_buffer[256];   // Local memory to store vector1
+	  //hls::stream< unsigned int > v1_buffer;
+	  #pragma HLS STREAM variable=v1_buffer depth=256
+
+          hls::stream<ap_uint<32> > Input_1("Input_1_str");
+          hls::stream<ap_uint<32> > Output_1("Output_str");
+
+          for(int i=0; i<config_size; i++){
+            v1_buffer[i] = input1[i];
+            printf("input1[%d]\n", i);
+          }
+          for(int i=0; i<config_size; i++){ output1[i] = v1_buffer[i]; }
+
+	  for(int i=0; i<input_size;  i++){
+             Input_1.write(input2[i]);
+             //printf("input2[%d]\n", i);
+          }
+
+          top(Input_1, Output_1);
+
+          for(int i=0; i<output_size; i++){ output2[i] = Output_1.read(); }
+	}
+
+}

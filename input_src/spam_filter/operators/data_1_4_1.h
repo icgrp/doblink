@@ -13,5 +13,5 @@ void data_1_4_1(
 			hls::stream<ap_uint<32> > & Output_4,
 			hls::stream<ap_uint<32> > & Output_5
 			);
-#pragma map_target = HW page_num = 24  inst_mem_size = 32768
+#pragma map_target = HW page_num = 5  inst_mem_size = 32768
 

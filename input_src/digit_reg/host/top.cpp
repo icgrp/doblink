@@ -63,7 +63,7 @@ void top(hls::stream<ap_uint<32> > & Input_1, hls::stream<ap_uint<32> > & Output
 	for(int i=0; i<2000; i++)
 	{
 
-		//printf("i=%d\n", i);
+		printf("i=%d\n", i);
 		update_knn1(Input_1, knn_out1);
 		update_knn2(knn_out1, knn_out2);
 		update_knn3(knn_out2, knn_out3);
@@ -90,4 +90,45 @@ void top(hls::stream<ap_uint<32> > & Input_1, hls::stream<ap_uint<32> > & Output
 
 }
 
+extern "C" {
+	void ydma (
+			bit64 * input1,
+			bit32 * input2,
+			bit64 * output1,
+			bit32 * output2,
+			int config_size,
+			int input_size,
+			int output_size
+			)
+	{
+#pragma HLS INTERFACE m_axi port=input1 bundle=aximm1
+#pragma HLS INTERFACE m_axi port=input2 bundle=aximm2
+#pragma HLS INTERFACE m_axi port=output1 bundle=aximm1
+#pragma HLS INTERFACE m_axi port=output2 bundle=aximm2
+	#pragma HLS DATAFLOW
+
+	  bit64 v1_buffer[256];   // Local memory to store vector1
+	  //hls::stream< unsigned int > v1_buffer;
+	  #pragma HLS STREAM variable=v1_buffer depth=256
+
+          hls::stream<ap_uint<32> > Input_1("Input_1_str");
+          hls::stream<ap_uint<32> > Output_1("Output_str");
+
+          for(int i=0; i<config_size; i++){ 
+            v1_buffer[i] = input1[i]; 
+            printf("input1[%d]\n", i);
+          }
+          for(int i=0; i<config_size; i++){ output1[i] = v1_buffer[i]; }
+
+	  for(int i=0; i<input_size;  i++){
+             Input_1.write(input2[i]); 
+             //printf("input2[%d]\n", i);
+          }
+	  
+          top(Input_1, Output_1);
+ 
+          for(int i=0; i<output_size; i++){ output2[i] = Output_1.read(); }
+	}
+
+}
 

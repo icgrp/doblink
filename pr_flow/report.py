@@ -13,7 +13,7 @@ class report(gen_basic):
   def gen_compile_time_report(self, benchmark_name, operators_list):
     time_report_dict = {}
     time_data_dict = {}
-    for fun_name in operators_list:
+    for fun_name in sorted(operators_list):
       map_target_exist, map_target = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+fun_name+'.h', 'map_target')
       page_exist, page_num = self.pragma.return_pragma('./input_src/'+self.prflow_params['benchmark_name']+'/operators/'+fun_name+'.h', 'page_num')
       time_report_dict[fun_name] = fun_name.ljust(30) + '\t' + map_target + '\t' + page_num 
@@ -53,22 +53,22 @@ class report(gen_basic):
           run_time_list.append(int(run_time[0])) 
           time_data_dict[fun_name].append(int(run_time[0]))
         file_in.close()
-        for i in range(4): time_report_dict[fun_name] += '\t' + str(run_time_list[i])
+        for i in range(6): time_report_dict[fun_name] += '\t' + str(run_time_list[i])
         total_time = 0
-        for i in range(6): total_time += float(time_data_dict[fun_name][i])
+        for i in range(8): total_time += float(time_data_dict[fun_name][i])
         run_time_list.append(float(total_time))
-        time_report_dict[fun_name] += '\t' + str(run_time_list[5])
-        time_report_dict[fun_name] += '\t\t' + str(run_time_list[4])
+        time_report_dict[fun_name] += '\t' + str(run_time_list[6])
+        #time_report_dict[fun_name] += '\t\t' + str(run_time_list[5])
       except:
         print "Something is wrong with "+file_name
 
     
     time_report_file = open('./workspace/report/time_report_'+benchmark_name+'.csv', 'w')
-    time_report_file.write('operator                  \ttarget\tpage\thls\tsyn\trdchk\topt\tplace\troute\ttotal\t\tbitgen\n')
-    for key, value in time_report_dict.items():
+    time_report_file.write('operator                  \ttarget\tpage\thls\tsyn\trdchk\topt\tplace\tpopt\troute\tbitgen\ttotal\n')
+    for key, value in sorted(time_report_dict.items()):
       time_report_file.write(value+'\n')  
-    print '\n                               operator                  \ttarget\tpage\thls\tsyn\trdchk\topt\tplace\troute\ttotal\t\tbitgen'
-    print '------------------------------------------------------------------------------------------------------------------------------------------------------'
+    print '\n                               operator                  \ttarget\tpage\thls\tsyn\trdchk\topt\tplace\tpopt\troute\tbitgen\ttotal'
+    print '--------------------------------------------------------------------------------------------------------------------------------------------------------------'
     self.print_dict(time_report_dict)
 
   def gen_resource_report(self, benchmark_name, operators_list):

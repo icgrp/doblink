@@ -33,7 +33,7 @@ void data_2_1(
 		theta[i+NUM_FEATURES / F_VECTOR_SIZE] = Input_2.read();
 	  }
 
-	  Output_1.write(1025);
+	  //Output_1.write(1025);
 
 	  STREAM_OUT: for (int i = 0; i < NUM_FEATURES / F_VECTOR_SIZE*2/4; i ++ )
 	  {
@@ -46,12 +46,16 @@ void data_2_1(
 		ap_uint<32> Output_tmp;
 		Output_tmp(31, 0) = theta[4*i];
 		Output_1.write(Output_tmp);
+                // printf("out:  %08x\n", Output_tmp.to_int());
 		Output_tmp(31, 0) = theta[4*i+1];
 		Output_1.write(Output_tmp);
+                // printf("out:  %08x\n", Output_tmp.to_int());
 		Output_tmp(31, 0) = theta[4*i+2];
 		Output_1.write(Output_tmp);
+                // printf("out:  %08x\n", Output_tmp.to_int());
 		Output_tmp(31, 0) = theta[4*i+3];
 		Output_1.write(Output_tmp);
+                // printf("out:  %08x\n", Output_tmp.to_int());
 	  }
 }
 

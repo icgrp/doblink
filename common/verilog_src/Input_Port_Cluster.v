@@ -31,10 +31,8 @@ module Input_Port_Cluster # (
     parameter NUM_BRAM_ADDR_BITS = 7,
     parameter FREESPACE_UPDATE_SIZE = 64
     )(
-    input clk_bft,
-    input clk_user,
+    input clk,
     input reset,
-    input reset_bft,
     
     
     //internal interface
@@ -65,10 +63,8 @@ module Input_Port_Cluster # (
             .PORT_No(gv_i+2),
             .FREESPACE_UPDATE_SIZE(FREESPACE_UPDATE_SIZE)
         )IPort(
-            .clk_bft(clk_bft),
-            .clk_user(clk_user),
+            .clk(clk),
             .reset(reset),
-            .reset_bft(reset_bft),
             .freespace_update(freespace_update[gv_i]),
             .packet_from_input_port(packet_from_input_ports[PACKET_BITS*(gv_i+1)-1:PACKET_BITS*gv_i]),
             .din_leaf_bft2interface(stream_in),

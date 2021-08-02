@@ -2,10 +2,10 @@
 #define TYPEDEFS_H
 #include <hls_stream.h>
 #include <ap_int.h>
-#include <ap_fixed.h>
-#define risc
-const unsigned WORD_SIZE = 64;
-typedef ap_int<WORD_SIZE> Word;
+
+
+
+
 //#define USE_FLOAT
 
 #ifdef USE_FLOAT
@@ -24,31 +24,13 @@ typedef ap_int<WORD_SIZE> Word;
 
 #else
 
-#ifdef RISCV
-  typedef ap_fixed<32,2> InputFixed;
-#else
   // Quantized 32-bit input images in the range [-1,1]
+  typedef ap_fixed<32,2, AP_RND> InputFixed;
 
-
-
-  const static Word m1("0x5555555555555555", 16);
-  const static Word m2("0x3333333333333333", 16);
-  const static Word m4("0x0f0f0f0f0f0f0f0f", 16);
-  const static Word h01("0x0101010101010101", 16);
-#endif
-
-  //typedef ap_fixed<24,6, AP_RND> C1ConvType;
-  typedef ap_fixed<24,6> C1ConvType;
-
-  //typedef ap_fixed<32,2, AP_RND> InputFixed;
-  typedef ap_fixed<32,2> InputFixed;
-
-
-  //typedef ap_fixed<20,2, AP_RND> C1InputType;
-  typedef ap_fixed<20,2> C1InputType;
   // Types for weights
   typedef ap_int<1> Bit;
   typedef ap_int<2> TwoBit;
+
 
   typedef ap_fixed<16,2> KType;
   typedef ap_fixed<16,4> HType;
@@ -56,13 +38,14 @@ typedef ap_int<WORD_SIZE> Word;
   typedef ap_fixed<16,5> NormOutput;
   typedef ap_int<14> ConvOutput;
 
+#define IMAGE_NUM 100
 #endif
 
 
 
   const unsigned CONVOLVERS = 2;
 
-
+  const unsigned WORD_SIZE = 64;
   const unsigned WT_SIZE = 9;
   const unsigned CONV_W_PER_WORD = 7;
   const unsigned CONV1_W_PER_WORD = 4;
@@ -92,7 +75,7 @@ typedef ap_int<WORD_SIZE> Word;
 
   enum LayerTypeEnum {LAYER_CONV1, LAYER_CONV, LAYER_DENSE, LAYER_LAST};
 
-
+  typedef ap_int<WORD_SIZE> Word;
   typedef ap_int<WT_SIZE> WtType;
   typedef ap_uint<16> Address;
   typedef ap_int<12> ConvSum;
@@ -103,12 +86,18 @@ typedef ap_int<WORD_SIZE> Word;
   typedef ap_int<16> DenseSum;
   typedef ap_fixed<16,12> DenseNorm;
 
+  typedef ap_fixed<20,2, AP_RND> C1InputType;
+  typedef ap_fixed<24,6, AP_RND> C1ConvType;
 
   typedef ap_int<WORD_SIZE> Word;
 
-
+  const static Word m1("0x5555555555555555", 16);
+  const static Word m2("0x3333333333333333", 16);
+  const static Word m4("0x0f0f0f0f0f0f0f0f", 16);
+  const static Word h01("0x0101010101010101", 16);
 
   typedef ap_uint< 128 > DMA_Word;
   typedef ap_uint< 32 > bit32;
+  typedef ap_uint< 64 > bit64;
 
 #endif

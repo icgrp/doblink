@@ -216,20 +216,18 @@ class _verilog:
     else:
       lines_list.append('module leaf_'+str(page_num)+'(')
 
-    lines_list.append('    input wire clk_bft,')
-    lines_list.append('    input wire clk_user,')
+    lines_list.append('    input wire clk,')
     lines_list.append('    input wire ['+str(PACKET_BITS)+'-1 : 0] din_leaf_bft2interface,')
     lines_list.append('    output wire ['+str(PACKET_BITS)+'-1 : 0] dout_leaf_interface2bft,')
     lines_list.append('    input wire resend,')
-    lines_list.append('    input wire reset_bft,')
-    lines_list.append('    input wire ap_start,')
+    # lines_list.append('    input wire ap_start,')
     lines_list.append('    input wire reset')
     lines_list.append('    );')
     lines_list.append('')
   
-    lines_list.append('    wire [23:0] riscv_addr;')
-    lines_list.append('    wire [7:0] riscv_dout;')
-    lines_list.append('    wire instr_wr_en_out;')
+    # lines_list.append('    wire [23:0] riscv_addr;')
+    # lines_list.append('    wire [7:0] riscv_dout;')
+    # lines_list.append('    wire instr_wr_en_out;')
      
     dout_list = []
     val_out_list = [] 
@@ -264,25 +262,23 @@ class _verilog:
 
     lines_list.append('    ')
     lines_list.append('    leaf_interface #(')
-    lines_list.append('        .PACKET_BITS('+str(PACKET_BITS)+' ),')
-    lines_list.append('        .PAYLOAD_BITS('+str(PAYLOAD_BITS)+' ), ')
+    lines_list.append('        .PACKET_BITS('+str(PACKET_BITS)+'),')
+    lines_list.append('        .PAYLOAD_BITS('+str(PAYLOAD_BITS)+'),')
     lines_list.append('        .NUM_LEAF_BITS('+str(NUM_LEAF_BITS)+'),')
     lines_list.append('        .NUM_PORT_BITS('+str(NUM_PORT_BITS)+'),')
     lines_list.append('        .NUM_ADDR_BITS('+str(NUM_ADDR_BITS)+'),')
-    lines_list.append('        .NUM_IN_PORTS('+str(self.my_max(1, input_num))+'), ')
+    lines_list.append('        .NUM_IN_PORTS('+str(self.my_max(1, input_num))+'),')
     lines_list.append('        .NUM_OUT_PORTS('+str(output_num)+'),')
     lines_list.append('        .NUM_BRAM_ADDR_BITS('+str(NUM_BRAM_ADDR_BITS)+'),')
     lines_list.append('        .FREESPACE_UPDATE_SIZE('+str(FREESPACE_UPDATE_SIZE)+')')
     lines_list.append('    )leaf_interface_inst(')
-    lines_list.append('        .clk_bft(clk_bft),')
-    lines_list.append('        .clk_user(clk_user),')
+    lines_list.append('        .clk(clk),')
     lines_list.append('        .reset(reset),')
-    lines_list.append('        .reset_bft(reset_bft),')
     lines_list.append('        .din_leaf_bft2interface(din_leaf_bft2interface),')
     lines_list.append('        .dout_leaf_interface2bft(dout_leaf_interface2bft),')
-    lines_list.append('        .riscv_addr(riscv_addr),')
-    lines_list.append('        .riscv_dout(riscv_dout),')
-    lines_list.append('        .instr_wr_en_out(instr_wr_en_out),') 
+    # lines_list.append('        .riscv_addr(riscv_addr),')
+    # lines_list.append('        .riscv_dout(riscv_dout),')
+    # lines_list.append('        .instr_wr_en_out(instr_wr_en_out),') 
     lines_list.append('        .resend(resend),')
     lines_list.append('        .dout_leaf_interface2user('+dout_str+'),')
     lines_list.append('        .vld_interface2user('+val_out_str+'),')
@@ -294,7 +290,7 @@ class _verilog:
     lines_list.append('    ')
     if is_riscv == True:
       lines_list.append('   picorv32_wrapper picorv32_wrapper_inst(')
-      lines_list.append('       .clk(clk_user),')
+      lines_list.append('       .clk(clk),')
       lines_list.append('       .instr_config_addr(riscv_addr),')
       lines_list.append('       .instr_config_din(riscv_dout),')
       lines_list.append('       .instr_config_wr_en(instr_wr_en_out),')
@@ -315,8 +311,9 @@ class _verilog:
       lines_list.append('       );') 
     else:
       lines_list.append('    '+fun_name+' '+fun_name+'_inst(')
-      lines_list.append('        .ap_clk(clk_user),')
-      lines_list.append('        .ap_start(ap_start),')
+      lines_list.append('        .ap_clk(clk),')
+      # lines_list.append('        .ap_start(ap_start),')
+      lines_list.append('        .ap_start(1\'b1),')
       lines_list.append('        .ap_done(),')
       lines_list.append('        .ap_idle(),')
       lines_list.append('        .ap_ready(),')
@@ -328,7 +325,7 @@ class _verilog:
         lines_list.append('        .Output_'+str(i)+'_V_TDATA(din_leaf_user2interface_'+str(i)+'),')
         lines_list.append('        .Output_'+str(i)+'_V_TVALID(vld_user2interface_'+str(i)+'),')
         lines_list.append('        .Output_'+str(i)+'_V_TREADY(ack_interface2user_'+str(i)+'),')
-      lines_list.append('        .ap_rst_n(!reset)')
+      lines_list.append('        .ap_rst_n(~reset)')
       lines_list.append('        );  ')
     lines_list.append('    ')
     lines_list.append('endmodule')
@@ -760,7 +757,7 @@ class gen_basic:
       print str(num)+'\t'+str(value)
 
   def print_dict(self, in_dict):
-    for key, value in in_dict.items():
+    for key, value in sorted(in_dict.items()):
       print str(key).ljust(30)+'->'+str(value)
 
   def has_pattern(self, in_str, pattern_str):

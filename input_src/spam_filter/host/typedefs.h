@@ -37,6 +37,7 @@ const int DATA_SET_SIZE = NUM_FEATURES * NUM_SAMPLES;
   #include "ap_fixed.h"
   // features / parameters
   typedef ap_uint<128> bit128;
+  typedef ap_uint<64> bit64;
   typedef ap_uint<32> bit32;
   #define FTYPE_TWIDTH 32
   #define FTYPE_IWIDTH 13

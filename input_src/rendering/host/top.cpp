@@ -14,42 +14,43 @@
 #include "../operators/coloringFB_bot_m.h"
 #include "../operators/coloringFB_top_m.h"
 
-
-//#define PROFILE
-
-#ifdef PROFILE
-	int data_redir_m_in_1=0;
-	int data_redir_m_out_1=0;
-	int data_redir_m_out_2=0;
-	int rasterization2_m_in_1=0;
-	int rasterization2_m_in_2=0;
-	int rasterization2_m_out_1=0;
-	int rasterization2_m_out_2=0;
-	int rasterization2_m_out_3=0;
-	int rasterization2_m_out_4=0;
-	int zculling_top_in_1=0;
-	int zculling_top_in_2=0;
-	int zculling_top_out_1=0;
-	int zculling_bot_in_1=0;
-	int zculling_bot_in_2=0;
-	int zculling_bot_out_1=0;
-	int coloringFB_top_m_in_1=0;
-	int coloringFB_top_m_in_2=0;
-	int coloringFB_top_m_out_1=0;
-	int coloringFB_bot_m_in_1=0;
-	int coloringFB_bot_m_out_1=0;
-#endif
 /*======================UTILITY FUNCTIONS========================*/
 const int default_depth = 128;
 
 
+void data_gen(
+		  hls::stream<ap_uint<32> > & Output_1
+		)
 
-int total_1 = 0;
-int total_2 = 0;
+//( bit32 input[3*NUM_3D_TRI], bit32 output[NUM_FB])
+{
+#pragma HLS INTERFACE axis register_mode=both register port=Output_1
+#include "input_data.h"
+    // create space for input and output
+    bit32 input_tmp;
+    bit32 input[3 * NUM_3D_TRI];
+    bit32 output[NUM_FB];
 
+    // pack input data for better performance
+    for ( int i = 0; i < NUM_3D_TRI; i++)
+    {
+        input_tmp(7,   0) = triangle_3ds[i].x0;
+        input_tmp(15,  8) = triangle_3ds[i].y0;
+        input_tmp(23, 16) = triangle_3ds[i].z0;
+        input_tmp(31, 24) = triangle_3ds[i].x1;
+        Output_1.write(input_tmp);
 
+        input_tmp(7, 0) = triangle_3ds[i].y1;
+        input_tmp(15, 8) = triangle_3ds[i].z1;
+        input_tmp(23, 16) = triangle_3ds[i].x2;
+        input_tmp(31, 24) = triangle_3ds[i].y2;
+        Output_1.write(input_tmp);
 
-
+        input_tmp(7, 0) = triangle_3ds[i].z2;
+        input_tmp(31, 8) = 0;
+        Output_1.write(input_tmp);
+    }
+}
 
 void top (
 		  hls::stream<ap_uint<32> > & Input_1,
@@ -177,136 +178,118 @@ void top (
 
 }
 
-void pseudo_riscv(
-		  hls::stream<ap_uint<32> > & Input_1,
-		  hls::stream<ap_uint<32> > & Output_1,
-		  hls::stream<ap_uint<32> > & Output_2
-		)
-{
-#pragma HLS INTERFACE ap_hs port=Input_1
-#pragma HLS INTERFACE ap_hs port=Output_1
-#pragma HLS INTERFACE ap_hs port=Output_2
-	ap_uint<32> in1;
-	ap_uint<32> out1;
-	in1 = 0;
-	int tmp = 0;
-	in1 = in1 + Input_1.read();
-	in1 = in1 + Input_1.read();
-	Output_1.write(in1);
-	Output_1.write(in1);
-	Output_1.write(in1);
-	Output_1.write(in1);
-
-	in1 = 0;
-	in1 = in1 + Input_1.read();
-	in1 = in1 + Input_1.read();
-	in1 = in1 + Input_1.read();
-	Output_2.write(in1);
-	Output_2.write(in1);
-	Output_2.write(in1);
-	Output_2.write(in1);
-
-}
 
 
-void converter(
-		  hls::stream<ap_uint<32> > & Input_1,
-		  hls::stream<ap_uint<32> > & Input_2,
-		  hls::stream<ap_uint<32> > & Output_1
-		)
-{
-#pragma HLS INTERFACE ap_hs port=Input_1
-#pragma HLS INTERFACE ap_hs port=Input_2
-#pragma HLS INTERFACE ap_hs port=Output_1
-	ap_uint<32> in1;
-	ap_uint<32> in2;
-	ap_uint<32> out1;
-	in1 = Input_1.read();
-	in2 = Input_2.read();
-	out1 = in1;
-	if(in2 != 1)
+
+extern "C" {
+	void ydma (
+			bit64 * input1,
+			bit32 * input2,
+			bit64 * output1,
+			bit32 * output2,
+			int config_size,
+			int input_size,
+			int output_size
+			)
 	{
-		Output_1.write(4096);
+#pragma HLS INTERFACE m_axi port=input1 bundle=aximm1
+#pragma HLS INTERFACE m_axi port=input2 bundle=aximm2
+#pragma HLS INTERFACE m_axi port=output1 bundle=aximm1
+#pragma HLS INTERFACE m_axi port=output2 bundle=aximm2
+	#pragma HLS DATAFLOW
+
+	  bit64 v1_buffer[256];   // Local memory to store vector1
+	  //hls::stream< unsigned int > v1_buffer;
+	  #pragma HLS STREAM variable=v1_buffer depth=256
+
+          hls::stream<ap_uint<32> > Input_1("Input_1_str");
+          hls::stream<ap_uint<32> > Output_1("Output_str");
+
+          for(int i=0; i<config_size; i++){ v1_buffer[i] = input1[i]; }
+          for(int i=0; i<config_size; i++){ output1[i] = v1_buffer[i]; }
+
+	  for(int i=0; i<input_size;  i++){ Input_1.write(input2[i]); }
+	  
+          top(Input_1, Output_1);
+ 
+          for(int i=0; i<output_size; i++){ output2[i] = Output_1.read(); }
 	}
-	Output_1.write(out1);
 
 }
 
-void data_gen(
-		  hls::stream<ap_uint<32> > & Output_1
-		)
+void config_parser(
+		hls::stream< bit64 > & input1,
+		hls::stream< bit32 > & input2,
+		hls::stream< bit64 > & output1,
+		hls::stream< bit32 > & output2,
+		hls::stream< bit64 > & output3
 
-//( bit32 input[3*NUM_3D_TRI], bit32 output[NUM_FB])
-{
-#pragma HLS INTERFACE ap_hs port=Output_1
-#include "../host/input_data.h"
-    // create space for input and output
-    bit32 input_tmp;
-    bit32 input[3 * NUM_3D_TRI];
-    bit32 output[NUM_FB];
-
-    // pack input data for better performance
-    for ( int i = 0; i < NUM_3D_TRI; i++)
-    {
-#pragma HLS PIPELINE
-        input_tmp(7,   0) = triangle_3ds[i].x0;
-        input_tmp(15,  8) = triangle_3ds[i].y0;
-        input_tmp(23, 16) = triangle_3ds[i].z0;
-        input_tmp(31, 24) = triangle_3ds[i].x1;
-        Output_1.write(input_tmp);
-        input_tmp(7,   0) = triangle_3ds[i].y1;
-        input_tmp(15,  8) = triangle_3ds[i].z1;
-        input_tmp(23, 16) = triangle_3ds[i].x2;
-        input_tmp(31, 24) = triangle_3ds[i].y2;
-        Output_1.write(input_tmp);
-        input_tmp(7,   0) = triangle_3ds[i].z2;
-        input_tmp(31,  8)  = 0;
-        Output_1.write(input_tmp);
-    }
-}
-
-
-void data_gen_1(
-		  hls::stream<ap_uint<32> > & Output_1
 		)
 {
-#pragma HLS INTERFACE ap_hs port=Output_1
-#include "/home/ylxiao/ws_201/HLS/rendering/data_gen.h"
-	for(int i=0; i<9576; i++){
-#pragma HLS PIPELINE
-		Output_1.write(data_gen_data[i]);
+#pragma HLS INTERFACE axis register_mode=both register port=input1
+#pragma HLS INTERFACE axis register_mode=both register port=input2
+#pragma HLS INTERFACE axis register_mode=both register port=output1
+#pragma HLS INTERFACE axis register_mode=both register port=output2
+#pragma HLS INTERFACE axis register_mode=both register port=output3
+
+	bit64 v1_buffer[256];
+	unsigned int config_num;
+	unsigned int data_num;
+
+	config_num = input1.read();
+	data_num = input1.read();
+
+
+	// read the configuration packets
+	for(int i=0; i<config_num; i++){
+#pragma HLS PIPELINE II=1
+		v1_buffer[i] = input1.read();
+	}
+
+	// send the configuration packets to the BFT
+	for(int i=0; i<config_num; i++){
+#pragma HLS PIPELINE II=1
+		output1.write(v1_buffer[i]);
+	}
+
+	// send the configuration packets back to the host
+	output3.write(config_num);
+	output3.write(data_num);
+	for(int i=0; i<config_num; i++){
+#pragma HLS PIPELINE II=1
+		output3.write(i);
+	}
+
+	// transfer the data to the kernel
+	for(int i=0; i<data_num; i++){
+#pragma HLS PIPELINE II=1
+		output2.write(input2.read());
 	}
 }
 
-#define USER_WIDTH 64
-
-void user_kernel(
-		  hls::stream<ap_uint<USER_WIDTH> > & Input_1,
-		  hls::stream<ap_uint<USER_WIDTH> > & Output_1
+void config_collector(
+		hls::stream< bit64 > & input1,
+		hls::stream< bit64 > & input2,
+		hls::stream< bit64 > & output1
 		)
-
 {
-#pragma HLS INTERFACE ap_hs port=Input_1
-#pragma HLS INTERFACE ap_hs port=Output_1
-		Output_1.write(Input_1.read()+5);
+#pragma HLS INTERFACE axis register_mode=both register port=input1
+#pragma HLS INTERFACE axis register_mode=both register port=input2
+#pragma HLS INTERFACE axis register_mode=both register port=output1
+
+	bit64 v1_buffer[256];
+
+	for(int i=0; i<10; i++){
+#pragma HLS PIPELINE II=1
+		v1_buffer[i] = input1.read();
+	}
+
+	for(int i=0; i<12; i++){
+#pragma HLS PIPELINE II=1
+		bit64 tmp;
+		tmp = v1_buffer[i] + input2.read();
+		output1.write(tmp);
+	}
+
 }
-
-void user_fifo(
-		  hls::stream<ap_uint<32> > & Input_1,
-		  hls::stream<ap_uint<32> > & Output_1
-		)
-
-{
-#pragma HLS INTERFACE ap_hs port=Input_1
-#pragma HLS INTERFACE ap_hs port=Output_1
-		int i;
-		int tmp[16];
-		for (i=0; i<16; i++)
-		{
-			tmp[i] = Input_1.read();
-			Output_1.write(tmp[i]);
-		}
-}
-
-
 

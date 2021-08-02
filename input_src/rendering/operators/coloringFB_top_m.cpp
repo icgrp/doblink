@@ -53,12 +53,6 @@ void coloringFB_top_m(
 
   counter++;
   if(counter==NUM_3D_TRI){
-	  for (int l=0; l<16; l++){
-	    Output_1.write(16400);
-#ifdef PROFILE
-  coloringFB_top_m_out_1++;
-#endif
-	  }
 	  for (i=0; i<MAX_X; i++){
 		  RECV: for(int k=0; k<MAX_Y/2; k+=4){
 #pragma HLS PIPELINE II=1

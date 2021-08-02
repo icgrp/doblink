@@ -1,6 +1,5 @@
 #include "../host/typedefs.h"
 
-
 template<typename T>
 static void load_kh(T& comp, const Word kh_mem[KH_WORDS], Address idx) {
   //printf("kh_mem %d\n", (unsigned int)idx/KH_PER_WORD);
@@ -261,13 +260,15 @@ static void bin_conv(
 
   //wt_word_buffer_list[0] = wt_mem[0][wt_addr];
   //wt_word_buffer_list[1] = wt_mem[1][wt_addr];
+  wt_word_buffer_list[0](31,  0) = Input_1.read();
   wt_word_buffer_list[0](63, 32) = Input_1.read();
   //printf("0x%08x,\n", (unsigned int) wt_word_buffer_list[0](63, 32));
-  wt_word_buffer_list[0](31,  0) = Input_1.read();
+
   //printf("0x%08x,\n", (unsigned int) wt_word_buffer_list[0](31,  0));
+  wt_word_buffer_list[1](31,  0) = Input_1.read();
   wt_word_buffer_list[1](63, 32) = Input_1.read();
   //printf("0x%08x,\n", (unsigned int) wt_word_buffer_list[1](63, 32));
-  wt_word_buffer_list[1](31,  0) = Input_1.read();
+
   //printf("0x%08x,\n", (unsigned int) wt_word_buffer_list[1](31,  0));
   //if(local_cnt < 128) { printf("input\ninput\n"); }
   //printf("0x%08x%08x,\n", (unsigned int)wt_word_buffer_list[0](63,32), (unsigned int)wt_word_buffer_list[0](31,0));
@@ -313,13 +314,15 @@ static void bin_conv(
         }
         if (wt_offset == CONV_W_PER_WORD-1) {
           wt_addr++;
+          wt_word_buffer_list[0](31,  0) = Input_1.read();
           wt_word_buffer_list[0](63, 32) = Input_1.read();
           //printf("0x%08x,\n", (unsigned int) wt_word_buffer_list[0](63, 32));
-          wt_word_buffer_list[0](31,  0) = Input_1.read();
+
           //printf("0x%08x,\n", (unsigned int) wt_word_buffer_list[0](31,  0));
+          wt_word_buffer_list[1](31,  0) = Input_1.read();
           wt_word_buffer_list[1](63, 32) = Input_1.read();
           //printf("0x%08x,\n", (unsigned int) wt_word_buffer_list[1](63, 32));
-          wt_word_buffer_list[1](31,  0) = Input_1.read();
+
           //printf("0x%08x,\n", (unsigned int) wt_word_buffer_list[1](31,  0));
           //if(local_cnt < 128) { printf("input\ninput\n"); }
           wt_offset = 0;
@@ -518,8 +521,6 @@ static void bin_conv(
   local_cnt++;
 }
 
-
-
 void bin_conv_1(
 
 	hls::stream< bit32 > & Input_1,
@@ -529,7 +530,7 @@ void bin_conv_1(
 #pragma HLS INTERFACE axis register port=Input_1
 #pragma HLS INTERFACE axis register port=Input_2
 #pragma HLS INTERFACE axis register port=Output_1
-	bit32 out_tmp;
+
 	static unsigned int bin_conv_cnt = 0;
 	static Word dmem[2][CONVOLVERS][C_DMEM_WORDS];
 #pragma HLS ARRAY_PARTITION variable=dmem complete dim=2
@@ -540,11 +541,11 @@ void bin_conv_1(
 
     ap_uint<1> d_i_idx_list[] =          {0,  1,  1,  1,  1,  0,  0  };
     ap_uint<1> d_o_idx_list[]  =         {1,  0,  0,  0,  0,  1,  1  };
-    Address n_inputs_list[] =      {256,256,256,256,256,512,512};
+    const Address n_inputs_list[] =      {256,256,256,256,256,512,512};
     const Address o_index_list[] =       {128,0,  128,256,384,0,  64 };
-    ap_uint<2> width_mode_list[] = {1,  0,  0,  0,  0,  0,  0  }; // 0=8'b, 1=16'b, 2=32'b
-    ap_uint<2> norm_mode_list[] =  {2,  1,  1,  1,  1,  2,  2  }; // 0='do nothing', 1='do norm', 2='do pool'
-    Address n_outputs_list[] =     {128,128,128,128,128,64, 64 };
+    const ap_uint<2> width_mode_list[] = {1,  0,  0,  0,  0,  0,  0  };
+    const ap_uint<2> norm_mode_list[] =  {2,  1,  1,  1,  1,  2,  2  };
+    const Address n_outputs_list[] =     {128,128,128,128,128,64, 64 };
 
     Address o_index = o_index_list[bin_conv_cnt];
     Address n_outputs = n_outputs_list[bin_conv_cnt];
@@ -556,10 +557,9 @@ void bin_conv_1(
     for(unsigned int kh_i=0; kh_i<KH_WORDS; kh_i++)
     {
 #pragma HLS PIPELINE
-    	kh_mem[kh_i](63, 32) = Input_1.read();
-    	//printf("0x%08x,\n", (unsigned int) kh_mem[kh_i](63, 32));
     	kh_mem[kh_i](31,  0) = Input_1.read();
-    	//printf("0x%08x,\n", (unsigned int) kh_mem[kh_i](31,  0));
+    	kh_mem[kh_i](63, 32) = Input_1.read();
+
     	//printf("0x%08x%08x,\n", (unsigned int) kh_mem[kh_i](63,32), (unsigned int) kh_mem[kh_i](31,0));
     }
 
@@ -571,15 +571,15 @@ void bin_conv_1(
 			for(unsigned int dmem_k=0; dmem_k<C_DMEM_WORDS; dmem_k++)
 			{
 #pragma HLS PIPELINE
-				dmem[dmem_i][dmem_j][dmem_k](63, 32) = Input_2.read();
 				dmem[dmem_i][dmem_j][dmem_k](31,  0) = Input_2.read();
+				dmem[dmem_i][dmem_j][dmem_k](63, 32) = Input_2.read();
 			}
 
     }
 
 
     LOOP_IMG_BATCH:
-    for (int i = 0; i < n_outputs; i++) {
+    for (IdxType i = 0; i < n_outputs; ++i) {
       // Load the batch-norm parameters for this output
       NormComp nc;
       load_kh(nc, kh_mem, kh_index);
@@ -608,12 +608,10 @@ void bin_conv_1(
 	  for(unsigned int dmem_i=0; dmem_i<2; dmem_i++)
 		for(unsigned int dmem_j=0; dmem_j<CONVOLVERS; dmem_j++)
 		  for(unsigned int dmem_k=0; dmem_k<C_DMEM_WORDS; dmem_k++){
-			#pragma HLS PIPELINE
-			out_tmp(31, 0) = dmem[dmem_i][dmem_j][dmem_k](63, 32);
-			Output_1.write(out_tmp);
-			out_tmp(31, 0) = dmem[dmem_i][dmem_j][dmem_k](31,  0);
-			Output_1.write(out_tmp);
-		  }
+#pragma HLS PIPELINE
+              Output_1.write(dmem[dmem_i][dmem_j][dmem_k](31,  0));
+              Output_1.write(dmem[dmem_i][dmem_j][dmem_k](63, 32));
+			}
     }
 
     bin_conv_cnt++;

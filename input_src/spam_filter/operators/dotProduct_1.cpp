@@ -42,7 +42,7 @@ void dotProduct_1(hls::stream<ap_uint<32> > & Input_1,
 	  //sb++;
   if(odd_even == 0){
 	  training_label(7,0) = Input_1.read();
-	  //printf("0x%08x,\n", training_label.to_int());
+	  //printf("label: 0x%08x,\n", training_label.to_int());
 
 	  READ_TRAINING_DATA: for (int i = 0; i < NUM_FEATURES / D_VECTOR_SIZE / 8; i ++ )
 	  //                                      1024           4
@@ -50,12 +50,12 @@ void dotProduct_1(hls::stream<ap_uint<32> > & Input_1,
 #pragma HLS PIPELINE II=1
 		bit32 tmp_data;
 		tmp_data = Input_1.read();
-		//printf("0x%08x,\n", tmp_data.to_int());
+		//printf("feature: 0x%08x,\n", tmp_data.to_int());
 
 		feature[i * D_VECTOR_SIZE + 0](DTYPE_TWIDTH-1, 0) = tmp_data.range(15,  0);
 		feature[i * D_VECTOR_SIZE + 1](DTYPE_TWIDTH-1, 0) = tmp_data.range(31, 16);
 		tmp_data = Input_1.read();
-		//printf("0x%08x,\n", tmp_data.to_int());
+		//printf("feature: 0x%08x,\n", tmp_data.to_int());
 		feature[i * D_VECTOR_SIZE + 2](DTYPE_TWIDTH-1, 0) = tmp_data.range(15,  0);
 		feature[i * D_VECTOR_SIZE + 3](DTYPE_TWIDTH-1, 0) = tmp_data.range(31, 16);
 	  }

@@ -33,10 +33,8 @@ module Stream_Flow_Control#(
     localparam REG_CONTROL_BITS=OUT_PORTS_REG_BITS*NUM_OUT_PORTS+IN_PORTS_REG_BITS*NUM_IN_PORTS    
     )(
     input resend,
-    input clk_bft,
-    input clk_user,
+    input clk,
     input reset,
-    input reset_bft,
     
     input [PACKET_BITS-1:0] stream_in,
     output [PACKET_BITS-1:0] stream_out,
@@ -67,8 +65,8 @@ module Stream_Flow_Control#(
         .NUM_IN_PORTS(NUM_IN_PORTS),
         .NUM_OUT_PORTS(NUM_OUT_PORTS)
     )ConCtrl(
-        .clk_bft(clk_bft),
-        .reset_bft(reset_bft),
+        .clk(clk),
+        .reset(reset),
         .outport_sel(rd_en_sel),
         .stream_out(stream_out),
         .freespace_update(freespace_update),
@@ -90,10 +88,8 @@ module Stream_Flow_Control#(
         .NUM_BRAM_ADDR_BITS(NUM_BRAM_ADDR_BITS),
         .FREESPACE_UPDATE_SIZE(FREESPACE_UPDATE_SIZE)
     )ipc(
-        .clk_bft(clk_bft),
-        .clk_user(clk_user),
+        .clk(clk),
         .reset(reset),
-        .reset_bft(reset_bft),
         .freespace_update(freespace_update),
         .packet_from_input_ports(packet_from_input_ports),
         .stream_in(stream_in),
@@ -115,10 +111,8 @@ module Stream_Flow_Control#(
         .NUM_BRAM_ADDR_BITS(NUM_BRAM_ADDR_BITS),
         .FREESPACE_UPDATE_SIZE(FREESPACE_UPDATE_SIZE)
     )opc(
-        .clk_bft(clk_bft),
-        .clk_user(clk_user),
+        .clk(clk),
         .reset(reset),
-        .reset_bft(reset_bft),
         .out_control_reg(control_reg[REG_CONTROL_BITS-1:IN_PORTS_REG_BITS*NUM_IN_PORTS]),
         .internal_out(packet_from_output_ports),
         .empty(empty),

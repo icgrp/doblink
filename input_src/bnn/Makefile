@@ -18,7 +18,7 @@ CXX=g++
 VPATH=src
 
 all: main
-	./main > out.log
+	./main
 
 main:$(OPERATORS_OBJ) $(HOST_OBJ)
 	$(CXX) $(CFLAGS) -o main $^ 
@@ -31,13 +31,13 @@ $(OPERATORS_OBJ):%.o:./operators/%.cpp
 	$(CXX) $(CFLAGS) -o $@ -c $^
 
 run: main
-	./main 10
+	./main 10 > out.log
 
 install:
 	echo hello
 
 print: 
-	ls ./src
+	echo $(HOST_OBJ)
 
 tar:
 	tar -czvf ./src.tar.gz ./src/ 

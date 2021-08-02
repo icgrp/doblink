@@ -11,7 +11,7 @@
 
 module user_kernel #(
         parameter PAYLOAD_BITS = 32,
-        parameter ADD_NUM = 0
+        parameter ADD_NUM = 1
         )(
         ap_clk,
         ap_rst,

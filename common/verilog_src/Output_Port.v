@@ -30,10 +30,8 @@ module Output_Port#(
     parameter FREESPACE_UPDATE_SIZE = 64,
     localparam FIFO_DEPTH = (2**NUM_BRAM_ADDR_BITS)
     )(
-    input clk_bft,
-    input clk_user,
+    input clk,
     input reset,
-    input reset_bft,
     input [NUM_LEAF_BITS-1:0] dst_leaf,
     input [NUM_PORT_BITS-1:0] dst_port,
     input [NUM_ADDR_BITS-1:0] fifo_addr,
@@ -76,12 +74,11 @@ module Output_Port#(
     endgenerate
         
     
-    //assign ack_b_out2user = wr_en;
-    assign ack_b_out2user = ~full;
+    assign ack_b_out2user = wr_en;
     // write bram_out, it manipulates write port of b_out_9
                    
-    always@(posedge clk_bft) begin
-         if(reset_bft) begin
+    always@(posedge clk) begin
+         if(reset) begin
              FreeCnt = 2**NUM_ADDR_BITS-1;
          end else begin
              if(update_freespace_en)
@@ -99,8 +96,8 @@ module Output_Port#(
      end
 
 
-    always@(posedge clk_bft) begin
-        if(reset_bft) begin
+    always@(posedge clk) begin
+        if(reset) begin
             fifo_addr_reg = 0;
         end else begin
             if(update_fifo_addr_en)
@@ -115,8 +112,8 @@ module Output_Port#(
                 
     assign rd_en = ((FreeCnt > 0) && (!empty)) ? rd_en_sel : 1'b0;
     
-    always@(posedge clk_bft) begin
-        if(reset_bft) begin
+    always@(posedge clk) begin
+        if(reset) begin
             valid = 0;
         end else begin
             valid <= rd_en;
@@ -133,7 +130,7 @@ module Output_Port#(
         .wr_en(wr_en), 
         .din(din));
               
-
+/*
 xpm_fifo_async # (
 
   .FIFO_MEMORY_TYPE          ("block"),           //string; "auto", "block", or "distributed";
@@ -179,4 +176,18 @@ xpm_fifo_async # (
   .dbiterr          ()
 
 );
+*/
+
+SynFIFO SynFIFO_inst (
+	.clk(clk),
+	.rst_n(!reset),
+	.rdata(dout), 
+	.wfull(full), 
+	.rempty(empty), 
+	.wdata(din),
+	.winc(wr_en), 
+	.rinc(rd_en)
+	);
+	
+	
 endmodule

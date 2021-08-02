@@ -29,6 +29,7 @@ typedef unsigned char      LabelType;
 #ifdef SDSOC
   #include "ap_int.h"
   typedef ap_uint<128> bit128;
+  typedef ap_uint<64> bit64;
   typedef ap_uint<32> bit32;
   // sdsoc wide vector type
   typedef ap_uint<256>  WholeDigitType;

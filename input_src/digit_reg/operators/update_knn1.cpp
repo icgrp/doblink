@@ -151,7 +151,9 @@ static int index = 0;
 		training_set[i](95,   64) =Input_1.read();
 		training_set[i](63,   32) =Input_1.read();
 		training_set[i](31,    0) =Input_1.read();
-
+                //for (int j=0; j<8; j++){
+                //  printf("#%d=%08x\n", i*8+j, (unsigned int) training_set[i]((7-j)*32+31, (7-j)*32));
+                //}
 	  }
 
 	  //Transit the training sets for other pages

@@ -153,7 +153,6 @@ static void process_word(
   local_cnt++;
 }
 
-
 // -----------------------------------------------------------------------
 // A single PE reads from all inputs and weights to generate a single
 // output feature map.
@@ -260,13 +259,15 @@ static void bin_conv(
 
   //wt_word_buffer_list[0] = wt_mem[0][wt_addr];
   //wt_word_buffer_list[1] = wt_mem[1][wt_addr];
+  wt_word_buffer_list[0](31,  0) = Input_1.read();
   wt_word_buffer_list[0](63, 32) = Input_1.read();
   //printf("0x%08x,\n", (unsigned int) wt_word_buffer_list[0](63, 32));
-  wt_word_buffer_list[0](31,  0) = Input_1.read();
+
   //printf("0x%08x,\n", (unsigned int) wt_word_buffer_list[0](31,  0));
+  wt_word_buffer_list[1](31,  0) = Input_1.read();
   wt_word_buffer_list[1](63, 32) = Input_1.read();
   //printf("0x%08x,\n", (unsigned int) wt_word_buffer_list[1](63, 32));
-  wt_word_buffer_list[1](31,  0) = Input_1.read();
+
   //printf("0x%08x,\n", (unsigned int) wt_word_buffer_list[1](31,  0));
   //if(local_cnt < 128) { printf("input\ninput\n"); }
   //printf("0x%08x%08x,\n", (unsigned int)wt_word_buffer_list[0](63,32), (unsigned int)wt_word_buffer_list[0](31,0));
@@ -312,13 +313,15 @@ static void bin_conv(
         }
         if (wt_offset == CONV_W_PER_WORD-1) {
           wt_addr++;
+          wt_word_buffer_list[0](31,  0) = Input_1.read();
           wt_word_buffer_list[0](63, 32) = Input_1.read();
           //printf("0x%08x,\n", (unsigned int) wt_word_buffer_list[0](63, 32));
-          wt_word_buffer_list[0](31,  0) = Input_1.read();
+
           //printf("0x%08x,\n", (unsigned int) wt_word_buffer_list[0](31,  0));
+          wt_word_buffer_list[1](31,  0) = Input_1.read();
           wt_word_buffer_list[1](63, 32) = Input_1.read();
           //printf("0x%08x,\n", (unsigned int) wt_word_buffer_list[1](63, 32));
-          wt_word_buffer_list[1](31,  0) = Input_1.read();
+
           //printf("0x%08x,\n", (unsigned int) wt_word_buffer_list[1](31,  0));
           //if(local_cnt < 128) { printf("input\ninput\n"); }
           wt_offset = 0;
@@ -519,6 +522,7 @@ static void bin_conv(
 
 
 
+
 void bin_conv_0(
 
 	hls::stream< bit32 > & Input_1,
@@ -536,35 +540,28 @@ void bin_conv_0(
     Word wt_mem[CONVOLVERS][C_WT_WORDS];
 #pragma HLS ARRAY_PARTITION variable=wt_mem complete dim=1
 	Word kh_mem[KH_WORDS];
-	bit32 in_tmp;
-	bit32 out_tmp;
+
     ap_uint<1> d_i_idx_list[] =          {0,  1,  0   };
     ap_uint<1> d_o_idx_list[]  =         {1,  0,  1   };
-    Address n_inputs_list[] =      {128,128,256 };
+    const Address n_inputs_list[] =      {128,128,256 };
     const Address o_index_list[] =       {0,  0,  0,  };
-    ap_uint<2> width_mode_list[] = {2,  1,  1,  }; // 0=8'b, 1=16'b, 2=32'b
-    ap_uint<2> norm_mode_list[] =  {2,  1,  2,  }; // 0='do nothing', 1='do norm', 2='do pool'
+    const ap_uint<2> width_mode_list[] = {2,  1,  1,  };
+    const ap_uint<2> norm_mode_list[] =  {2,  1,  2,  };
     const Address n_outputs_list[] =     {128,256,128 };
 
     Address o_index = o_index_list[bin_conv_cnt];
     Address n_outputs = n_outputs_list[bin_conv_cnt];
     Address kh_index = 0;
 
-#ifdef RISCV1
-    print_str("bin_conv_cnt = ");
-    print_dec(bin_conv_cnt);
-    print_str("\n");
-#endif
+    //printf("bin_conv_cnt=%d\n", bin_conv_cnt);
 
 
     for(unsigned int kh_i=0; kh_i<KH_WORDS; kh_i++)
     {
 #pragma HLS PIPELINE
-
-    	kh_mem[kh_i](63, 32) = Input_1.read();
-    	//printf("0x%08x,\n", (unsigned int) kh_mem[kh_i](63, 32));
     	kh_mem[kh_i](31,  0) = Input_1.read();
-    	//printf("0x%08x,\n", (unsigned int) kh_mem[kh_i](31,  0));
+    	kh_mem[kh_i](63, 32) = Input_1.read();
+
     	//printf("0x%08x%08x,\n", (unsigned int) kh_mem[kh_i](63,32), (unsigned int) kh_mem[kh_i](31,0));
     }
 
@@ -576,32 +573,19 @@ void bin_conv_0(
 			for(unsigned int dmem_k=0; dmem_k<C_DMEM_WORDS; dmem_k++)
 			{
 #pragma HLS PIPELINE
-				in_tmp = Input_2.read();
-				dmem[0][dmem_j][dmem_k](63, 32) = in_tmp;
-				//printf("0x%08x,\n", (unsigned int) dmem[0][dmem_j][dmem_k](63, 32));
-				in_tmp = Input_2.read();
-				dmem[0][dmem_j][dmem_k](31,  0) = in_tmp;
-				//printf("0x%08x,\n", (unsigned int) dmem[0][dmem_j][dmem_k](31,  0));
+				dmem[0][dmem_j][dmem_k](31,  0) = Input_2.read();
+				dmem[0][dmem_j][dmem_k](63, 32) = Input_2.read();
 			}
 
     }
 
-#ifdef RISCV1
-    print_str("Mark1\n");
-#endif
 
-    //printf("bin_conv_cnt=%d===================================\n", bin_conv_cnt);
     LOOP_IMG_BATCH:
-    for (int i = 0; i < n_outputs; i++) {
-#ifdef RISCV1
-    print_str("n=");
-    print_dec(i);
-    print_str("\n");
-
-#endif
+    for (IdxType i = 0; i < n_outputs; ++i) {
       // Load the batch-norm parameters for this output
       NormComp nc;
       load_kh(nc, kh_mem, kh_index);
+
       bin_conv(
     	  Input_1,
           wt_mem,
@@ -620,10 +604,6 @@ void bin_conv_0(
       o_index++;
     }
 
-#ifdef RISCV1
-    print_str("Mark2\n");
-#endif
-
 
     if(bin_conv_cnt == 2)
     {
@@ -632,12 +612,8 @@ void bin_conv_0(
 			for(unsigned int dmem_k=0; dmem_k<C_DMEM_WORDS; dmem_k++)
 			{
 #pragma HLS PIPELINE
-				out_tmp(31, 0) = dmem[dmem_i][dmem_j][dmem_k](63, 32);
-				Output_1.write(out_tmp);
-				//printf("0x%08x,\n", (unsigned int) out_tmp);
-				out_tmp(31, 0) = dmem[dmem_i][dmem_j][dmem_k](31,  0);
-				//printf("0x%08x,\n", (unsigned int) out_tmp);
-				Output_1.write(out_tmp);
+				Output_1.write(dmem[dmem_i][dmem_j][dmem_k](31,  0));
+				Output_1.write(dmem[dmem_i][dmem_j][dmem_k](63, 32));
 			}
     }
 

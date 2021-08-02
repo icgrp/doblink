@@ -11,7 +11,7 @@ void data_in_redir( hls::stream<ap_uint<32> > & Input_1,
 	bit32 tmp_data;
   // intermediate variables
   // local buffer of labels
-  static LabelType   label_local[4512];
+  static LabelType   label_local[4500];
   #pragma HLS array_partition variable=label_local cyclic factor=8
   // array for storing one training instance
   static DataType training_instance[NUM_FEATURES];
@@ -26,29 +26,17 @@ void data_in_redir( hls::stream<ap_uint<32> > & Input_1,
 
   if (epoch == 0)
   {
-	DUM_CP: for(int i = 0; i<486*4; i++){
-#pragma HLS PIPELINE II=1
-		dump = Input_1.read();
-	}
-
-// copy in labels
+    // copy in labels
 	//LABEL_CP: for (int i = 0; i < NUM_TRAINING / L_VECTOR_SIZE; i ++ )
-	LABEL_CP: for (int i = 0; i < 282; i ++ )
+	LABEL_CP: for (int i = 0; i < 1125; i ++ )
 	{
-#ifdef RISCV1
-	  print_str("i1=");
-	  print_dec(i);
-	  print_str("\n");
-#endif
-#pragma HLS PIPELINE II=4
-	  LABEL_CP_INNER: for (int j = 0; j < 4; j ++ ){
 		  bit32 tmp_label;
 		  tmp_label(31,  0) = Input_1.read();
-		  label_local[i * 16 + (4*j + 0)](LTYPE_WIDTH-1, 0) = tmp_label( 7, 0);
-	  	  label_local[i * 16 + (4*j + 1)](LTYPE_WIDTH-1, 0) = tmp_label(15, 8);
-	  	  label_local[i * 16 + (4*j + 2)](LTYPE_WIDTH-1, 0) = tmp_label(23,16);
-	  	  label_local[i * 16 + (4*j + 3)](LTYPE_WIDTH-1, 0) = tmp_label(31,24);
-	  }
+		  //printf("tmp_label: 0x%08x,\n", tmp_label.to_int());
+		  label_local[i * 4 + 0](LTYPE_WIDTH-1, 0) = tmp_label( 7, 0);
+	  	  label_local[i * 4 + 1](LTYPE_WIDTH-1, 0) = tmp_label(15, 8);
+	  	  label_local[i * 4 + 2](LTYPE_WIDTH-1, 0) = tmp_label(23,16);
+	  	  label_local[i * 4 + 3](LTYPE_WIDTH-1, 0) = tmp_label(31,24);
 	}
   }
 

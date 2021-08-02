@@ -282,7 +282,7 @@ void data_redir_m (
   bit32 input_lo;
   bit32 input_mi;
   bit32 input_hi;
-  bit128 input_tmp;
+  //bit128 input_tmp;
   static int cnt = 0;
 
   hls::stream<ap_uint<32> > Output_1_1;

@@ -30,6 +30,7 @@ void imageScaler_top
 	      LOAD_k: for( k = 0; k < 4; k++){
 #pragma HLS pipeline II=1
 	    	  Data[i][j*4+k] = Input_tmp(8*k+7, 8*k);
+	    	  //printf("topData[%d][%d]=%d\n", i, j*4+k, Data[i][j*4+k]);
 	      }
 
 	    }

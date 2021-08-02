@@ -324,26 +324,22 @@ static ap_uint<9> width_list[12] = {266, 222, 185, 154, 128, 107, 89, 74, 62, 51
 				if(reset == 1){
 					factor = 1.2;
 					factor_char = 0;
-					Output_1.write(408);
-					Output_1.write(408);
-					Output_1.write(408);
-					Output_1.write(408);
-					Output_1.write(res_size_Scale);
-					Output_1.write(res_size_Scale);
-					Output_1.write(res_size_Scale);
-					Output_1.write(res_size_Scale);
 					OUT: for ( i = 0; i < RESULT_SIZE; i++){
-						#pragma HLS PIPELINE II=1
-
+						#pragma HLS PIPELINE II=4
 						Output_tmp   =  AllCandidates_x[i];
 						Output_1.write(Output_tmp);
+						//printf("%d: %08x\n", i, (unsigned int) Output_tmp(31, 0));
 						Output_tmp  =  AllCandidates_y[i];
 						Output_1.write(Output_tmp);
+						//printf("%d: %08x\n", i, (unsigned int) Output_tmp(31, 0));
 						Output_tmp  =  AllCandidates_w[i];
 						Output_1.write(Output_tmp);
+						//printf("%d: %08x\n", i, (unsigned int) Output_tmp(31, 0));
 						Output_tmp =  AllCandidates_h[i];
 						Output_1.write(Output_tmp);
+						//printf("%d: %08x\n", i, (unsigned int) Output_tmp(31, 0));
 					}
+					Output_1.write(res_size_Scale);
 					res_size_Scale = 0;
 					reset = 0;
 				}
@@ -415,25 +411,22 @@ static ap_uint<9> width_list[12] = {266, 222, 185, 154, 128, 107, 89, 74, 62, 51
 				if( factor_char == 12 )
 				{
 					reset = 1;
-					Output_1.write(408);
-					Output_1.write(408);
-					Output_1.write(408);
-					Output_1.write(408);
-					Output_1.write(res_size_Scale);
-					Output_1.write(res_size_Scale);
-					Output_1.write(res_size_Scale);
-					Output_1.write(res_size_Scale);
 					for ( i = 0; i < RESULT_SIZE; i++){
-						#pragma HLS PIPELINE II=1
+						#pragma HLS PIPELINE II=4
 						Output_tmp   =  AllCandidates_x[i];
 						Output_1.write(Output_tmp);
+						//printf("%d: %08x\n", i, (unsigned int) Output_tmp(31, 0));
 						Output_tmp  =  AllCandidates_y[i];
 						Output_1.write(Output_tmp);
+						//printf("%d: %08x\n", i, (unsigned int) Output_tmp(31, 0));
 						Output_tmp  =  AllCandidates_w[i];
 						Output_1.write(Output_tmp);
+						//printf("%d: %08x\n", i, (unsigned int) Output_tmp(31, 0));
 						Output_tmp =  AllCandidates_h[i];
 						Output_1.write(Output_tmp);
+						//printf("%d: %08x\n", i, (unsigned int) Output_tmp(31, 0));
 					}
+					Output_1.write(res_size_Scale);
 				}
 			}
 		}
