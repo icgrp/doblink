@@ -437,6 +437,7 @@ firewall-cmd --reload
 Then go back to step 15 to config the firewall.
 
 ```c
+systemctl unmask --now firewalld
 systemctl enable firewalld
 systemctl start firewalld
 systemctl status firewalld
