@@ -16,6 +16,7 @@ class Bft(Module):
         self.dout_leaf_9 = Signal(49, name='dout_leaf_9')
         self.dout_leaf_10 = Signal(49, name='dout_leaf_10')
         self.dout_leaf_11 = Signal(49, name='dout_leaf_11')
+        self.dout_leaf_12 = Signal(49, name='dout_leaf_12')
         self.din_leaf_0 = Signal(49, name='din_leaf_0')
         self.din_leaf_1 = Signal(49, name='din_leaf_1')
         self.din_leaf_2 = Signal(49, name='din_leaf_2')
@@ -28,6 +29,7 @@ class Bft(Module):
         self.din_leaf_9 = Signal(49, name='din_leaf_9')
         self.din_leaf_10 = Signal(49, name='din_leaf_10')
         self.din_leaf_11 = Signal(49, name='din_leaf_11')
+        self.din_leaf_12 = Signal(49, name='din_leaf_12')
         self.resend_0 = Signal(1, name='resend_0')
         self.resend_1 = Signal(1, name='resend_1')
         self.resend_2 = Signal(1, name='resend_2')
@@ -40,6 +42,7 @@ class Bft(Module):
         self.resend_9 = Signal(1, name='resend_9')
         self.resend_10 = Signal(1, name='resend_10')
         self.resend_11 = Signal(1, name='resend_11')
+        self.resend_12 = Signal(1, name='resend_12')
         self.platform = platform
 
         self.platform.add_source('rtl/bft16.v')
@@ -59,6 +62,7 @@ class Bft(Module):
                           i_dout_leaf_9 = self.dout_leaf_9,
                           i_dout_leaf_10 = self.dout_leaf_10,
                           i_dout_leaf_11 = self.dout_leaf_11,
+                          i_dout_leaf_12 = self.dout_leaf_12,
                           o_din_leaf_0 = self.din_leaf_0,
                           o_din_leaf_1 = self.din_leaf_1,
                           o_din_leaf_2 = self.din_leaf_2,
@@ -71,6 +75,7 @@ class Bft(Module):
                           o_din_leaf_9 = self.din_leaf_9,
                           o_din_leaf_10 = self.din_leaf_10,
                           o_din_leaf_11 = self.din_leaf_11,
+                          o_din_leaf_12 = self.din_leaf_12,
                           o_resend_0 = self.resend_0,
                           o_resend_1 = self.resend_1,
                           o_resend_2 = self.resend_2,
@@ -83,4 +88,5 @@ class Bft(Module):
                           o_resend_9 = self.resend_9,
                           o_resend_10 = self.resend_10,
                           o_resend_11 = self.resend_11,
+                          o_resend_12 = self.resend_12,
                           )

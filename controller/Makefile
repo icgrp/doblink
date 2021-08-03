@@ -27,16 +27,16 @@ build: build/gateware/nexys_video.bit
 build/gateware/nexys_video.bit: ./rvpld-soc/nexys_video.py
 	python3 ./rvpld-soc/nexys_video.py $(LITEX_ARGS) --build
 
-firmware: firmware/firmware.bin
+firmware: firmware/$(BENCHMARK)/firmware.bin
 
-firmware/firmware.bin: firmware/rendering/*.c firmware/digit_recognition/*.c
-	cd firmware/rendering && make all
+firmware/$(BENCHMARK)/firmware.bin: firmware/$(BENCHMARK)/*.c
+	cd firmware/$(BENCHMARK) && make all
 
 load: build/gateware/nexys_video.bit
 	python3 ./rvpld-soc/nexys_video.py $(LITEX_ARGS) --load
 
-prog: firmware/firmware.bin
-	lxterm /dev/ttyUSB0 --kernel firmware/rendering/firmware.bin
+prog: firmware/$(BENCHMARK)/firmware.bin
+	lxterm /dev/ttyUSB0 --kernel firmware/$(BENCHMARK)/firmware.bin
 
 clean:
 	-@ cd firmware && (make clean 2> /dev/null || true)

@@ -90,7 +90,7 @@ static void reboot(void) {
 }
 
 #define SEND_LEN 88000
-#define RECV_LEN 2000
+#define RECV_LEN 2001
 
 volatile uint32_t TxBufferPtr[SEND_LEN]  __attribute__((aligned(16)));
 volatile uint32_t RxBufferPtr[RECV_LEN]  __attribute__((aligned(16)));
@@ -100,7 +100,7 @@ static void digit_test(void) {
   printf("Running digit recognition\n");
 
   for (int i = 0; i < SEND_LEN; i++) {
-    TxBufferPtr[i] = input1[i];
+    TxBufferPtr[i] = (unsigned int)input1[i];
   }
 
   for(int i = 0; i < RECV_LEN; i++) {
@@ -112,14 +112,14 @@ static void digit_test(void) {
   printf("Checking Results\n");
   int errors=0;
 
-  for (int i=0; i<RECV_LEN; i++) {
-    if (RxBufferPtr[i] != exp_data[i]) {
+  for (int i=0; i<RECV_LEN-1; i++) {
+    if (RxBufferPtr[i+1] != exp_data[i]) {
       errors++;
-      printf("%d: We got %d but expected %d\n", i, RxBufferPtr[i], exp_data[i]);
+      printf("%d: We got %d but expected %d\n", i, RxBufferPtr[i+1], exp_data[i]);
     }
   }
 
-  printf("We should get accuracy rate: 1869 / 2000 \n");
+  printf("We should get accuracy rate: 1878 / 2000 \n");
   printf("The real accuracy rate: %d / 2000 \n", (2000-errors));
   printf("SUCCESS\n");
 }

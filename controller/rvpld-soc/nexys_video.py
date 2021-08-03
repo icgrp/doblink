@@ -199,6 +199,13 @@ class BaseSoC(SoCCore):
             digit_recognition.connect_input(mm2s_axis_bft)
             digit_recognition.connect_output(s2mm_axis_bft)
             digit_recognition.connect_axil(axi_bft_bus_bft)
+        elif benchmark == 'spam_filter':
+            from spam_filter.spam_filter_11_page import SpamFilter11Page
+            # SpamFilter11Page ---------------------------------------------------------------------------
+            self.submodules.spam_filter = spam_filter = SpamFilter11Page(clk_bft, rst_bft, platform, clock_domain='bft')
+            spam_filter.connect_input(mm2s_axis_bft)
+            spam_filter.connect_output(s2mm_axis_bft)
+            spam_filter.connect_axil(axi_bft_bus_bft)
         self.comb += platform.request("user_led", 0).eq(s2mm.fsm.ongoing("RUN"))
         self.comb += platform.request("user_led", 1).eq(s2mm.fsm.ongoing("DONE"))
         # mm2s_ever_valid = Signal()
