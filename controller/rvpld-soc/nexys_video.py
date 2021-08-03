@@ -97,6 +97,7 @@ class BaseSoC(SoCCore):
                 memtype      = "DDR3",
                 nphases      = 4,
                 cl           = 7,
+                cwl           = 7,
                 sys_clk_freq = sys_clk_freq)
             self.add_csr("ddrphy")
             self.add_sdram("sdram",
@@ -153,10 +154,10 @@ class BaseSoC(SoCCore):
         self.add_csr("mm2s")
         mm2s_axis = axi.AXIStreamInterface(32)
         self.comb += mm2s.source.connect(mm2s_axis)
-        self.submodules.input_cross_domain_converter = input_cross_domain_converter = ClockDomainCrossing(mm2s_axis.description, cd_from="sys", cd_to="bft", depth=8)
-        mm2s_axis_bft = axi.AXIStreamInterface(32)
-        self.comb += mm2s_axis.connect(input_cross_domain_converter.sink)
-        self.comb += input_cross_domain_converter.source.connect(mm2s_axis_bft)
+        # self.submodules.input_cross_domain_converter = input_cross_domain_converter = ClockDomainCrossing(mm2s_axis.description, cd_from="sys", cd_to="bft", depth=8)
+        # mm2s_axis_bft = axi.AXIStreamInterface(32)
+        # self.comb += mm2s_axis.connect(input_cross_domain_converter.sink)
+        # self.comb += input_cross_domain_converter.source.connect(mm2s_axis_bft)
 
         # s2mm -------------------------------------------------------------------------------------
         # litedram_write_32 = LiteDRAMNativePort('both', 27, 32)
@@ -165,10 +166,10 @@ class BaseSoC(SoCCore):
         self.add_csr("s2mm")
         s2mm_axis = axi.AXIStreamInterface(32)
         self.comb += s2mm_axis.connect(s2mm.sink)
-        self.submodules.output_cross_domain_converter = output_cross_domain_converter = ClockDomainCrossing(s2mm_axis.description, cd_from="bft", cd_to="sys", depth=8)
-        s2mm_axis_bft = axi.AXIStreamInterface(32)
-        self.comb += output_cross_domain_converter.source.connect(s2mm_axis)
-        self.comb += s2mm_axis_bft.connect(output_cross_domain_converter.sink)
+        # self.submodules.output_cross_domain_converter = output_cross_domain_converter = ClockDomainCrossing(s2mm_axis.description, cd_from="bft", cd_to="sys", depth=8)
+        # s2mm_axis_bft = axi.AXIStreamInterface(32)
+        # self.comb += output_cross_domain_converter.source.connect(s2mm_axis)
+        # self.comb += s2mm_axis_bft.connect(output_cross_domain_converter.sink)
 
         # start ------------------------------------------------------------------------------------
         start_signal = Signal()
@@ -183,13 +184,13 @@ class BaseSoC(SoCCore):
         benchmark = kwargs.get('bench', 'rendering')
         if benchmark == 'rendering':
             # Rendering6Page ---------------------------------------------------------------------------
-            self.submodules.rendering = rendering = Rendering4Mono(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
+            self.submodules.rendering = rendering = RenderingLeafOnly(clk, rst, platform, clock_domain='sys', start=start_signal)
             # self.submodules.rendering = rendering = Rendering6Mono(clk_bft, rst_bft, platform, start=start_signal, clock_domain='bft')
             # self.submodules.rendering = rendering = RenderingMono(clk, rst, platform, clock_domain='sys')
             # self.submodules.rendering = rendering = Rendering6PageVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
             # self.submodules.rendering = rendering = Rendering6MonoVitis(clk_bft, rst_bft, platform, clock_domain='bft', start=start_signal)
-            rendering.connect_input(mm2s_axis_bft)
-            rendering.connect_output(s2mm_axis_bft)
+            rendering.connect_input(mm2s_axis)
+            rendering.connect_output(s2mm_axis)
             # rendering.connect_axil(axi_bft_bus_bft)
         elif benchmark == 'digit_recognition':
             from digit_recognition.digit_recognition_10_page import DigitRecognition10Page
@@ -200,11 +201,11 @@ class BaseSoC(SoCCore):
             digit_recognition.connect_axil(axi_bft_bus_bft)
         self.comb += platform.request("user_led", 0).eq(s2mm.fsm.ongoing("RUN"))
         self.comb += platform.request("user_led", 1).eq(s2mm.fsm.ongoing("DONE"))
-        mm2s_ever_valid = Signal()
-        s2mm_ever_valid = Signal()
+        # mm2s_ever_valid = Signal()
+        # s2mm_ever_valid = Signal()
         s2mm_handshake = Signal()
-        self.sync += If(mm2s.source.valid, mm2s_ever_valid.eq(1))
-        self.sync += If(s2mm.sink.valid, s2mm_ever_valid.eq(1))
+        # self.sync += If(mm2s.source.valid, mm2s_ever_valid.eq(1))
+        # self.sync += If(s2mm.sink.valid, s2mm_ever_valid.eq(1))
         self.sync += If(s2mm.sink.valid & s2mm.sink.ready, s2mm_handshake.eq(1))
         self.comb += platform.request("user_led", 2).eq(mm2s.source.valid)
         self.comb += platform.request("user_led", 3).eq(mm2s.source.ready)

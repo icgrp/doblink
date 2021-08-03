@@ -8,8 +8,8 @@ module write_b_out#(
     output reg wr_en,
     output reg [PAYLOAD_BITS-1:0] din);
     
-//    assign wr_en = (full) ? 0 : (vld_user2b_out) ? 1 : 0;
-//    assign din = (full) ? 42 : (vld_user2b_out) ? din_leaf_user2interface : 42;
+    initial wr_en = 0;
+    initial din = 0;
 
     always@(*) begin
         if(full) begin // can't push in to fifo

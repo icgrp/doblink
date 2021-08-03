@@ -41,16 +41,16 @@ module single_ram#(
 
 reg valid;  
 
-
+initial valid = 0;
 
 (* ram_style = "distributed" *) reg vld_mem [0:BRAM_DEPTH-1];
 
-integer i;
-initial begin
+genvar i;
+generate
   for(i=0; i<BRAM_DEPTH; i=i+1) begin
-    vld_mem[i] = 0;
+    initial vld_mem[i] = 0;
   end
-end
+endgenerate
 
 
 always@(posedge clk) begin

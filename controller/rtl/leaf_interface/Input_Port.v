@@ -373,6 +373,8 @@ module data_converter # (
     wire [PAYLOAD_BITS-1:0] fifo_out;
     wire empty;
     
+    initial vld_interface2user = 0;
+    initial rd_en = 0;
     
     assign ack_fifo2bram = ~full;
     assign wr_en = (~full) && vld_bram2fifo;

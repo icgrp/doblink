@@ -124,8 +124,8 @@ module Config_Controls # (
             
             always@(posedge clk) begin
                 if(reset) begin
-                    update_freespace_en[gv_k] <= 0;
-                    update_bram_addr_en[gv_k] <= 0;
+                    update_freespace_en <= 0;
+                    update_bram_addr_en <= 0;
                 end else if(vldBit && (port == 0) && (self_port == gv_k+`OUTPUT_PORT_MIN_NUM)) begin
                     update_freespace_en[gv_k] <= 1'b1;
                     update_bram_addr_en[gv_k] <= 1'b1;                
@@ -137,7 +137,7 @@ module Config_Controls # (
 
             always@(posedge clk) begin
                 if(reset) begin
-                    add_freespace_en[gv_k] <= 0;
+                    add_freespace_en <= 0;
                 end else if(vldBit && (port == gv_k+`OUTPUT_PORT_MIN_NUM)) begin
                     add_freespace_en[gv_k] <= payload[0];                   
                 end

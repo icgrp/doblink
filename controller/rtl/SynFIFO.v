@@ -15,6 +15,7 @@ parameter MEMDEPTH = 1<<ASIZE;
 parameter RAM_TYPE = "block";     // Type of RAM: string; "auto", "block", or "distributed";
 
 output reg [DSIZE-1:0] rdata;
+initial rdata = 0;
 output wfull;
 output rempty;
 
@@ -22,8 +23,11 @@ input [DSIZE-1:0] wdata;
 input winc, rinc, clk, rst_n;
 
 reg [ASIZE:0] wptr;
+initial wptr = {ASIZE{1'b0}};
 reg [ASIZE:0] rptr;
+initial rptr = {ASIZE{1'b0}};
 (* ram_style = RAM_TYPE *) reg [DSIZE-1:0] ex_mem [0:MEMDEPTH-1];
+
 wire [DSIZE-1:0] rdata_tmp;
 
 wire wfull_r;

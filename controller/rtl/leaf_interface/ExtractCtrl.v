@@ -43,6 +43,8 @@ module Extract_Control # (
     output reg [PACKET_BITS-1:0] configure_out
     );
     
+    initial stream_out = 0;
+    initial configure_out = 0;
     
     wire vldBit;
     wire [NUM_LEAF_BITS-1:0] leaf;

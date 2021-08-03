@@ -62,6 +62,28 @@ module  converge_ctrl#(
     reg [MAX_NUM_IN_PORTS-1:0] update_packet_rd_en;
     wire [NUM_IN_PORTS-1:0] freespace_update_en;  
 
+    initial begin
+        outport_sel = 0;
+        stream_out = 0;
+        wr_update_en = 0;
+        fifo_din = 0;
+        rd_update_en = 0;
+        FreeUpdateValid = 0;
+        stream_out_tmp = 0;
+        poll_reg = 0;
+        poll_reg_delay = 0;
+        resend_delay = 0;
+        queue_reg = 0;
+        update_packet_rd_en = 0;
+    end
+
+    genvar i;
+    generate
+        for(i=0; i<MAX_NUM_IN_PORTS; i=i+1) begin
+            initial update_packet[i] = 0;
+        end
+    endgenerate
+
     //stream_out is the output of converged stream out
     always@(posedge clk) begin
         if(reset)

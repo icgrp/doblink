@@ -17,6 +17,12 @@ module write_b_in#(
     input [NUM_ADDR_BITS-1:0] addr,
     input vldBit,
     input [PAYLOAD_BITS-1:0] payload);
+
+    initial begin
+        wea = 0;
+        addra = 0;
+        dina = 0;
+    end
     
     always@(posedge clk) begin
         if(reset) begin
