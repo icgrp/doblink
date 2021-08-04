@@ -135,13 +135,13 @@ class config(gen_basic):
         connection_list.append(tmp_str)
       for i_a, var_value_a in enumerate(operator_var_dict[key_a]):
         if var_value_a == 'Input_1': 
-          tmp_str='DMA.Output_1->'+key_a+'.Input_1' 
+          tmp_str='DMA.Output_1->'+key_a+'.'+operator_arg_dict[key_a][i_a] 
           connection_list.append(tmp_str)
         if var_value_a == 'Input_2': 
-          tmp_str='DMA2.Output_1->'+key_a+'.Input_1' 
+          tmp_str='DMA2.Output_1->'+key_a+'.'+operator_arg_dict[key_a][i_a] 
           connection_list.append(tmp_str)
         if var_value_a == 'Output_1': 
-          tmp_str=key_a+'.Output_1->'+'DMA.Input_1'
+          tmp_str=key_a+'.'+operator_arg_dict[key_a][i_a]+'->'+'DMA.Input_1'
           connection_list.append(tmp_str)
         for key_b in operator_var_dict:
           for i_b, var_value_b in enumerate(operator_var_dict[key_b]):
