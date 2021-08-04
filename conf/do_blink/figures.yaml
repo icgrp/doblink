@@ -11,14 +11,9 @@ defaults:
   - spam_filter@fig.spam_filter:
     - "data_1_4_1"
     - "data_1_4_2"
-    - "data_1_4_3"
-    - "data_1_4_4"
-    - "data_2_1"
     - "data_in_redir"
     - "dotProduct_1"
     - "dotProduct_2"
-    - "dotProduct_3"
-    - "dotProduct_4"
     - "Sigmoid_axi"
   - digit_recognition@fig.digit_recognition:
     - "update_knn1"
@@ -27,10 +22,6 @@ defaults:
     - "update_knn4"
     - "update_knn5"
     - "update_knn6"
-    - "update_knn7"
-    - "update_knn8"
-    - "update_knn9"
-    - "update_knn10"
   - rendering@fig.rendering:
     - "coloringFB_bot_m"
     - "coloringFB_top_m"
@@ -43,6 +34,14 @@ defaults:
     - "data_redir_m"
     - "rasterization2_m"
     - "zculling_top"
+    - "dummy_page_3"
+    - "dummy_page_4"
+    - "dummy_page_5"
+    - "dummy_page_7"
+    - "dummy_page_8"
+    - "dummy_page_10"
+    - "dummy_page_11"
+    - "dummy_page_12"
   - overlay@fig.overlay:
     - "top"
 
