@@ -26,7 +26,9 @@ def build_do_blink_designs(cfg):
     for num_luts, design_cfg in fig_val.items():
       verilog_src_dir = os.path.join(project_dir, f"do_blink/symbiflow_benchmark/{figure}/{num_luts}/src")
       verilog_out_dir = os.path.join('/tmp', f"do_blink/symbiflow_benchmark/{figure}/{num_luts}/")
-      device_files_dir = os.path.join(project_dir, f"{cfg.do_blink.rrgraph_install_dir}/{design_cfg.device_family}-{design_cfg.device_name}_test")
+      leaf_int_src_dir = os.path.join(project_dir, f"do_blink/symbiflow_benchmark/leaf_interface")
+      leaf_int_out_dir = os.path.join('/tmp', f"do_blink/symbiflow_benchmark/")
+      device_files_dir = f"{cfg.do_blink.rrgraph_install_dir}/{design_cfg.device_family}-{design_cfg.device_name}_test"
       device_files_out_dir = os.path.join('/tmp', f"symbiflow")
 
       xdc_path = os.path.join(verilog_src_dir, "output_fun/nexys_video.xdc")
@@ -45,6 +47,8 @@ def build_do_blink_designs(cfg):
         "pinmap_csv": f"{device_files_out_dir}/{design_cfg.device_family}-{design_cfg.device_name}_test/{design_cfg.device_family}{design_cfg.device_speed}/pinmap.csv",
         "doblink_source_dir": project_dir,
         "verilog_src_dir": f"{verilog_out_dir}src",
+        "leaf_int_src_dir": f"{leaf_int_out_dir}leaf_interface",
+        "use_roi": design_cfg.use_roi,
         "figure": figure,
         "num_luts": num_luts,
         "arch": design_cfg.arch,
@@ -65,10 +69,13 @@ def build_do_blink_designs(cfg):
       Path(build_dir).mkdir(parents=True, exist_ok=True)
       
       hooks = {'pre_run' : [{'cmd': ['mkdir', '-p', verilog_out_dir], 'name': 'mkdir'},
+                            {'cmd': ['mkdir', '-p', leaf_int_out_dir], 'name': 'mkdir'},
                             {'cmd': ['rsync', '-a', device_files_dir, device_files_out_dir], 'name': 'get device files'},
                             {'cmd': ['rsync', '-a', verilog_src_dir, verilog_out_dir], 'name': 'get verilog files'},
+                            {'cmd': ['rsync', '-a', leaf_int_src_dir, leaf_int_out_dir], 'name': 'get verilog files'},
                             {'cmd': ['mkdir', 'output_fun'], 'name': 'mkdir output_fun'},
-                            {'cmd': ['make', 'output_fun/top.bit'], 'name': 'make', 'timeout': design_cfg.timeout}]}
+                            {'cmd': ['make', 'output_fun/top.bit'], 'name': 'make', 'timeout': design_cfg.timeout},
+                            {'cmd': ['rsync', '-a', 'output_fun/top.fasm', os.getcwd()], 'name': 'get top.fasm'}]}
       edam = {
         "name": name,
         "tool_options": {"symbiflowmake": tool_options},

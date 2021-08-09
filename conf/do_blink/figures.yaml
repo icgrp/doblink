@@ -59,4 +59,4 @@ vpr_options:
 
 load_vivado: "module load xilinx/2020.2"
 num_trials: 50
-rrgraph_install_dir: build/share/symbiflow/arch
+rrgraph_install_dir: /media/lilbirb/scratch/code/doblink/build/share/symbiflow/arch

@@ -47,23 +47,23 @@ module top(
     
     dotProduct_2 dotProduct_2_inst(
         .ap_clk(clk),
-        .ap_start(ap_start),
+        .ap_start(1'd1),
         .ap_done(),
         .ap_idle(),
         .ap_ready(),
-        .Input_2_V_V(dout_leaf_interface2user_2),
-        .Input_2_V_V_ap_vld(vld_interface2user_2),
-        .Input_2_V_V_ap_ack(ack_user2interface_2),
-        .Input_1_V_V(dout_leaf_interface2user_1),
-        .Input_1_V_V_ap_vld(vld_interface2user_1),
-        .Input_1_V_V_ap_ack(ack_user2interface_1),
-        .Output_2_V_V(din_leaf_user2interface_2),
-        .Output_2_V_V_ap_vld(vld_user2interface_2),
-        .Output_2_V_V_ap_ack(ack_interface2user_2),
-        .Output_1_V_V(din_leaf_user2interface_1),
-        .Output_1_V_V_ap_vld(vld_user2interface_1),
-        .Output_1_V_V_ap_ack(ack_interface2user_1),
-        .ap_rst(reset)
+        .Input_2_V_TDATA(dout_leaf_interface2user_2),
+        .Input_2_V_TVALID(vld_interface2user_2),
+        .Input_2_V_TREADY(ack_user2interface_2),
+        .Input_1_V_TDATA(dout_leaf_interface2user_1),
+        .Input_1_V_TVALID(vld_interface2user_1),
+        .Input_1_V_TREADY(ack_user2interface_1),
+        .Output_2_V_TDATA(din_leaf_user2interface_2),
+        .Output_2_V_TVALID(vld_user2interface_2),
+        .Output_2_V_TREADY(ack_interface2user_2),
+        .Output_1_V_TDATA(din_leaf_user2interface_1),
+        .Output_1_V_TVALID(vld_user2interface_1),
+        .Output_1_V_TREADY(ack_interface2user_1),
+        .ap_rst_n(!reset)
         );  
     
 endmodule

@@ -5,6 +5,8 @@ defaults:
   - override /do_blink/spam_filter@do_blink.fig.spam_filter: ["dotProduct_1"]
   - override /do_blink/digit_recognition@do_blink.fig.digit_recognition: []
   - override /do_blink/rendering@do_blink.fig.rendering: []
+  - override /do_blink/overlay@do_blink.fig.overlay: []
+  - override /do_blink/rendering_4_page@do_blink.fig.rendering_4_page: []
 #   - override /hydra/launcher: submitit_slurm
 
 # hydra:

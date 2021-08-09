@@ -5,4 +5,5 @@
   device_speed: "sbg484-1"
   device: "xc7a200t-doblink-overlay-virt"
   board: "nexys_video"
+  use_roi: "FALSE"
   timeout: 1600

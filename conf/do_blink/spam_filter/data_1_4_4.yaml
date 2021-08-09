@@ -1,8 +1,0 @@
-"data_1_4_4":
-  arch: "artix7_200t"
-  device_family: "xc7a200t"
-  device_name: "doblink-pblock-10"
-  device_speed: "sbg484-1"
-  device: "xc7a200t-doblink-pblock-10-roi-virt"
-  board: "nexys_video"
-  timeout: 1600
