@@ -154,10 +154,10 @@ class BaseSoC(SoCCore):
         self.add_csr("mm2s")
         mm2s_axis = axi.AXIStreamInterface(32)
         self.comb += mm2s.source.connect(mm2s_axis)
-        # self.submodules.input_cross_domain_converter = input_cross_domain_converter = ClockDomainCrossing(mm2s_axis.description, cd_from="sys", cd_to="bft", depth=8)
-        # mm2s_axis_bft = axi.AXIStreamInterface(32)
-        # self.comb += mm2s_axis.connect(input_cross_domain_converter.sink)
-        # self.comb += input_cross_domain_converter.source.connect(mm2s_axis_bft)
+        self.submodules.input_cross_domain_converter = input_cross_domain_converter = ClockDomainCrossing(mm2s_axis.description, cd_from="sys", cd_to="bft", depth=8)
+        mm2s_axis_bft = axi.AXIStreamInterface(32)
+        self.comb += mm2s_axis.connect(input_cross_domain_converter.sink)
+        self.comb += input_cross_domain_converter.source.connect(mm2s_axis_bft)
 
         # s2mm -------------------------------------------------------------------------------------
         # litedram_write_32 = LiteDRAMNativePort('both', 27, 32)
@@ -166,10 +166,10 @@ class BaseSoC(SoCCore):
         self.add_csr("s2mm")
         s2mm_axis = axi.AXIStreamInterface(32)
         self.comb += s2mm_axis.connect(s2mm.sink)
-        # self.submodules.output_cross_domain_converter = output_cross_domain_converter = ClockDomainCrossing(s2mm_axis.description, cd_from="bft", cd_to="sys", depth=8)
-        # s2mm_axis_bft = axi.AXIStreamInterface(32)
-        # self.comb += output_cross_domain_converter.source.connect(s2mm_axis)
-        # self.comb += s2mm_axis_bft.connect(output_cross_domain_converter.sink)
+        self.submodules.output_cross_domain_converter = output_cross_domain_converter = ClockDomainCrossing(s2mm_axis.description, cd_from="bft", cd_to="sys", depth=8)
+        s2mm_axis_bft = axi.AXIStreamInterface(32)
+        self.comb += output_cross_domain_converter.source.connect(s2mm_axis)
+        self.comb += s2mm_axis_bft.connect(output_cross_domain_converter.sink)
 
         # start ------------------------------------------------------------------------------------
         start_signal = Signal()
@@ -196,6 +196,13 @@ class BaseSoC(SoCCore):
             from digit_recognition.digit_recognition_10_page import DigitRecognition10Page
             # DigitRecognition10Page ---------------------------------------------------------------------------
             self.submodules.digit_recognition = digit_recognition = DigitRecognition10Page(clk_bft, rst_bft, platform, clock_domain='bft')
+            digit_recognition.connect_input(mm2s_axis_bft)
+            digit_recognition.connect_output(s2mm_axis_bft)
+            digit_recognition.connect_axil(axi_bft_bus_bft)
+        elif benchmark == 'digit_recognition_5':
+            from digit_recognition.digit_recognition_5_page import DigitRecognition5Page
+            # DigitRecognition5Page ---------------------------------------------------------------------------
+            self.submodules.digit_recognition = digit_recognition = DigitRecognition5Page(clk_bft, rst_bft, platform, clock_domain='bft')
             digit_recognition.connect_input(mm2s_axis_bft)
             digit_recognition.connect_output(s2mm_axis_bft)
             digit_recognition.connect_axil(axi_bft_bus_bft)

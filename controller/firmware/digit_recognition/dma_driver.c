@@ -28,8 +28,8 @@ void run_dma(volatile uint32_t *send_buffer, uint32_t send_len,
     s2mm_length_write(4 * recv_len);
     s2mm_enable_write(1);
     printf("Waiting for s2mm to finish\n");
-    // while(!s2mm_done_read());
-    busy_wait(3000);
+    while(!s2mm_done_read());
+    //busy_wait(3000);
   }
   
 

@@ -57,39 +57,24 @@ void init_regs(void)
 
    for (i=4; i<8; i++) {lx_write32(SLV_REG0+i*4, 0x00000000);}
 
-//update_knn7.Output_1->update_knn8.Input_1
-  write_to_fifo(0x8000, 0x99201fc0, &ctrl_reg);
-  write_to_fifo(0x9100, 0x28900000, &ctrl_reg);
-//update_knn10.Output_1->DMA.Input_1
-  write_to_fifo(0xb000, 0x91201fc0, &ctrl_reg);
-  write_to_fifo(0x1100, 0x2b900000, &ctrl_reg);
-//update_knn2.Output_1->update_knn3.Input_1
-  write_to_fifo(0x3000, 0x94201fc0, &ctrl_reg);
-  write_to_fifo(0x4100, 0x23900000, &ctrl_reg);
-//DMA.Output_1->update_knn1.Input_1
-  write_to_fifo(0x1000, 0x92201fc0, &ctrl_reg);
-  write_to_fifo(0x2100, 0x21900000, &ctrl_reg);
-//update_knn1.Output_1->update_knn2.Input_1
-  write_to_fifo(0x2000, 0x93201fc0, &ctrl_reg);
-  write_to_fifo(0x3100, 0x22900000, &ctrl_reg);
-//update_knn4.Output_1->update_knn5.Input_1
-  write_to_fifo(0x5000, 0x96201fc0, &ctrl_reg);
-  write_to_fifo(0x6100, 0x25900000, &ctrl_reg);
-//update_knn5.Output_1->update_knn6.Input_1
-  write_to_fifo(0x6000, 0x97201fc0, &ctrl_reg);
-  write_to_fifo(0x7100, 0x26900000, &ctrl_reg);
-//update_knn9.Output_1->update_knn10.Input_1
-  write_to_fifo(0xa000, 0x9b201fc0, &ctrl_reg);
-  write_to_fifo(0xb100, 0x2a900000, &ctrl_reg);
-//update_knn6.Output_1->update_knn7.Input_1
-  write_to_fifo(0x7000, 0x98201fc0, &ctrl_reg);
-  write_to_fifo(0x8100, 0x27900000, &ctrl_reg);
 //update_knn3.Output_1->update_knn4.Input_1
   write_to_fifo(0x4000, 0x95201fc0, &ctrl_reg);
   write_to_fifo(0x5100, 0x24900000, &ctrl_reg);
-//update_knn8.Output_1->update_knn9.Input_1
-  write_to_fifo(0x9000, 0x9a201fc0, &ctrl_reg);
-  write_to_fifo(0xa100, 0x29900000, &ctrl_reg);
+//update_knn4.Output_1->update_knn5.Input_1
+  write_to_fifo(0x5000, 0x96201fc0, &ctrl_reg);
+  write_to_fifo(0x6100, 0x25900000, &ctrl_reg);
+//DMA.Output_1->update_knn1.Input_1
+  write_to_fifo(0x1000, 0x92201fc0, &ctrl_reg);
+  write_to_fifo(0x2100, 0x21900000, &ctrl_reg);
+//update_knn2.Output_1->update_knn3.Input_1
+  write_to_fifo(0x3000, 0x94201fc0, &ctrl_reg);
+  write_to_fifo(0x4100, 0x23900000, &ctrl_reg);
+//update_knn5.Output_1->DMA.Input_1
+  write_to_fifo(0x6000, 0x91201fc0, &ctrl_reg);
+  write_to_fifo(0x1100, 0x26900000, &ctrl_reg);
+//update_knn1.Output_1->update_knn2.Input_1
+  write_to_fifo(0x2000, 0x93201fc0, &ctrl_reg);
+  write_to_fifo(0x3100, 0x22900000, &ctrl_reg);
 	//packet anchor
 
 }
