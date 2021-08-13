@@ -75,3 +75,7 @@ riscv/core/output/*
 vivado.log
 build-*/
 leaf/
+build*/
+controller/hd_visual
+controller/.Xil/*
+hd_visual
