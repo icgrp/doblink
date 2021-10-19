@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-module leaf_12(
+module leaf_7(
     input wire clk,
     input wire [49-1 : 0] din_leaf_bft2interface,
     output wire [49-1 : 0] dout_leaf_interface2bft,
@@ -14,6 +14,9 @@ module leaf_12(
     wire [32-1 :0] dout_leaf_interface2user_1;
     wire vld_interface2user_1;
     wire ack_user2interface_1;
+    wire [32-1 :0] din_leaf_user2interface_2;
+    wire vld_user2interface_2;
+    wire ack_interface2user_2;
     wire [32-1 :0] din_leaf_user2interface_1;
     wire vld_user2interface_1;
     wire ack_interface2user_1;
@@ -25,7 +28,7 @@ module leaf_12(
         .NUM_PORT_BITS(4),
         .NUM_ADDR_BITS(7),
         .NUM_IN_PORTS(2), 
-        .NUM_OUT_PORTS(1),
+        .NUM_OUT_PORTS(2),
         .NUM_BRAM_ADDR_BITS(7),
         .FREESPACE_UPDATE_SIZE(64)
     )leaf_interface_inst(
@@ -37,12 +40,12 @@ module leaf_12(
         .dout_leaf_interface2user({dout_leaf_interface2user_2,dout_leaf_interface2user_1}),
         .vld_interface2user({vld_interface2user_2,vld_interface2user_1}),
         .ack_user2interface({ack_user2interface_2,ack_user2interface_1}),
-        .ack_interface2user({ack_interface2user_1}),
-        .vld_user2interface({vld_user2interface_1}),
-        .din_leaf_user2interface({din_leaf_user2interface_1})
+        .ack_interface2user({ack_interface2user_2,ack_interface2user_1}),
+        .vld_user2interface({vld_user2interface_2,vld_user2interface_1}),
+        .din_leaf_user2interface({din_leaf_user2interface_2,din_leaf_user2interface_1})
     );
     
-    data_2_1 data_2_1_inst(
+    Sigmoid_axi Sigmoid_axi_inst(
         .ap_clk(clk),
         .ap_start(1'd1),
         .ap_done(),
@@ -54,6 +57,9 @@ module leaf_12(
         .Input_1_V_TDATA(dout_leaf_interface2user_1),
         .Input_1_V_TVALID(vld_interface2user_1),
         .Input_1_V_TREADY(ack_user2interface_1),
+        .Output_2_V_TDATA(din_leaf_user2interface_2),
+        .Output_2_V_TVALID(vld_user2interface_2),
+        .Output_2_V_TREADY(ack_interface2user_2),
         .Output_1_V_TDATA(din_leaf_user2interface_1),
         .Output_1_V_TVALID(vld_user2interface_1),
         .Output_1_V_TREADY(ack_interface2user_1),

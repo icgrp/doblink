@@ -5,24 +5,38 @@
 
 `timescale 1 ns / 1 ps
 
-module dotProduct_3_mul_32s_32s_51_2_1_Multiplier_2(clk, ce, a, b, p);
+module dotProduct_2_mul_32s_32s_51_7_1_Multiplier_2(clk, ce, a, b, p);
 input clk;
 input ce;
-input signed [32 - 1 : 0] a;
-input signed [32 - 1 : 0] b;
+input[32 - 1 : 0] a; 
+input[32 - 1 : 0] b; 
 output[51 - 1 : 0] p;
-reg signed [51 - 1 : 0] p;
-wire signed [51 - 1 : 0] tmp_product;
 
-assign tmp_product = $signed(a) * $signed(b);
+reg signed [32 - 1 : 0] a_reg0;
+reg signed [32 - 1 : 0] b_reg0;
+wire signed [51 - 1 : 0] tmp_product;
+reg signed [51 - 1 : 0] buff0;
+reg signed [51 - 1 : 0] buff1;
+reg signed [51 - 1 : 0] buff2;
+reg signed [51 - 1 : 0] buff3;
+reg signed [51 - 1 : 0] buff4;
+
+assign p = buff4;
+assign tmp_product = a_reg0 * b_reg0;
 always @ (posedge clk) begin
     if (ce) begin
-        p <= tmp_product;
+        a_reg0 <= a;
+        b_reg0 <= b;
+        buff0 <= tmp_product;
+        buff1 <= buff0;
+        buff2 <= buff1;
+        buff3 <= buff2;
+        buff4 <= buff3;
     end
 end
 endmodule
 `timescale 1 ns / 1 ps
-module dotProduct_3_mul_32s_32s_51_2_1(
+module dotProduct_2_mul_32s_32s_51_7_1(
     clk,
     reset,
     ce,
@@ -44,7 +58,7 @@ output[dout_WIDTH - 1:0] dout;
 
 
 
-dotProduct_3_mul_32s_32s_51_2_1_Multiplier_2 dotProduct_3_mul_32s_32s_51_2_1_Multiplier_2_U(
+dotProduct_2_mul_32s_32s_51_7_1_Multiplier_2 dotProduct_2_mul_32s_32s_51_7_1_Multiplier_2_U(
     .clk( clk ),
     .ce( ce ),
     .a( din0 ),

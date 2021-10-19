@@ -97,66 +97,6 @@ class Leaf7(Leaf):
                                   i_reset = self.reset
                                   )
 
-class Leaf8(Leaf):
-    def __init__(self, clk, rst, start, platform):
-        super().__init__(clk, rst, start, platform)
-        self.specials += Instance('leaf_8',
-                                  i_clk = self.clk,
-                                  i_din_leaf_bft2interface = self.din_leaf_bft2interface,
-                                  o_dout_leaf_interface2bft = self.dout_leaf_interface2bft,
-                                  i_resend = self.resend,
-                                  i_ap_start = self.start,
-                                  i_reset = self.reset
-                                  )
-
-class Leaf9(Leaf):
-    def __init__(self, clk, rst, start, platform):
-        super().__init__(clk, rst, start, platform)
-        self.specials += Instance('leaf_9',
-                                  i_clk = self.clk,
-                                  i_din_leaf_bft2interface = self.din_leaf_bft2interface,
-                                  o_dout_leaf_interface2bft = self.dout_leaf_interface2bft,
-                                  i_resend = self.resend,
-                                  i_ap_start = self.start,
-                                  i_reset = self.reset
-                                  )
-
-class Leaf10(Leaf):
-    def __init__(self, clk, rst, start, platform):
-        super().__init__(clk, rst, start, platform)
-        self.specials += Instance('leaf_10',
-                                  i_clk = self.clk,
-                                  i_din_leaf_bft2interface = self.din_leaf_bft2interface,
-                                  o_dout_leaf_interface2bft = self.dout_leaf_interface2bft,
-                                  i_resend = self.resend,
-                                  i_ap_start = self.start,
-                                  i_reset = self.reset
-                                  )
-
-class Leaf11(Leaf):
-    def __init__(self, clk, rst, start, platform):
-        super().__init__(clk, rst, start, platform)
-        self.specials += Instance('leaf_11',
-                                  i_clk = self.clk,
-                                  i_din_leaf_bft2interface = self.din_leaf_bft2interface,
-                                  o_dout_leaf_interface2bft = self.dout_leaf_interface2bft,
-                                  i_resend = self.resend,
-                                  i_ap_start = self.start,
-                                  i_reset = self.reset
-                                  )
-
-class Leaf12(Leaf):
-    def __init__(self, clk, rst, start, platform):
-        super().__init__(clk, rst, start, platform)
-        self.specials += Instance('leaf_12',
-                                  i_clk = self.clk,
-                                  i_din_leaf_bft2interface = self.din_leaf_bft2interface,
-                                  o_dout_leaf_interface2bft = self.dout_leaf_interface2bft,
-                                  i_resend = self.resend,
-                                  i_ap_start = self.start,
-                                  i_reset = self.reset
-                                  )
-
 class SpamFilter11Page(Module):
     def __init__(self, clk, rst, platform, start=1, clock_domain='bft'):
         self.axil = AXILiteInterface(data_width=32, address_width=5, clock_domain=clock_domain)
@@ -174,11 +114,6 @@ class SpamFilter11Page(Module):
         self.submodules.leaf_5 = leaf_5 = Leaf5(clk, rst, start, platform)
         self.submodules.leaf_6 = leaf_6 = Leaf6(clk, rst, start, platform)
         self.submodules.leaf_7 = leaf_7 = Leaf7(clk, rst, start, platform)
-        self.submodules.leaf_8 = leaf_8 = Leaf8(clk, rst, start, platform)
-        self.submodules.leaf_9 = leaf_9 = Leaf9(clk, rst, start, platform)
-        self.submodules.leaf_10 = leaf_10 = Leaf10(clk, rst, start, platform)
-        self.submodules.leaf_11 = leaf_11 = Leaf11(clk, rst, start, platform)
-        self.submodules.leaf_12 = leaf_12 = Leaf12(clk, rst, start, platform)
 
         # axilite2bft
         self.comb += self.axil.connect(axilite2bft.bus)
@@ -198,11 +133,6 @@ class SpamFilter11Page(Module):
         leaf_5.connect(bft.din_leaf_5, bft.dout_leaf_5, bft.resend_5)
         leaf_6.connect(bft.din_leaf_6, bft.dout_leaf_6, bft.resend_6)
         leaf_7.connect(bft.din_leaf_7, bft.dout_leaf_7, bft.resend_7)
-        leaf_8.connect(bft.din_leaf_8, bft.dout_leaf_8, bft.resend_8)
-        leaf_9.connect(bft.din_leaf_9, bft.dout_leaf_9, bft.resend_9)
-        leaf_10.connect(bft.din_leaf_10, bft.dout_leaf_10, bft.resend_10)
-        leaf_11.connect(bft.din_leaf_11, bft.dout_leaf_11, bft.resend_11)
-        leaf_12.connect(bft.din_leaf_12, bft.dout_leaf_12, bft.resend_12)
         self.platform.add_source_dir('rtl/leaf_interface/')
         self.platform.add_source_dir('rtl/spam_filter_pages/')
 

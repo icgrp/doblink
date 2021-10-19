@@ -57,84 +57,45 @@ void init_regs(void)
 
    for (i=4; i<8; i++) {lx_write32(SLV_REG0+i*4, 0x00000000);}
 
-//DMA.Output_1->data_in_redir.Input_1
-  write_to_fifo(0x1000, 0x92201fc0, &ctrl_reg);
-  write_to_fifo(0x2100, 0x21900000, &ctrl_reg);
-//dotProduct_3.Output_1->data_1_4_4.Input_1
-  write_to_fifo(0x7000, 0x9a201fc0, &ctrl_reg);
-  write_to_fifo(0xa100, 0x27900000, &ctrl_reg);
-//Sigmoid_axi.Output_1->data_1_4_3.Input_3
-  write_to_fifo(0xb000, 0x99401fc0, &ctrl_reg);
-  write_to_fifo(0x9100, 0x4b900000, &ctrl_reg);
-//data_1_4_2.Output_2->dotProduct_4.Input_1
-  write_to_fifo(0x4000, 0xa8201fc0, &ctrl_reg);
-  write_to_fifo(0x8100, 0x24a00000, &ctrl_reg);
-//dotProduct_1.Output_1->data_1_4_3.Input_1
-  write_to_fifo(0x5000, 0x99201fc0, &ctrl_reg);
-  write_to_fifo(0x9100, 0x25900000, &ctrl_reg);
-//data_1_4_1.Output_1->dotProduct_1.Input_1
-  write_to_fifo(0x3000, 0x95201fc0, &ctrl_reg);
-  write_to_fifo(0x5100, 0x23900000, &ctrl_reg);
-//data_1_4_1.Output_2->dotProduct_2.Input_1
-  write_to_fifo(0x3000, 0xa6201fc0, &ctrl_reg);
-  write_to_fifo(0x6100, 0x23a00000, &ctrl_reg);
-//data_1_4_4.Output_3->dotProduct_4.Input_2
-  write_to_fifo(0xa000, 0xb8301fc0, &ctrl_reg);
-  write_to_fifo(0x8100, 0x3ab00000, &ctrl_reg);
-//data_1_4_2.Output_3->data_2_1.Input_2
-  write_to_fifo(0x4000, 0xbc301fc0, &ctrl_reg);
-  write_to_fifo(0xc100, 0x34b00000, &ctrl_reg);
-//data_1_4_2.Output_1->dotProduct_3.Input_1
-  write_to_fifo(0x4000, 0x97201fc0, &ctrl_reg);
-  write_to_fifo(0x7100, 0x24900000, &ctrl_reg);
-//data_1_4_3.Output_2->dotProduct_1.Input_2
-  write_to_fifo(0x9000, 0xa5301fc0, &ctrl_reg);
-  write_to_fifo(0x5100, 0x39a00000, &ctrl_reg);
-//data_in_redir.Output_1->data_1_4_1.Input_1
-  write_to_fifo(0x2000, 0x93201fc0, &ctrl_reg);
-  write_to_fifo(0x3100, 0x22900000, &ctrl_reg);
-//data_1_4_3.Output_1->Sigmoid_axi.Input_1
-  write_to_fifo(0x9000, 0x9b201fc0, &ctrl_reg);
-  write_to_fifo(0xb100, 0x29900000, &ctrl_reg);
+//data_1_4_2.Output_2->DMA.Input_1
+  write_to_fifo(0x4000, 0xa1201fc0, &ctrl_reg);
+  write_to_fifo(0x1100, 0x24a00000, &ctrl_reg);
+//dotProduct_1.Output_1->Sigmoid_axi.Input_1
+  write_to_fifo(0x5000, 0x97201fc0, &ctrl_reg);
+  write_to_fifo(0x7100, 0x25900000, &ctrl_reg);
 //data_in_redir.Output_2->data_1_4_2.Input_1
   write_to_fifo(0x2000, 0xa4201fc0, &ctrl_reg);
   write_to_fifo(0x4100, 0x22a00000, &ctrl_reg);
-//dotProduct_4.Output_1->data_1_4_4.Input_2
-  write_to_fifo(0x8000, 0x9a301fc0, &ctrl_reg);
-  write_to_fifo(0xa100, 0x38900000, &ctrl_reg);
-//dotProduct_2.Output_2->data_1_4_1.Input_3
-  write_to_fifo(0x6000, 0xa3401fc0, &ctrl_reg);
-  write_to_fifo(0x3100, 0x46a00000, &ctrl_reg);
-//dotProduct_2.Output_1->data_1_4_3.Input_2
-  write_to_fifo(0x6000, 0x99301fc0, &ctrl_reg);
-  write_to_fifo(0x9100, 0x36900000, &ctrl_reg);
+//data_in_redir.Output_1->data_1_4_1.Input_1
+  write_to_fifo(0x2000, 0x93201fc0, &ctrl_reg);
+  write_to_fifo(0x3100, 0x22900000, &ctrl_reg);
+//Sigmoid_axi.Output_2->dotProduct_2.Input_2
+  write_to_fifo(0x7000, 0xa6301fc0, &ctrl_reg);
+  write_to_fifo(0x6100, 0x37a00000, &ctrl_reg);
+//data_1_4_2.Output_1->dotProduct_2.Input_1
+  write_to_fifo(0x4000, 0x96201fc0, &ctrl_reg);
+  write_to_fifo(0x6100, 0x24900000, &ctrl_reg);
+//data_1_4_1.Output_1->dotProduct_1.Input_1
+  write_to_fifo(0x3000, 0x95201fc0, &ctrl_reg);
+  write_to_fifo(0x5100, 0x23900000, &ctrl_reg);
+//DMA.Output_1->data_in_redir.Input_1
+  write_to_fifo(0x1000, 0x92201fc0, &ctrl_reg);
+  write_to_fifo(0x2100, 0x21900000, &ctrl_reg);
+//dotProduct_2.Output_2->data_1_4_2.Input_2
+  write_to_fifo(0x6000, 0xa4301fc0, &ctrl_reg);
+  write_to_fifo(0x4100, 0x36a00000, &ctrl_reg);
 //dotProduct_1.Output_2->data_1_4_1.Input_2
   write_to_fifo(0x5000, 0xa3301fc0, &ctrl_reg);
   write_to_fifo(0x3100, 0x35a00000, &ctrl_reg);
-//data_2_1.Output_1->DMA.Input_1
-  write_to_fifo(0xc000, 0x91201fc0, &ctrl_reg);
-  write_to_fifo(0x1100, 0x2c900000, &ctrl_reg);
-//Sigmoid_axi.Output_2->data_1_4_4.Input_3
-  write_to_fifo(0xb000, 0xaa401fc0, &ctrl_reg);
-  write_to_fifo(0xa100, 0x4ba00000, &ctrl_reg);
-//dotProduct_4.Output_2->data_1_4_2.Input_3
-  write_to_fifo(0x8000, 0xa4401fc0, &ctrl_reg);
-  write_to_fifo(0x4100, 0x48a00000, &ctrl_reg);
-//data_1_4_4.Output_2->dotProduct_3.Input_2
-  write_to_fifo(0xa000, 0xa7301fc0, &ctrl_reg);
-  write_to_fifo(0x7100, 0x3aa00000, &ctrl_reg);
-//data_1_4_4.Output_1->Sigmoid_axi.Input_2
-  write_to_fifo(0xa000, 0x9b301fc0, &ctrl_reg);
-  write_to_fifo(0xb100, 0x3a900000, &ctrl_reg);
-//data_1_4_1.Output_3->data_2_1.Input_1
-  write_to_fifo(0x3000, 0xbc201fc0, &ctrl_reg);
-  write_to_fifo(0xc100, 0x23b00000, &ctrl_reg);
-//dotProduct_3.Output_2->data_1_4_2.Input_2
-  write_to_fifo(0x7000, 0xa4301fc0, &ctrl_reg);
-  write_to_fifo(0x4100, 0x37a00000, &ctrl_reg);
-//data_1_4_3.Output_3->dotProduct_2.Input_2
-  write_to_fifo(0x9000, 0xb6301fc0, &ctrl_reg);
-  write_to_fifo(0x6100, 0x39b00000, &ctrl_reg);
+//dotProduct_2.Output_1->Sigmoid_axi.Input_2
+  write_to_fifo(0x6000, 0x97301fc0, &ctrl_reg);
+  write_to_fifo(0x7100, 0x36900000, &ctrl_reg);
+//Sigmoid_axi.Output_1->dotProduct_1.Input_2
+  write_to_fifo(0x7000, 0x95301fc0, &ctrl_reg);
+  write_to_fifo(0x5100, 0x37900000, &ctrl_reg);
+//data_1_4_1.Output_2->data_1_4_2.Input_3
+  write_to_fifo(0x3000, 0xa4401fc0, &ctrl_reg);
+  write_to_fifo(0x4100, 0x43a00000, &ctrl_reg);
 	//packet anchor
 
 }

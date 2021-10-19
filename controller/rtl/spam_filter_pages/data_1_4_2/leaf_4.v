@@ -16,9 +16,6 @@ module leaf_4(
     wire [32-1 :0] dout_leaf_interface2user_1;
     wire vld_interface2user_1;
     wire ack_user2interface_1;
-    wire [32-1 :0] din_leaf_user2interface_3;
-    wire vld_user2interface_3;
-    wire ack_interface2user_3;
     wire [32-1 :0] din_leaf_user2interface_2;
     wire vld_user2interface_2;
     wire ack_interface2user_2;
@@ -33,7 +30,7 @@ module leaf_4(
         .NUM_PORT_BITS(4),
         .NUM_ADDR_BITS(7),
         .NUM_IN_PORTS(3), 
-        .NUM_OUT_PORTS(3),
+        .NUM_OUT_PORTS(2),
         .NUM_BRAM_ADDR_BITS(7),
         .FREESPACE_UPDATE_SIZE(64)
     )leaf_interface_inst(
@@ -45,9 +42,9 @@ module leaf_4(
         .dout_leaf_interface2user({dout_leaf_interface2user_3,dout_leaf_interface2user_2,dout_leaf_interface2user_1}),
         .vld_interface2user({vld_interface2user_3,vld_interface2user_2,vld_interface2user_1}),
         .ack_user2interface({ack_user2interface_3,ack_user2interface_2,ack_user2interface_1}),
-        .ack_interface2user({ack_interface2user_3,ack_interface2user_2,ack_interface2user_1}),
-        .vld_user2interface({vld_user2interface_3,vld_user2interface_2,vld_user2interface_1}),
-        .din_leaf_user2interface({din_leaf_user2interface_3,din_leaf_user2interface_2,din_leaf_user2interface_1})
+        .ack_interface2user({ack_interface2user_2,ack_interface2user_1}),
+        .vld_user2interface({vld_user2interface_2,vld_user2interface_1}),
+        .din_leaf_user2interface({din_leaf_user2interface_2,din_leaf_user2interface_1})
     );
     
     data_1_4_2 data_1_4_2_inst(
@@ -65,9 +62,6 @@ module leaf_4(
         .Input_1_V_TDATA(dout_leaf_interface2user_1),
         .Input_1_V_TVALID(vld_interface2user_1),
         .Input_1_V_TREADY(ack_user2interface_1),
-        .Output_3_V_TDATA(din_leaf_user2interface_3),
-        .Output_3_V_TVALID(vld_user2interface_3),
-        .Output_3_V_TREADY(ack_interface2user_3),
         .Output_2_V_TDATA(din_leaf_user2interface_2),
         .Output_2_V_TVALID(vld_user2interface_2),
         .Output_2_V_TREADY(ack_interface2user_2),
