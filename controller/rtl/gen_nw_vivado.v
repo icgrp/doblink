@@ -29,8 +29,8 @@ module gen_nw16 # (
 		t_lvl0(
 			.clk(clk),
 			.reset(reset),
-
-
+			.u_bus_i(0),
+			
 			.l_bus_i(left_switch),
 			.r_bus_i(right_switch),
 			.l_bus_o(switch_left),
