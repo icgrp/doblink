@@ -16,13 +16,13 @@ class Vivado(Edatool):
 
     argtypes = ["vlogdefine", "vlogparam", "generic"]
 
-    def __init__(self, edam=None, work_root='./', eda_api=None, verbose=True):
+    def __init__(self, edam=None, work_root="./", eda_api=None, verbose=True):
         super(Vivado, self).__init__(edam, work_root, eda_api, verbose)
         self.jinja_env = Environment(
-            loader = PackageLoader(__package__, 'templates'),
-            trim_blocks = True,
-            lstrip_blocks = True,
-            keep_trailing_newline = True,
+            loader=PackageLoader(__package__, "templates"),
+            trim_blocks=True,
+            lstrip_blocks=True,
+            keep_trailing_newline=True,
         )
 
     @classmethod
@@ -56,9 +56,9 @@ class Vivado(Edatool):
                         "desc": "Additional vpr tool options. If not used, default options for the tool will be used",
                     },
                     {
-                        "name" : "environment_script",
-                        "type" : "String",
-                        "desc" : "Optional bash script that will be sourced before each build step."
+                        "name": "environment_script",
+                        "type": "String",
+                        "desc": "Optional bash script that will be sourced before each build step.",
                     },
                 ]
             }
@@ -83,28 +83,29 @@ class Vivado(Edatool):
             logger.error("VHDL files are not supported in Yosys")
 
         make_params = {
-            "common_src_dir":  self.tool_options.get('common_src_dir', None),
-            "src_dir":  self.tool_options.get('src_dir', None),
-			"overlay_dir":  self.tool_options.get('overlay_dir', None),
-            "part":  self.tool_options.get('part', None),
-			"load_vivado": self.tool_options.get('load_vivado', None),
+            "common_src_dir": self.tool_options.get("common_src_dir", None),
+            "src_dir": self.tool_options.get("src_dir", None),
+            "overlay_dir": self.tool_options.get("overlay_dir", None),
+            "part": self.tool_options.get("part", None),
+            "load_vivado": self.tool_options.get("load_vivado", None),
         }
 
-        template_dir = 'vivado'
-        template = self.jinja_env.get_template('/'.join([template_dir, "synth.tcl.j2"]))
+        template_dir = "vivado"
+        template = self.jinja_env.get_template("/".join([template_dir, "synth.tcl.j2"]))
         file_path = os.path.join(self.work_root, "synth.tcl")
-        with open(file_path, 'w') as f:
+        with open(file_path, "w") as f:
             f.write(template.render(make_params))
-        pnr_script = "pnr_abs" if self.tool_options.get('use_abs', None) else "pnr"
-        template = self.jinja_env.get_template('/'.join([template_dir, f"{pnr_script}.tcl.j2"]))
+        pnr_script = "pnr_abs" if self.tool_options.get("use_abs", None) else "pnr"
+        template = self.jinja_env.get_template(
+            "/".join([template_dir, f"{pnr_script}.tcl.j2"])
+        )
         file_path = os.path.join(self.work_root, f"{pnr_script}.tcl")
-        with open(file_path, 'w') as f:
+        with open(file_path, "w") as f:
             f.write(template.render(make_params))
-        template = self.jinja_env.get_template('/'.join([template_dir, "vivado.sh.j2"]))
+        template = self.jinja_env.get_template("/".join([template_dir, "vivado.sh.j2"]))
         file_path = os.path.join(self.work_root, "vivado.sh")
-        with open(file_path, 'w') as f:
+        with open(file_path, "w") as f:
             f.write(template.render(make_params))
-
 
     def configure_main(self):
         self.configure_vivado()
@@ -112,26 +113,30 @@ class Vivado(Edatool):
     def _run_scripts(self, scripts, hook_name):
         for script in scripts:
             _env = self.env.copy()
-            if 'env' in script:
-                _env.update(script['env'])
-            logger.info("Running {} script {}".format(hook_name, script['name']))
+            if "env" in script:
+                _env.update(script["env"])
+            logger.info("Running {} script {}".format(hook_name, script["name"]))
             logger.debug("Environment: " + str(_env))
             logger.debug("Working directory: " + self.work_root)
             try:
-                cp = run(script['cmd'],
-                                    cwd = self.work_root,
-                                    env = _env,
-				    capture_output=not self.verbose,
-                                    check = True,
-                                    timeout = script.get('timeout'))
+                cp = run(
+                    script["cmd"],
+                    cwd=self.work_root,
+                    env=_env,
+                    capture_output=not self.verbose,
+                    check=True,
+                    timeout=script.get("timeout"),
+                )
             except subprocess.TimeoutExpired as e:
                 msg = "Unable to run {} script '{}': {}"
-                raise RuntimeError(msg.format(hook_name, script['name'], str(e)))
+                raise RuntimeError(msg.format(hook_name, script["name"], str(e)))
             except FileNotFoundError as e:
                 msg = "Unable to run {} script '{}': {}"
-                raise RuntimeError(msg.format(hook_name, script['name'], str(e)))
+                raise RuntimeError(msg.format(hook_name, script["name"], str(e)))
             except subprocess.CalledProcessError as e:
-                msg = "{} script '{}': {} exited with error code {}".format(hook_name, script['name'], e.cmd, e.returncode)
+                msg = "{} script '{}': {} exited with error code {}".format(
+                    hook_name, script["name"], e.cmd, e.returncode
+                )
                 logger.debug(msg)
                 if e.stdout:
                     logger.info(e.stdout.decode())
@@ -140,7 +145,6 @@ class Vivado(Edatool):
                     logger.debug("=== STDERR ===")
                     logger.debug(e.stderr)
                 raise RuntimeError(msg)
-
 
     def run_main(self):
         logger.info("Done!")

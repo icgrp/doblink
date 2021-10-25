@@ -14,9 +14,9 @@ class Leaf(Module):
         self.clk = clk
         self.reset = rst
         self.start = start
-        self.resend = Signal(1, name='resend')
-        self.din_leaf_bft2interface = Signal(49, name='din_leaf_bft2interface')
-        self.dout_leaf_interface2bft = Signal(49, name='dout_leaf_interface2bft')
+        self.resend = Signal(1, name="resend")
+        self.din_leaf_bft2interface = Signal(49, name="din_leaf_bft2interface")
+        self.dout_leaf_interface2bft = Signal(49, name="dout_leaf_interface2bft")
 
     def connect(self, din, dout, resend):
         self.comb += self.din_leaf_bft2interface.eq(din)
@@ -24,90 +24,107 @@ class Leaf(Module):
         self.comb += self.resend.eq(resend)
 
 
-
 class Leaf2(Leaf):
     def __init__(self, clk, rst, start, platform):
         super().__init__(clk, rst, start, platform)
-        self.specials += Instance('leaf_2',
-                                  i_clk = self.clk,
-                                  i_din_leaf_bft2interface = self.din_leaf_bft2interface,
-                                  o_dout_leaf_interface2bft = self.dout_leaf_interface2bft,
-                                  i_resend = self.resend,
-                                  i_ap_start = self.start,
-                                  i_reset = self.reset
-                                  )
+        self.specials += Instance(
+            "leaf_2",
+            i_clk=self.clk,
+            i_din_leaf_bft2interface=self.din_leaf_bft2interface,
+            o_dout_leaf_interface2bft=self.dout_leaf_interface2bft,
+            i_resend=self.resend,
+            i_ap_start=self.start,
+            i_reset=self.reset,
+        )
+
 
 class Leaf3(Leaf):
     def __init__(self, clk, rst, start, platform):
         super().__init__(clk, rst, start, platform)
-        self.specials += Instance('leaf_3',
-                                  i_clk = self.clk,
-                                  i_din_leaf_bft2interface = self.din_leaf_bft2interface,
-                                  o_dout_leaf_interface2bft = self.dout_leaf_interface2bft,
-                                  i_resend = self.resend,
-                                  i_ap_start = self.start,
-                                  i_reset = self.reset
-                                  )
+        self.specials += Instance(
+            "leaf_3",
+            i_clk=self.clk,
+            i_din_leaf_bft2interface=self.din_leaf_bft2interface,
+            o_dout_leaf_interface2bft=self.dout_leaf_interface2bft,
+            i_resend=self.resend,
+            i_ap_start=self.start,
+            i_reset=self.reset,
+        )
+
 
 class Leaf4(Leaf):
     def __init__(self, clk, rst, start, platform):
         super().__init__(clk, rst, start, platform)
-        self.specials += Instance('leaf_4',
-                                  i_clk = self.clk,
-                                  i_din_leaf_bft2interface = self.din_leaf_bft2interface,
-                                  o_dout_leaf_interface2bft = self.dout_leaf_interface2bft,
-                                  i_resend = self.resend,
-                                  i_ap_start = self.start,
-                                  i_reset = self.reset
-                                  )
+        self.specials += Instance(
+            "leaf_4",
+            i_clk=self.clk,
+            i_din_leaf_bft2interface=self.din_leaf_bft2interface,
+            o_dout_leaf_interface2bft=self.dout_leaf_interface2bft,
+            i_resend=self.resend,
+            i_ap_start=self.start,
+            i_reset=self.reset,
+        )
+
 
 class Leaf5(Leaf):
     def __init__(self, clk, rst, start, platform):
         super().__init__(clk, rst, start, platform)
-        self.specials += Instance('leaf_5',
-                                  i_clk = self.clk,
-                                  i_din_leaf_bft2interface = self.din_leaf_bft2interface,
-                                  o_dout_leaf_interface2bft = self.dout_leaf_interface2bft,
-                                  i_resend = self.resend,
-                                  i_ap_start = self.start,
-                                  i_reset = self.reset
-                                  )
+        self.specials += Instance(
+            "leaf_5",
+            i_clk=self.clk,
+            i_din_leaf_bft2interface=self.din_leaf_bft2interface,
+            o_dout_leaf_interface2bft=self.dout_leaf_interface2bft,
+            i_resend=self.resend,
+            i_ap_start=self.start,
+            i_reset=self.reset,
+        )
+
 
 class Leaf6(Leaf):
     def __init__(self, clk, rst, start, platform):
         super().__init__(clk, rst, start, platform)
-        self.specials += Instance('leaf_6',
-                                  i_clk = self.clk,
-                                  i_din_leaf_bft2interface = self.din_leaf_bft2interface,
-                                  o_dout_leaf_interface2bft = self.dout_leaf_interface2bft,
-                                  i_resend = self.resend,
-                                  i_ap_start = self.start,
-                                  i_reset = self.reset
-                                  )
+        self.specials += Instance(
+            "leaf_6",
+            i_clk=self.clk,
+            i_din_leaf_bft2interface=self.din_leaf_bft2interface,
+            o_dout_leaf_interface2bft=self.dout_leaf_interface2bft,
+            i_resend=self.resend,
+            i_ap_start=self.start,
+            i_reset=self.reset,
+        )
+
 
 class Leaf7(Leaf):
     def __init__(self, clk, rst, start, platform):
         super().__init__(clk, rst, start, platform)
-        self.specials += Instance('leaf_7',
-                                  i_clk = self.clk,
-                                  i_din_leaf_bft2interface = self.din_leaf_bft2interface,
-                                  o_dout_leaf_interface2bft = self.dout_leaf_interface2bft,
-                                  i_resend = self.resend,
-                                  i_ap_start = self.start,
-                                  i_reset = self.reset
-                                  )
+        self.specials += Instance(
+            "leaf_7",
+            i_clk=self.clk,
+            i_din_leaf_bft2interface=self.din_leaf_bft2interface,
+            o_dout_leaf_interface2bft=self.dout_leaf_interface2bft,
+            i_resend=self.resend,
+            i_ap_start=self.start,
+            i_reset=self.reset,
+        )
+
 
 class Rendering6PageVitis(Module):
-    def __init__(self, clk, rst, platform, start=1, clock_domain='bft'):
-        self.axil = AXILiteInterface(data_width=32, address_width=5, clock_domain=clock_domain)
+    def __init__(self, clk, rst, platform, start=1, clock_domain="bft"):
+        self.axil = AXILiteInterface(
+            data_width=32, address_width=5, clock_domain=clock_domain
+        )
         self.clk = clk
         self.rst = rst
         self.start = start
         self.platform = platform
         self.clock_domain = clock_domain
-        self.submodules.axilite2bft = axilite2bft = AxiLite2Bft(clk, rst, platform, clock_domain)
+        self.submodules.axilite2bft = axilite2bft = AxiLite2Bft(
+            clk, rst, platform, clock_domain
+        )
         self.submodules.bft = bft = Bft(clk, rst, platform)
-        self.submodules.interface_wrapper = interface_wrapper = InterfaceWrapper(clk, rst, platform)
+        self.submodules.interface_wrapper = interface_wrapper = InterfaceWrapper(
+            clk, rst, platform
+        )
         self.submodules.leaf_2 = leaf_2 = Leaf2(clk, rst, start, platform)
         self.submodules.leaf_3 = leaf_3 = Leaf3(clk, rst, start, platform)
         self.submodules.leaf_4 = leaf_4 = Leaf4(clk, rst, start, platform)
@@ -133,10 +150,10 @@ class Rendering6PageVitis(Module):
         leaf_5.connect(bft.din_leaf_5, bft.dout_leaf_5, bft.resend_5)
         leaf_6.connect(bft.din_leaf_6, bft.dout_leaf_6, bft.resend_6)
         leaf_7.connect(bft.din_leaf_7, bft.dout_leaf_7, bft.resend_7)
-        self.platform.add_source_dir('rtl/leaf_interface/')
-        self.platform.add_source_dir('rtl/rendering_6_page_new/')
+        self.platform.add_source_dir("rtl/leaf_interface/")
+        self.platform.add_source_dir("rtl/rendering_6_page_new/")
 
-    def connect_input(self, stream, clock_domain='sys'):
+    def connect_input(self, stream, clock_domain="sys"):
         assert isinstance(stream, Endpoint)
         input_stream = stream
 
@@ -151,7 +168,7 @@ class Rendering6PageVitis(Module):
 
         self.interface_wrapper.connect_input(input_stream)
 
-    def connect_output(self, stream, clock_domain='sys'):
+    def connect_output(self, stream, clock_domain="sys"):
         assert isinstance(stream, Endpoint)
         output_stream = stream
 

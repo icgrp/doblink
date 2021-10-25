@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<Runs Version="1" Minor="0">
-	<Run Id="ydma" LaunchDir="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/sw_emu/_x/ydma/ydma" FlowId="Build_IP" FromStepId="vitis_hls" ToStepId="vitis_hls"/>
-</Runs>
-

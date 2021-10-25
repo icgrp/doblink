@@ -14,23 +14,22 @@ nwords = int(argv[2])
 page_num = int(argv[3])
 
 
-
 with open(binfile, "rb") as f:
     bindata = f.read()
 
 
-assert len(bindata) < 4*nwords
+assert len(bindata) < 4 * nwords
 assert len(bindata) % 4 == 0
 
-file_0 = open('firmware0.hex', 'w')
-file_1 = open('firmware1.hex', 'w')
-file_2 = open('firmware2.hex', 'w')
-file_3 = open('firmware3.hex', 'w')
-file_4 = open('instr_data'+str(page_num)+'.h', 'w')
-file_4.write("unsigned int instr_data"+str(page_num)+"[] = {\n")
+file_0 = open("firmware0.hex", "w")
+file_1 = open("firmware1.hex", "w")
+file_2 = open("firmware2.hex", "w")
+file_3 = open("firmware3.hex", "w")
+file_4 = open("instr_data" + str(page_num) + ".h", "w")
+file_4.write("unsigned int instr_data" + str(page_num) + "[] = {\n")
 for i in range(nwords):
     if i < len(bindata) // 4:
-        w = bindata[4*i : 4*i+4]
+        w = bindata[4 * i : 4 * i + 4]
         print("%02x%02x%02x%02x" % (w[3], w[2], w[1], w[0]))
         file_0.write("%02x\n" % (w[0]))
         file_1.write("%02x\n" % (w[1]))
@@ -43,10 +42,10 @@ for i in range(nwords):
         file_1.write("0\n")
         file_2.write("0\n")
         file_3.write("0\n")
-        if(i==nwords-1):
-          file_4.write("0x00000000};\n")
+        if i == nwords - 1:
+            file_4.write("0x00000000};\n")
         else:
-          file_4.write("0x00000000,\n")
+            file_4.write("0x00000000,\n")
 
 
 file_0.close()
