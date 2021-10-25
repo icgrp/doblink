@@ -216,4 +216,3 @@ controller/hd_visual
 controller/.Xil/*
 hd_visual
 .vscode
-controller/rtl/optical_flow
