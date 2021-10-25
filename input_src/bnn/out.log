@@ -1,0 +1,35 @@
+We will use default N_IMG = 10
+Hello world
+We are processing 0 images
+We will receive 16384
+Pred/Label: 3/3 [ OK ]
+We are processing 1 images
+We will receive 16384
+Pred/Label: -3/8 [FAIL]
+We are processing 2 images
+We will receive 16384
+Pred/Label: 72/8 [FAIL]
+We are processing 3 images
+We will receive 16384
+Pred/Label: 3/0 [FAIL]
+We are processing 4 images
+We will receive 16384
+Pred/Label: 8/6 [FAIL]
+We are processing 5 images
+We will receive 16384
+Pred/Label: -1/6 [FAIL]
+We are processing 6 images
+We will receive 16384
+Pred/Label: 104/1 [FAIL]
+We are processing 7 images
+We will receive 16384
+Pred/Label: 99/6 [FAIL]
+We are processing 8 images
+We will receive 16384
+Pred/Label: 8/3 [FAIL]
+We are processing 9 images
+We will receive 16384
+Pred/Label: -1/1 [FAIL]
+We got 9/10 errors
+Done
+WARNING: Hls::stream 'bin_dense_out1' contains leftover data, which may result in RTL simulation hanging.

@@ -1,0 +1,128 @@
+cp ./host/* ./
+cp ./sdsoc/* ./
+g++ -I /scratch/safe/SDSoC/Vivado/2018.2/include -o Test_host  ./sdsoc/*.cpp ./host/*.cpp   -O3
+rm ./*.cpp
+rm ./*.h
+./Test_host
+mem 0
+bin_conv_wt_0
+bin_conv_wt_1
+bin_conv_wt_2
+bin_conv_wt_3
+bin_conv_wt_4
+bin_conv_wt_5
+bin_conv_wt_6
+bin_conv_wt_7
+bin_conv_wt_8
+bin_dense_wt_0
+bin_dense_wt_1
+bin_dense_wt_2
+bin_dense_wt_3
+bin_dense_wt_4
+bin_dense_wt_5
+bin_dense_wt_6
+bin_dense_wt_7
+bin_dense_wt_8
+bin_dense_wt_9
+bin_dense_wt_10
+bin_dense_wt_11
+bin_dense_wt_12
+bin_dense_wt_13
+bin_dense_wt_14
+bin_dense_wt_15
+fp_conv
+mem 1
+bin_conv_0
+mem 2
+bin_conv_1
+mem 3
+bin_conv_2
+mem 4
+bin_conv_3
+mem 5
+bin_conv_4
+mem 6
+bin_dense_0
+mem 7
+bin_dense_1
+mem 8
+bin_dense_2
+mem 9
+The output is : 3
+mem_in_1=512
+mem_in_2=2048
+mem_in_3=2048
+mem_in_4=2432
+mem_in_5=2432
+mem_in_6=33
+mem_in_7=32
+mem_out_1=2048
+mem_out_2=8704
+mem_out_3=256
+mem_out_4=32
+mem_out_5=1
+mem_out_6=1
+mem_out_7=1
+fp_conv_in_1=2048
+fp_conv_out_1=2048
+fp_conv_out_2=2048
+bin_conv_in_1=8704
+bin_conv_in_2=146784
+bin_conv_out_1=2432
+bin_conv_out_2=2432
+bin_dense_in_1=320
+bin_dense_in_2=147616
+bin_dense_in_3=147616
+bin_dense_out_1=33
+bin_dense_out_2=32
+bin_conv_wt_0_in_1=1
+bin_conv_wt_0_out_1=8192
+bin_conv_wt_1_in_1=8192
+bin_conv_wt_1_out_1=18432
+bin_conv_wt_2_in_1=18432
+bin_conv_wt_2_out_1=38912
+bin_conv_wt_3_in_1=38912
+bin_conv_wt_3_out_1=59392
+bin_conv_wt_4_in_1=59392
+bin_conv_wt_4_out_1=79872
+bin_conv_wt_5_in_1=79872
+bin_conv_wt_5_out_1=100352
+bin_conv_wt_6_in_1=100352
+bin_conv_wt_6_out_1=120832
+bin_conv_wt_7_in_1=120832
+bin_conv_wt_7_out_1=141312
+bin_conv_wt_8_in_1=141312
+bin_conv_wt_8_out_1=146784
+bin_dense_wt_0_in_1=1
+bin_dense_wt_0_out_1=20480
+bin_dense_wt_1_in_1=20480
+bin_dense_wt_1_out_1=40960
+bin_dense_wt_2_in_1=40960
+bin_dense_wt_2_out_1=61440
+bin_dense_wt_3_in_1=61440
+bin_dense_wt_3_out_1=81920
+bin_dense_wt_4_in_1=81920
+bin_dense_wt_4_out_1=102400
+bin_dense_wt_5_in_1=102400
+bin_dense_wt_5_out_1=122880
+bin_dense_wt_6_in_1=122880
+bin_dense_wt_6_out_1=143360
+bin_dense_wt_7_in_1=143360
+bin_dense_wt_7_out_1=147616
+bin_dense_wt_8_in_1=1
+bin_dense_wt_8_out_1=20480
+bin_dense_wt_9_in_1=20480
+bin_dense_wt_9_out_1=40960
+bin_dense_wt_10_in_1=40960
+bin_dense_wt_10_out_1=61440
+bin_dense_wt_11_in_1=61440
+bin_dense_wt_11_out_1=81920
+bin_dense_wt_12_in_1=81920
+bin_dense_wt_12_out_1=102400
+bin_dense_wt_13_in_1=102400
+bin_dense_wt_13_out_1=122880
+bin_dense_wt_14_in_1=122880
+bin_dense_wt_14_out_1=141312
+bin_dense_wt_15_in_1=141312
+bin_dense_wt_15_out_1=147616
+rm ./Test_host

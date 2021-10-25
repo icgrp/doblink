@@ -133,3 +133,4 @@ outputs/
 
 # Mac OSX finder files
 .DS_Store
+workspace/

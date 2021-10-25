@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ydma" dir="">
+  <FileSets>
+    <FileSet Name="kernel_ydma" Type="DesignSrcs">
+      <File Path="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/host/top.cpp"/>
+      <File Path="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/host/typedefs.h"/>
+      <File Path="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/operators/gradient_weight_y_1.cpp"/>
+      <File Path="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/operators/gradient_xyz_calc.cpp"/>
+      <File Path="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/operators/flow_calc_2.cpp"/>
+      <File Path="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/operators/outer_product1.cpp"/>
+      <File Path="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/operators/gradient_weight_y_2.cpp"/>
+      <File Path="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/operators/tensor_weight_y1.cpp"/>
+      <File Path="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/operators/tensor_weight_x1.cpp"/>
+      <File Path="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/operators/output_fun.cpp"/>
+      <File Path="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/operators/tensor_weight_y2.cpp"/>
+      <File Path="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/operators/tensor_weight_x2.cpp"/>
+      <File Path="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/operators/gradient_weight_x3.cpp"/>
+      <File Path="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/operators/gradient_weight_y_3.cpp"/>
+      <File Path="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/operators/gradient_weight_x1.cpp"/>
+      <File Path="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/operators/flow_calc_1.cpp"/>
+      <File Path="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/operators/outer_product2.cpp"/>
+      <File Path="/home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/operators/gradient_weight_x2.cpp"/>
+      <Config/>
+    </FileSet>
+  </FileSets>
+  <Runs/>
+</project>

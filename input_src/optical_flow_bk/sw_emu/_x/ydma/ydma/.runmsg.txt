@@ -1,0 +1,2 @@
+performing high-level synthesis for kernel: ydma
+Log file: /home/ylxiao/ws_211/prflow_riscv/input_src/optical_flow_bk/sw_emu/_x/ydma/ydma/vitis_hls.log
