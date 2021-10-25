@@ -1,0 +1,47 @@
+<!-- vim: set ai sw=1 ts=1 sta et: -->
+
+<!--
+DSP
+  -->
+<pb_type name="DSP" num_pb="1" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+ <!-- FIFO18E1 site pins -->
+ <input  name="M18x25_Y0_B"          num_pins="18"  />
+ <input  name="M18x25_Y0_D"         num_pins="25"  />
+
+ <output name="M18x25_Y0_P"         num_pins="43"  />
+ 
+ <!-- FIFO18E1 site pins -->
+ <input  name="M18x25_Y1_B"          num_pins="18"  />
+ <input  name="M18x25_Y1_D"         num_pins="25"  />
+
+ <output name="M18x25_Y1_P"         num_pins="43"  />
+
+ <mode name="2xM18x25">
+  <pb_type name="M18x25" num_pb="2" blif_model=".subckt M18x25">
+   <xi:include href="M18x25.pb_type.xml" xpointer="xpointer(pb_type/child::node()[local-name()!='metadata'])" />
+   <metadata>
+	<meta name="type">block</meta>
+	<meta name="subtype">ignore</meta>
+   </metadata>
+  </pb_type>
+  <interconnect>
+   <!-- Y0 should point to a rambfifo18e1 model, not ramb18e1 model. -->
+   <direct name="M18x25_X0Y0_B"            input="DSP.M18x25_Y0_B"             output="M18x25[0].A" />
+   <direct name="M18x25_X0Y0_D"            input="DSP.M18x25_Y0_D"             output="M18x25[0].B" />
+
+   <direct name="M18x25_X0Y0_P"            input="M18x25[0].OUT"                output="DSP.M18x25_Y0_P" />
+  
+    <!-- Y1 should point to a rambfifo18e1 model, not ramb18e1 model. -->
+   <direct name="M18x25_X0Y1_B"            input="DSP.M18x25_Y1_B"             output="M18x25[1].A" />
+   <direct name="M18x25_X0Y1_D"            input="DSP.M18x25_Y1_D"             output="M18x25[1].B" />
+
+   <direct name="M18x25_X0Y1_P"            input="M18x25[1].OUT"                output="DSP.M18x25_Y1_P" />
+
+  </interconnect>
+ </mode>
+ <metadata>
+  <meta name="type">block</meta>
+  <meta name="subtype">ignore</meta>
+ </metadata>
+</pb_type>

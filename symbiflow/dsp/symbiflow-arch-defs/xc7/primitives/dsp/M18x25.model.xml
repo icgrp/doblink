@@ -1,0 +1,17 @@
+<models>
+ <model name="M18x25">
+  <input_ports>
+   <!-- Port A - 18bit wide -->
+   <port  name="A"       />
+
+   <!-- Port B - 25bit wide -->
+   <port  name="B"       />
+  </input_ports>
+  <output_ports>
+
+    <!-- Port Out - 43-bit wide -->
+   <port  name="OUT"   />
+
+  </output_ports>
+ </model>
+</models>

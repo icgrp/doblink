@@ -1,0 +1,47 @@
+<!-- vim: set ai sw=1 ts=1 sta et: -->
+
+<!--
+Block RAM in 7 series is 36kbbit split into two 18kbit sections.
+The Block RAM is "true dual port".
+There are both Latches (first) and Registers (second) on the output (why!?)
+
+The RAM has extra bits that can be used for parity (DIP / DOP).
+
+This is the top level site model.  Because the 3 sites with the BRAM are
+affected by the BRAM mode, each site cannot be handled independendly.  For this
+reason, BRAM tiles use a "fused sites" mode to accomidate the cross site logic.
+
+  -->
+<pb_type name="DSP_X0" num_pb="1" xmlns:xi="http://www.w3.org/2001/XInclude">
+ <!-- FIFO18E1 site pins -->
+ <input  name="DSP48_X0Y0_B"          num_pins="18"  />
+ <input  name="DSP48_X0Y0_D"         num_pins="25"  />
+
+ <output name="DSP48_X0Y0_P"         num_pins="43"  />
+ 
+ <!-- FIFO18E1 site pins -->
+ <input  name="DSP48_X0Y1_B"          num_pins="18"  />
+ <input  name="DSP48_X0Y1_D"         num_pins="25"  />
+
+ <output name="DSP48_X0Y1_P"         num_pins="43"  />
+ 
+ <xi:include href="../dsp/dsp.pb_type.xml"/>
+
+ <interconnect>
+   <!-- Y0 should point to a rambfifo18e1 model, not ramb18e1 model. -->
+   <direct name="DSP48_X0Y0_B"            input="DSP_X0.DSP48_X0Y0_B"             output="DSP.M18x25_Y0_B" />
+   <direct name="DSP48_X0Y0_D"            input="DSP_X0.DSP48_X0Y0_D"             output="DSP.M18x25_Y0_D" />
+
+   <direct name="DSP48_X0Y0_P"            input="DSP.M18x25_Y0_P"                output="DSP_X0.DSP48_X0Y0_P" />
+   <!-- Y1 should point to a rambfifo18e1 model, not ramb18e1 model. -->
+   <direct name="DSP48_X0Y1_B"            input="DSP_X0.DSP48_X0Y1_B"             output="DSP.M18x25_Y1_B" />
+   <direct name="DSP48_X0Y1_D"            input="DSP_X0.DSP48_X0Y1_D"             output="DSP.M18x25_Y1_D" />
+
+   <direct name="DSP48_X0Y1_P"            input="DSP.M18x25_Y1_P"                output="DSP_X0.DSP48_X0Y1_P" />
+  
+ </interconnect>
+ <metadata>
+  <meta name="type">block</meta>
+  <meta name="subtype">ignore</meta>
+ </metadata>
+</pb_type>

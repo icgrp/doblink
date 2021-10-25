@@ -1,0 +1,14 @@
+<!--
+DSP48E 1 in Series 7 has an 18x25 multipliers.
+  -->
+<pb_type name="M18x25" num_pb="1" blif_model=".subckt M18x25">
+ <!-- Port A - 18bit wide -->
+ <input  name="A"           num_pins="18"  />
+ <!-- Port B - 25bit wide -->
+ <input  name="B"           num_pins="25"  />
+ <output name="OUT"         num_pins="43" />
+ <metadata>
+  <meta name="type">block</meta>
+  <meta name="subtype">ignore</meta>
+ </metadata>
+</pb_type>
