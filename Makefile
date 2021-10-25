@@ -9,7 +9,7 @@
 #prj_name=digit_reg
 #prj_name=digit_reg_small
 #prj_name=spam_filter
-prj_name=spam_filter_small
+prj_name?=spam_filter_small
 #prj_name=optical_flow
 #prj_name=optical_flow_final
 #prj_name=rendering
