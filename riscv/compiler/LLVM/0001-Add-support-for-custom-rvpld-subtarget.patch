@@ -1,0 +1,136 @@
+From 4eda5b6ff8b3199779d1e94c3d37be1c27377f64 Mon Sep 17 00:00:00 2001
+From: "Tzvi (Andrew) Merczynski-Hait" <andrewmh20@users.noreply.github.com>
+Date: Wed, 21 Oct 2020 15:39:05 -0400
+Subject: [PATCH 1/2] Add support for custom rvpld subtarget
+
+---
+ clang/lib/Driver/ToolChains/Arch/RISCV.cpp      | 14 +++++++-------
+ llvm/include/llvm/Support/RISCVTargetParser.def |  1 +
+ llvm/lib/Target/RISCV/RISCV.td                  | 11 +++++++++++
+ llvm/lib/Target/RISCV/RISCVSubtarget.h          |  2 ++
+ 4 files changed, 21 insertions(+), 7 deletions(-)
+
+diff --git a/clang/lib/Driver/ToolChains/Arch/RISCV.cpp b/clang/lib/Driver/ToolChains/Arch/RISCV.cpp
+index be3f0a07b57..95752653426 100644
+--- a/clang/lib/Driver/ToolChains/Arch/RISCV.cpp
++++ b/clang/lib/Driver/ToolChains/Arch/RISCV.cpp
+@@ -73,7 +73,7 @@ static bool isSupportedExtension(StringRef Ext) {
+     return true;
+ 
+   // LLVM does not support "sx", "s" nor "x" extensions.
+-  return false;
++  return true;
+ }
+ 
+ // Extensions may have a version number, and may be separated by
+@@ -94,9 +94,9 @@ static bool getExtensionVersion(const Driver &D, const ArgList &Args,
+     // Expected 'p' to be followed by minor version number.
+     if (Minor.empty()) {
+       std::string Error =
+-        "minor version number missing after 'p' for extension";
++          "minor version number missing after 'p' for extension";
+       D.Diag(diag::err_drv_invalid_riscv_ext_arch_name)
+-        << MArch << Error << Ext;
++          << MArch << Error << Ext;
+       return false;
+     }
+   }
+@@ -199,7 +199,7 @@ static void getExtensionFeatures(const Driver &D,
+ 
+     if (Type.empty()) {
+       D.Diag(diag::err_drv_invalid_riscv_ext_arch_name)
+-        << MArch << "invalid extension prefix" << Ext;
++          << MArch << "invalid extension prefix" << Ext;
+       return;
+     }
+ 
+@@ -222,7 +222,7 @@ static void getExtensionFeatures(const Driver &D,
+       std::string Error = std::string(Desc);
+       Error += " name missing after";
+       D.Diag(diag::err_drv_invalid_riscv_ext_arch_name)
+-        << MArch << Error << Type;
++          << MArch << Error << Type;
+       return;
+     }
+ 
+@@ -235,7 +235,7 @@ static void getExtensionFeatures(const Driver &D,
+       std::string Error = "duplicated ";
+       Error += Desc;
+       D.Diag(diag::err_drv_invalid_riscv_ext_arch_name)
+-        << MArch << Error << Name;
++          << MArch << Error << Name;
+       return;
+     }
+ 
+@@ -253,7 +253,7 @@ static void getExtensionFeatures(const Driver &D,
+       std::string Error = "unsupported ";
+       Error += Desc;
+       D.Diag(diag::err_drv_invalid_riscv_ext_arch_name)
+-        << MArch << Error << Ext;
++          << MArch << Error << Ext;
+       return;
+     }
+     if (isExperimentalExtension(Ext))
+diff --git a/llvm/include/llvm/Support/RISCVTargetParser.def b/llvm/include/llvm/Support/RISCVTargetParser.def
+index 28de6cd4013..d8059d0d509 100644
+--- a/llvm/include/llvm/Support/RISCVTargetParser.def
++++ b/llvm/include/llvm/Support/RISCVTargetParser.def
+@@ -9,5 +9,6 @@ PROC(ROCKET_RV32, {"rocket-rv32"}, FK_NONE, {""})
+ PROC(ROCKET_RV64, {"rocket-rv64"}, FK_64BIT, {""})
+ PROC(SIFIVE_E31, {"sifive-e31"}, FK_NONE, {"rv32imac"})
+ PROC(SIFIVE_U54, {"sifive-u54"}, FK_64BIT, {"rv64gc"})
++PROC(RVPLD_STRM, {"rvpld-strm"}, FK_NONE, {"rv32icxstrm"})
+ 
+ #undef PROC
+diff --git a/llvm/lib/Target/RISCV/RISCV.td b/llvm/lib/Target/RISCV/RISCV.td
+index 57e7c41c427..690a0cf18b5 100644
+--- a/llvm/lib/Target/RISCV/RISCV.td
++++ b/llvm/lib/Target/RISCV/RISCV.td
+@@ -185,6 +185,14 @@ foreach i = {1-31} in
+ def FeatureSaveRestore : SubtargetFeature<"save-restore", "EnableSaveRestore",
+                                           "true", "Enable save/restore.">;
+ 
++def FeatureCustExtXstrm
++    : SubtargetFeature<"xstrm", "HasCustExtXstrm", "true",
++                       "'Xstrm' (Custom Stream Instructions)">;
++def HasCustExtXstrm : Predicate<"Subtarget->hasCustExtXstrm()">,
++                             AssemblerPredicate<(all_of FeatureCustXstrm),
++                             "'Xstrm' (Custom Extension for Stream Instructions)">;
++
++
+ //===----------------------------------------------------------------------===//
+ // Named operands for CSR instructions.
+ //===----------------------------------------------------------------------===//
+@@ -225,6 +233,9 @@ def : ProcessorModel<"sifive-u54", Rocket64Model, [Feature64Bit,
+                                                    FeatureStdExtF,
+                                                    FeatureStdExtD,
+                                                    FeatureStdExtC]>;
++//Not sure what this feature list is used for, as default march is set by .def file in clang parser
++def : ProcessorModel<"rvpld-strm", NoSchedModel, [FeatureCustXstrm,
++                                                   FeatureStdExtC]>;
+ 
+ //===----------------------------------------------------------------------===//
+ // Define the RISC-V target.
+diff --git a/llvm/lib/Target/RISCV/RISCVSubtarget.h b/llvm/lib/Target/RISCV/RISCVSubtarget.h
+index fe1285f23b1..5057da15b12 100644
+--- a/llvm/lib/Target/RISCV/RISCVSubtarget.h
++++ b/llvm/lib/Target/RISCV/RISCVSubtarget.h
+@@ -51,6 +51,7 @@ class RISCVSubtarget : public RISCVGenSubtargetInfo {
+   bool HasStdExtZbt = false;
+   bool HasStdExtZbproposedc = false;
+   bool HasStdExtV = false;
++  bool HasCustExtXstrm = false;
+   bool HasRV64 = false;
+   bool IsRV32E = false;
+   bool EnableLinkerRelax = false;
+@@ -112,6 +113,7 @@ public:
+   bool hasStdExtZbt() const { return HasStdExtZbt; }
+   bool hasStdExtZbproposedc() const { return HasStdExtZbproposedc; }
+   bool hasStdExtV() const { return HasStdExtV; }
++  bool hasCustExtXstrm() const { return HasCustExtXstrm; }
+   bool is64Bit() const { return HasRV64; }
+   bool isRV32E() const { return IsRV32E; }
+   bool enableLinkerRelax() const { return EnableLinkerRelax; }
+-- 
+2.20.1 (Apple Git-117)
+

@@ -1,0 +1,33 @@
+From 4ecf9922152771d6f7cdb288ea69135b2513e6cb Mon Sep 17 00:00:00 2001
+From: "Tzvi (Andrew) Merczynski-Hait" <andrewmh20@users.noreply.github.com>
+Date: Wed, 21 Oct 2020 15:42:21 -0400
+Subject: [PATCH 2/2] WIP Example of first step to add instruction def
+
+---
+ llvm/lib/Target/RISCV/RISCVInstrInfo.td | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/llvm/lib/Target/RISCV/RISCVInstrInfo.td b/llvm/lib/Target/RISCV/RISCVInstrInfo.td
+index 8547f791092..5b0c913ac84 100644
+--- a/llvm/lib/Target/RISCV/RISCVInstrInfo.td
++++ b/llvm/lib/Target/RISCV/RISCVInstrInfo.td
+@@ -1167,6 +1167,16 @@ def : Pat<(trap), (UNIMP)>;
+ // debugger if possible.
+ def : Pat<(debugtrap), (EBREAK)>;
+ 
++//TODO this should really be a separate file
++//===----------------------------------------------------------------------===//
++// rvpld custom streaming extensions
++//===----------------------------------------------------------------------===//
++
++let Predicates = [HasCustExtXstrm] in {
++  def STRM  : ALU_ri<0b000, "strm">; //pretend I'm just an add for now
++}
++
++
+ //===----------------------------------------------------------------------===//
+ // Standard extensions
+ //===----------------------------------------------------------------------===//
+-- 
+2.20.1 (Apple Git-117)
+

@@ -134,3 +134,84 @@ outputs/
 # Mac OSX finder files
 .DS_Store
 workspace/
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.bin
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+controller/build/
+controller/prog/
+*__pycache__*
+compile_commands.json
+*.clangd*
+analyzer.csv
+csr.csv
+dump.vcd
+.cache/
+
+#RISC-V toolchain binaries
+riscv/compiler/gnu/riscv64-*/
+riscv/compiler/gnu/riscv64-*
+
+# Scala Project Files
+riscv/core/project
+riscv/core/target
+riscv/core/output/*
+
+.DS_Store
+*.jou
+vivado.log
+build-*/
+leaf/
+build*/
+controller/hd_visual
+controller/.Xil/*
+hd_visual
