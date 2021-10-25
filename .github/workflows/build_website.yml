@@ -1,0 +1,26 @@
+name: build website
+on:
+  push:
+    branches:
+    - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "12"
+
+      - name: Build
+        run: |
+          cd website
+          yarn install && yarn build
+
+      # - name: GitHub Pages action
+      #   uses: peaceiris/actions-gh-pages@v3.6.1
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: ./reconfig/build
