@@ -19,27 +19,24 @@ rr_graph XML.
 """
 
 import argparse
-import prjxray.db
-from prjxray.roi import Roi
-import prjxray.grid as grid
-from lib.rr_graph import graph2
-from lib.rr_graph import tracks
-from lib.connection_database import (
-    get_wire_pkey,
-    get_track_model,
-    get_wire_in_tile_from_pin_name,
-)
-import lib.rr_graph_xml.graph2 as xml_graph2
-from lib.rr_graph_xml.utils import read_xml_file
-from prjxray_constant_site_pins import feature_when_routed
-from prjxray_tile_import import remove_vpr_tile_prefix
-import simplejson as json
-import progressbar
 import datetime
-import re
 import functools
+import re
 
+import lib.rr_graph_xml.graph2 as xml_graph2
+import prjxray.db
+import prjxray.grid as grid
+import progressbar
+import simplejson as json
+from lib.connection_database import (get_track_model,
+                                     get_wire_in_tile_from_pin_name,
+                                     get_wire_pkey)
+from lib.rr_graph import graph2, tracks
+from lib.rr_graph_xml.utils import read_xml_file
+from prjxray.roi import Roi
+from prjxray_constant_site_pins import feature_when_routed
 from prjxray_db_cache import DatabaseCache
+from prjxray_tile_import import remove_vpr_tile_prefix
 
 now = datetime.datetime.now
 

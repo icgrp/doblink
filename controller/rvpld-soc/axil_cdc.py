@@ -1,5 +1,5 @@
-from pld_axi import PldAXILiteInterface
 from migen import *
+from pld_axi import PldAXILiteInterface
 
 
 class AxilCDC(Module):

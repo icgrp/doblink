@@ -1,7 +1,7 @@
-from pld_axi import *
 from litex.soc.interconnect.axi import AXIStreamInterface
 from litex.soc.interconnect.stream import Converter, Endpoint
 from migen import *
+from pld_axi import *
 
 
 class DigitMono(Module):

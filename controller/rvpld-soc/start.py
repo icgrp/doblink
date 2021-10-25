@@ -1,8 +1,6 @@
-from migen import *
-
+from litex.build.generic_platform import Pins, Subsignal
 from litex.soc.interconnect.csr import *
-
-from litex.build.generic_platform import Subsignal, Pins
+from migen import *
 
 
 class StartWriter(Module, AutoCSR):

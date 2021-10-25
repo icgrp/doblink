@@ -1,11 +1,12 @@
 #!/usr/bin/env python
-import sys
-import os
-import xml.etree.ElementTree
 import argparse
-import re
 import math
+import os
+import re
 import subprocess
+import sys
+import xml.etree.ElementTree
+
 from gen_basic import gen_basic
 
 

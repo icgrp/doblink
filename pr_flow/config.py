@@ -13,9 +13,10 @@
 # [3] Y. Xiao, S. Ahmed and A. DeHon. "Fast Linking of Separately-Compiled FPGA Blockswithout a NoC", FPT2020
 
 
-import time
-from gen_basic import gen_basic
 import re
+import time
+
+from gen_basic import gen_basic
 
 
 class config(gen_basic):

@@ -1,23 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # starting
+import argparse
 import os
 import subprocess
-import pr_flow.utils as utils
-import pr_flow.gen_bft as bft
-import pr_flow.overlay as overlay
-import pr_flow.hls as hls
-import pr_flow.syn as syn
-import pr_flow.impl as impl
+import xml.etree.ElementTree
+
 import pr_flow.bit as bit
+import pr_flow.config as config
+import pr_flow.gen_bft as bft
+import pr_flow.gen_sdk as sdk
+import pr_flow.hls as hls
+import pr_flow.impl as impl
 import pr_flow.ip_repo as ip_repo
 import pr_flow.mbft as mbft
-import pr_flow.config as config
+import pr_flow.overlay as overlay
 import pr_flow.report as report
-
-import pr_flow.gen_sdk as sdk
-import argparse
-import xml.etree.ElementTree
+import pr_flow.syn as syn
+import pr_flow.utils as utils
 
 if __name__ == "__main__":
 

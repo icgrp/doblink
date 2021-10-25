@@ -10,16 +10,16 @@ IO placement spefications to target the synthetic IO pads.
 
 """
 from __future__ import print_function
+
 import argparse
-import prjxray.db
-from prjxray.roi import Roi
-from prjxray import grid_types
 import os.path
-import simplejson as json
 import sys
 
 import lxml.etree as ET
-
+import prjxray.db
+import simplejson as json
+from prjxray import grid_types
+from prjxray.roi import Roi
 from prjxray_db_cache import DatabaseCache
 from prjxray_tile_import import add_vpr_tile_prefix
 

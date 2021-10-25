@@ -1,14 +1,16 @@
 #!/usr/local/bin/python3
 ###############################################################################
+import argparse
+import copy
+import json
+import pathlib
 import re
 import sys
-import yaml
-import json
-import copy
-import pathlib
-import argparse
-import matplotlib.pyplot as plt
+
 import matplotlib.patches as patches
+import matplotlib.pyplot as plt
+import yaml
+
 
 ###############################################################################
 def get_synth_tiles(direction, pblock, parent, yaml_data):

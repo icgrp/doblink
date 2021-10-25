@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # starting
+import argparse
+import fnmatch
 import os
 import subprocess
-import argparse
 import xml.etree.ElementTree
-import fnmatch
 
 if __name__ == "__main__":
 

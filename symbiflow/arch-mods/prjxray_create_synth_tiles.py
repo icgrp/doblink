@@ -1,11 +1,12 @@
 import argparse
+
 import prjxray.db
-from prjxray.roi import Roi
 import simplejson as json
+from prjxray.roi import Roi
+from prjxray_db_cache import DatabaseCache
 
 # from numpy import array
 
-from prjxray_db_cache import DatabaseCache
 
 
 def map_tile_to_vpr_coord(conn, tile):

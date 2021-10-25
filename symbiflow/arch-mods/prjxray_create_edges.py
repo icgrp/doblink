@@ -21,22 +21,22 @@ fill empty spaces.  This is required by VPR to allocate the right data.
 """
 
 import argparse
-import prjxray.db
-from prjxray.roi import Roi
-from prjxray import grid_types
-import simplejson as json
-import progressbar
 import datetime
 import functools
+import multiprocessing
 from collections import namedtuple
-from lib.rr_graph import tracks
-from lib.rr_graph import graph2
+
+import prjxray.db
+import progressbar
+import simplejson as json
+from lib.connection_database import (get_track_model,
+                                     get_wire_in_tile_from_pin_name)
+from lib.rr_graph import graph2, tracks
+from lib.rr_graph.graph2 import NodeType
+from prjxray import grid_types
+from prjxray.roi import Roi
 from prjxray.site_type import SitePinDirection
 from prjxray_constant_site_pins import yield_ties_to_wire
-from lib.connection_database import get_track_model, get_wire_in_tile_from_pin_name
-from lib.rr_graph.graph2 import NodeType
-import multiprocessing
-
 from prjxray_db_cache import DatabaseCache
 
 now = datetime.datetime.now

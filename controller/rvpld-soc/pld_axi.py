@@ -1,6 +1,5 @@
-from litex.soc.interconnect.axi import AXILiteInterface
-from litex.soc.interconnect.axi import AXIInterface
-from litex.soc.interconnect.axi import AXIStreamInterface
+from litex.soc.interconnect.axi import (AXIInterface, AXILiteInterface,
+                                        AXIStreamInterface)
 
 
 class PldAXILiteInterface(AXILiteInterface):

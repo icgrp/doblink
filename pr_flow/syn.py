@@ -16,10 +16,12 @@
 
 
 import os
-import subprocess
-from gen_basic import gen_basic
-import pr_flow.config as config
 import re
+import subprocess
+
+from gen_basic import gen_basic
+
+import pr_flow.config as config
 
 
 class syn(gen_basic):

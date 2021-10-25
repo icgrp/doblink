@@ -2,9 +2,10 @@
 
 
 import os
+import re
 import subprocess
 import xml.etree.ElementTree
-import re
+
 import commands
 
 

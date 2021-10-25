@@ -3,10 +3,10 @@ import os.path
 import platform
 import re
 import subprocess
+from importlib import import_module
 
 from edalize.edatool import *
 from edalize.yosys import Yosys
-from importlib import import_module
 from jinja2 import Environment, PackageLoader
 
 logger = logging.getLogger(__name__)

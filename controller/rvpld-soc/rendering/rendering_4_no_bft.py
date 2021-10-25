@@ -1,11 +1,12 @@
-from litex.soc.interconnect.axi import AXIStreamInterface, AXILiteInterface
-from litex.soc.interconnect.stream import Converter, Endpoint, ClockDomainCrossing
-from migen import *
-from pld_axi import *
+from axil_cdc import AxilCDC
 from axilite2bft import AxiLite2Bft
 from bft import Bft
 from interface_wrapper import InterfaceWrapper
-from axil_cdc import AxilCDC
+from litex.soc.interconnect.axi import AXILiteInterface, AXIStreamInterface
+from litex.soc.interconnect.stream import (ClockDomainCrossing, Converter,
+                                           Endpoint)
+from migen import *
+from pld_axi import *
 
 
 class Rendering4Mono(Module):

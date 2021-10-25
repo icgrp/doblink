@@ -6,49 +6,43 @@
 # Copyright (c) 2015-2019 Florent Kermarrec <florent@enjoy-digital.fr>
 # SPDX-License-Identifier: BSD-2-Clause
 
-import os
 import argparse
+import os
 
-from migen import *
-
-from litex.soc.cores.clock import *
-from litex.soc.integration.soc_core import *
-from litex.soc.integration.soc import *
-from litex.soc.integration.builder import *
-from litex.soc.interconnect.stream import Converter, Endpoint, ClockDomainCrossing
-from litex.soc.interconnect import wishbone
-from litex.soc.interconnect.axi import AXILiteInterface
-from litex.soc.interconnect.stream import SyncFIFO
-from litex.soc.cores.led import LedChaser
-from litex.soc.integration.soc import SoCRegion
-from litex.build.xilinx.vivado import vivado_build_args, vivado_build_argdict
-
-from litedram.modules import MT41K256M16
-from litedram.phy import s7ddrphy
-from litedram.frontend.dma import *
-
-from litex.build.generic_platform import Subsignal, Pins
-from litesata.phy import LiteSATAPHY
-
-from liteeth.phy.s7rgmii import LiteEthPHYRGMII
-from litescope import LiteScopeAnalyzer
-
-from pld_axi import PldAXILiteInterface
-from axilite2led import AxiLite2Led
-from rendering.rendering_mono import RenderingMono
-from rendering.rendering_6_no_bft import Rendering6Mono
-from rendering.rendering_4_no_bft import Rendering4Mono
-from rendering.rendering_6_no_bft_vitis import Rendering6MonoVitis
-from rendering.rendering_6_page import Rendering6Page
-from rendering.rendering_4_page import Rendering4Page
-from rendering.rendering_leaf_only import RenderingLeafOnly
-from rendering.rendering_6_page_vitis import Rendering6PageVitis
 from axil_cdc import AxilCDC
 from axilite2bft import AxiLite2Bft
+from axilite2led import AxiLite2Led
 from litedram.frontend.adapter import LiteDRAMNativePortConverter
-from start import StartWriter
-
+from litedram.frontend.dma import *
+from litedram.modules import MT41K256M16
+from litedram.phy import s7ddrphy
+from liteeth.phy.s7rgmii import LiteEthPHYRGMII
+from litesata.phy import LiteSATAPHY
+from litescope import LiteScopeAnalyzer
+from litex.build.generic_platform import Pins, Subsignal
+from litex.build.xilinx.vivado import vivado_build_argdict, vivado_build_args
+from litex.soc.cores.clock import *
+from litex.soc.cores.led import LedChaser
+from litex.soc.integration.builder import *
+from litex.soc.integration.soc import *
+from litex.soc.integration.soc import SoCRegion
+from litex.soc.integration.soc_core import *
+from litex.soc.interconnect import wishbone
+from litex.soc.interconnect.axi import AXILiteInterface
+from litex.soc.interconnect.stream import (ClockDomainCrossing, Converter,
+                                           Endpoint, SyncFIFO)
+from migen import *
 from platforms import nexys_video
+from pld_axi import PldAXILiteInterface
+from rendering.rendering_4_no_bft import Rendering4Mono
+from rendering.rendering_4_page import Rendering4Page
+from rendering.rendering_6_no_bft import Rendering6Mono
+from rendering.rendering_6_no_bft_vitis import Rendering6MonoVitis
+from rendering.rendering_6_page import Rendering6Page
+from rendering.rendering_6_page_vitis import Rendering6PageVitis
+from rendering.rendering_leaf_only import RenderingLeafOnly
+from rendering.rendering_mono import RenderingMono
+from start import StartWriter
 
 # CRG ----------------------------------------------------------------------------------------------
 
@@ -254,7 +248,8 @@ class BaseSoC(SoCCore):
             array_partition.connect_input(mm2s_axis)
             array_partition.connect_output(s2mm_axis)
         elif benchmark == "digit_recognition_5":
-            from digit_recognition.digit_recognition_5_page import DigitRecognition5Page
+            from digit_recognition.digit_recognition_5_page import \
+                DigitRecognition5Page
 
             # DigitRecognition5Page ---------------------------------------------------------------------------
             self.submodules.digit_recognition = (

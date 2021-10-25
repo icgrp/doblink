@@ -1,17 +1,18 @@
-import logging
-from omegaconf import DictConfig, OmegaConf
-import hydra
-from hydra.utils import get_original_cwd
-from hydra.core.hydra_config import HydraConfig
-import os
 import glob
+import logging
+import os
 import re
 import shutil
-import pyparsing as pp
 import tempfile
-import numpy as np
 
+import hydra
+import numpy as np
+import pyparsing as pp
 from edalize import *
+from hydra.core.hydra_config import HydraConfig
+from hydra.utils import get_original_cwd
+from omegaconf import DictConfig, OmegaConf
+
 from do_blink.edalize.vivado import Vivado
 
 # A logger for this file

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import os
-import subprocess
-from gen_basic import gen_basic
 import re
+import subprocess
+
 import syn
+from gen_basic import gen_basic
 
 
 class xclbin(gen_basic):

@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-import sys
-import os
-import xml.etree.ElementTree
 import argparse
-import re
 import math
+import os
+import re
+import sys
+import xml.etree.ElementTree
 
 
 def load_prflow_params(filename):

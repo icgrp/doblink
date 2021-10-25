@@ -5,8 +5,8 @@
 # SPDX-License-Identifier: BSD-2-Clause
 
 from litex.build.generic_platform import *
-from litex.build.xilinx import XilinxPlatform, VivadoProgrammer
 from litex.build.openocd import OpenOCD
+from litex.build.xilinx import VivadoProgrammer, XilinxPlatform
 
 # IOs ----------------------------------------------------------------------------------------------
 
