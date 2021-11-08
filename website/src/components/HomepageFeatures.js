@@ -4,8 +4,18 @@ import styles from './HomepageFeatures.module.css';
 
 const FeatureList = [
   {
+    title: 'Generate Multiple Configurations',
+    Svg: require('../../static/img/feature1.svg').default,
+    description: (
+      <>
+        Powered by Hydra, DoBlink lets you flexibly configure your design, enabling
+        powerful design-space exploration.
+      </>
+    ),
+  },
+  {
     title: 'Open Source Ecosystem',
-    Svg: require('../../static/img/undraw_docusaurus_mountain.svg').default,
+    Svg: require('../../static/img/feature2.svg').default,
     description: (
       <>
         DoBlink fully builds with SymbiFlow toolchain.
@@ -14,22 +24,12 @@ const FeatureList = [
   },
   {
     title: 'Compile Fast',
-    Svg: require('../../static/img/undraw_docusaurus_tree.svg').default,
+    Svg: require('../../static/img/feature3.svg').default,
     description: (
       <>
         Powered by Ray's distributed computing, DoBlink lets you compile FPGA applications in parallel,
         similar to what GNU does for conventional C/C++ compilation.
         
-      </>
-    ),
-  },
-  {
-    title: 'Generate Multiple Configurations',
-    Svg: require('../../static/img/undraw_docusaurus_react.svg').default,
-    description: (
-      <>
-        Powered by Hydra, DoBlink lets you flexibly configure your design, enabling
-        powerful design-space exploration.
       </>
     ),
   },
