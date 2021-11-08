@@ -9,6 +9,18 @@ plugin -i design_introspection
 # Import the commands from the plugins to the tcl interpreter
 yosys -import
 
+proc clean_processes {} {
+    proc_clean
+    proc_rmdead
+    proc_prune
+    proc_init
+    proc_arst
+    proc_mux
+    proc_dlatch
+    proc_dff
+    proc_memwr
+    proc_clean
+}
 # Update the CLKOUT[0-5]_PHASE and CLKOUT[0-5]_DUTY_CYCLE parameter values.
 # Due to the fact that Yosys doesn't support floating parameter values
 # i.e. treats them as strings, the parameter values need to be multiplied by 1000
@@ -36,6 +48,11 @@ proc update_pll_params {} {
 # -flatten is used to ensure that the output eblif has only one module.
 # Some of symbiflow expects eblifs with only one module.
 #
+# To solve the carry chain congestion at the output, the synthesis step
+# needs to be executed two times.
+# abc9 seems to cause troubles if called multiple times in the flow, therefore
+# it gets called only at the last synthesis step
+#
 # Do not infer IOBs for targets that use a ROI.
 if { $::env(USE_ROI) == "TRUE" } {
     synth_xilinx -flatten -abc9 -nosrl -noclkbuf -nodsp -noiopad -nowidelut
@@ -55,9 +72,10 @@ if { $::env(USE_ROI) == "TRUE" } {
     } else {
         hierarchy -check -auto-top
     }
+    flatten
 
     # Start flow after library reading
-    synth_xilinx -flatten -abc9 -nosrl -noclkbuf -nodsp -iopad -nowidelut -run prepare:check
+    synth_xilinx -flatten -abc9 -nocarry -nosrl -noclkbuf -nodsp -iopad -nowidelut -run prepare:check
 }
 
 # Check that post-synthesis cells match libraries.
@@ -154,7 +172,10 @@ read_verilog -specify -lib $::env(TECHMAP_PATH)/cells_sim.v
 #
 
 techmap -map  $::env(TECHMAP_PATH)/carry_map.v
+
+clean_processes
 write_json $::env(OUT_JSON).carry_fixup.json
+
 exec $::env(PYTHON3) $::env(UTILS_PATH)/fix_xc7_carry.py < $::env(OUT_JSON).carry_fixup.json > $::env(OUT_JSON).carry_fixup_out.json
 design -push
 read_json $::env(OUT_JSON).carry_fixup_out.json
@@ -189,20 +210,38 @@ write_ilang $::env(OUT_JSON).post_abc9.ilang
 # unused ports are removed.  In theory yosys's "rmports" would work here, but
 # it does not.
 chtype -map CARRY4_VPR CARRY4_FIX
-techmap -map  $::env(TECHMAP_PATH)/cells_map.v
+techmap -map  $::env(TECHMAP_PATH)/cells_map_brams.v
+techmap -map  $::env(TECHMAP_PATH)/cells_map_carry4_fix.v
+techmap -map  $::env(TECHMAP_PATH)/cells_map_clk_buf.v
+techmap -map  $::env(TECHMAP_PATH)/cells_map_cmt.v
+techmap -map  $::env(TECHMAP_PATH)/cells_map_distrams.v
+techmap -map  $::env(TECHMAP_PATH)/cells_map_ffs.v
+techmap -map  $::env(TECHMAP_PATH)/cells_map_gtpe2_channel.v
+techmap -map  $::env(TECHMAP_PATH)/cells_map_gtpe2_common.v
+techmap -map  $::env(TECHMAP_PATH)/cells_map_ibufds_gte2.v
+techmap -map  $::env(TECHMAP_PATH)/cells_map_idelaye2.v
+techmap -map  $::env(TECHMAP_PATH)/cells_map_ioddr.v
+techmap -map  $::env(TECHMAP_PATH)/cells_map_ioserdes.v
+techmap -map  $::env(TECHMAP_PATH)/cells_map_io.v
+techmap -map  $::env(TECHMAP_PATH)/cells_map_luts.v
+techmap -map  $::env(TECHMAP_PATH)/cells_map_pcie_2_1.v
+techmap -map  $::env(TECHMAP_PATH)/cells_map_srls.v
+techmap -map  $::env(TECHMAP_PATH)/cells_map_zynq.v
+
 
 # opt_expr -undriven makes sure all nets are driven, if only by the $undef
 # net.
 opt_expr -undriven
 opt_clean
 
-setundef -zero -params
+setundef -zero -params -init
 stat
 
 # TODO: remove this as soon as new VTR master+wip is pushed: https://github.com/SymbiFlow/vtr-verilog-to-routing/pull/525
 attrmap -remove hdlname
 
 # Write the design in JSON format.
+clean_processes
 write_json $::env(OUT_JSON)
 # Write the design in Verilog format.
 write_verilog $::env(OUT_SYNTH_V)

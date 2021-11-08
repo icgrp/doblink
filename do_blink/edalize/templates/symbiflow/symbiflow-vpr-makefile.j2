@@ -4,15 +4,15 @@ leaf_int_src={{ leaf_int_src_dir }}
 base=$(abspath .)
 
 symb_dir?=$(doblink_dir)/third_party/symbiflow-arch-defs
-YOSYS = $(symb_dir)/env/conda/envs/symbiflow_arch_def_base/bin/yosys
+YOSYS = $(shell which yosys)
 VPR?=$(doblink_dir)/third_party/vtr-verilog-to-routing/vpr/vpr
-GENFASM = $(symb_dir)/env/conda/envs/symbiflow_arch_def_base/bin/genfasm
-XCFASM = $(symb_dir)/env/conda/envs/symbiflow_arch_def_base/bin/xcfasm
-PYTHON = $(symb_dir)/env/conda/envs/symbiflow_arch_def_base/bin/python
+GENFASM = $(shell which genfasm)
+XCFASM = $(shell which xcfasm)
+PYTHON = $(shell which python)
 
 SYNTH_TCL = $(symb_dir)/xc/xc7/yosys/conv.tcl
-YOSYS_SYNTH_SCRIPT = $(doblink_dir)/do_blink/symbiflow_benchmark/common/synth.tcl
-#YOSYS_SYNTH_SCRIPT = $(symb_dir)/xc/xc7/yosys/synth.tcl
+#YOSYS_SYNTH_SCRIPT = $(doblink_dir)/do_blink/symbiflow_benchmark/common/synth.tcl
+YOSYS_SYNTH_SCRIPT = $(symb_dir)/xc/xc7/yosys/synth.tcl
 
 DEVICE_ARCH?={{ arch }}
 PART_ARCH=$(word 1, $(subst _, ,$(DEVICE_ARCH)))
@@ -180,15 +180,14 @@ $(abspath $(targets)):
 	- cd $* && /usr/bin/cmake -E rename top.concat.fasm top.fasm
 
 %/top.bit: %/top.fasm
-	- cd $* && PYTHONPATH=$(symb_dir)/env/conda/envs/symbiflow_arch_def_base/lib/python3.7/site-packages/:$(symb_dir)/third_party/prjxray:$(symb_dir)/third_party/prjxray/third_party/fasm \
-		&& /usr/bin/time --output=$(@F).time $(XCFASM) \
-		--db-root $(shell $(symb_dir)/env/conda/envs/symbiflow_arch_def_base/bin/prjxray-config)/$(PART_ARCH) \
+	- cd $* && /usr/bin/time --output=$(@F).time $(XCFASM) \
+		--db-root $(shell prjxray-config)/$(PART_ARCH) \
 		--sparse \
 		--emit_pudc_b_pullup \
 		--fn_in top.fasm \
 		--bit_out top.bit \
-		--frm2bit $(symb_dir)/env/conda/envs/symbiflow_arch_def_base/bin/xc7frames2bit \
-		--part_file $(shell $(symb_dir)/env/conda/envs/symbiflow_arch_def_base/bin/prjxray-config)/$(PART_ARCH)/$(PART)/part.yaml \
+		--frm2bit $(shell which xc7frames2bit) \
+		--part_file $(shell prjxray-config)/$(PART_ARCH)/$(PART)/part.yaml \
 		--part	$(PART) || (echo "$(@F) failed $$?"; exit 1)
 
 summary:
@@ -246,7 +245,7 @@ $(foreach d,$(wildcard $(verilog_src)/*/*.v),$(notdir $(patsubst %/,%,$(dir $d))
 
 $(targets:=/top_synth.json): %/top_synth.json: $$(addprefix %/,$$(notdir $$(wildcard $(verilog_src)/%/*.init))) $$(addprefix %/,$$(notdir $$(wildcard $(verilog_src)/%/*.xdc))) $$(addprefix %/,$$(notdir $$(wildcard $(verilog_src)/%/*.dat))) $$(addprefix %/,$$(notdir $$(wildcard $(verilog_src)/%/*.v))) $$(addprefix %/,$$(notdir $$(wildcard $(verilog_src)/%/*.sv))) $$(addprefix %/,$$(notdir $$(wildcard $(verilog_src)/%/*.vh))) $$(notdir $$(wildcard $(leaf_int_src)/*.v)) | $$(abspath %)
 	@ echo $*
-	- cd $* && /usr/bin/cmake -E env PYTHON3=$(PYTHON) UTILS_PATH=$(symb_dir)/utils TECHMAP_PATH=$(symb_dir)/xc/xc7/techmap symbiflow-arch-defs_SOURCE_DIR=$(symb_dir) symbiflow-arch-defs_BINARY_DIR=$(doblink_dir)/build/third_party/symbiflow-arch-defs OUT_JSON=top_synth.json OUT_SDC=out.sdc OUT_SYNTH_V=top_synth.vout OUT_FASM_EXTRA=top_fasm_extra.fasm PART_JSON=$(shell $(symb_dir)/env/conda/envs/symbiflow_arch_def_base/bin/prjxray-config)/$(PART_ARCH)/$(PART)/part.json INPUT_XDC_FILE={{ input_xdc_file }} USE_ROI={{ use_roi }} PCF_FILE={{ top_pcf }} PINMAP_FILE={{ pinmap_csv }} /usr/bin/time --output=$(@F).time $(YOSYS) -p "tcl $(YOSYS_SYNTH_SCRIPT)" -l top_synth.json.log *.v || (echo "$(@F) failed $$?"; exit 1)
+	- cd $* && /usr/bin/cmake -E env PYTHON3=$(PYTHON) UTILS_PATH=$(symb_dir)/utils TECHMAP_PATH=$(symb_dir)/xc/xc7/techmap symbiflow-arch-defs_SOURCE_DIR=$(symb_dir) symbiflow-arch-defs_BINARY_DIR=$(doblink_dir)/build/third_party/symbiflow-arch-defs OUT_JSON=top_synth.json OUT_SDC=out.sdc OUT_SYNTH_V=top_synth.vout OUT_FASM_EXTRA=top_fasm_extra.fasm PART_JSON=$(shell prjxray-config)/$(PART_ARCH)/$(PART)/part.json INPUT_XDC_FILE={{ input_xdc_file }} USE_ROI={{ use_roi }} PCF_FILE={{ top_pcf }} PINMAP_FILE={{ pinmap_csv }} /usr/bin/time --output=$(@F).time $(YOSYS) -p "tcl $(YOSYS_SYNTH_SCRIPT)" -l top_synth.json.log *.v || (echo "$(@F) failed $$?"; exit 1)
 	- cd $* && /usr/bin/cmake -E touch top_fasm_extra.fasm
 	- cd $* && /usr/bin/cmake -E touch_nocreate top_fasm_extra.fasm
 	- cd $* && mv top_synth.vout.premap.v top_synth.vout.premap.vout
