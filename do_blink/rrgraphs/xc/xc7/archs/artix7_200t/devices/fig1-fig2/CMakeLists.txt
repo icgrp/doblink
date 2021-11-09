@@ -1,0 +1,5 @@
+add_subdirectory(xc7a200t-fig1)
+add_subdirectory(xc7a200t-fig2-1600)
+add_subdirectory(xc7a200t-fig2-3200)
+add_subdirectory(xc7a200t-fig2-6400)
+add_subdirectory(xc7a200t-fig2-12800)

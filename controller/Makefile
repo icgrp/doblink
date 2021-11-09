@@ -2,16 +2,16 @@
 
 CPU=vexriscv
 BUS=axi-lite
-# TOOLCHAIN=vivado
+#TOOLCHAIN=vivado
 # TOOLCHAIN=vivado --synth-mode yosys
 TOOLCHAIN=symbiflow
-BENCHMARK=rendering
+BENCHMARK=spam_filter
 
 ifdef DEBUG
 	DEBUG_ARGS=--with-ethernet --csr-csv csr.csv
 endif
 
-LITEX_ARGS=--bench $(BENCHMARK) --cpu-type $(CPU) --output-dir ./build --bus-standard $(BUS) --toolchain $(TOOLCHAIN) $(DEBUG_ARGS)
+LITEX_ARGS=--bench $(BENCHMARK) --cpu-type $(CPU) --output-dir ./build --bus-standard $(BUS) --toolchain $(TOOLCHAIN) $(DEBUG_ARGS) --uart-baudrate 921600
 
 .PHONY: load clean firmware gateware prog
 

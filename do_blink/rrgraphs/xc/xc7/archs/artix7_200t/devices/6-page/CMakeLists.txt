@@ -1,0 +1,7 @@
+add_subdirectory(xc7a200t-doblink-6-pblock-2)
+add_subdirectory(xc7a200t-doblink-6-pblock-6)
+add_subdirectory(xc7a200t-doblink-6-pblock-9)
+add_subdirectory(xc7a200t-doblink-6-pblock-10)
+add_subdirectory(xc7a200t-doblink-6-pblock-11)
+add_subdirectory(xc7a200t-doblink-6-pblock-13)
+add_subdirectory(xc7a200t-doblink-6-overlay)
