@@ -210,6 +210,7 @@ class SymbiflowMake(Edatool):
         verilog_src_dir = self.tool_options.get("verilog_src_dir", None)
         leaf_int_src_dir = self.tool_options.get("leaf_int_src_dir", None)
         use_roi = self.tool_options.get("use_roi", None)
+        out_sdc = self.tool_options.get("out_sdc", None)
         figure = self.tool_options.get("figure", None)
         num_luts = self.tool_options.get("num_luts", None)
         arch = self.tool_options.get("arch", None)
@@ -231,6 +232,7 @@ class SymbiflowMake(Edatool):
             "verilog_src_dir": verilog_src_dir,
             "leaf_int_src_dir": leaf_int_src_dir,
             "use_roi": use_roi,
+            "out_sdc": out_sdc,
             "figure": figure,
             "num_luts": num_luts,
             "arch": arch,

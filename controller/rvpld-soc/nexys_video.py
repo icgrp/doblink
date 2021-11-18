@@ -239,14 +239,15 @@ class BaseSoC(SoCCore):
             digit_recognition.connect_output(s2mm_axis)
             # digit_recognition.connect_axil(axi_bft_bus_bft)
         elif benchmark == "array_partition":
-            from array_partition.array_partition import ArrayMono
+            from array_partition.array_partition_bft import ArrayPartitionBFT
 
             # DigitRecognition10Page ---------------------------------------------------------------------------
-            self.submodules.array_partition = array_partition = ArrayMono(
-                clk, rst, platform, clock_domain="sys"
+            self.submodules.array_partition = array_partition = ArrayPartitionBFT(
+                clk_bft, rst_bft, platform, clock_domain="bft"
             )
-            array_partition.connect_input(mm2s_axis)
-            array_partition.connect_output(s2mm_axis)
+            array_partition.connect_input(mm2s_axis_bft)
+            array_partition.connect_output(s2mm_axis_bft)
+            array_partition.connect_axil(axi_bft_bus_bft)
         elif benchmark == "digit_recognition_5":
             from digit_recognition.digit_recognition_5_page import \
                 DigitRecognition5Page

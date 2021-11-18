@@ -42,20 +42,22 @@ defaults:
     - "dummy_page_10"
     - "dummy_page_11"
     - "dummy_page_12"
+  - array_partition@fig.array_partition:
+    - "matmul"
   - overlay@fig.overlay:
     - "top"
 
 vpr_options:
-  bb_factor: 20
+  bb_factor: 10
   acc_fac: 0.7
   astar_fac: 1.8
   initial_pres_fac: 2.828
   pres_fac_mult: 1.2
-  max_criticality: 0.999
-  target_ext_pin_util:
-    input: 1.0
-    output: 1.0
-  place_algorithm: criticality_timing
+  # max_criticality: 0.999
+  # target_ext_pin_util:
+  #   input: 1.0
+  #   output: 1.0
+  # place_algorithm: criticality_timing
 
 load_vivado: "module load xilinx/2020.2"
 num_trials: 50

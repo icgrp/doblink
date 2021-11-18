@@ -57,6 +57,7 @@ def build_do_blink_designs(cfg):
                 "verilog_src_dir": f"{verilog_out_dir}src",
                 "leaf_int_src_dir": f"{leaf_int_out_dir}leaf_interface",
                 "use_roi": design_cfg.use_roi,
+                "out_sdc": "top.sdc" if design_cfg.use_roi == "TRUE" else "out.sdc",
                 "figure": figure,
                 "num_luts": num_luts,
                 "arch": design_cfg.arch,
@@ -68,10 +69,7 @@ def build_do_blink_designs(cfg):
                         --acc_fac {cfg.do_blink.vpr_options.acc_fac} \
                         --astar_fac {cfg.do_blink.vpr_options.astar_fac} \
                         --initial_pres_fac {cfg.do_blink.vpr_options.initial_pres_fac} \
-                        --pres_fac_mult {cfg.do_blink.vpr_options.pres_fac_mult} \
-                        --place_algorithm {cfg.do_blink.vpr_options.place_algorithm} \
-                        --max_criticality {cfg.do_blink.vpr_options.max_criticality} \
-                        --target_ext_pin_util {cfg.do_blink.vpr_options.target_ext_pin_util.input},{cfg.do_blink.vpr_options.target_ext_pin_util.output}",
+                        --pres_fac_mult {cfg.do_blink.vpr_options.pres_fac_mult}",
             }
             build_dir = f"/{work_root}/{os.getcwd()}/{figure}/{num_luts}/build"
             Path(build_dir).mkdir(parents=True, exist_ok=True)

@@ -15,7 +15,7 @@
 
 #include "dma_driver.h"
 // #include "axi_lite_driver.h"
-//#include "config_digit_reg_small.h"
+#include "config_array_partition.h"
 
 static char *readstr(void)
 {
@@ -150,10 +150,10 @@ int main(void)
 
 	puts("\nrvpld - CPU testing software built "__DATE__" "__TIME__"\n");
   start_start_write(0);
-//   printf("Begin Configuring BFT!\r\n");
-//   uart_sync();
-//   init_regs();
-//   printf("Configuring BFT Done\r\n");
+  printf("Begin Configuring BFT!\r\n");
+  uart_sync();
+  init_regs();
+  printf("Configuring BFT Done\r\n");
 
 
   while(1) {
