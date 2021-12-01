@@ -25,12 +25,10 @@ add_xc_device_define_type(
     CLBLM_L
     CLBLM_R
     BRAM_L
-    BRAM_R
   PB_TYPES
     SLICEL
     SLICEM
     BRAM_L
-    BRAM_R
 )
 
 set_target_properties(

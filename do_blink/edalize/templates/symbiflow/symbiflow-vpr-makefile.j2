@@ -6,7 +6,7 @@ base=$(abspath .)
 symb_dir?=$(doblink_dir)/third_party/symbiflow-arch-defs
 YOSYS = $(shell which yosys)
 VPR?=$(doblink_dir)/third_party/vtr-verilog-to-routing/vpr/vpr
-GENFASM = $(shell which genfasm)
+GENFASM = $(doblink_dir)/third_party/vtr-verilog-to-routing/build/utils/fasm/genfasm
 XCFASM = $(shell which xcfasm)
 PYTHON = $(shell which python)
 

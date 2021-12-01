@@ -3,11 +3,17 @@
         {
         "name": "pr11",
         "pins_per_tile": 10,
-        "GRID_X_MAX": 201,
-        "GRID_X_MIN": 141,
-        "GRID_Y_MAX": 207,
-        "GRID_Y_MIN": 157
-        },
+        "GRID_X_MAX": 254,
+        "GRID_X_MIN": 190,
+        "GRID_Y_MAX": 259,
+        "GRID_Y_MIN": 209,
+        "synth_tiles_range": {
+            "GRID_X_MIN": 227,
+            "GRID_Y_MIN": 209,
+            "GRID_X_MAX": 254,
+            "GRID_Y_MAX": 259
+        }
+    },
     "ports": [
         {
             "name": "clk",

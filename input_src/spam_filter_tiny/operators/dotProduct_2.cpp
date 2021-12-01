@@ -14,6 +14,8 @@ void dotProduct_2(hls::stream<ap_uint<32> > & Input_1,
   static FeatureType param[NUM_FEATURES / DOT_NUM];
   FeatureType grad[NUM_FEATURES / DOT_NUM];
   static DataType feature[NUM_FEATURES / DOT_NUM];
+  #pragma HLS bind_storage variable=feature type=RAM_1P
+#pragma HLS bind_storage variable=param type=RAM_1P
   FeatureType scale;
   FeatureType prob;
   //#pragma HLS array_partition variable=param cyclic factor=unroll_factor

@@ -11,7 +11,7 @@ HOST_OBJ=$(addsuffix .o, $(notdir $(basename $(wildcard host/*.cpp))))
 
 
 
-INCLUDE=-I /opt/Xilinx/Vivado/2018.2/include 
+INCLUDE=-I /media/lilbirb/research/Xilinx/Vivado/2021.1/include 
 OPT_LEVEL=-O3
 CFLAGS=$(INCLUDE) $(OPT_LEVEL)
 CXX=g++

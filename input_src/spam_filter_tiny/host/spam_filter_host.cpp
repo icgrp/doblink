@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
 
 
   // parse command line arguments
-  std::string path_to_data("/home/ylxiao/rosetta/spam-filter/data");
+  std::string path_to_data("/media/lilbirb/scratch/code/doblink/input_src/spam_filter_tiny/host");
   // sdaccel version and sdsoc/sw version have different command line options
   #ifdef OCL
     std::string kernelFile("");

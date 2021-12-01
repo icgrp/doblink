@@ -11,7 +11,7 @@
   <spec name = "board" value = "au50" />
   <!--spec name = "part" value = "xczu9eg-ffvb1156-2-e" -->
   <!--spec name = "part" value = "xczu3eg-sbva484-1-e" -->
-  <spec name = "part" value = "xcu50-fsvh2104-2-e" />
+  <spec name = "part" value = "xc7a200tsbg484-1" />
   <!--spec name = "device" value = "xczu9_0" -->  
   <!--spec name = "device"             value = "xczu3_0" -->
   <spec name = "device" value = "xcu50_0" />  

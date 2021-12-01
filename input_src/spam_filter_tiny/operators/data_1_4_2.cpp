@@ -30,7 +30,7 @@ void data_1_4_2(
 		// first reads in the training instance
 		READ_TRAINING_DATA_1: for (int i = 0; i < NUM_FEATURES / D_VECTOR_SIZE / DOT_NUM; i ++ )
 		{
-#pragma HLS pipeline II=2
+#pragma HLS pipeline
 		  tmp_data= Input_1.read();
 		  Output_2.write(tmp_data);
 		  tmp_data= Input_1.read();
@@ -42,7 +42,7 @@ void data_1_4_2(
 	  Output_1.write(1025);
 	  STREAM_OUT_1: for (int i = 0; i < NUM_FEATURES / F_VECTOR_SIZE / DOT_NUM; i ++ )
 	  {
-	    #pragma HLS pipeline II=2
+	    #pragma HLS pipeline
 		  tmp_data= Input_3.read();
 		  Output_1.write(tmp_data);
 		  tmp_data= Input_3.read();
@@ -51,7 +51,7 @@ void data_1_4_2(
 
 	  STREAM_OUT_2: for (int i = 0; i < NUM_FEATURES / F_VECTOR_SIZE / DOT_NUM; i ++ )
 	  {
-	    #pragma HLS pipeline II=2
+	    #pragma HLS pipeline
 		  tmp_data= Input_2.read();
 		  Output_1.write(tmp_data);
 		  tmp_data= Input_2.read();

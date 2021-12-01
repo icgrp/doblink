@@ -1,9 +1,9 @@
 "dotProduct_2":
   arch: "artix7_200t"
   device_family: "xc7a200t"
-  device_name: "doblink-pblock-10"
+  device_name: "doblink-6-pblock-10"
   device_speed: "sbg484-1"
-  device: "xc7a200t-doblink-pblock-10-roi-virt"
+  device: "xc7a200t-doblink-6-pblock-10-roi-virt"
   board: "nexys_video"
   use_roi: "TRUE"
   timeout: 1600

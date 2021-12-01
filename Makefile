@@ -9,7 +9,7 @@
 #prj_name=digit_reg
 #prj_name=digit_reg_small
 #prj_name=spam_filter
-prj_name?=spam_filter_small
+prj_name?=spam_filter_tiny
 #prj_name=optical_flow
 #prj_name=optical_flow_final
 #prj_name=rendering
@@ -42,7 +42,7 @@ config_target=$(ws_mbft)/config.cpp
 
 
 #all: $(ws_overlay)/overlay.dcp  
-#all: $(operators_hls_targets) 
+all: $(operators_hls_targets) 
 #all: $(operators_syn_targets) 
 #all: $(operators_bit_targets) 
 #all: $(download_target)
@@ -52,7 +52,7 @@ config_target=$(ws_mbft)/config.cpp
 #all: $(config_target) 
 
 
-all: $(download_target)
+#all: $(download_target)
 
 
 download: $(download_target)

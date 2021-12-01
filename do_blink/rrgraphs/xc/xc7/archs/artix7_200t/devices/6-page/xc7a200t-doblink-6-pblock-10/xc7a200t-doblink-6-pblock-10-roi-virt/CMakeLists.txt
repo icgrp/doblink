@@ -20,17 +20,14 @@ add_xc_device_define_type(
   ROI_DIR ${doblink_BINARY_DIR}/do_blink/rrgraphs/xc/xc7/archs/artix7_200t/devices/6-page/xc7a200t-doblink-6-pblock-10/xc7a200t-doblink-6-pblock-10-roi-virt
   TILE_XML_DIR ${symbiflow-arch-defs_BINARY_DIR}/xc/xc7/archs/artix7_200t/tiles
   TILE_TYPES
-    CLBLL_L
     CLBLL_R
     CLBLM_L
     CLBLM_R
     BRAM_L
-    BRAM_R
   PB_TYPES
     SLICEL
     SLICEM
     BRAM_L
-    BRAM_R
 )
 
 set_target_properties(

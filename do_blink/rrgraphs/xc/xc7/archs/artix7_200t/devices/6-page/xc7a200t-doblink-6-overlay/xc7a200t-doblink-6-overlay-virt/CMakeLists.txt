@@ -8,7 +8,6 @@ add_xc_device_define_type(
     CLBLL_R
     CLBLM_L
     CLBLM_R
-    BRAM_R
     BRAM_L
     LIOPAD_M
     LIOPAD_S
@@ -36,7 +35,6 @@ add_xc_device_define_type(
     SLICEL
     SLICEM
     BRAM_L
-    BRAM_R
     IOPAD
     IOPAD_M
     IOPAD_S

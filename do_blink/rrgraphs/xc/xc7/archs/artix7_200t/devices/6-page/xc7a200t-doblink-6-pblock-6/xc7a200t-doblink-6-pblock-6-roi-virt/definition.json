@@ -3,10 +3,17 @@
         {
         "name": "pr6",
         "pins_per_tile": 10,
-        "GRID_X_MAX": 134,
-        "GRID_X_MIN": 77,
-        "GRID_Y_MAX": 207,
-        "GRID_Y_MIN": 157
+        "GRID_X_MAX": 85,
+        "GRID_X_MIN": 10,
+        "GRID_Y_MAX": 259,
+        "GRID_Y_MIN": 209,
+        "synth_tiles_range":
+            {
+                "GRID_X_MIN": 10,
+                "GRID_Y_MIN": 209,
+                "GRID_X_MAX": 43,
+                "GRID_Y_MAX": 259
+            }
         },
     "ports": [
         {

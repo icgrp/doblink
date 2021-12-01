@@ -1,9 +1,9 @@
 "top":
   arch: "artix7_200t"
   device_family: "xc7a200t"
-  device_name: "doblink-overlay"
+  device_name: "doblink-6-overlay"
   device_speed: "sbg484-1"
-  device: "xc7a200t-doblink-overlay-virt"
+  device: "xc7a200t-doblink-6-overlay-virt"
   board: "nexys_video"
   use_roi: "FALSE"
   timeout: 1600
