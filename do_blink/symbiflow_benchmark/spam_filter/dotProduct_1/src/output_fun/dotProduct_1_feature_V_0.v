@@ -5,11 +5,11 @@
 
 `timescale 1ns/1ps
 
-module dotProduct_1_param_V
+module dotProduct_1_feature_V_0
 #(parameter
-    DataWidth    = 32,
-    AddressWidth = 9,
-    AddressRange = 512
+    DataWidth    = 16,
+    AddressWidth = 8,
+    AddressRange = 256
 )(
     input  wire                    clk,
     input  wire                    reset,
@@ -26,11 +26,11 @@ wire [DataWidth-1:0]    q0_rom;
 wire                    q0_sel;
 reg  [1:0]              sel0_sr;
 //------------------------Instantiation------------------
-dotProduct_1_param_V_ram #(
+dotProduct_1_feature_V_0_ram #(
     .DataWidth(DataWidth),
     .AddressWidth(AddressWidth),
     .AddressRange(AddressRange))
-dotProduct_1_param_V_ram_u(
+dotProduct_1_feature_V_0_ram_u(
     .clk      ( clk ),
     .reset    ( reset ),
     .ce0      ( ce0 ),
@@ -42,7 +42,7 @@ dotProduct_1_param_V_ram_u(
 //------------------------Body---------------------------
 assign q0     = q0_sel? q0_ram : q0_rom;
 assign q0_sel = sel0_sr[1];
-assign q0_rom = 32'b00000000000000000000000000000000;
+assign q0_rom = 16'b0000000000000000;
 
 always @(posedge clk) begin
     if (reset)

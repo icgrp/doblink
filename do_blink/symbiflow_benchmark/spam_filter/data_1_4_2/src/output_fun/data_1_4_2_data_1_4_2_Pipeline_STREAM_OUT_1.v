@@ -87,7 +87,11 @@ wire    ap_ce_reg;
 initial begin
 #0 ap_CS_fsm = 2'd1;
 #0 ap_enable_reg_pp0_iter1 = 1'b0;
+#0 icmp_ln43_reg_91 = 1'd0;
+#0 reg_55 = 32'd0;
+#0 i_4_reg_95 = 9'd0;
 #0 ap_enable_reg_pp0_iter0_reg = 1'b0;
+#0 i_fu_38 = 9'd0;
 #0 ap_done_reg = 1'b0;
 end
 
@@ -151,23 +155,44 @@ always @ (posedge ap_clk) begin
 end
 
 always @ (posedge ap_clk) begin
-    if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0) & (ap_loop_init == 1'b1))) begin
+    if (ap_rst == 1'b1) begin
+        i_4_reg_95 <= 9'd0;
+    end else begin
+        if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
+            i_4_reg_95 <= i_4_fu_74_p2;
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst == 1'b1) begin
         i_fu_38 <= 9'd0;
-    end else if (((icmp_ln43_reg_91 == 1'd0) & (1'b0 == ap_block_pp0_stage1_11001) & (ap_enable_reg_pp0_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage1))) begin
-        i_fu_38 <= i_4_reg_95;
+    end else begin
+        if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0) & (ap_loop_init == 1'b1))) begin
+            i_fu_38 <= 9'd0;
+        end else if (((icmp_ln43_reg_91 == 1'd0) & (1'b0 == ap_block_pp0_stage1_11001) & (ap_enable_reg_pp0_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage1))) begin
+            i_fu_38 <= i_4_reg_95;
+        end
     end
 end
 
 always @ (posedge ap_clk) begin
-    if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
-        i_4_reg_95 <= i_4_fu_74_p2;
-        icmp_ln43_reg_91 <= icmp_ln43_fu_68_p2;
+    if (ap_rst == 1'b1) begin
+        icmp_ln43_reg_91 <= 1'd0;
+    end else begin
+        if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
+            icmp_ln43_reg_91 <= icmp_ln43_fu_68_p2;
+        end
     end
 end
 
 always @ (posedge ap_clk) begin
-    if ((((icmp_ln43_reg_91 == 1'd0) & (1'b0 == ap_block_pp0_stage1_11001) & (ap_enable_reg_pp0_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage1)) | ((1'b0 == ap_block_pp0_stage0_11001) & (icmp_ln43_fu_68_p2 == 1'd0) & (ap_enable_reg_pp0_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0)))) begin
-        reg_55 <= Input_3_V_TDATA;
+    if (ap_rst == 1'b1) begin
+        reg_55 <= 32'd0;
+    end else begin
+        if ((((icmp_ln43_reg_91 == 1'd0) & (1'b0 == ap_block_pp0_stage1_11001) & (ap_enable_reg_pp0_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage1)) | ((1'b0 == ap_block_pp0_stage0_11001) & (icmp_ln43_fu_68_p2 == 1'd0) & (ap_enable_reg_pp0_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0)))) begin
+            reg_55 <= Input_3_V_TDATA;
+        end
     end
 end
 

@@ -3,11 +3,11 @@
 // Copyright 1986-2021 Xilinx, Inc. All Rights Reserved.
 // ==============================================================
 `timescale 1 ns / 1 ps
-module dotProduct_1_grad_V (address0, ce0, d0, we0, q0,  reset,clk);
+module data_in_redir_label_local_V_0_ram (address0, ce0, d0, we0, q0,  reset,clk);
 
-parameter DataWidth = 32;
-parameter AddressWidth = 9;
-parameter AddressRange = 512;
+parameter DataWidth = 8;
+parameter AddressWidth = 10;
+parameter AddressRange = 564;
 
 input[AddressWidth-1:0] address0;
 input ce0;

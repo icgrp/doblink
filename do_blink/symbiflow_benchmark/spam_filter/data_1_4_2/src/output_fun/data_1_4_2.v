@@ -179,9 +179,13 @@ wire    ap_ce_reg;
 initial begin
 #0 ap_CS_fsm = 14'd1;
 #0 epoch = 32'd0;
+#0 training_id_2_reg_182 = 13'd0;
+#0 add_ln40_reg_192 = 32'd0;
+#0 storemerge_reg_86 = 32'd0;
 #0 grp_data_1_4_2_Pipeline_STREAM_OUT_1_fu_97_ap_start_reg = 1'b0;
 #0 grp_data_1_4_2_Pipeline_STREAM_OUT_2_fu_105_ap_start_reg = 1'b0;
 #0 grp_data_1_4_2_Pipeline_READ_TRAINING_DATA_1_fu_113_ap_start_reg = 1'b0;
+#0 training_id_fu_60 = 13'd0;
 end
 
 data_1_4_2_data_1_4_2_Pipeline_STREAM_OUT_1 grp_data_1_4_2_Pipeline_STREAM_OUT_1_fu_97(
@@ -301,9 +305,29 @@ regslice_both_Output_2_V_U(
 
 always @ (posedge ap_clk) begin
     if (ap_rst_n_inv == 1'b1) begin
+        add_ln40_reg_192 <= 32'd0;
+    end else begin
+        if (((icmp_ln26_fu_139_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state9))) begin
+            add_ln40_reg_192 <= add_ln40_fu_151_p2;
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
         ap_CS_fsm <= ap_ST_fsm_state1;
     end else begin
         ap_CS_fsm <= ap_NS_fsm;
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
+        epoch <= 32'd0;
+    end else begin
+        if ((~((regslice_both_Output_2_V_U_apdone_blk == 1'b1) | (regslice_both_Output_1_V_U_apdone_blk == 1'b1)) & (1'b1 == ap_CS_fsm_state14))) begin
+            epoch <= storemerge_reg_86;
+        end
     end
 end
 
@@ -344,36 +368,36 @@ always @ (posedge ap_clk) begin
 end
 
 always @ (posedge ap_clk) begin
-    if (((1'b1 == ap_CS_fsm_state7) & (grp_data_1_4_2_Pipeline_STREAM_OUT_2_fu_105_ap_done == 1'b1))) begin
+    if (ap_rst_n_inv == 1'b1) begin
         storemerge_reg_86 <= 32'd0;
-    end else if ((1'b1 == ap_CS_fsm_state13)) begin
-        storemerge_reg_86 <= add_ln40_reg_192;
+    end else begin
+        if (((1'b1 == ap_CS_fsm_state7) & (grp_data_1_4_2_Pipeline_STREAM_OUT_2_fu_105_ap_done == 1'b1))) begin
+            storemerge_reg_86 <= 32'd0;
+        end else if ((1'b1 == ap_CS_fsm_state13)) begin
+            storemerge_reg_86 <= add_ln40_reg_192;
+        end
     end
 end
 
 always @ (posedge ap_clk) begin
-    if ((1'b1 == ap_CS_fsm_state8)) begin
+    if (ap_rst_n_inv == 1'b1) begin
+        training_id_2_reg_182 <= 13'd0;
+    end else begin
+        if ((1'b1 == ap_CS_fsm_state9)) begin
+            training_id_2_reg_182 <= training_id_2_fu_145_p2;
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
         training_id_fu_60 <= 13'd0;
-    end else if (((1'b1 == ap_CS_fsm_state10) & (1'b1 == Output_2_V_TREADY_int_regslice))) begin
-        training_id_fu_60 <= training_id_2_reg_182;
-    end
-end
-
-always @ (posedge ap_clk) begin
-    if (((icmp_ln26_fu_139_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state9))) begin
-        add_ln40_reg_192 <= add_ln40_fu_151_p2;
-    end
-end
-
-always @ (posedge ap_clk) begin
-    if ((~((regslice_both_Output_2_V_U_apdone_blk == 1'b1) | (regslice_both_Output_1_V_U_apdone_blk == 1'b1)) & (1'b1 == ap_CS_fsm_state14))) begin
-        epoch <= storemerge_reg_86;
-    end
-end
-
-always @ (posedge ap_clk) begin
-    if ((1'b1 == ap_CS_fsm_state9)) begin
-        training_id_2_reg_182 <= training_id_2_fu_145_p2;
+    end else begin
+        if ((1'b1 == ap_CS_fsm_state8)) begin
+            training_id_fu_60 <= 13'd0;
+        end else if (((1'b1 == ap_CS_fsm_state10) & (1'b1 == Output_2_V_TREADY_int_regslice))) begin
+            training_id_fu_60 <= training_id_2_reg_182;
+        end
     end
 end
 

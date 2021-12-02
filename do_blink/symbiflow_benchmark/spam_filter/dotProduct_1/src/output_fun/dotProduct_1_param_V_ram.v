@@ -3,7 +3,7 @@
 // Copyright 1986-2021 Xilinx, Inc. All Rights Reserved.
 // ==============================================================
 `timescale 1 ns / 1 ps
-module dotProduct_1_grad_V (address0, ce0, d0, we0, q0,  reset,clk);
+module dotProduct_1_param_V_ram (address0, ce0, d0, we0, q0,  reset,clk);
 
 parameter DataWidth = 32;
 parameter AddressWidth = 9;
