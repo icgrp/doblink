@@ -1,25 +1,24 @@
 // ==============================================================
-// Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2021.1 (64-bit)
-// Copyright 1986-2021 Xilinx, Inc. All Rights Reserved.
+// Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2020.2 (64-bit)
+// Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // ==============================================================
 `timescale 1 ns / 1 ps
-module data_in_redir_label_local_V_0_ram (address0, ce0, d0, we0, q0,  reset,clk);
+module data_in_redir_label_local_V_0_ram (addr0, ce0, d0, we0, q0,  clk);
 
-parameter DataWidth = 8;
-parameter AddressWidth = 10;
-parameter AddressRange = 564;
+parameter DWIDTH = 8;
+parameter AWIDTH = 10;
+parameter MEM_SIZE = 564;
 
-input[AddressWidth-1:0] address0;
+input[AWIDTH-1:0] addr0;
 input ce0;
-input[DataWidth-1:0] d0;
+input[DWIDTH-1:0] d0;
 input we0;
-output wire[DataWidth-1:0] q0;
-input reset;
+output wire[DWIDTH-1:0] q0;
 input clk;
 
-reg [DataWidth-1:0] ram[0:AddressRange-1];
-reg [DataWidth-1:0] q0_t0;
-reg [DataWidth-1:0] q0_t1;
+reg [DWIDTH-1:0] ram[0:MEM_SIZE-1];
+reg [DWIDTH-1:0] q0_t0;
+reg [DWIDTH-1:0] q0_t1;
 
 
 assign q0 = q0_t1;
@@ -37,8 +36,8 @@ always @(posedge clk)
 begin 
     if (ce0) begin
         if (we0) 
-            ram[address0] <= d0; 
-        q0_t0 <= ram[address0];
+            ram[addr0] <= d0; 
+        q0_t0 <= ram[addr0];
     end
 end
 

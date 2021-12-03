@@ -1,6 +1,6 @@
 // ==============================================================
-// Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2021.1 (64-bit)
-// Copyright 1986-2021 Xilinx, Inc. All Rights Reserved.
+// Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2020.2 (64-bit)
+// Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // ==============================================================
 
 `timescale 1ns/1ps
@@ -26,18 +26,13 @@ wire [DataWidth-1:0]    q0_rom;
 wire                    q0_sel;
 reg  [1:0]              sel0_sr;
 //------------------------Instantiation------------------
-data_in_redir_label_local_V_0_ram #(
-    .DataWidth(DataWidth),
-    .AddressWidth(AddressWidth),
-    .AddressRange(AddressRange))
-data_in_redir_label_local_V_0_ram_u(
-    .clk      ( clk ),
-    .reset    ( reset ),
-    .ce0      ( ce0 ),
-    .address0 ( address0 ),
-    .we0      ( we0 ),
-    .d0       ( d0 ),
-    .q0       ( q0_ram )
+data_in_redir_label_local_V_0_ram data_in_redir_label_local_V_0_ram_u (
+    .clk   ( clk ),
+    .ce0   ( ce0 ),
+    .addr0 ( address0 ),
+    .we0   ( we0 ),
+    .d0    ( d0 ),
+    .q0    ( q0_ram )
 );
 //------------------------Body---------------------------
 assign q0     = q0_sel? q0_ram : q0_rom;
