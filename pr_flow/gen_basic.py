@@ -739,7 +739,7 @@ class _tcl:
             "create_clock -period " + self.prflow_params["clk_user"] + " -name default"
         )
         lines_list.append('#source "./Rendering_hls/colorFB/directives.tcl"')
-        lines_list.append("#csim_design")
+        lines_list.append("config_rtl -reset all")
         lines_list.append("csynth_design")
         lines_list.append("#cosim_design -trace_level all -tool xsim")
         # if(fun_name == self.prflow_params['mono_function']):
