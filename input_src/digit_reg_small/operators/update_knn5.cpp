@@ -124,7 +124,6 @@ void update_knn5(hls::stream<ap_uint<32> > & Input_1, hls::stream<ap_uint<32> > 
 #pragma HLS INTERFACE axis register port=Output_1
 
 static WholeDigitType training_set [NUM_TRAINING / PAR_FACTOR_NEW];
-#pragma HLS array_partition variable=training_set block factor=2 dim=0
 
 static WholeDigitType test_instance;
 
