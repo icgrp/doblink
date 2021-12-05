@@ -15,8 +15,8 @@ void coloringFB_top_m(
 #pragma HLS INTERFACE axis register port=Output_1
   #pragma HLS INLINE off
   int i,j;
-  static bit8 frame_buffer[MAX_X][MAX_Y/2];
-#pragma HLS bind_storage variable=frame_buffer type=RAM_1P
+  bit8 frame_buffer[MAX_X][MAX_Y/2];
+#pragma HLS bind_storage variable=frame_buffer type=RAM_2P
   Pixel pixels;
   static bit16 counter=0;
   bit16 size_pixels;
