@@ -11,9 +11,9 @@ void dotProduct_1(hls::stream<ap_uint<32> > & Input_1,
 #pragma HLS INTERFACE axis register  port=Output_1
 #pragma HLS INTERFACE axis register  port=Output_2
   const int unroll_factor = PAR_FACTOR_DEC;
-  FeatureType param[NUM_FEATURES / DOT_NUM];
+  static FeatureType param[NUM_FEATURES / DOT_NUM];
   FeatureType grad[NUM_FEATURES / DOT_NUM];
-  DataType feature[NUM_FEATURES / DOT_NUM];
+  static DataType feature[NUM_FEATURES / DOT_NUM];
 #pragma HLS bind_storage variable=feature type=RAM_1P
 #pragma HLS bind_storage variable=param type=RAM_1P
   FeatureType scale;
@@ -102,7 +102,6 @@ void dotProduct_1(hls::stream<ap_uint<32> > & Input_1,
 			Output_2.write(tmp_data2);
 			//printf("0x%08x,\n", (unsigned int) tmp_theta.range(63,32));
 		  }
-		  epoch = 0;
 	  }
 	  odd_even = 0;
 	  return;
