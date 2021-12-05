@@ -36,6 +36,7 @@ void zculling_top (
 
   // initilize the z-buffer in rendering first triangle for an image
   static bit8 z_buffer[MAX_X/2][MAX_Y];
+#pragma HLS bind_storage variable=z_buffer type=RAM_1P
   if (counter == 0)
   {
     for ( bit16 i = 0; i < MAX_X/2; i++)

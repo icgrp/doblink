@@ -16,6 +16,7 @@ void coloringFB_top_m(
   #pragma HLS INLINE off
   int i,j;
   static bit8 frame_buffer[MAX_X][MAX_Y/2];
+#pragma HLS bind_storage variable=frame_buffer type=RAM_1P
   Pixel pixels;
   static bit16 counter=0;
   bit16 size_pixels;
