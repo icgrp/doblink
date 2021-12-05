@@ -34,6 +34,7 @@ static void rasterization2_odd (
 	bit16 max_index[1];
 	bit32 out_tmp;
 	static CandidatePixel fragment[500];
+	#pragma HLS reset variable=fragment off
 	static int in_cnt=0;
 	static int out1_cnt=0;
 	static int out2_cnt=0;
@@ -175,6 +176,7 @@ static void rasterization2_even (
 	bit16 max_index[1];
 	bit32 out_tmp;
 	static CandidatePixel fragment[500];
+	#pragma HLS reset variable=fragment off
 	static int in2_cnt = 0;
 	static int out3_cnt = 0;
 	static int out4_cnt = 0;
