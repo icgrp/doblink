@@ -33,7 +33,7 @@ static void rasterization2_odd (
 	bit8 max_min[5];
 	bit16 max_index[1];
 	bit32 out_tmp;
-	CandidatePixel fragment[500];
+	static CandidatePixel fragment[500];
 	static int in_cnt=0;
 	static int out1_cnt=0;
 	static int out2_cnt=0;
@@ -174,7 +174,7 @@ static void rasterization2_even (
 	bit8 max_min[5];
 	bit16 max_index[1];
 	bit32 out_tmp;
-	CandidatePixel fragment[500];
+	static CandidatePixel fragment[500];
 	static int in2_cnt = 0;
 	static int out3_cnt = 0;
 	static int out4_cnt = 0;
