@@ -278,7 +278,7 @@ void data_redir_m (
 #pragma HLS INTERFACE axis register port=Input_1
 #pragma HLS INTERFACE axis register port=Output_1
 #pragma HLS INTERFACE axis register port=Output_2
-
+#pragma HLS DATAFLOW
   bit32 input_lo;
   bit32 input_mi;
   bit32 input_hi;
