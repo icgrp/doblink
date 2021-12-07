@@ -12,6 +12,7 @@ void data_in_redir( hls::stream<ap_uint<32> > & Input_1,
   // intermediate variables
   // local buffer of labels
   static LabelType   label_local[4512];
+  #pragma HLS bind_storage variable=label_local type=RAM_S2P
   #pragma HLS reset variable=label_local off
   #pragma HLS array_partition variable=label_local cyclic factor=8
   // array for storing one training instance
