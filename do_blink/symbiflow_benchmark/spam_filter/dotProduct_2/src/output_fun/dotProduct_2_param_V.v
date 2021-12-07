@@ -2,58 +2,99 @@
 // Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2020.2 (64-bit)
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // ==============================================================
+`timescale 1 ns / 1 ps
+module dotProduct_2_param_V_ram (addr0, ce0, q0, addr1, ce1, d1, we1,  clk);
 
-`timescale 1ns/1ps
+parameter DWIDTH = 32;
+parameter AWIDTH = 9;
+parameter MEM_SIZE = 512;
 
-module dotProduct_2_param_V
-#(parameter
-    DataWidth    = 32,
-    AddressWidth = 9,
-    AddressRange = 512
-)(
-    input  wire                    clk,
-    input  wire                    reset,
-    input  wire [AddressWidth-1:0] address0,
-    input  wire                    ce0,
-    input  wire                    we0,
-    input  wire [DataWidth-1:0]    d0,
-    output wire [DataWidth-1:0]    q0
-);
-//------------------------Local signal-------------------
-reg  [AddressRange-1:0] written = {AddressRange{1'b0}};
-wire [DataWidth-1:0]    q0_ram;
-wire [DataWidth-1:0]    q0_rom;
-wire                    q0_sel;
-reg  [1:0]              sel0_sr;
-//------------------------Instantiation------------------
-dotProduct_2_param_V_ram dotProduct_2_param_V_ram_u (
-    .clk   ( clk ),
-    .ce0   ( ce0 ),
-    .addr0 ( address0 ),
-    .we0   ( we0 ),
-    .d0    ( d0 ),
-    .q0    ( q0_ram )
-);
-//------------------------Body---------------------------
-assign q0     = q0_sel? q0_ram : q0_rom;
-assign q0_sel = sel0_sr[1];
-assign q0_rom = 32'b00000000000000000000000000000000;
+input[AWIDTH-1:0] addr0;
+input ce0;
+output wire[DWIDTH-1:0] q0;
+input[AWIDTH-1:0] addr1;
+input ce1;
+input[DWIDTH-1:0] d1;
+input we1;
+input clk;
 
-always @(posedge clk) begin
-    if (reset)
-        written <= 1'b0;
-    else begin
-        if (ce0 & we0) begin
-            written[address0] <= 1'b1;
-        end
+(* ram_style = "block" *)reg [DWIDTH-1:0] ram[0:MEM_SIZE-1];
+reg [DWIDTH-1:0] q0_t0;
+reg [DWIDTH-1:0] q0_t1;
+
+genvar i;
+generate
+    for (i=0; i<MEM_SIZE; i=i+1) begin
+        initial ram[i] = DWIDTH'd0;
+    end
+endgenerate
+
+assign q0 = q0_t1;
+
+always @(posedge clk)  
+begin
+    if (ce0) 
+    begin
+        q0_t1 <= q0_t0;
     end
 end
 
-always @(posedge clk) begin
+
+always @(posedge clk)  
+begin 
     if (ce0) begin
-        sel0_sr[0] <= written[address0];
+        q0_t0 <= ram[addr0];
     end
-    sel0_sr[1:1] <= sel0_sr[0:0];
 end
+
+
+always @(posedge clk)  
+begin 
+    if (ce1) begin
+        if (we1) 
+            ram[addr1] <= d1; 
+    end
+end
+
 
 endmodule
+
+`timescale 1 ns / 1 ps
+module dotProduct_2_param_V(
+    reset,
+    clk,
+    address0,
+    ce0,
+    q0,
+    address1,
+    ce1,
+    we1,
+    d1);
+
+parameter DataWidth = 32'd32;
+parameter AddressRange = 32'd512;
+parameter AddressWidth = 32'd9;
+input reset;
+input clk;
+input[AddressWidth - 1:0] address0;
+input ce0;
+output[DataWidth - 1:0] q0;
+input[AddressWidth - 1:0] address1;
+input ce1;
+input we1;
+input[DataWidth - 1:0] d1;
+
+
+
+dotProduct_2_param_V_ram dotProduct_2_param_V_ram_U(
+    .clk( clk ),
+    .addr0( address0 ),
+    .ce0( ce0 ),
+    .q0( q0 ),
+    .addr1( address1 ),
+    .ce1( ce1 ),
+    .we1( we1 ),
+    .d1( d1 ));
+
+endmodule
+
