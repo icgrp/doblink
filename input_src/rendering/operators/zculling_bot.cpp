@@ -39,7 +39,7 @@ void zculling_bot (
 
   // initilize the z-buffer in rendering first triangle for an image
   static bit8 z_buffer[MAX_X/2][MAX_Y];
-#pragma HLS bind_storage variable=z_buffer type=RAM_2P
+#pragma HLS bind_storage variable=z_buffer type=RAM_S2P
 #pragma HLS reset variable=z_buffer off
   if (counter == 0)
   {
