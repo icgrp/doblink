@@ -35,6 +35,8 @@ void rasterization2_odd (
 	bit16 max_index[1];
 	bit32 out_tmp;
 	static CandidatePixel fragment[500];
+#pragma HLS bind_storage variable=fragment type=RAM_S2P
+
 
 	flag = (bit2) Input_1.read();
 	triangle_2d_same.x0=Input_1.read();
@@ -114,6 +116,8 @@ void rasterization2_even (
 	bit16 max_index[1];
 	bit32 out_tmp;
 	static CandidatePixel fragment[500];
+#pragma HLS bind_storage variable=fragment type=RAM_S2P
+
 
 	flag = (bit2) Input_1.read();
 	triangle_2d_same.x0=Input_1.read();
