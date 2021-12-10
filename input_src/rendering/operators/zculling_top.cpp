@@ -11,7 +11,6 @@ void zculling_top (
 #pragma HLS INTERFACE axis register port=Input_1
 #pragma HLS INTERFACE axis register port=Input_2
 #pragma HLS INTERFACE axis register port=Output_1
-  #pragma HLS INLINE off
   CandidatePixel fragment;
   static bit16 counter=0;
   int i, j;
@@ -20,30 +19,18 @@ void zculling_top (
   bit32 in_tmp;
   bit32 out_tmp;
   static bit1 odd_even = 0;
-  if(odd_even == 0) {
-	  size = bit16(Input_1.read());
-#ifdef PROFILE
-		zculling_top_in_1++;
-#endif
-  } else {
-	  size = bit16(Input_2.read());
-#ifdef PROFILE
-		zculling_top_in_2++;
-#endif
-
-  }
+  if(odd_even == 0) size = Input_1.read();
+  else size = Input_2.read();
 
 
   // initilize the z-buffer in rendering first triangle for an image
   static bit8 z_buffer[MAX_X/2][MAX_Y];
-#pragma HLS bind_storage variable=z_buffer type=RAM_S2P
-#pragma HLS reset variable=z_buffer off
   if (counter == 0)
   {
-    for ( bit16 i = 0; i < MAX_X/2; i++)
+    ZCULLING_INIT_ROW: for ( bit16 i = 0; i < MAX_X/2; i++)
     {
       #pragma HLS PIPELINE II=1
-      for ( bit16 j = 0; j < MAX_Y; j++)
+      ZCULLING_INIT_COL: for ( bit16 j = 0; j < MAX_Y; j++)
       {
         z_buffer[i][j] = 255;
       }
@@ -58,22 +45,12 @@ void zculling_top (
   ZCULLING: for ( bit16 n = 0; n < size; n++ )
   {
 #pragma HLS PIPELINE II=1
-	if (odd_even == 0){
-		in_tmp = Input_1.read();
-#ifdef PROFILE
-		zculling_top_in_1++;
-#endif
-	}
-	else {
-		in_tmp = Input_2.read();
-#ifdef PROFILE
-		zculling_top_in_2++;
-#endif
-	}
-	fragment.x = bit8(in_tmp(7, 0));
-	fragment.y = bit8(in_tmp(15, 8));
-	fragment.z = bit8(in_tmp(23, 16));
-	fragment.color = bit8(in_tmp(31, 24));
+	if (odd_even == 0) in_tmp = Input_1.read();
+	else in_tmp = Input_2.read();
+	fragment.x = in_tmp(7, 0);
+	fragment.y = in_tmp(15, 8);
+	fragment.z = in_tmp(23, 16);
+	fragment.color = in_tmp(31, 24);
     if( fragment.z < z_buffer[fragment.y-128][fragment.x] )
     {
 
@@ -85,10 +62,7 @@ void zculling_top (
     }
   }
 
-  Output_1.write(bit32(pixel_cntr));
-#ifdef PROFILE
-		zculling_top_out_1++;
-#endif
+  Output_1.write(pixel_cntr);
   for(j=0; j<pixel_cntr; j++){
 #pragma HLS PIPELINE II=1
 	  out_tmp(7,  0) = pixels[j].x;
@@ -96,9 +70,6 @@ void zculling_top (
       out_tmp(23, 16) = pixels[j].color;
 	  out_tmp(31, 24) = 0;
 	  Output_1.write(out_tmp);
-#ifdef PROFILE
-		zculling_top_out_1++;
-#endif
   }
 
 
