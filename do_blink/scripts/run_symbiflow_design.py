@@ -205,7 +205,7 @@ def build_do_blink_designs(cfg):
                     + bitgen_log_time
                 )
                 log.info(
-                    f"{design_cfg.device_family},{int(top_synth_time+top_eblif_time)},{int(pack_time_time)},{int(io_place_log_time+place_log_time)},{int(route_log_time)},{int(fasm_log_time+bitgen_log_time)},{int(total_time)}"
+                    f"{figure},{num_luts},{int(top_synth_time+top_eblif_time)},{int(pack_time_time)},{int(io_place_log_time+place_log_time)},{int(route_log_time)},{int(fasm_log_time+bitgen_log_time)},{int(total_time)}"
                 )
                 return total_time
             except RuntimeError as e:

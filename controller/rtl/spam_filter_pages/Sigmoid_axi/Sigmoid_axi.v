@@ -135,6 +135,14 @@ wire    ap_ce_reg;
 // power-on initialization
 initial begin
 #0 ap_CS_fsm = 8'd1;
+#0 exponent_V_reg_239 = 32'd0;
+#0 trunc_ln1_reg_245 = 11'd0;
+#0 tmp_reg_251 = 1'd0;
+#0 icmp_ln1494_reg_256 = 1'd0;
+#0 icmp_ln1495_reg_262 = 1'd0;
+#0 trunc_ln_cast_reg_267 = 11'd0;
+#0 index_V_reg_272 = 11'd0;
+#0 lut_i_load_reg_282 = 10'd0;
 end
 
 Sigmoid_axi_lut_i #(
@@ -214,35 +222,82 @@ always @ (posedge ap_clk) begin
 end
 
 always @ (posedge ap_clk) begin
-    if ((1'b1 == ap_CS_fsm_state1)) begin
-        exponent_V_reg_239 <= exponent_V_fu_113_p2;
-        tmp_reg_251 <= add_ln2122_fu_119_p2[32'd26];
-        trunc_ln1_reg_245 <= {{add_ln2122_fu_119_p2[21:11]}};
+    if (ap_rst_n_inv == 1'b1) begin
+        exponent_V_reg_239 <= 32'd0;
+    end else begin
+        if ((1'b1 == ap_CS_fsm_state1)) begin
+            exponent_V_reg_239 <= exponent_V_fu_113_p2;
+        end
     end
 end
 
 always @ (posedge ap_clk) begin
-    if ((1'b1 == ap_CS_fsm_state2)) begin
-        icmp_ln1494_reg_256 <= icmp_ln1494_fu_143_p2;
-        icmp_ln1495_reg_262 <= icmp_ln1495_fu_148_p2;
+    if (ap_rst_n_inv == 1'b1) begin
+        icmp_ln1494_reg_256 <= 1'd0;
+    end else begin
+        if ((1'b1 == ap_CS_fsm_state2)) begin
+            icmp_ln1494_reg_256 <= icmp_ln1494_fu_143_p2;
+        end
     end
 end
 
 always @ (posedge ap_clk) begin
-    if (((tmp_reg_251 == 1'd1) & (1'b1 == ap_CS_fsm_state3))) begin
-        index_V_reg_272 <= index_V_fu_176_p2;
+    if (ap_rst_n_inv == 1'b1) begin
+        icmp_ln1495_reg_262 <= 1'd0;
+    end else begin
+        if ((1'b1 == ap_CS_fsm_state2)) begin
+            icmp_ln1495_reg_262 <= icmp_ln1495_fu_148_p2;
+        end
     end
 end
 
 always @ (posedge ap_clk) begin
-    if ((1'b1 == ap_CS_fsm_state6)) begin
-        lut_i_load_reg_282 <= lut_i_q0;
+    if (ap_rst_n_inv == 1'b1) begin
+        index_V_reg_272 <= 11'd0;
+    end else begin
+        if (((tmp_reg_251 == 1'd1) & (1'b1 == ap_CS_fsm_state3))) begin
+            index_V_reg_272 <= index_V_fu_176_p2;
+        end
     end
 end
 
 always @ (posedge ap_clk) begin
-    if (((tmp_reg_251 == 1'd1) & (1'b1 == ap_CS_fsm_state2))) begin
-        trunc_ln_cast_reg_267 <= {{in_V_fu_160_p2[21:11]}};
+    if (ap_rst_n_inv == 1'b1) begin
+        lut_i_load_reg_282 <= 10'd0;
+    end else begin
+        if ((1'b1 == ap_CS_fsm_state6)) begin
+            lut_i_load_reg_282 <= lut_i_q0;
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
+        tmp_reg_251 <= 1'd0;
+    end else begin
+        if ((1'b1 == ap_CS_fsm_state1)) begin
+            tmp_reg_251 <= add_ln2122_fu_119_p2[32'd26];
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
+        trunc_ln1_reg_245 <= 11'd0;
+    end else begin
+        if ((1'b1 == ap_CS_fsm_state1)) begin
+            trunc_ln1_reg_245 <= {{add_ln2122_fu_119_p2[21:11]}};
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
+        trunc_ln_cast_reg_267 <= 11'd0;
+    end else begin
+        if (((tmp_reg_251 == 1'd1) & (1'b1 == ap_CS_fsm_state2))) begin
+            trunc_ln_cast_reg_267 <= {{in_V_fu_160_p2[21:11]}};
+        end
     end
 end
 

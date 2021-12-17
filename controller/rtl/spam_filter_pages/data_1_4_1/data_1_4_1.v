@@ -182,9 +182,25 @@ initial begin
 #0 ap_CS_fsm = 11'd1;
 #0 epoch = 32'd0;
 #0 ap_enable_reg_pp1_iter0 = 1'b0;
+#0 icmp_ln30_reg_249 = 1'd0;
 #0 ap_enable_reg_pp0_iter0 = 1'b0;
+#0 icmp_ln42_reg_217 = 1'd0;
 #0 ap_enable_reg_pp1_iter1 = 1'b0;
+#0 icmp_ln30_reg_249_pp1_iter1_reg = 1'd0;
 #0 ap_enable_reg_pp0_iter1 = 1'b0;
+#0 icmp_ln42_reg_217_pp0_iter1_reg = 1'd0;
+#0 i_reg_99 = 9'd0;
+#0 i_2_reg_121 = 8'd0;
+#0 reg_143 = 32'd0;
+#0 i_1_reg_212 = 9'd0;
+#0 tmp_3_reg_221 = 32'd0;
+#0 tmp_4_reg_226 = 32'd0;
+#0 training_id_1_reg_231 = 13'd0;
+#0 add_ln39_reg_239 = 32'd0;
+#0 i_3_reg_244 = 8'd0;
+#0 tmp_2_reg_253 = 32'd0;
+#0 training_id_reg_110 = 13'd0;
+#0 storemerge_reg_132 = 32'd0;
 end
 
 data_1_4_1_regslice_both #(
@@ -245,6 +261,16 @@ regslice_both_Output_2_V_U(
 
 always @ (posedge ap_clk) begin
     if (ap_rst_n_inv == 1'b1) begin
+        add_ln39_reg_239 <= 32'd0;
+    end else begin
+        if (((icmp_ln25_fu_176_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state7))) begin
+            add_ln39_reg_239 <= add_ln39_fu_182_p2;
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
         ap_CS_fsm <= ap_ST_fsm_state1;
     end else begin
         ap_CS_fsm <= ap_NS_fsm;
@@ -300,102 +326,170 @@ always @ (posedge ap_clk) begin
 end
 
 always @ (posedge ap_clk) begin
-    if (((icmp_ln30_reg_249 == 1'd0) & (1'b0 == ap_block_pp1_stage0_11001) & (1'b1 == ap_CS_fsm_pp1_stage0) & (ap_enable_reg_pp1_iter1 == 1'b1))) begin
-        i_2_reg_121 <= i_3_reg_244;
-    end else if (((1'b1 == Output_1_V_TREADY_int_regslice) & (1'b1 == ap_CS_fsm_state8))) begin
+    if (ap_rst_n_inv == 1'b1) begin
+        epoch <= 32'd0;
+    end else begin
+        if ((~((regslice_both_Output_2_V_U_apdone_blk == 1'b1) | (regslice_both_Output_1_V_U_apdone_blk == 1'b1)) & (1'b1 == ap_CS_fsm_state15))) begin
+            epoch <= storemerge_reg_132;
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
+        i_1_reg_212 <= 9'd0;
+    end else begin
+        if (((ap_enable_reg_pp0_iter0 == 1'b1) & (1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
+            i_1_reg_212 <= i_1_fu_158_p2;
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
         i_2_reg_121 <= 8'd0;
+    end else begin
+        if (((icmp_ln30_reg_249 == 1'd0) & (1'b0 == ap_block_pp1_stage0_11001) & (1'b1 == ap_CS_fsm_pp1_stage0) & (ap_enable_reg_pp1_iter1 == 1'b1))) begin
+            i_2_reg_121 <= i_3_reg_244;
+        end else if (((1'b1 == Output_1_V_TREADY_int_regslice) & (1'b1 == ap_CS_fsm_state8))) begin
+            i_2_reg_121 <= 8'd0;
+        end
     end
 end
 
 always @ (posedge ap_clk) begin
-    if (((1'b1 == ap_CS_fsm_state1) & (ap_start == 1'b1) & (icmp_ln21_fu_152_p2 == 1'd0))) begin
+    if (ap_rst_n_inv == 1'b1) begin
+        i_3_reg_244 <= 8'd0;
+    end else begin
+        if (((1'b0 == ap_block_pp1_stage0_11001) & (ap_enable_reg_pp1_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp1_stage0))) begin
+            i_3_reg_244 <= i_3_fu_187_p2;
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
         i_reg_99 <= 9'd0;
-    end else if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0) & (ap_enable_reg_pp0_iter1 == 1'b1) & (icmp_ln42_reg_217 == 1'd0))) begin
-        i_reg_99 <= i_1_reg_212;
+    end else begin
+        if (((1'b1 == ap_CS_fsm_state1) & (ap_start == 1'b1) & (icmp_ln21_fu_152_p2 == 1'd0))) begin
+            i_reg_99 <= 9'd0;
+        end else if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0) & (ap_enable_reg_pp0_iter1 == 1'b1) & (icmp_ln42_reg_217 == 1'd0))) begin
+            i_reg_99 <= i_1_reg_212;
+        end
     end
 end
 
 always @ (posedge ap_clk) begin
-    if ((1'b1 == ap_CS_fsm_state6)) begin
+    if (ap_rst_n_inv == 1'b1) begin
+        icmp_ln30_reg_249 <= 1'd0;
+    end else begin
+        if (((1'b0 == ap_block_pp1_stage0_11001) & (1'b1 == ap_CS_fsm_pp1_stage0))) begin
+            icmp_ln30_reg_249 <= icmp_ln30_fu_193_p2;
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
+        icmp_ln30_reg_249_pp1_iter1_reg <= 1'd0;
+    end else begin
+        if (((1'b0 == ap_block_pp1_stage0_11001) & (1'b1 == ap_CS_fsm_pp1_stage0))) begin
+            icmp_ln30_reg_249_pp1_iter1_reg <= icmp_ln30_reg_249;
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
+        icmp_ln42_reg_217 <= 1'd0;
+    end else begin
+        if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
+            icmp_ln42_reg_217 <= icmp_ln42_fu_164_p2;
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
+        icmp_ln42_reg_217_pp0_iter1_reg <= 1'd0;
+    end else begin
+        if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
+            icmp_ln42_reg_217_pp0_iter1_reg <= icmp_ln42_reg_217;
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
+        reg_143 <= 32'd0;
+    end else begin
+        if ((((icmp_ln30_fu_193_p2 == 1'd0) & (1'b0 == ap_block_pp1_stage0_11001) & (ap_enable_reg_pp1_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp1_stage0)) | ((icmp_ln25_fu_176_p2 == 1'd0) & (1'b1 == ap_CS_fsm_state7)))) begin
+            reg_143 <= Input_1_V_TDATA_int_regslice;
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
         storemerge_reg_132 <= 32'd0;
-    end else if ((1'b1 == ap_CS_fsm_state14)) begin
-        storemerge_reg_132 <= add_ln39_reg_239;
+    end else begin
+        if ((1'b1 == ap_CS_fsm_state6)) begin
+            storemerge_reg_132 <= 32'd0;
+        end else if ((1'b1 == ap_CS_fsm_state14)) begin
+            storemerge_reg_132 <= add_ln39_reg_239;
+        end
     end
 end
 
 always @ (posedge ap_clk) begin
-    if (((1'b1 == ap_CS_fsm_state1) & (ap_start == 1'b1) & (icmp_ln21_fu_152_p2 == 1'd1))) begin
+    if (ap_rst_n_inv == 1'b1) begin
+        tmp_2_reg_253 <= 32'd0;
+    end else begin
+        if (((icmp_ln30_reg_249 == 1'd0) & (1'b0 == ap_block_pp1_stage1_11001) & (ap_enable_reg_pp1_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp1_stage1))) begin
+            tmp_2_reg_253 <= Input_1_V_TDATA_int_regslice;
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
+        tmp_3_reg_221 <= 32'd0;
+    end else begin
+        if (((ap_enable_reg_pp0_iter0 == 1'b1) & (1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0) & (icmp_ln42_fu_164_p2 == 1'd0))) begin
+            tmp_3_reg_221 <= Input_2_V_TDATA_int_regslice;
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
+        tmp_4_reg_226 <= 32'd0;
+    end else begin
+        if (((ap_enable_reg_pp0_iter0 == 1'b1) & (1'b0 == ap_block_pp0_stage1_11001) & (1'b1 == ap_CS_fsm_pp0_stage1) & (icmp_ln42_reg_217 == 1'd0))) begin
+            tmp_4_reg_226 <= Input_2_V_TDATA_int_regslice;
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
+        training_id_1_reg_231 <= 13'd0;
+    end else begin
+        if ((~((1'b1 == ap_block_state7_io) | ((icmp_ln25_fu_176_p2 == 1'd0) & (1'b0 == Output_1_V_TREADY_int_regslice)) | ((icmp_ln25_fu_176_p2 == 1'd0) & (1'b0 == Input_1_V_TVALID_int_regslice))) & (1'b1 == ap_CS_fsm_state7))) begin
+            training_id_1_reg_231 <= training_id_1_fu_170_p2;
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
         training_id_reg_110 <= 13'd0;
-    end else if ((1'b1 == ap_CS_fsm_state13)) begin
-        training_id_reg_110 <= training_id_1_reg_231;
-    end
-end
-
-always @ (posedge ap_clk) begin
-    if (((icmp_ln25_fu_176_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state7))) begin
-        add_ln39_reg_239 <= add_ln39_fu_182_p2;
-    end
-end
-
-always @ (posedge ap_clk) begin
-    if ((~((regslice_both_Output_2_V_U_apdone_blk == 1'b1) | (regslice_both_Output_1_V_U_apdone_blk == 1'b1)) & (1'b1 == ap_CS_fsm_state15))) begin
-        epoch <= storemerge_reg_132;
-    end
-end
-
-always @ (posedge ap_clk) begin
-    if (((ap_enable_reg_pp0_iter0 == 1'b1) & (1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
-        i_1_reg_212 <= i_1_fu_158_p2;
-    end
-end
-
-always @ (posedge ap_clk) begin
-    if (((1'b0 == ap_block_pp1_stage0_11001) & (ap_enable_reg_pp1_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp1_stage0))) begin
-        i_3_reg_244 <= i_3_fu_187_p2;
-    end
-end
-
-always @ (posedge ap_clk) begin
-    if (((1'b0 == ap_block_pp1_stage0_11001) & (1'b1 == ap_CS_fsm_pp1_stage0))) begin
-        icmp_ln30_reg_249 <= icmp_ln30_fu_193_p2;
-        icmp_ln30_reg_249_pp1_iter1_reg <= icmp_ln30_reg_249;
-    end
-end
-
-always @ (posedge ap_clk) begin
-    if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
-        icmp_ln42_reg_217 <= icmp_ln42_fu_164_p2;
-        icmp_ln42_reg_217_pp0_iter1_reg <= icmp_ln42_reg_217;
-    end
-end
-
-always @ (posedge ap_clk) begin
-    if ((((icmp_ln30_fu_193_p2 == 1'd0) & (1'b0 == ap_block_pp1_stage0_11001) & (ap_enable_reg_pp1_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp1_stage0)) | ((icmp_ln25_fu_176_p2 == 1'd0) & (1'b1 == ap_CS_fsm_state7)))) begin
-        reg_143 <= Input_1_V_TDATA_int_regslice;
-    end
-end
-
-always @ (posedge ap_clk) begin
-    if (((icmp_ln30_reg_249 == 1'd0) & (1'b0 == ap_block_pp1_stage1_11001) & (ap_enable_reg_pp1_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp1_stage1))) begin
-        tmp_2_reg_253 <= Input_1_V_TDATA_int_regslice;
-    end
-end
-
-always @ (posedge ap_clk) begin
-    if (((ap_enable_reg_pp0_iter0 == 1'b1) & (1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0) & (icmp_ln42_fu_164_p2 == 1'd0))) begin
-        tmp_3_reg_221 <= Input_2_V_TDATA_int_regslice;
-    end
-end
-
-always @ (posedge ap_clk) begin
-    if (((ap_enable_reg_pp0_iter0 == 1'b1) & (1'b0 == ap_block_pp0_stage1_11001) & (1'b1 == ap_CS_fsm_pp0_stage1) & (icmp_ln42_reg_217 == 1'd0))) begin
-        tmp_4_reg_226 <= Input_2_V_TDATA_int_regslice;
-    end
-end
-
-always @ (posedge ap_clk) begin
-    if ((~((1'b1 == ap_block_state7_io) | ((icmp_ln25_fu_176_p2 == 1'd0) & (1'b0 == Output_1_V_TREADY_int_regslice)) | ((icmp_ln25_fu_176_p2 == 1'd0) & (1'b0 == Input_1_V_TVALID_int_regslice))) & (1'b1 == ap_CS_fsm_state7))) begin
-        training_id_1_reg_231 <= training_id_1_fu_170_p2;
+    end else begin
+        if (((1'b1 == ap_CS_fsm_state1) & (ap_start == 1'b1) & (icmp_ln21_fu_152_p2 == 1'd1))) begin
+            training_id_reg_110 <= 13'd0;
+        end else if ((1'b1 == ap_CS_fsm_state13)) begin
+            training_id_reg_110 <= training_id_1_reg_231;
+        end
     end
 end
 
