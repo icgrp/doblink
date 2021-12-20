@@ -1,4 +1,4 @@
-module leaf_6(
+module leaf_7(
     input wire clk,
     input wire [49-1 : 0] din_leaf_bft2interface,
     output wire [49-1 : 0] dout_leaf_interface2bft,
