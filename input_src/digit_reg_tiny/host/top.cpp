@@ -11,6 +11,7 @@
 #include "../operators/update_knn3.h"
 #include "../operators/update_knn4.h"
 #include "../operators/update_knn5.h"
+#include "../operators/update_knn6.h"
 
 void data_gen(
 		  hls::stream<ap_uint<32> > & Output_1
@@ -56,7 +57,8 @@ void top(hls::stream<ap_uint<32> > & Input_1, hls::stream<ap_uint<32> > & Output
 		update_knn2(knn_out2, knn_out4);
 		update_knn3(knn_out4, knn_out6);
 		update_knn4(knn_out6, knn_out8);
-		update_knn5(knn_out8, Output_1);
+		update_knn5(knn_out8, knn_out9);
+		update_knn6(knn_out9, Output_1);
 	}
 
 	printf("We can run without hanging\n");
