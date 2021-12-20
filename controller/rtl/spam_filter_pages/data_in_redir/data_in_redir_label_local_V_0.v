@@ -25,7 +25,7 @@ reg [DWIDTH-1:0] q0_t1;
 genvar i;
 generate
     for (i=0; i<MEM_SIZE; i=i+1) begin
-        initial ram[i] = DWIDTH'd0;
+        initial ram[i] = 0;
     end
 endgenerate
 

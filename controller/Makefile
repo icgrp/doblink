@@ -5,7 +5,7 @@ BUS=axi-lite
 #TOOLCHAIN=vivado
 # TOOLCHAIN=vivado --synth-mode yosys
 TOOLCHAIN=symbiflow
-BENCHMARK=spam_filter
+BENCHMARK=digit_recognition
 
 ifdef DEBUG
 	DEBUG_ARGS=--with-ethernet --csr-csv csr.csv
@@ -32,7 +32,7 @@ firmware: firmware/$(BENCHMARK)/firmware.bin
 firmware/$(BENCHMARK)/firmware.bin: firmware/$(BENCHMARK)/*.c
 	cd firmware/$(BENCHMARK) && make all
 
-load: build/gateware/nexys_video.bit
+load:
 	python3 ./rvpld-soc/nexys_video.py $(LITEX_ARGS) --load
 
 prog: firmware/$(BENCHMARK)/firmware.bin

@@ -15,7 +15,7 @@ class DigitMono(Module):
         source_sigs = self.source.get_signals()
         sink_sigs = self.sink.get_signals()
         # self.platform.add_source_dir('rtl/rendering_4_debug')
-        self.platform.add_source_dir("rtl/digit_recognition_pages")
+        self.platform.add_source_dir("rtl/digit_recognition_6_page")
         # self.platform.add_source_dir('rtl/user_fifo')
         self.specials += Instance(
             "digit_mono",

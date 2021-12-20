@@ -1,8 +1,9 @@
 "update_knn2":
   arch: "artix7_200t"
   device_family: "xc7a200t"
-  device_name: "doblink-pblock-6"
+  device_name: "doblink-6-pblock-6"
   device_speed: "sbg484-1"
-  device: "xc7a200t-doblink-pblock-6-roi-virt"
+  device: "xc7a200t-doblink-6-pblock-6-roi-virt"
   board: "nexys_video"
+  use_roi: "TRUE"
   timeout: 1600
