@@ -39,7 +39,7 @@ module leaf_4(
     coloringFB_bot_m coloringFB_bot_m_inst(
         .ap_clk(clk),
         .ap_rst_n(~reset),
-        .ap_start(ap_start),
+        .ap_start(1'd1),
         .ap_done(),
         .ap_idle(),
         .Input_1_V_TDATA(dout_leaf_interface2user_1),

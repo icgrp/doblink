@@ -1,59 +1,48 @@
 // ==============================================================
-// Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2020.2 (64-bit)
-// Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+// Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2021.1 (64-bit)
+// Copyright 1986-2021 Xilinx, Inc. All Rights Reserved.
 // ==============================================================
+`timescale 1 ns / 1 ps
+module rasterization2_m_rasterization2_odd_fragment_color_V (address0, ce0, q0, address1, ce1, d1, we1,  reset,clk);
 
-`timescale 1ns/1ps
+parameter DataWidth = 6;
+parameter AddressWidth = 9;
+parameter AddressRange = 500;
 
-module rasterization2_m_rasterization2_odd_fragment_color_V
-#(parameter
-    DataWidth    = 6,
-    AddressWidth = 9,
-    AddressRange = 500
-)(
-    input  wire                    clk,
-    input  wire                    reset,
-    input  wire [AddressWidth-1:0] address0,
-    input  wire                    ce0,
-    input  wire                    we0,
-    input  wire [DataWidth-1:0]    d0,
-    output wire [DataWidth-1:0]    q0
-);
-//------------------------Local signal-------------------
-reg  [AddressRange-1:0] written = {AddressRange{1'b0}};
-wire [DataWidth-1:0]    q0_ram;
-wire [DataWidth-1:0]    q0_rom;
-wire                    q0_sel;
-reg  [1:0]              sel0_sr;
-//------------------------Instantiation------------------
-rasterization2_m_rasterization2_odd_fragment_color_V_ram rasterization2_m_rasterization2_odd_fragment_color_V_ram_u (
-    .clk   ( clk ),
-    .ce0   ( ce0 ),
-    .addr0 ( address0 ),
-    .we0   ( we0 ),
-    .d0    ( d0 ),
-    .q0    ( q0_ram )
-);
-//------------------------Body---------------------------
-assign q0     = q0_sel? q0_ram : q0_rom;
-assign q0_sel = sel0_sr[1];
-assign q0_rom = 6'b000000;
+input[AddressWidth-1:0] address0;
+input ce0;
+output reg[DataWidth-1:0] q0;
+input[AddressWidth-1:0] address1;
+input ce1;
+input[DataWidth-1:0] d1;
+input we1;
+input reset;
+input clk;
 
-always @(posedge clk) begin
-    if (reset)
-        written <= 1'b0;
-    else begin
-        if (ce0 & we0) begin
-            written[address0] <= 1'b1;
-        end
-    end
+(* ram_style = "block" *)reg [DataWidth-1:0] ram[0:AddressRange-1];
+
+initial begin
+    $readmemh("./rasterization2_m_rasterization2_odd_fragment_color_V.dat", ram);
 end
 
-always @(posedge clk) begin
+
+
+always @(posedge clk)  
+begin 
     if (ce0) begin
-        sel0_sr[0] <= written[address0];
+        q0 <= ram[address0];
     end
-    sel0_sr[1:1] <= sel0_sr[0:0];
 end
+
+
+always @(posedge clk)  
+begin 
+    if (ce1) begin
+        if (we1) 
+            ram[address1] <= d1; 
+    end
+end
+
 
 endmodule
+

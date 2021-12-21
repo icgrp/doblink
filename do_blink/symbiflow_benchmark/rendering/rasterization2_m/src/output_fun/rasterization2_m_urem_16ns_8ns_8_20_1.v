@@ -1,10 +1,11 @@
+// 67d7842dbbe25473c3c32b93c0da8047785f30d78e8a024de1b57352245f9689
 // ==============================================================
 // Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2020.2 (64-bit)
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // ==============================================================
 `timescale 1 ns / 1 ps
 
-module rasterization2_m_urem_16ns_8ns_8_20_1_div_u
+module rasterization2_m_urem_16ns_8ns_8_20_1_divider
 #(parameter
     in0_WIDTH = 32,
     in1_WIDTH = 32,
@@ -64,34 +65,37 @@ endgenerate
 
 endmodule
 
-module rasterization2_m_urem_16ns_8ns_8_20_1_div
+module rasterization2_m_urem_16ns_8ns_8_20_1
 #(parameter
-        in0_WIDTH   = 32,
-        in1_WIDTH   = 32,
-        out_WIDTH   = 32
+        ID   = 1,
+        NUM_STAGE   = 2,
+        din0_WIDTH   = 32,
+        din1_WIDTH   = 32,
+        dout_WIDTH   = 32
 )
 (
         input                           clk,
         input                           reset,
         input                           ce,
-        input           [in0_WIDTH-1:0] dividend,
-        input           [in1_WIDTH-1:0] divisor,
-        output  reg     [out_WIDTH-1:0] quot,
-        output  reg     [out_WIDTH-1:0] remd
+        input           [din0_WIDTH-1:0] din0,
+        input           [din1_WIDTH-1:0] din1,
+        output          [dout_WIDTH-1:0] dout
 );
 //------------------------Local signal-------------------
-reg     [in0_WIDTH-1:0] dividend0;
-reg     [in1_WIDTH-1:0] divisor0;
-wire    [in0_WIDTH-1:0] dividend_u;
-wire    [in1_WIDTH-1:0] divisor_u;
-wire    [out_WIDTH-1:0] quot_u;
-wire    [out_WIDTH-1:0] remd_u;
+reg     [din0_WIDTH-1:0] dividend0;
+reg     [din1_WIDTH-1:0] divisor0;
+wire    [din0_WIDTH-1:0] dividend_u;
+wire    [din1_WIDTH-1:0] divisor_u;
+wire    [dout_WIDTH-1:0] quot_u;
+wire    [dout_WIDTH-1:0] remd_u;
+reg     [dout_WIDTH-1:0] quot;
+reg     [dout_WIDTH-1:0] remd;
 //------------------------Instantiation------------------
-rasterization2_m_urem_16ns_8ns_8_20_1_div_u #(
-    .in0_WIDTH      ( in0_WIDTH ),
-    .in1_WIDTH      ( in1_WIDTH ),
-    .out_WIDTH      ( out_WIDTH )
-) rasterization2_m_urem_16ns_8ns_8_20_1_div_u_0 (
+rasterization2_m_urem_16ns_8ns_8_20_1_divider #(
+    .in0_WIDTH      ( din0_WIDTH ),
+    .in1_WIDTH      ( din1_WIDTH ),
+    .out_WIDTH      ( dout_WIDTH )
+) rasterization2_m_urem_16ns_8ns_8_20_1_divider_u (
     .clk      ( clk ),
     .reset    ( reset ),
     .ce       ( ce ),
@@ -107,8 +111,8 @@ assign divisor_u = divisor0;
 always @(posedge clk)
 begin
     if (ce) begin
-        dividend0 <= dividend;
-        divisor0  <= divisor;
+        dividend0 <= din0;
+        divisor0  <= din1;
     end
 end
 
@@ -120,45 +124,8 @@ begin
     end
 end
 
-endmodule
-
-
-`timescale 1 ns / 1 ps
-module rasterization2_m_urem_16ns_8ns_8_20_1(
-    clk,
-    reset,
-    ce,
-    din0,
-    din1,
-    dout);
-
-parameter ID = 32'd1;
-parameter NUM_STAGE = 32'd1;
-parameter din0_WIDTH = 32'd1;
-parameter din1_WIDTH = 32'd1;
-parameter dout_WIDTH = 32'd1;
-input clk;
-input reset;
-input ce;
-input[din0_WIDTH - 1:0] din0;
-input[din1_WIDTH - 1:0] din1;
-output[dout_WIDTH - 1:0] dout;
-
-wire[dout_WIDTH - 1:0] sig_quot;
-
-
-rasterization2_m_urem_16ns_8ns_8_20_1_div #(
-.in0_WIDTH( din0_WIDTH ),
-.in1_WIDTH( din1_WIDTH ),
-.out_WIDTH( dout_WIDTH ))
-rasterization2_m_urem_16ns_8ns_8_20_1_div_U(
-    .dividend( din0 ),
-    .divisor( din1 ),
-    .remd( dout ),
-    .quot( sig_quot ),
-    .clk( clk ),
-    .ce( ce ),
-    .reset( reset ));
+assign dout = remd;
 
 endmodule
+
 

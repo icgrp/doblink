@@ -1,8 +1,0 @@
-"dummy_page_12":
-  arch: "artix7_200t"
-  device_family: "xc7a200t"
-  device_name: "doblink-pblock-12"
-  device_speed: "sbg484-1"
-  device: "xc7a200t-doblink-pblock-12-roi-virt"
-  board: "nexys_video"
-  timeout: 10000

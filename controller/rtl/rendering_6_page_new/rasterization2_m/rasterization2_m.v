@@ -7,7 +7,7 @@
 
 `timescale 1 ns / 1 ps 
 
-(* CORE_GENERATION_INFO="rasterization2_m_rasterization2_m,hls_ip_2020_2,{HLS_INPUT_TYPE=cxx,HLS_INPUT_FLOAT=0,HLS_INPUT_FIXED=0,HLS_INPUT_PART=xc7a200t-sbg484-1,HLS_INPUT_CLOCK=4.000000,HLS_INPUT_ARCH=others,HLS_SYN_CLOCK=5.049000,HLS_SYN_LAT=-1,HLS_SYN_TPT=none,HLS_SYN_MEM=8,HLS_SYN_DSP=0,HLS_SYN_FF=4628,HLS_SYN_LUT=4093,HLS_VERSION=2020_2}" *)
+(* CORE_GENERATION_INFO="rasterization2_m_rasterization2_m,hls_ip_2020_2,{HLS_INPUT_TYPE=cxx,HLS_INPUT_FLOAT=0,HLS_INPUT_FIXED=0,HLS_INPUT_PART=xc7a200t-sbg484-1,HLS_INPUT_CLOCK=4.000000,HLS_INPUT_ARCH=others,HLS_SYN_CLOCK=5.049000,HLS_SYN_LAT=-1,HLS_SYN_TPT=none,HLS_SYN_MEM=8,HLS_SYN_DSP=0,HLS_SYN_FF=4002,HLS_SYN_LUT=3577,HLS_VERSION=2020_2}" *)
 
 module rasterization2_m (
         ap_clk,
@@ -73,33 +73,32 @@ reg ap_ready;
  reg    ap_rst_n_inv;
 (* fsm_encoding = "none" *) reg   [3:0] ap_CS_fsm;
 wire    ap_CS_fsm_state1;
-wire    grp_rasterization2_odd_fu_62_ap_start;
-wire    grp_rasterization2_odd_fu_62_ap_done;
-wire    grp_rasterization2_odd_fu_62_ap_idle;
-wire    grp_rasterization2_odd_fu_62_ap_ready;
-wire    grp_rasterization2_odd_fu_62_Input_1_V_TREADY;
-wire   [31:0] grp_rasterization2_odd_fu_62_Output_1_V_TDATA;
-wire    grp_rasterization2_odd_fu_62_Output_1_V_TVALID;
-wire    grp_rasterization2_odd_fu_62_Output_1_V_TREADY;
-wire   [31:0] grp_rasterization2_odd_fu_62_Output_2_V_TDATA;
-wire    grp_rasterization2_odd_fu_62_Output_2_V_TVALID;
-wire    grp_rasterization2_odd_fu_62_Output_2_V_TREADY;
-wire    grp_rasterization2_even_fu_86_ap_start;
-wire    grp_rasterization2_even_fu_86_ap_done;
-wire    grp_rasterization2_even_fu_86_ap_idle;
-wire    grp_rasterization2_even_fu_86_ap_ready;
-wire    grp_rasterization2_even_fu_86_Input_2_V_TREADY;
-wire   [31:0] grp_rasterization2_even_fu_86_Output_3_V_TDATA;
-wire    grp_rasterization2_even_fu_86_Output_3_V_TVALID;
-wire    grp_rasterization2_even_fu_86_Output_3_V_TREADY;
-wire   [31:0] grp_rasterization2_even_fu_86_Output_4_V_TDATA;
-wire    grp_rasterization2_even_fu_86_Output_4_V_TVALID;
-wire    grp_rasterization2_even_fu_86_Output_4_V_TREADY;
-reg    grp_rasterization2_odd_fu_62_ap_start_reg;
+wire    grp_rasterization2_odd_fu_50_ap_start;
+wire    grp_rasterization2_odd_fu_50_ap_done;
+wire    grp_rasterization2_odd_fu_50_ap_idle;
+wire    grp_rasterization2_odd_fu_50_ap_ready;
+wire    grp_rasterization2_odd_fu_50_Input_1_V_TREADY;
+wire   [31:0] grp_rasterization2_odd_fu_50_Output_1_V_TDATA;
+wire    grp_rasterization2_odd_fu_50_Output_1_V_TVALID;
+wire    grp_rasterization2_odd_fu_50_Output_1_V_TREADY;
+wire   [31:0] grp_rasterization2_odd_fu_50_Output_2_V_TDATA;
+wire    grp_rasterization2_odd_fu_50_Output_2_V_TVALID;
+wire    grp_rasterization2_odd_fu_50_Output_2_V_TREADY;
+wire    grp_rasterization2_even_fu_68_ap_start;
+wire    grp_rasterization2_even_fu_68_ap_done;
+wire    grp_rasterization2_even_fu_68_ap_idle;
+wire    grp_rasterization2_even_fu_68_ap_ready;
+wire    grp_rasterization2_even_fu_68_Input_2_V_TREADY;
+wire   [31:0] grp_rasterization2_even_fu_68_Output_3_V_TDATA;
+wire    grp_rasterization2_even_fu_68_Output_3_V_TVALID;
+wire    grp_rasterization2_even_fu_68_Output_3_V_TREADY;
+wire   [31:0] grp_rasterization2_even_fu_68_Output_4_V_TDATA;
+wire    grp_rasterization2_even_fu_68_Output_4_V_TVALID;
+wire    grp_rasterization2_even_fu_68_Output_4_V_TREADY;
+reg    grp_rasterization2_odd_fu_50_ap_start_reg;
 wire    ap_CS_fsm_state2;
 wire    ap_CS_fsm_state3;
-reg    ap_block_state3_on_subcall_done;
-reg    grp_rasterization2_even_fu_86_ap_start_reg;
+reg    grp_rasterization2_even_fu_68_ap_start_reg;
 wire    ap_CS_fsm_state4;
 wire    regslice_both_Output_1_V_U_apdone_blk;
 wire    regslice_both_Output_2_V_U_apdone_blk;
@@ -107,6 +106,7 @@ wire    regslice_both_Output_3_V_U_apdone_blk;
 wire    regslice_both_Output_4_V_U_apdone_blk;
 reg    ap_block_state4;
 reg   [3:0] ap_NS_fsm;
+reg    ap_block_state3_on_subcall_done;
 wire    regslice_both_Input_1_V_U_apdone_blk;
 wire   [31:0] Input_1_V_TDATA_int_regslice;
 wire    Input_1_V_TVALID_int_regslice;
@@ -130,44 +130,44 @@ wire    ap_ce_reg;
 // power-on initialization
 initial begin
 #0 ap_CS_fsm = 4'd1;
-#0 grp_rasterization2_odd_fu_62_ap_start_reg = 1'b0;
-#0 grp_rasterization2_even_fu_86_ap_start_reg = 1'b0;
+#0 grp_rasterization2_odd_fu_50_ap_start_reg = 1'b0;
+#0 grp_rasterization2_even_fu_68_ap_start_reg = 1'b0;
 end
 
-rasterization2_m_rasterization2_odd grp_rasterization2_odd_fu_62(
+rasterization2_m_rasterization2_odd grp_rasterization2_odd_fu_50(
     .ap_clk(ap_clk),
     .ap_rst(ap_rst_n_inv),
-    .ap_start(grp_rasterization2_odd_fu_62_ap_start),
-    .ap_done(grp_rasterization2_odd_fu_62_ap_done),
-    .ap_idle(grp_rasterization2_odd_fu_62_ap_idle),
-    .ap_ready(grp_rasterization2_odd_fu_62_ap_ready),
+    .ap_start(grp_rasterization2_odd_fu_50_ap_start),
+    .ap_done(grp_rasterization2_odd_fu_50_ap_done),
+    .ap_idle(grp_rasterization2_odd_fu_50_ap_idle),
+    .ap_ready(grp_rasterization2_odd_fu_50_ap_ready),
     .Input_1_V_TDATA(Input_1_V_TDATA_int_regslice),
     .Input_1_V_TVALID(Input_1_V_TVALID_int_regslice),
-    .Input_1_V_TREADY(grp_rasterization2_odd_fu_62_Input_1_V_TREADY),
-    .Output_1_V_TDATA(grp_rasterization2_odd_fu_62_Output_1_V_TDATA),
-    .Output_1_V_TVALID(grp_rasterization2_odd_fu_62_Output_1_V_TVALID),
-    .Output_1_V_TREADY(grp_rasterization2_odd_fu_62_Output_1_V_TREADY),
-    .Output_2_V_TDATA(grp_rasterization2_odd_fu_62_Output_2_V_TDATA),
-    .Output_2_V_TVALID(grp_rasterization2_odd_fu_62_Output_2_V_TVALID),
-    .Output_2_V_TREADY(grp_rasterization2_odd_fu_62_Output_2_V_TREADY)
+    .Input_1_V_TREADY(grp_rasterization2_odd_fu_50_Input_1_V_TREADY),
+    .Output_1_V_TDATA(grp_rasterization2_odd_fu_50_Output_1_V_TDATA),
+    .Output_1_V_TVALID(grp_rasterization2_odd_fu_50_Output_1_V_TVALID),
+    .Output_1_V_TREADY(grp_rasterization2_odd_fu_50_Output_1_V_TREADY),
+    .Output_2_V_TDATA(grp_rasterization2_odd_fu_50_Output_2_V_TDATA),
+    .Output_2_V_TVALID(grp_rasterization2_odd_fu_50_Output_2_V_TVALID),
+    .Output_2_V_TREADY(grp_rasterization2_odd_fu_50_Output_2_V_TREADY)
 );
 
-rasterization2_m_rasterization2_even grp_rasterization2_even_fu_86(
+rasterization2_m_rasterization2_even grp_rasterization2_even_fu_68(
     .ap_clk(ap_clk),
     .ap_rst(ap_rst_n_inv),
-    .ap_start(grp_rasterization2_even_fu_86_ap_start),
-    .ap_done(grp_rasterization2_even_fu_86_ap_done),
-    .ap_idle(grp_rasterization2_even_fu_86_ap_idle),
-    .ap_ready(grp_rasterization2_even_fu_86_ap_ready),
+    .ap_start(grp_rasterization2_even_fu_68_ap_start),
+    .ap_done(grp_rasterization2_even_fu_68_ap_done),
+    .ap_idle(grp_rasterization2_even_fu_68_ap_idle),
+    .ap_ready(grp_rasterization2_even_fu_68_ap_ready),
     .Input_2_V_TDATA(Input_2_V_TDATA_int_regslice),
     .Input_2_V_TVALID(Input_2_V_TVALID_int_regslice),
-    .Input_2_V_TREADY(grp_rasterization2_even_fu_86_Input_2_V_TREADY),
-    .Output_3_V_TDATA(grp_rasterization2_even_fu_86_Output_3_V_TDATA),
-    .Output_3_V_TVALID(grp_rasterization2_even_fu_86_Output_3_V_TVALID),
-    .Output_3_V_TREADY(grp_rasterization2_even_fu_86_Output_3_V_TREADY),
-    .Output_4_V_TDATA(grp_rasterization2_even_fu_86_Output_4_V_TDATA),
-    .Output_4_V_TVALID(grp_rasterization2_even_fu_86_Output_4_V_TVALID),
-    .Output_4_V_TREADY(grp_rasterization2_even_fu_86_Output_4_V_TREADY)
+    .Input_2_V_TREADY(grp_rasterization2_even_fu_68_Input_2_V_TREADY),
+    .Output_3_V_TDATA(grp_rasterization2_even_fu_68_Output_3_V_TDATA),
+    .Output_3_V_TVALID(grp_rasterization2_even_fu_68_Output_3_V_TVALID),
+    .Output_3_V_TREADY(grp_rasterization2_even_fu_68_Output_3_V_TREADY),
+    .Output_4_V_TDATA(grp_rasterization2_even_fu_68_Output_4_V_TDATA),
+    .Output_4_V_TVALID(grp_rasterization2_even_fu_68_Output_4_V_TVALID),
+    .Output_4_V_TREADY(grp_rasterization2_even_fu_68_Output_4_V_TREADY)
 );
 
 rasterization2_m_regslice_both #(
@@ -189,8 +189,8 @@ rasterization2_m_regslice_both #(
 regslice_both_Output_1_V_U(
     .ap_clk(ap_clk),
     .ap_rst(ap_rst_n_inv),
-    .data_in(grp_rasterization2_odd_fu_62_Output_1_V_TDATA),
-    .vld_in(grp_rasterization2_odd_fu_62_Output_1_V_TVALID),
+    .data_in(grp_rasterization2_odd_fu_50_Output_1_V_TDATA),
+    .vld_in(grp_rasterization2_odd_fu_50_Output_1_V_TVALID),
     .ack_in(Output_1_V_TREADY_int_regslice),
     .data_out(Output_1_V_TDATA),
     .vld_out(regslice_both_Output_1_V_U_vld_out),
@@ -203,8 +203,8 @@ rasterization2_m_regslice_both #(
 regslice_both_Output_2_V_U(
     .ap_clk(ap_clk),
     .ap_rst(ap_rst_n_inv),
-    .data_in(grp_rasterization2_odd_fu_62_Output_2_V_TDATA),
-    .vld_in(grp_rasterization2_odd_fu_62_Output_2_V_TVALID),
+    .data_in(grp_rasterization2_odd_fu_50_Output_2_V_TDATA),
+    .vld_in(grp_rasterization2_odd_fu_50_Output_2_V_TVALID),
     .ack_in(Output_2_V_TREADY_int_regslice),
     .data_out(Output_2_V_TDATA),
     .vld_out(regslice_both_Output_2_V_U_vld_out),
@@ -231,8 +231,8 @@ rasterization2_m_regslice_both #(
 regslice_both_Output_3_V_U(
     .ap_clk(ap_clk),
     .ap_rst(ap_rst_n_inv),
-    .data_in(grp_rasterization2_even_fu_86_Output_3_V_TDATA),
-    .vld_in(grp_rasterization2_even_fu_86_Output_3_V_TVALID),
+    .data_in(grp_rasterization2_even_fu_68_Output_3_V_TDATA),
+    .vld_in(grp_rasterization2_even_fu_68_Output_3_V_TVALID),
     .ack_in(Output_3_V_TREADY_int_regslice),
     .data_out(Output_3_V_TDATA),
     .vld_out(regslice_both_Output_3_V_U_vld_out),
@@ -245,8 +245,8 @@ rasterization2_m_regslice_both #(
 regslice_both_Output_4_V_U(
     .ap_clk(ap_clk),
     .ap_rst(ap_rst_n_inv),
-    .data_in(grp_rasterization2_even_fu_86_Output_4_V_TDATA),
-    .vld_in(grp_rasterization2_even_fu_86_Output_4_V_TVALID),
+    .data_in(grp_rasterization2_even_fu_68_Output_4_V_TDATA),
+    .vld_in(grp_rasterization2_even_fu_68_Output_4_V_TVALID),
     .ack_in(Output_4_V_TREADY_int_regslice),
     .data_out(Output_4_V_TDATA),
     .vld_out(regslice_both_Output_4_V_U_vld_out),
@@ -264,31 +264,31 @@ end
 
 always @ (posedge ap_clk) begin
     if (ap_rst_n_inv == 1'b1) begin
-        grp_rasterization2_even_fu_86_ap_start_reg <= 1'b0;
+        grp_rasterization2_even_fu_68_ap_start_reg <= 1'b0;
     end else begin
         if ((1'b1 == ap_CS_fsm_state2)) begin
-            grp_rasterization2_even_fu_86_ap_start_reg <= 1'b1;
-        end else if ((grp_rasterization2_even_fu_86_ap_ready == 1'b1)) begin
-            grp_rasterization2_even_fu_86_ap_start_reg <= 1'b0;
+            grp_rasterization2_even_fu_68_ap_start_reg <= 1'b1;
+        end else if ((grp_rasterization2_even_fu_68_ap_ready == 1'b1)) begin
+            grp_rasterization2_even_fu_68_ap_start_reg <= 1'b0;
         end
     end
 end
 
 always @ (posedge ap_clk) begin
     if (ap_rst_n_inv == 1'b1) begin
-        grp_rasterization2_odd_fu_62_ap_start_reg <= 1'b0;
+        grp_rasterization2_odd_fu_50_ap_start_reg <= 1'b0;
     end else begin
         if ((1'b1 == ap_CS_fsm_state2)) begin
-            grp_rasterization2_odd_fu_62_ap_start_reg <= 1'b1;
-        end else if ((grp_rasterization2_odd_fu_62_ap_ready == 1'b1)) begin
-            grp_rasterization2_odd_fu_62_ap_start_reg <= 1'b0;
+            grp_rasterization2_odd_fu_50_ap_start_reg <= 1'b1;
+        end else if ((grp_rasterization2_odd_fu_50_ap_ready == 1'b1)) begin
+            grp_rasterization2_odd_fu_50_ap_start_reg <= 1'b0;
         end
     end
 end
 
 always @ (*) begin
     if ((1'b1 == ap_CS_fsm_state3)) begin
-        Input_1_V_TREADY_int_regslice = grp_rasterization2_odd_fu_62_Input_1_V_TREADY;
+        Input_1_V_TREADY_int_regslice = grp_rasterization2_odd_fu_50_Input_1_V_TREADY;
     end else begin
         Input_1_V_TREADY_int_regslice = 1'b0;
     end
@@ -296,7 +296,7 @@ end
 
 always @ (*) begin
     if ((1'b1 == ap_CS_fsm_state3)) begin
-        Input_2_V_TREADY_int_regslice = grp_rasterization2_even_fu_86_Input_2_V_TREADY;
+        Input_2_V_TREADY_int_regslice = grp_rasterization2_even_fu_68_Input_2_V_TREADY;
     end else begin
         Input_2_V_TREADY_int_regslice = 1'b0;
     end
@@ -339,7 +339,7 @@ always @ (*) begin
             ap_NS_fsm = ap_ST_fsm_state3;
         end
         ap_ST_fsm_state3 : begin
-            if (((1'b1 == ap_CS_fsm_state3) & (1'b0 == ap_block_state3_on_subcall_done))) begin
+            if (((1'b0 == ap_block_state3_on_subcall_done) & (1'b1 == ap_CS_fsm_state3))) begin
                 ap_NS_fsm = ap_ST_fsm_state4;
             end else begin
                 ap_NS_fsm = ap_ST_fsm_state3;
@@ -379,7 +379,7 @@ assign ap_CS_fsm_state3 = ap_CS_fsm[32'd2];
 assign ap_CS_fsm_state4 = ap_CS_fsm[32'd3];
 
 always @ (*) begin
-    ap_block_state3_on_subcall_done = ((grp_rasterization2_even_fu_86_ap_done == 1'b0) | (grp_rasterization2_odd_fu_62_ap_done == 1'b0));
+    ap_block_state3_on_subcall_done = ((grp_rasterization2_even_fu_68_ap_done == 1'b0) | (grp_rasterization2_odd_fu_50_ap_done == 1'b0));
 end
 
 always @ (*) begin
@@ -390,16 +390,16 @@ always @ (*) begin
     ap_rst_n_inv = ~ap_rst_n;
 end
 
-assign grp_rasterization2_even_fu_86_Output_3_V_TREADY = (ap_CS_fsm_state3 & Output_3_V_TREADY_int_regslice);
+assign grp_rasterization2_even_fu_68_Output_3_V_TREADY = (ap_CS_fsm_state3 & Output_3_V_TREADY_int_regslice);
 
-assign grp_rasterization2_even_fu_86_Output_4_V_TREADY = (ap_CS_fsm_state3 & Output_4_V_TREADY_int_regslice);
+assign grp_rasterization2_even_fu_68_Output_4_V_TREADY = (ap_CS_fsm_state3 & Output_4_V_TREADY_int_regslice);
 
-assign grp_rasterization2_even_fu_86_ap_start = grp_rasterization2_even_fu_86_ap_start_reg;
+assign grp_rasterization2_even_fu_68_ap_start = grp_rasterization2_even_fu_68_ap_start_reg;
 
-assign grp_rasterization2_odd_fu_62_Output_1_V_TREADY = (ap_CS_fsm_state3 & Output_1_V_TREADY_int_regslice);
+assign grp_rasterization2_odd_fu_50_Output_1_V_TREADY = (ap_CS_fsm_state3 & Output_1_V_TREADY_int_regslice);
 
-assign grp_rasterization2_odd_fu_62_Output_2_V_TREADY = (ap_CS_fsm_state3 & Output_2_V_TREADY_int_regslice);
+assign grp_rasterization2_odd_fu_50_Output_2_V_TREADY = (ap_CS_fsm_state3 & Output_2_V_TREADY_int_regslice);
 
-assign grp_rasterization2_odd_fu_62_ap_start = grp_rasterization2_odd_fu_62_ap_start_reg;
+assign grp_rasterization2_odd_fu_50_ap_start = grp_rasterization2_odd_fu_50_ap_start_reg;
 
 endmodule //rasterization2_m

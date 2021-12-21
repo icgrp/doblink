@@ -52,7 +52,7 @@ module rendering_mono (
     data_redir_m data_redir_m_inst(
         .ap_clk(ap_clk),
         .ap_rst_n(ap_rst_n),
-        .ap_start(ap_start),
+        .ap_start(1'd1),
         .ap_done(),
         .ap_idle(),
         .Input_1_V_TDATA(Input_1_V_TDATA),
@@ -70,7 +70,7 @@ module rendering_mono (
     rasterization2_m rasterization2_m_inst(
         .ap_clk(ap_clk),
         .ap_rst_n(ap_rst_n),
-        .ap_start(ap_start),
+        .ap_start(1'd1),
         .ap_done(),
         .ap_idle(),
         .Input_1_V_TDATA(data_1),
@@ -97,7 +97,7 @@ module rendering_mono (
     zculling_bot zculling_bot_inst(
         .ap_clk(ap_clk),
         .ap_rst_n(ap_rst_n),
-        .ap_start(ap_start),
+        .ap_start(1'd1),
         .ap_done(),
         .ap_idle(),
         .Input_1_V_TDATA(data_4),
@@ -115,7 +115,7 @@ module rendering_mono (
     zculling_top zculling_top_inst(
         .ap_clk(ap_clk),
         .ap_rst_n(ap_rst_n),
-        .ap_start(ap_start),
+        .ap_start(1'd1),
         .ap_done(),
         .ap_idle(),
         .Input_1_V_TDATA(data_3),
@@ -133,7 +133,7 @@ module rendering_mono (
     coloringFB_bot_m coloringFB_bot_m_inst(
         .ap_clk(ap_clk),
         .ap_rst_n(ap_rst_n),
-        .ap_start(ap_start),
+        .ap_start(1'd1),
         .ap_done(),
         .ap_idle(),
         .Input_1_V_TDATA(data_7),
@@ -148,7 +148,7 @@ module rendering_mono (
     coloringFB_top_m coloringFB_top_m_inst(
         .ap_clk(ap_clk),
         .ap_rst_n(ap_rst_n),
-        .ap_start(ap_start),
+        .ap_start(1'd1),
         .ap_done(),
         .ap_idle(),
         .Input_1_V_TDATA(data_8),

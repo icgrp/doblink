@@ -5,7 +5,7 @@
 
 `timescale 1 ns / 1 ps
 
-(* use_dsp = "yes" *) module data_redir_m_mul_9s_9s_18_4_1_Mul_DSP_1(clk, ce, a, b, p);
+(* use_dsp = "yes" *) module data_redir_m_mul_9s_9s_18_4_1_Mul_DSP_0(clk, ce, a, b, p);
 input clk;
 input ce;
 input[9 - 1 : 0] a; 
@@ -52,7 +52,7 @@ output[dout_WIDTH - 1:0] dout;
 
 
 
-data_redir_m_mul_9s_9s_18_4_1_Mul_DSP_1 data_redir_m_mul_9s_9s_18_4_1_Mul_DSP_1_U(
+data_redir_m_mul_9s_9s_18_4_1_Mul_DSP_0 data_redir_m_mul_9s_9s_18_4_1_Mul_DSP_0_U(
     .clk( clk ),
     .ce( ce ),
     .a( din0 ),

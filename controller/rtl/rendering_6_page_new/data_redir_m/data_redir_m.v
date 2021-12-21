@@ -7,7 +7,7 @@
 
 `timescale 1 ns / 1 ps 
 
-(* CORE_GENERATION_INFO="data_redir_m_data_redir_m,hls_ip_2020_2,{HLS_INPUT_TYPE=cxx,HLS_INPUT_FLOAT=0,HLS_INPUT_FIXED=0,HLS_INPUT_PART=xc7a200t-sbg484-1,HLS_INPUT_CLOCK=4.000000,HLS_INPUT_ARCH=others,HLS_SYN_CLOCK=3.678000,HLS_SYN_LAT=23,HLS_SYN_TPT=none,HLS_SYN_MEM=0,HLS_SYN_DSP=0,HLS_SYN_FF=638,HLS_SYN_LUT=808,HLS_VERSION=2020_2}" *)
+(* CORE_GENERATION_INFO="data_redir_m_data_redir_m,hls_ip_2020_2,{HLS_INPUT_TYPE=cxx,HLS_INPUT_FLOAT=0,HLS_INPUT_FIXED=0,HLS_INPUT_PART=xc7a200t-sbg484-1,HLS_INPUT_CLOCK=4.000000,HLS_INPUT_ARCH=others,HLS_SYN_CLOCK=3.678000,HLS_SYN_LAT=31,HLS_SYN_TPT=none,HLS_SYN_MEM=0,HLS_SYN_DSP=0,HLS_SYN_FF=681,HLS_SYN_LUT=1454,HLS_VERSION=2020_2}" *)
 
 module data_redir_m (
         ap_clk,
@@ -27,13 +27,19 @@ module data_redir_m (
         Output_2_V_TREADY
 );
 
-parameter    ap_ST_fsm_state1 = 7'd1;
-parameter    ap_ST_fsm_state2 = 7'd2;
-parameter    ap_ST_fsm_state3 = 7'd4;
-parameter    ap_ST_fsm_state4 = 7'd8;
-parameter    ap_ST_fsm_state5 = 7'd16;
-parameter    ap_ST_fsm_state6 = 7'd32;
-parameter    ap_ST_fsm_state7 = 7'd64;
+parameter    ap_ST_fsm_state1 = 13'd1;
+parameter    ap_ST_fsm_state2 = 13'd2;
+parameter    ap_ST_fsm_state3 = 13'd4;
+parameter    ap_ST_fsm_state4 = 13'd8;
+parameter    ap_ST_fsm_state5 = 13'd16;
+parameter    ap_ST_fsm_state6 = 13'd32;
+parameter    ap_ST_fsm_state7 = 13'd64;
+parameter    ap_ST_fsm_state8 = 13'd128;
+parameter    ap_ST_fsm_state9 = 13'd256;
+parameter    ap_ST_fsm_state10 = 13'd512;
+parameter    ap_ST_fsm_state11 = 13'd1024;
+parameter    ap_ST_fsm_state12 = 13'd2048;
+parameter    ap_ST_fsm_state13 = 13'd4096;
 
 input   ap_clk;
 input   ap_rst_n;
@@ -56,104 +62,105 @@ reg ap_idle;
 reg ap_ready;
 
  reg    ap_rst_n_inv;
-(* fsm_encoding = "none" *) reg   [6:0] ap_CS_fsm;
+(* fsm_encoding = "none" *) reg   [12:0] ap_CS_fsm;
 wire    ap_CS_fsm_state1;
-reg   [31:0] cnt;
 reg    Input_1_V_TDATA_blk_n;
 wire    ap_CS_fsm_state2;
 wire    ap_CS_fsm_state3;
-reg   [31:0] tmp_reg_137;
-reg   [31:0] tmp_3_reg_142;
-wire   [7:0] trunc_ln155_fu_104_p1;
-reg   [7:0] trunc_ln155_reg_147;
-reg   [7:0] triangle_2ds_1_x0_V_reg_152;
 wire    ap_CS_fsm_state4;
-reg   [7:0] triangle_2ds_1_y0_V_reg_157;
-reg   [7:0] triangle_2ds_1_x1_V_reg_162;
-reg   [7:0] triangle_2ds_1_y1_V_reg_167;
-reg   [7:0] triangle_2ds_1_x2_V_reg_172;
-reg   [7:0] triangle_2ds_1_y2_V_reg_177;
-reg   [7:0] triangle_2ds_1_z_V_reg_182;
-wire    grp_rasterization1_fu_52_ap_start;
-wire    grp_rasterization1_fu_52_ap_done;
-wire    grp_rasterization1_fu_52_ap_idle;
-wire    grp_rasterization1_fu_52_ap_ready;
-wire   [31:0] grp_rasterization1_fu_52_Output_1_V_TDATA;
-wire    grp_rasterization1_fu_52_Output_1_V_TVALID;
-wire    grp_rasterization1_fu_52_Output_1_V_TREADY;
-wire   [31:0] grp_rasterization1_fu_52_Output_2_V_TDATA;
-wire    grp_rasterization1_fu_52_Output_2_V_TVALID;
-wire    grp_rasterization1_fu_52_Output_2_V_TREADY;
-wire  signed [8:0] grp_rasterization1_fu_52_grp_fu_199_p_din0;
-wire  signed [8:0] grp_rasterization1_fu_52_grp_fu_199_p_din1;
-wire   [17:0] grp_rasterization1_fu_52_grp_fu_199_p_dout0;
-wire    grp_rasterization1_fu_52_grp_fu_199_p_ce;
-wire  signed [8:0] grp_rasterization1_fu_52_grp_fu_203_p_din0;
-wire  signed [8:0] grp_rasterization1_fu_52_grp_fu_203_p_din1;
-wire   [17:0] grp_rasterization1_fu_52_grp_fu_203_p_dout0;
-wire    grp_rasterization1_fu_52_grp_fu_203_p_ce;
-wire  signed [8:0] grp_rasterization1_fu_52_grp_fu_207_p_din0;
-wire  signed [8:0] grp_rasterization1_fu_52_grp_fu_207_p_din1;
-wire   [15:0] grp_rasterization1_fu_52_grp_fu_207_p_dout0;
-wire    grp_rasterization1_fu_52_grp_fu_207_p_ce;
-wire    grp_projection_fu_81_ap_start;
-wire    grp_projection_fu_81_ap_done;
-wire    grp_projection_fu_81_ap_idle;
-wire    grp_projection_fu_81_ap_ready;
-wire   [7:0] grp_projection_fu_81_ap_return_0;
-wire   [7:0] grp_projection_fu_81_ap_return_1;
-wire   [7:0] grp_projection_fu_81_ap_return_2;
-wire   [7:0] grp_projection_fu_81_ap_return_3;
-wire   [7:0] grp_projection_fu_81_ap_return_4;
-wire   [7:0] grp_projection_fu_81_ap_return_5;
-wire   [7:0] grp_projection_fu_81_ap_return_6;
-wire   [7:0] grp_projection_fu_81_grp_fu_187_p_din0;
-wire   [9:0] grp_projection_fu_81_grp_fu_187_p_din1;
-wire   [16:0] grp_projection_fu_81_grp_fu_187_p_dout0;
-wire    grp_projection_fu_81_grp_fu_187_p_ce;
-wire   [7:0] grp_projection_fu_81_grp_fu_191_p_din0;
-wire   [9:0] grp_projection_fu_81_grp_fu_191_p_din1;
-wire   [16:0] grp_projection_fu_81_grp_fu_191_p_dout0;
-wire    grp_projection_fu_81_grp_fu_191_p_ce;
-wire   [7:0] grp_projection_fu_81_grp_fu_195_p_din0;
-wire   [9:0] grp_projection_fu_81_grp_fu_195_p_din1;
-wire   [16:0] grp_projection_fu_81_grp_fu_195_p_dout0;
-wire    grp_projection_fu_81_grp_fu_195_p_ce;
-reg    grp_rasterization1_fu_52_ap_start_reg;
 wire    ap_CS_fsm_state5;
 wire    ap_CS_fsm_state6;
-reg    grp_projection_fu_81_ap_start_reg;
-wire   [31:0] add_ln565_fu_92_p2;
-reg    ap_block_state1;
-wire   [16:0] grp_fu_187_p2;
-wire   [7:0] grp_fu_187_p0;
-wire   [9:0] grp_fu_187_p1;
-reg    grp_fu_187_ce;
-wire   [16:0] grp_fu_191_p2;
-wire   [7:0] grp_fu_191_p0;
-wire   [9:0] grp_fu_191_p1;
-reg    grp_fu_191_ce;
-wire   [16:0] grp_fu_195_p2;
-wire   [7:0] grp_fu_195_p0;
-wire   [9:0] grp_fu_195_p1;
-reg    grp_fu_195_ce;
-wire   [17:0] grp_fu_199_p2;
-wire  signed [8:0] grp_fu_199_p0;
-wire  signed [8:0] grp_fu_199_p1;
-reg    grp_fu_199_ce;
-wire   [17:0] grp_fu_203_p2;
-wire  signed [8:0] grp_fu_203_p0;
-wire  signed [8:0] grp_fu_203_p1;
-reg    grp_fu_203_ce;
-wire   [15:0] grp_fu_207_p2;
-wire  signed [8:0] grp_fu_207_p0;
-wire  signed [8:0] grp_fu_207_p1;
-reg    grp_fu_207_ce;
+wire   [7:0] triangle_3d_x0_V_fu_160_p1;
+reg   [7:0] triangle_3d_x0_V_reg_346;
+wire   [7:0] grp_fu_130_p4;
+reg   [7:0] triangle_3d_y0_V_reg_351;
+reg   [7:0] triangle_3d_x1_V_reg_356;
+wire   [7:0] triangle_3d_y1_V_fu_174_p1;
+reg   [7:0] triangle_3d_y1_V_reg_366;
+wire   [7:0] grp_fu_140_p4;
+reg   [7:0] triangle_3d_x2_V_reg_371;
+reg   [7:0] triangle_3d_y2_V_reg_376;
+reg   [6:0] tmp_reg_391;
+wire   [7:0] triangle_3d_x0_V_1_fu_212_p1;
+reg   [7:0] triangle_3d_x0_V_1_reg_396;
+reg   [7:0] triangle_3d_y0_V_1_reg_401;
+reg   [7:0] triangle_3d_x1_V_1_reg_406;
+reg   [6:0] tmp_1_reg_416;
+wire   [7:0] triangle_3d_y1_V_1_fu_236_p1;
+reg   [7:0] triangle_3d_y1_V_1_reg_421;
+reg   [7:0] triangle_3d_x2_V_1_reg_426;
+reg   [7:0] triangle_3d_y2_V_1_reg_431;
+reg   [6:0] tmp_2_reg_441;
+wire   [7:0] triangle_2ds_1_z_V_fu_289_p2;
+reg   [7:0] triangle_2ds_1_z_V_reg_451;
 wire    ap_CS_fsm_state7;
+reg   [6:0] tmp_6_reg_456;
+reg   [6:0] tmp_7_reg_461;
+wire    ap_CS_fsm_state8;
+reg   [6:0] tmp_8_reg_466;
+wire    ap_CS_fsm_state9;
+wire   [7:0] triangle_2ds_2_z_V_fu_340_p2;
+reg   [7:0] triangle_2ds_2_z_V_reg_471;
+wire    ap_CS_fsm_state10;
+wire    grp_rasterization1_odd_m_fu_80_ap_start;
+wire    grp_rasterization1_odd_m_fu_80_ap_done;
+wire    grp_rasterization1_odd_m_fu_80_ap_idle;
+wire    grp_rasterization1_odd_m_fu_80_ap_ready;
+wire   [31:0] grp_rasterization1_odd_m_fu_80_Output_1_V_TDATA;
+wire    grp_rasterization1_odd_m_fu_80_Output_1_V_TVALID;
+wire    grp_rasterization1_odd_m_fu_80_Output_1_V_TREADY;
+wire    grp_rasterization1_even_m_fu_105_ap_start;
+wire    grp_rasterization1_even_m_fu_105_ap_done;
+wire    grp_rasterization1_even_m_fu_105_ap_idle;
+wire    grp_rasterization1_even_m_fu_105_ap_ready;
+wire   [31:0] grp_rasterization1_even_m_fu_105_Output_2_V_TDATA;
+wire    grp_rasterization1_even_m_fu_105_Output_2_V_TVALID;
+wire    grp_rasterization1_even_m_fu_105_Output_2_V_TREADY;
+reg    grp_rasterization1_odd_m_fu_80_ap_start_reg;
+wire    ap_CS_fsm_state11;
+wire    ap_CS_fsm_state12;
+reg    ap_block_state12_on_subcall_done;
+reg    grp_rasterization1_even_m_fu_105_ap_start_reg;
+reg    ap_block_state1;
+wire   [7:0] grp_fu_168_p0;
+wire   [9:0] grp_fu_168_p1;
+wire   [7:0] grp_fu_182_p0;
+wire   [9:0] grp_fu_182_p1;
+wire   [7:0] triangle_3d_z2_V_fu_188_p1;
+wire   [7:0] grp_fu_196_p0;
+wire   [9:0] grp_fu_196_p1;
+wire   [16:0] grp_fu_168_p2;
+wire   [7:0] grp_fu_220_p0;
+wire   [9:0] grp_fu_220_p1;
+wire   [16:0] grp_fu_182_p2;
+wire   [7:0] grp_fu_244_p0;
+wire   [9:0] grp_fu_244_p1;
+wire   [16:0] grp_fu_196_p2;
+wire   [7:0] triangle_3d_z2_V_1_fu_260_p1;
+wire   [7:0] grp_fu_268_p0;
+wire   [9:0] grp_fu_268_p1;
+wire   [7:0] zext_ln1364_1_fu_274_p1;
+wire   [7:0] zext_ln1364_5_fu_280_p1;
+wire   [7:0] add_ln213_fu_283_p2;
+wire   [7:0] zext_ln1364_3_fu_277_p1;
+wire   [16:0] grp_fu_220_p2;
+wire   [16:0] grp_fu_244_p2;
+wire   [16:0] grp_fu_268_p2;
+wire   [7:0] zext_ln1364_7_fu_325_p1;
+wire   [7:0] zext_ln1364_11_fu_331_p1;
+wire   [7:0] add_ln213_2_fu_334_p2;
+wire   [7:0] zext_ln1364_9_fu_328_p1;
+reg    grp_fu_168_ce;
+reg    grp_fu_182_ce;
+reg    grp_fu_196_ce;
+reg    grp_fu_220_ce;
+reg    grp_fu_244_ce;
+reg    grp_fu_268_ce;
+wire    ap_CS_fsm_state13;
 wire    regslice_both_Output_1_V_U_apdone_blk;
 wire    regslice_both_Output_2_V_U_apdone_blk;
-reg    ap_block_state7;
-reg   [6:0] ap_NS_fsm;
+reg    ap_block_state13;
+reg   [12:0] ap_NS_fsm;
 wire    regslice_both_Input_1_V_U_apdone_blk;
 wire   [31:0] Input_1_V_TDATA_int_regslice;
 wire    Input_1_V_TVALID_int_regslice;
@@ -163,79 +170,57 @@ wire    Output_1_V_TREADY_int_regslice;
 wire    regslice_both_Output_1_V_U_vld_out;
 wire    Output_2_V_TREADY_int_regslice;
 wire    regslice_both_Output_2_V_U_vld_out;
+wire   [16:0] grp_fu_168_p00;
+wire   [16:0] grp_fu_182_p00;
+wire   [16:0] grp_fu_196_p00;
+wire   [16:0] grp_fu_220_p00;
+wire   [16:0] grp_fu_244_p00;
+wire   [16:0] grp_fu_268_p00;
 wire    ap_ce_reg;
 
 // power-on initialization
 initial begin
-#0 ap_CS_fsm = 7'd1;
-#0 cnt = 32'd0;
-#0 grp_rasterization1_fu_52_ap_start_reg = 1'b0;
-#0 grp_projection_fu_81_ap_start_reg = 1'b0;
+#0 ap_CS_fsm = 13'd1;
+#0 grp_rasterization1_odd_m_fu_80_ap_start_reg = 1'b0;
+#0 grp_rasterization1_even_m_fu_105_ap_start_reg = 1'b0;
 end
 
-data_redir_m_rasterization1 grp_rasterization1_fu_52(
+data_redir_m_rasterization1_odd_m grp_rasterization1_odd_m_fu_80(
     .ap_clk(ap_clk),
     .ap_rst(ap_rst_n_inv),
-    .ap_start(grp_rasterization1_fu_52_ap_start),
-    .ap_done(grp_rasterization1_fu_52_ap_done),
-    .ap_idle(grp_rasterization1_fu_52_ap_idle),
-    .ap_ready(grp_rasterization1_fu_52_ap_ready),
-    .Output_1_V_TDATA(grp_rasterization1_fu_52_Output_1_V_TDATA),
-    .Output_1_V_TVALID(grp_rasterization1_fu_52_Output_1_V_TVALID),
-    .Output_1_V_TREADY(grp_rasterization1_fu_52_Output_1_V_TREADY),
-    .Output_2_V_TDATA(grp_rasterization1_fu_52_Output_2_V_TDATA),
-    .Output_2_V_TVALID(grp_rasterization1_fu_52_Output_2_V_TVALID),
-    .Output_2_V_TREADY(grp_rasterization1_fu_52_Output_2_V_TREADY),
-    .triangle_2d_x0(triangle_2ds_1_x0_V_reg_152),
-    .triangle_2d_y0(triangle_2ds_1_y0_V_reg_157),
-    .triangle_2d_x1(triangle_2ds_1_x1_V_reg_162),
-    .triangle_2d_y1(triangle_2ds_1_y1_V_reg_167),
-    .triangle_2d_x2(triangle_2ds_1_x2_V_reg_172),
-    .triangle_2d_y2(triangle_2ds_1_y2_V_reg_177),
-    .triangle_2d_z(triangle_2ds_1_z_V_reg_182),
-    .grp_fu_199_p_din0(grp_rasterization1_fu_52_grp_fu_199_p_din0),
-    .grp_fu_199_p_din1(grp_rasterization1_fu_52_grp_fu_199_p_din1),
-    .grp_fu_199_p_dout0(grp_rasterization1_fu_52_grp_fu_199_p_dout0),
-    .grp_fu_199_p_ce(grp_rasterization1_fu_52_grp_fu_199_p_ce),
-    .grp_fu_203_p_din0(grp_rasterization1_fu_52_grp_fu_203_p_din0),
-    .grp_fu_203_p_din1(grp_rasterization1_fu_52_grp_fu_203_p_din1),
-    .grp_fu_203_p_dout0(grp_rasterization1_fu_52_grp_fu_203_p_dout0),
-    .grp_fu_203_p_ce(grp_rasterization1_fu_52_grp_fu_203_p_ce),
-    .grp_fu_207_p_din0(grp_rasterization1_fu_52_grp_fu_207_p_din0),
-    .grp_fu_207_p_din1(grp_rasterization1_fu_52_grp_fu_207_p_din1),
-    .grp_fu_207_p_dout0(grp_rasterization1_fu_52_grp_fu_207_p_dout0),
-    .grp_fu_207_p_ce(grp_rasterization1_fu_52_grp_fu_207_p_ce)
+    .ap_start(grp_rasterization1_odd_m_fu_80_ap_start),
+    .ap_done(grp_rasterization1_odd_m_fu_80_ap_done),
+    .ap_idle(grp_rasterization1_odd_m_fu_80_ap_idle),
+    .ap_ready(grp_rasterization1_odd_m_fu_80_ap_ready),
+    .Output_1_V_TDATA(grp_rasterization1_odd_m_fu_80_Output_1_V_TDATA),
+    .Output_1_V_TVALID(grp_rasterization1_odd_m_fu_80_Output_1_V_TVALID),
+    .Output_1_V_TREADY(grp_rasterization1_odd_m_fu_80_Output_1_V_TREADY),
+    .triangle_2d_x0(triangle_3d_x0_V_reg_346),
+    .triangle_2d_y0(triangle_3d_y0_V_reg_351),
+    .triangle_2d_x1(triangle_3d_x1_V_reg_356),
+    .triangle_2d_y1(triangle_3d_y1_V_reg_366),
+    .triangle_2d_x2(triangle_3d_x2_V_reg_371),
+    .triangle_2d_y2(triangle_3d_y2_V_reg_376),
+    .triangle_2d_z(triangle_2ds_1_z_V_reg_451)
 );
 
-data_redir_m_projection grp_projection_fu_81(
+data_redir_m_rasterization1_even_m grp_rasterization1_even_m_fu_105(
     .ap_clk(ap_clk),
     .ap_rst(ap_rst_n_inv),
-    .ap_start(grp_projection_fu_81_ap_start),
-    .ap_done(grp_projection_fu_81_ap_done),
-    .ap_idle(grp_projection_fu_81_ap_idle),
-    .ap_ready(grp_projection_fu_81_ap_ready),
-    .input_lo(tmp_reg_137),
-    .input_mi(tmp_3_reg_142),
-    .input_hi(trunc_ln155_reg_147),
-    .ap_return_0(grp_projection_fu_81_ap_return_0),
-    .ap_return_1(grp_projection_fu_81_ap_return_1),
-    .ap_return_2(grp_projection_fu_81_ap_return_2),
-    .ap_return_3(grp_projection_fu_81_ap_return_3),
-    .ap_return_4(grp_projection_fu_81_ap_return_4),
-    .ap_return_5(grp_projection_fu_81_ap_return_5),
-    .ap_return_6(grp_projection_fu_81_ap_return_6),
-    .grp_fu_187_p_din0(grp_projection_fu_81_grp_fu_187_p_din0),
-    .grp_fu_187_p_din1(grp_projection_fu_81_grp_fu_187_p_din1),
-    .grp_fu_187_p_dout0(grp_projection_fu_81_grp_fu_187_p_dout0),
-    .grp_fu_187_p_ce(grp_projection_fu_81_grp_fu_187_p_ce),
-    .grp_fu_191_p_din0(grp_projection_fu_81_grp_fu_191_p_din0),
-    .grp_fu_191_p_din1(grp_projection_fu_81_grp_fu_191_p_din1),
-    .grp_fu_191_p_dout0(grp_projection_fu_81_grp_fu_191_p_dout0),
-    .grp_fu_191_p_ce(grp_projection_fu_81_grp_fu_191_p_ce),
-    .grp_fu_195_p_din0(grp_projection_fu_81_grp_fu_195_p_din0),
-    .grp_fu_195_p_din1(grp_projection_fu_81_grp_fu_195_p_din1),
-    .grp_fu_195_p_dout0(grp_projection_fu_81_grp_fu_195_p_dout0),
-    .grp_fu_195_p_ce(grp_projection_fu_81_grp_fu_195_p_ce)
+    .ap_start(grp_rasterization1_even_m_fu_105_ap_start),
+    .ap_done(grp_rasterization1_even_m_fu_105_ap_done),
+    .ap_idle(grp_rasterization1_even_m_fu_105_ap_idle),
+    .ap_ready(grp_rasterization1_even_m_fu_105_ap_ready),
+    .Output_2_V_TDATA(grp_rasterization1_even_m_fu_105_Output_2_V_TDATA),
+    .Output_2_V_TVALID(grp_rasterization1_even_m_fu_105_Output_2_V_TVALID),
+    .Output_2_V_TREADY(grp_rasterization1_even_m_fu_105_Output_2_V_TREADY),
+    .triangle_2d_x0(triangle_3d_x0_V_1_reg_396),
+    .triangle_2d_y0(triangle_3d_y0_V_1_reg_401),
+    .triangle_2d_x1(triangle_3d_x1_V_1_reg_406),
+    .triangle_2d_y1(triangle_3d_y1_V_1_reg_421),
+    .triangle_2d_x2(triangle_3d_x2_V_1_reg_426),
+    .triangle_2d_y2(triangle_3d_y2_V_1_reg_431),
+    .triangle_2d_z(triangle_2ds_2_z_V_reg_471)
 );
 
 data_redir_m_mul_8ns_10ns_17_4_1 #(
@@ -244,13 +229,13 @@ data_redir_m_mul_8ns_10ns_17_4_1 #(
     .din0_WIDTH( 8 ),
     .din1_WIDTH( 10 ),
     .dout_WIDTH( 17 ))
-mul_8ns_10ns_17_4_1_U22(
+mul_8ns_10ns_17_4_1_U25(
     .clk(ap_clk),
     .reset(ap_rst_n_inv),
-    .din0(grp_fu_187_p0),
-    .din1(grp_fu_187_p1),
-    .ce(grp_fu_187_ce),
-    .dout(grp_fu_187_p2)
+    .din0(grp_fu_168_p0),
+    .din1(grp_fu_168_p1),
+    .ce(grp_fu_168_ce),
+    .dout(grp_fu_168_p2)
 );
 
 data_redir_m_mul_8ns_10ns_17_4_1 #(
@@ -259,13 +244,13 @@ data_redir_m_mul_8ns_10ns_17_4_1 #(
     .din0_WIDTH( 8 ),
     .din1_WIDTH( 10 ),
     .dout_WIDTH( 17 ))
-mul_8ns_10ns_17_4_1_U23(
+mul_8ns_10ns_17_4_1_U26(
     .clk(ap_clk),
     .reset(ap_rst_n_inv),
-    .din0(grp_fu_191_p0),
-    .din1(grp_fu_191_p1),
-    .ce(grp_fu_191_ce),
-    .dout(grp_fu_191_p2)
+    .din0(grp_fu_182_p0),
+    .din1(grp_fu_182_p1),
+    .ce(grp_fu_182_ce),
+    .dout(grp_fu_182_p2)
 );
 
 data_redir_m_mul_8ns_10ns_17_4_1 #(
@@ -274,58 +259,58 @@ data_redir_m_mul_8ns_10ns_17_4_1 #(
     .din0_WIDTH( 8 ),
     .din1_WIDTH( 10 ),
     .dout_WIDTH( 17 ))
-mul_8ns_10ns_17_4_1_U24(
+mul_8ns_10ns_17_4_1_U27(
     .clk(ap_clk),
     .reset(ap_rst_n_inv),
-    .din0(grp_fu_195_p0),
-    .din1(grp_fu_195_p1),
-    .ce(grp_fu_195_ce),
-    .dout(grp_fu_195_p2)
+    .din0(grp_fu_196_p0),
+    .din1(grp_fu_196_p1),
+    .ce(grp_fu_196_ce),
+    .dout(grp_fu_196_p2)
 );
 
-data_redir_m_mul_9s_9s_18_4_1 #(
+data_redir_m_mul_8ns_10ns_17_4_1 #(
     .ID( 1 ),
     .NUM_STAGE( 4 ),
-    .din0_WIDTH( 9 ),
-    .din1_WIDTH( 9 ),
-    .dout_WIDTH( 18 ))
-mul_9s_9s_18_4_1_U25(
+    .din0_WIDTH( 8 ),
+    .din1_WIDTH( 10 ),
+    .dout_WIDTH( 17 ))
+mul_8ns_10ns_17_4_1_U28(
     .clk(ap_clk),
     .reset(ap_rst_n_inv),
-    .din0(grp_fu_199_p0),
-    .din1(grp_fu_199_p1),
-    .ce(grp_fu_199_ce),
-    .dout(grp_fu_199_p2)
+    .din0(grp_fu_220_p0),
+    .din1(grp_fu_220_p1),
+    .ce(grp_fu_220_ce),
+    .dout(grp_fu_220_p2)
 );
 
-data_redir_m_mul_9s_9s_18_4_1 #(
+data_redir_m_mul_8ns_10ns_17_4_1 #(
     .ID( 1 ),
     .NUM_STAGE( 4 ),
-    .din0_WIDTH( 9 ),
-    .din1_WIDTH( 9 ),
-    .dout_WIDTH( 18 ))
-mul_9s_9s_18_4_1_U26(
+    .din0_WIDTH( 8 ),
+    .din1_WIDTH( 10 ),
+    .dout_WIDTH( 17 ))
+mul_8ns_10ns_17_4_1_U29(
     .clk(ap_clk),
     .reset(ap_rst_n_inv),
-    .din0(grp_fu_203_p0),
-    .din1(grp_fu_203_p1),
-    .ce(grp_fu_203_ce),
-    .dout(grp_fu_203_p2)
+    .din0(grp_fu_244_p0),
+    .din1(grp_fu_244_p1),
+    .ce(grp_fu_244_ce),
+    .dout(grp_fu_244_p2)
 );
 
-data_redir_m_mul_9s_9s_16_4_1 #(
+data_redir_m_mul_8ns_10ns_17_4_1 #(
     .ID( 1 ),
     .NUM_STAGE( 4 ),
-    .din0_WIDTH( 9 ),
-    .din1_WIDTH( 9 ),
-    .dout_WIDTH( 16 ))
-mul_9s_9s_16_4_1_U27(
+    .din0_WIDTH( 8 ),
+    .din1_WIDTH( 10 ),
+    .dout_WIDTH( 17 ))
+mul_8ns_10ns_17_4_1_U30(
     .clk(ap_clk),
     .reset(ap_rst_n_inv),
-    .din0(grp_fu_207_p0),
-    .din1(grp_fu_207_p1),
-    .ce(grp_fu_207_ce),
-    .dout(grp_fu_207_p2)
+    .din0(grp_fu_268_p0),
+    .din1(grp_fu_268_p1),
+    .ce(grp_fu_268_ce),
+    .dout(grp_fu_268_p2)
 );
 
 data_redir_m_regslice_both #(
@@ -347,8 +332,8 @@ data_redir_m_regslice_both #(
 regslice_both_Output_1_V_U(
     .ap_clk(ap_clk),
     .ap_rst(ap_rst_n_inv),
-    .data_in(grp_rasterization1_fu_52_Output_1_V_TDATA),
-    .vld_in(grp_rasterization1_fu_52_Output_1_V_TVALID),
+    .data_in(grp_rasterization1_odd_m_fu_80_Output_1_V_TDATA),
+    .vld_in(grp_rasterization1_odd_m_fu_80_Output_1_V_TVALID),
     .ack_in(Output_1_V_TREADY_int_regslice),
     .data_out(Output_1_V_TDATA),
     .vld_out(regslice_both_Output_1_V_U_vld_out),
@@ -361,8 +346,8 @@ data_redir_m_regslice_both #(
 regslice_both_Output_2_V_U(
     .ap_clk(ap_clk),
     .ap_rst(ap_rst_n_inv),
-    .data_in(grp_rasterization1_fu_52_Output_2_V_TDATA),
-    .vld_in(grp_rasterization1_fu_52_Output_2_V_TVALID),
+    .data_in(grp_rasterization1_even_m_fu_105_Output_2_V_TDATA),
+    .vld_in(grp_rasterization1_even_m_fu_105_Output_2_V_TVALID),
     .ack_in(Output_2_V_TREADY_int_regslice),
     .data_out(Output_2_V_TDATA),
     .vld_out(regslice_both_Output_2_V_U_vld_out),
@@ -380,66 +365,95 @@ end
 
 always @ (posedge ap_clk) begin
     if (ap_rst_n_inv == 1'b1) begin
-        grp_projection_fu_81_ap_start_reg <= 1'b0;
+        grp_rasterization1_even_m_fu_105_ap_start_reg <= 1'b0;
     end else begin
-        if (((1'b1 == ap_CS_fsm_state3) & (1'b1 == Input_1_V_TVALID_int_regslice))) begin
-            grp_projection_fu_81_ap_start_reg <= 1'b1;
-        end else if ((grp_projection_fu_81_ap_ready == 1'b1)) begin
-            grp_projection_fu_81_ap_start_reg <= 1'b0;
+        if ((1'b1 == ap_CS_fsm_state11)) begin
+            grp_rasterization1_even_m_fu_105_ap_start_reg <= 1'b1;
+        end else if ((grp_rasterization1_even_m_fu_105_ap_ready == 1'b1)) begin
+            grp_rasterization1_even_m_fu_105_ap_start_reg <= 1'b0;
         end
     end
 end
 
 always @ (posedge ap_clk) begin
     if (ap_rst_n_inv == 1'b1) begin
-        grp_rasterization1_fu_52_ap_start_reg <= 1'b0;
+        grp_rasterization1_odd_m_fu_80_ap_start_reg <= 1'b0;
     end else begin
-        if ((1'b1 == ap_CS_fsm_state5)) begin
-            grp_rasterization1_fu_52_ap_start_reg <= 1'b1;
-        end else if ((grp_rasterization1_fu_52_ap_ready == 1'b1)) begin
-            grp_rasterization1_fu_52_ap_start_reg <= 1'b0;
+        if ((1'b1 == ap_CS_fsm_state11)) begin
+            grp_rasterization1_odd_m_fu_80_ap_start_reg <= 1'b1;
+        end else if ((grp_rasterization1_odd_m_fu_80_ap_ready == 1'b1)) begin
+            grp_rasterization1_odd_m_fu_80_ap_start_reg <= 1'b0;
         end
     end
 end
 
 always @ (posedge ap_clk) begin
-    if ((~((1'b0 == Input_1_V_TVALID_int_regslice) | (ap_start == 1'b0)) & (1'b1 == ap_CS_fsm_state1))) begin
-        cnt <= add_ln565_fu_92_p2;
+    if ((1'b1 == ap_CS_fsm_state5)) begin
+        tmp_1_reg_416 <= {{grp_fu_182_p2[16:10]}};
+        triangle_3d_x2_V_1_reg_426 <= {{Input_1_V_TDATA_int_regslice[23:16]}};
+        triangle_3d_y1_V_1_reg_421 <= triangle_3d_y1_V_1_fu_236_p1;
+        triangle_3d_y2_V_1_reg_431 <= {{Input_1_V_TDATA_int_regslice[31:24]}};
     end
 end
 
 always @ (posedge ap_clk) begin
-    if ((1'b1 == ap_CS_fsm_state2)) begin
-        tmp_3_reg_142 <= Input_1_V_TDATA_int_regslice;
+    if ((1'b1 == ap_CS_fsm_state6)) begin
+        tmp_2_reg_441 <= {{grp_fu_196_p2[16:10]}};
     end
 end
 
 always @ (posedge ap_clk) begin
-    if ((1'b1 == ap_CS_fsm_state1)) begin
-        tmp_reg_137 <= Input_1_V_TDATA_int_regslice;
+    if ((1'b1 == ap_CS_fsm_state7)) begin
+        tmp_6_reg_456 <= {{grp_fu_220_p2[16:10]}};
+        triangle_2ds_1_z_V_reg_451 <= triangle_2ds_1_z_V_fu_289_p2;
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if ((1'b1 == ap_CS_fsm_state8)) begin
+        tmp_7_reg_461 <= {{grp_fu_244_p2[16:10]}};
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if ((1'b1 == ap_CS_fsm_state9)) begin
+        tmp_8_reg_466 <= {{grp_fu_268_p2[16:10]}};
     end
 end
 
 always @ (posedge ap_clk) begin
     if ((1'b1 == ap_CS_fsm_state4)) begin
-        triangle_2ds_1_x0_V_reg_152 <= grp_projection_fu_81_ap_return_0;
-        triangle_2ds_1_x1_V_reg_162 <= grp_projection_fu_81_ap_return_2;
-        triangle_2ds_1_x2_V_reg_172 <= grp_projection_fu_81_ap_return_4;
-        triangle_2ds_1_y0_V_reg_157 <= grp_projection_fu_81_ap_return_1;
-        triangle_2ds_1_y1_V_reg_167 <= grp_projection_fu_81_ap_return_3;
-        triangle_2ds_1_y2_V_reg_177 <= grp_projection_fu_81_ap_return_5;
-        triangle_2ds_1_z_V_reg_182 <= grp_projection_fu_81_ap_return_6;
+        tmp_reg_391 <= {{grp_fu_168_p2[16:10]}};
+        triangle_3d_x0_V_1_reg_396 <= triangle_3d_x0_V_1_fu_212_p1;
+        triangle_3d_x1_V_1_reg_406 <= {{Input_1_V_TDATA_int_regslice[31:24]}};
+        triangle_3d_y0_V_1_reg_401 <= {{Input_1_V_TDATA_int_regslice[15:8]}};
     end
 end
 
 always @ (posedge ap_clk) begin
-    if ((1'b1 == ap_CS_fsm_state3)) begin
-        trunc_ln155_reg_147 <= trunc_ln155_fu_104_p1;
+    if ((1'b1 == ap_CS_fsm_state10)) begin
+        triangle_2ds_2_z_V_reg_471 <= triangle_2ds_2_z_V_fu_340_p2;
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if ((1'b1 == ap_CS_fsm_state1)) begin
+        triangle_3d_x0_V_reg_346 <= triangle_3d_x0_V_fu_160_p1;
+        triangle_3d_x1_V_reg_356 <= {{Input_1_V_TDATA_int_regslice[31:24]}};
+        triangle_3d_y0_V_reg_351 <= {{Input_1_V_TDATA_int_regslice[15:8]}};
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if ((1'b1 == ap_CS_fsm_state2)) begin
+        triangle_3d_x2_V_reg_371 <= {{Input_1_V_TDATA_int_regslice[23:16]}};
+        triangle_3d_y1_V_reg_366 <= triangle_3d_y1_V_fu_174_p1;
+        triangle_3d_y2_V_reg_376 <= {{Input_1_V_TDATA_int_regslice[31:24]}};
     end
 end
 
 always @ (*) begin
-    if (((1'b1 == ap_CS_fsm_state3) | (1'b1 == ap_CS_fsm_state2) | ((1'b1 == ap_CS_fsm_state1) & (ap_start == 1'b1)))) begin
+    if (((1'b1 == ap_CS_fsm_state6) | (1'b1 == ap_CS_fsm_state5) | (1'b1 == ap_CS_fsm_state4) | (1'b1 == ap_CS_fsm_state3) | (1'b1 == ap_CS_fsm_state2) | ((ap_start == 1'b1) & (1'b1 == ap_CS_fsm_state1)))) begin
         Input_1_V_TDATA_blk_n = Input_1_V_TVALID_int_regslice;
     end else begin
         Input_1_V_TDATA_blk_n = 1'b1;
@@ -447,7 +461,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if ((((1'b1 == ap_CS_fsm_state3) & (1'b1 == Input_1_V_TVALID_int_regslice)) | ((1'b1 == ap_CS_fsm_state2) & (1'b1 == Input_1_V_TVALID_int_regslice)) | (~((1'b0 == Input_1_V_TVALID_int_regslice) | (ap_start == 1'b0)) & (1'b1 == ap_CS_fsm_state1)))) begin
+    if ((((1'b1 == ap_CS_fsm_state6) & (1'b1 == Input_1_V_TVALID_int_regslice)) | ((1'b1 == ap_CS_fsm_state5) & (1'b1 == Input_1_V_TVALID_int_regslice)) | ((1'b1 == ap_CS_fsm_state4) & (1'b1 == Input_1_V_TVALID_int_regslice)) | ((1'b1 == ap_CS_fsm_state3) & (1'b1 == Input_1_V_TVALID_int_regslice)) | ((1'b1 == ap_CS_fsm_state2) & (1'b1 == Input_1_V_TVALID_int_regslice)) | (~((1'b0 == Input_1_V_TVALID_int_regslice) | (ap_start == 1'b0)) & (1'b1 == ap_CS_fsm_state1)))) begin
         Input_1_V_TREADY_int_regslice = 1'b1;
     end else begin
         Input_1_V_TREADY_int_regslice = 1'b0;
@@ -455,7 +469,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if ((~((regslice_both_Output_2_V_U_apdone_blk == 1'b1) | (regslice_both_Output_1_V_U_apdone_blk == 1'b1)) & (1'b1 == ap_CS_fsm_state7))) begin
+    if ((~((regslice_both_Output_2_V_U_apdone_blk == 1'b1) | (regslice_both_Output_1_V_U_apdone_blk == 1'b1)) & (1'b1 == ap_CS_fsm_state13))) begin
         ap_done = 1'b1;
     end else begin
         ap_done = 1'b0;
@@ -463,7 +477,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if (((1'b1 == ap_CS_fsm_state1) & (ap_start == 1'b0))) begin
+    if (((ap_start == 1'b0) & (1'b1 == ap_CS_fsm_state1))) begin
         ap_idle = 1'b1;
     end else begin
         ap_idle = 1'b0;
@@ -471,7 +485,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if ((~((regslice_both_Output_2_V_U_apdone_blk == 1'b1) | (regslice_both_Output_1_V_U_apdone_blk == 1'b1)) & (1'b1 == ap_CS_fsm_state7))) begin
+    if ((~((regslice_both_Output_2_V_U_apdone_blk == 1'b1) | (regslice_both_Output_1_V_U_apdone_blk == 1'b1)) & (1'b1 == ap_CS_fsm_state13))) begin
         ap_ready = 1'b1;
     end else begin
         ap_ready = 1'b0;
@@ -479,50 +493,50 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if (((1'b1 == ap_CS_fsm_state4) | (1'b1 == ap_CS_fsm_state3))) begin
-        grp_fu_187_ce = grp_projection_fu_81_grp_fu_187_p_ce;
+    if ((((1'b1 == ap_CS_fsm_state4) & (1'b1 == Input_1_V_TVALID_int_regslice)) | ((1'b1 == ap_CS_fsm_state3) & (1'b1 == Input_1_V_TVALID_int_regslice)) | ((1'b1 == ap_CS_fsm_state2) & (1'b1 == Input_1_V_TVALID_int_regslice)) | (~((1'b0 == Input_1_V_TVALID_int_regslice) | (ap_start == 1'b0)) & (1'b1 == ap_CS_fsm_state1)))) begin
+        grp_fu_168_ce = 1'b1;
     end else begin
-        grp_fu_187_ce = 1'b1;
+        grp_fu_168_ce = 1'b0;
     end
 end
 
 always @ (*) begin
-    if (((1'b1 == ap_CS_fsm_state4) | (1'b1 == ap_CS_fsm_state3))) begin
-        grp_fu_191_ce = grp_projection_fu_81_grp_fu_191_p_ce;
+    if ((((1'b1 == ap_CS_fsm_state5) & (1'b1 == Input_1_V_TVALID_int_regslice)) | ((1'b1 == ap_CS_fsm_state4) & (1'b1 == Input_1_V_TVALID_int_regslice)) | ((1'b1 == ap_CS_fsm_state3) & (1'b1 == Input_1_V_TVALID_int_regslice)) | ((1'b1 == ap_CS_fsm_state2) & (1'b1 == Input_1_V_TVALID_int_regslice)))) begin
+        grp_fu_182_ce = 1'b1;
     end else begin
-        grp_fu_191_ce = 1'b1;
+        grp_fu_182_ce = 1'b0;
     end
 end
 
 always @ (*) begin
-    if (((1'b1 == ap_CS_fsm_state4) | (1'b1 == ap_CS_fsm_state3))) begin
-        grp_fu_195_ce = grp_projection_fu_81_grp_fu_195_p_ce;
+    if ((((1'b1 == ap_CS_fsm_state6) & (1'b1 == Input_1_V_TVALID_int_regslice)) | ((1'b1 == ap_CS_fsm_state5) & (1'b1 == Input_1_V_TVALID_int_regslice)) | ((1'b1 == ap_CS_fsm_state4) & (1'b1 == Input_1_V_TVALID_int_regslice)) | ((1'b1 == ap_CS_fsm_state3) & (1'b1 == Input_1_V_TVALID_int_regslice)))) begin
+        grp_fu_196_ce = 1'b1;
     end else begin
-        grp_fu_195_ce = 1'b1;
+        grp_fu_196_ce = 1'b0;
     end
 end
 
 always @ (*) begin
-    if (((1'b1 == ap_CS_fsm_state6) | (1'b1 == ap_CS_fsm_state5))) begin
-        grp_fu_199_ce = grp_rasterization1_fu_52_grp_fu_199_p_ce;
+    if (((1'b1 == ap_CS_fsm_state7) | ((1'b1 == ap_CS_fsm_state6) & (1'b1 == Input_1_V_TVALID_int_regslice)) | ((1'b1 == ap_CS_fsm_state5) & (1'b1 == Input_1_V_TVALID_int_regslice)) | ((1'b1 == ap_CS_fsm_state4) & (1'b1 == Input_1_V_TVALID_int_regslice)))) begin
+        grp_fu_220_ce = 1'b1;
     end else begin
-        grp_fu_199_ce = 1'b1;
+        grp_fu_220_ce = 1'b0;
     end
 end
 
 always @ (*) begin
-    if (((1'b1 == ap_CS_fsm_state6) | (1'b1 == ap_CS_fsm_state5))) begin
-        grp_fu_203_ce = grp_rasterization1_fu_52_grp_fu_203_p_ce;
+    if (((1'b1 == ap_CS_fsm_state8) | (1'b1 == ap_CS_fsm_state7) | ((1'b1 == ap_CS_fsm_state6) & (1'b1 == Input_1_V_TVALID_int_regslice)) | ((1'b1 == ap_CS_fsm_state5) & (1'b1 == Input_1_V_TVALID_int_regslice)))) begin
+        grp_fu_244_ce = 1'b1;
     end else begin
-        grp_fu_203_ce = 1'b1;
+        grp_fu_244_ce = 1'b0;
     end
 end
 
 always @ (*) begin
-    if (((1'b1 == ap_CS_fsm_state6) | (1'b1 == ap_CS_fsm_state5))) begin
-        grp_fu_207_ce = grp_rasterization1_fu_52_grp_fu_207_p_ce;
+    if (((1'b1 == ap_CS_fsm_state9) | (1'b1 == ap_CS_fsm_state8) | (1'b1 == ap_CS_fsm_state7) | ((1'b1 == ap_CS_fsm_state6) & (1'b1 == Input_1_V_TVALID_int_regslice)))) begin
+        grp_fu_268_ce = 1'b1;
     end else begin
-        grp_fu_207_ce = 1'b1;
+        grp_fu_268_ce = 1'b0;
     end
 end
 
@@ -550,27 +564,53 @@ always @ (*) begin
             end
         end
         ap_ST_fsm_state4 : begin
-            if (((1'b1 == ap_CS_fsm_state4) & (grp_projection_fu_81_ap_done == 1'b1))) begin
+            if (((1'b1 == ap_CS_fsm_state4) & (1'b1 == Input_1_V_TVALID_int_regslice))) begin
                 ap_NS_fsm = ap_ST_fsm_state5;
             end else begin
                 ap_NS_fsm = ap_ST_fsm_state4;
             end
         end
         ap_ST_fsm_state5 : begin
-            ap_NS_fsm = ap_ST_fsm_state6;
+            if (((1'b1 == ap_CS_fsm_state5) & (1'b1 == Input_1_V_TVALID_int_regslice))) begin
+                ap_NS_fsm = ap_ST_fsm_state6;
+            end else begin
+                ap_NS_fsm = ap_ST_fsm_state5;
+            end
         end
         ap_ST_fsm_state6 : begin
-            if (((grp_rasterization1_fu_52_ap_done == 1'b1) & (1'b1 == ap_CS_fsm_state6))) begin
+            if (((1'b1 == ap_CS_fsm_state6) & (1'b1 == Input_1_V_TVALID_int_regslice))) begin
                 ap_NS_fsm = ap_ST_fsm_state7;
             end else begin
                 ap_NS_fsm = ap_ST_fsm_state6;
             end
         end
         ap_ST_fsm_state7 : begin
-            if ((~((regslice_both_Output_2_V_U_apdone_blk == 1'b1) | (regslice_both_Output_1_V_U_apdone_blk == 1'b1)) & (1'b1 == ap_CS_fsm_state7))) begin
+            ap_NS_fsm = ap_ST_fsm_state8;
+        end
+        ap_ST_fsm_state8 : begin
+            ap_NS_fsm = ap_ST_fsm_state9;
+        end
+        ap_ST_fsm_state9 : begin
+            ap_NS_fsm = ap_ST_fsm_state10;
+        end
+        ap_ST_fsm_state10 : begin
+            ap_NS_fsm = ap_ST_fsm_state11;
+        end
+        ap_ST_fsm_state11 : begin
+            ap_NS_fsm = ap_ST_fsm_state12;
+        end
+        ap_ST_fsm_state12 : begin
+            if (((1'b1 == ap_CS_fsm_state12) & (1'b0 == ap_block_state12_on_subcall_done))) begin
+                ap_NS_fsm = ap_ST_fsm_state13;
+            end else begin
+                ap_NS_fsm = ap_ST_fsm_state12;
+            end
+        end
+        ap_ST_fsm_state13 : begin
+            if ((~((regslice_both_Output_2_V_U_apdone_blk == 1'b1) | (regslice_both_Output_1_V_U_apdone_blk == 1'b1)) & (1'b1 == ap_CS_fsm_state13))) begin
                 ap_NS_fsm = ap_ST_fsm_state1;
             end else begin
-                ap_NS_fsm = ap_ST_fsm_state7;
+                ap_NS_fsm = ap_ST_fsm_state13;
             end
         end
         default : begin
@@ -585,9 +625,19 @@ assign Output_1_V_TVALID = regslice_both_Output_1_V_U_vld_out;
 
 assign Output_2_V_TVALID = regslice_both_Output_2_V_U_vld_out;
 
-assign add_ln565_fu_92_p2 = (cnt + 32'd1);
+assign add_ln213_2_fu_334_p2 = (zext_ln1364_7_fu_325_p1 + zext_ln1364_11_fu_331_p1);
+
+assign add_ln213_fu_283_p2 = (zext_ln1364_1_fu_274_p1 + zext_ln1364_5_fu_280_p1);
 
 assign ap_CS_fsm_state1 = ap_CS_fsm[32'd0];
+
+assign ap_CS_fsm_state10 = ap_CS_fsm[32'd9];
+
+assign ap_CS_fsm_state11 = ap_CS_fsm[32'd10];
+
+assign ap_CS_fsm_state12 = ap_CS_fsm[32'd11];
+
+assign ap_CS_fsm_state13 = ap_CS_fsm[32'd12];
 
 assign ap_CS_fsm_state2 = ap_CS_fsm[32'd1];
 
@@ -601,62 +651,100 @@ assign ap_CS_fsm_state6 = ap_CS_fsm[32'd5];
 
 assign ap_CS_fsm_state7 = ap_CS_fsm[32'd6];
 
+assign ap_CS_fsm_state8 = ap_CS_fsm[32'd7];
+
+assign ap_CS_fsm_state9 = ap_CS_fsm[32'd8];
+
 always @ (*) begin
     ap_block_state1 = ((1'b0 == Input_1_V_TVALID_int_regslice) | (ap_start == 1'b0));
 end
 
 always @ (*) begin
-    ap_block_state7 = ((regslice_both_Output_2_V_U_apdone_blk == 1'b1) | (regslice_both_Output_1_V_U_apdone_blk == 1'b1));
+    ap_block_state12_on_subcall_done = ((grp_rasterization1_even_m_fu_105_ap_done == 1'b0) | (grp_rasterization1_odd_m_fu_80_ap_done == 1'b0));
+end
+
+always @ (*) begin
+    ap_block_state13 = ((regslice_both_Output_2_V_U_apdone_blk == 1'b1) | (regslice_both_Output_1_V_U_apdone_blk == 1'b1));
 end
 
 always @ (*) begin
     ap_rst_n_inv = ~ap_rst_n;
 end
 
-assign grp_fu_187_p0 = grp_projection_fu_81_grp_fu_187_p_din0;
+assign grp_fu_130_p4 = {{Input_1_V_TDATA_int_regslice[15:8]}};
 
-assign grp_fu_187_p1 = grp_projection_fu_81_grp_fu_187_p_din1;
+assign grp_fu_140_p4 = {{Input_1_V_TDATA_int_regslice[23:16]}};
 
-assign grp_fu_191_p0 = grp_projection_fu_81_grp_fu_191_p_din0;
+assign grp_fu_168_p0 = grp_fu_168_p00;
 
-assign grp_fu_191_p1 = grp_projection_fu_81_grp_fu_191_p_din1;
+assign grp_fu_168_p00 = grp_fu_140_p4;
 
-assign grp_fu_195_p0 = grp_projection_fu_81_grp_fu_195_p_din0;
+assign grp_fu_168_p1 = 17'd342;
 
-assign grp_fu_195_p1 = grp_projection_fu_81_grp_fu_195_p_din1;
+assign grp_fu_182_p0 = grp_fu_182_p00;
 
-assign grp_fu_199_p0 = grp_rasterization1_fu_52_grp_fu_199_p_din0;
+assign grp_fu_182_p00 = grp_fu_130_p4;
 
-assign grp_fu_199_p1 = grp_rasterization1_fu_52_grp_fu_199_p_din1;
+assign grp_fu_182_p1 = 17'd342;
 
-assign grp_fu_203_p0 = grp_rasterization1_fu_52_grp_fu_203_p_din0;
+assign grp_fu_196_p0 = grp_fu_196_p00;
 
-assign grp_fu_203_p1 = grp_rasterization1_fu_52_grp_fu_203_p_din1;
+assign grp_fu_196_p00 = triangle_3d_z2_V_fu_188_p1;
 
-assign grp_fu_207_p0 = grp_rasterization1_fu_52_grp_fu_207_p_din0;
+assign grp_fu_196_p1 = 17'd342;
 
-assign grp_fu_207_p1 = grp_rasterization1_fu_52_grp_fu_207_p_din1;
+assign grp_fu_220_p0 = grp_fu_220_p00;
 
-assign grp_projection_fu_81_ap_start = grp_projection_fu_81_ap_start_reg;
+assign grp_fu_220_p00 = grp_fu_140_p4;
 
-assign grp_projection_fu_81_grp_fu_187_p_dout0 = grp_fu_187_p2;
+assign grp_fu_220_p1 = 17'd342;
 
-assign grp_projection_fu_81_grp_fu_191_p_dout0 = grp_fu_191_p2;
+assign grp_fu_244_p0 = grp_fu_244_p00;
 
-assign grp_projection_fu_81_grp_fu_195_p_dout0 = grp_fu_195_p2;
+assign grp_fu_244_p00 = grp_fu_130_p4;
 
-assign grp_rasterization1_fu_52_Output_1_V_TREADY = (ap_CS_fsm_state6 & Output_1_V_TREADY_int_regslice);
+assign grp_fu_244_p1 = 17'd342;
 
-assign grp_rasterization1_fu_52_Output_2_V_TREADY = (ap_CS_fsm_state6 & Output_2_V_TREADY_int_regslice);
+assign grp_fu_268_p0 = grp_fu_268_p00;
 
-assign grp_rasterization1_fu_52_ap_start = grp_rasterization1_fu_52_ap_start_reg;
+assign grp_fu_268_p00 = triangle_3d_z2_V_1_fu_260_p1;
 
-assign grp_rasterization1_fu_52_grp_fu_199_p_dout0 = grp_fu_199_p2;
+assign grp_fu_268_p1 = 17'd342;
 
-assign grp_rasterization1_fu_52_grp_fu_203_p_dout0 = grp_fu_203_p2;
+assign grp_rasterization1_even_m_fu_105_Output_2_V_TREADY = (ap_CS_fsm_state12 & Output_2_V_TREADY_int_regslice);
 
-assign grp_rasterization1_fu_52_grp_fu_207_p_dout0 = grp_fu_207_p2;
+assign grp_rasterization1_even_m_fu_105_ap_start = grp_rasterization1_even_m_fu_105_ap_start_reg;
 
-assign trunc_ln155_fu_104_p1 = Input_1_V_TDATA_int_regslice[7:0];
+assign grp_rasterization1_odd_m_fu_80_Output_1_V_TREADY = (ap_CS_fsm_state12 & Output_1_V_TREADY_int_regslice);
+
+assign grp_rasterization1_odd_m_fu_80_ap_start = grp_rasterization1_odd_m_fu_80_ap_start_reg;
+
+assign triangle_2ds_1_z_V_fu_289_p2 = (add_ln213_fu_283_p2 + zext_ln1364_3_fu_277_p1);
+
+assign triangle_2ds_2_z_V_fu_340_p2 = (add_ln213_2_fu_334_p2 + zext_ln1364_9_fu_328_p1);
+
+assign triangle_3d_x0_V_1_fu_212_p1 = Input_1_V_TDATA_int_regslice[7:0];
+
+assign triangle_3d_x0_V_fu_160_p1 = Input_1_V_TDATA_int_regslice[7:0];
+
+assign triangle_3d_y1_V_1_fu_236_p1 = Input_1_V_TDATA_int_regslice[7:0];
+
+assign triangle_3d_y1_V_fu_174_p1 = Input_1_V_TDATA_int_regslice[7:0];
+
+assign triangle_3d_z2_V_1_fu_260_p1 = Input_1_V_TDATA_int_regslice[7:0];
+
+assign triangle_3d_z2_V_fu_188_p1 = Input_1_V_TDATA_int_regslice[7:0];
+
+assign zext_ln1364_11_fu_331_p1 = tmp_8_reg_466;
+
+assign zext_ln1364_1_fu_274_p1 = tmp_reg_391;
+
+assign zext_ln1364_3_fu_277_p1 = tmp_1_reg_416;
+
+assign zext_ln1364_5_fu_280_p1 = tmp_2_reg_441;
+
+assign zext_ln1364_7_fu_325_p1 = tmp_6_reg_456;
+
+assign zext_ln1364_9_fu_328_p1 = tmp_7_reg_461;
 
 endmodule //data_redir_m

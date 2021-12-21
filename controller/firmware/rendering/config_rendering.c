@@ -57,21 +57,33 @@ void init_regs(void)
 
    for (i=4; i<8; i++) {lx_write32(SLV_REG0+i*4, 0x00000000);}
 
-//DMA.Output_1->data_redir_m.Input_1
-  write_to_fifo(0x1000, 0x92201fc0, &ctrl_reg);
-  write_to_fifo(0x2100, 0x21900000, &ctrl_reg);
-//data_redir_m.Output_1->rasterization2_m.Input_1
-  write_to_fifo(0x2000, 0x93201fc0, &ctrl_reg);
-  write_to_fifo(0x3100, 0x22900000, &ctrl_reg);
-//rasterization2_m.Output_1->zculling_top.Input_1
-  write_to_fifo(0x3000, 0x94201fc0, &ctrl_reg);
-  write_to_fifo(0x4100, 0x23900000, &ctrl_reg);
+//rasterization2_m.Output_4->zculling_bot.Input_2
+  write_to_fifo(0x6000, 0xc5301fc0, &ctrl_reg);
+  write_to_fifo(0x5100, 0x36c00000, &ctrl_reg);
+//data_redir_m.Output_2->rasterization2_m.Input_2
+  write_to_fifo(0x3000, 0xa6301fc0, &ctrl_reg);
+  write_to_fifo(0x6100, 0x33a00000, &ctrl_reg);
+//rasterization2_m.Output_2->zculling_bot.Input_1
+  write_to_fifo(0x6000, 0xa5201fc0, &ctrl_reg);
+  write_to_fifo(0x5100, 0x26a00000, &ctrl_reg);
 //coloringFB_bot_m.Output_1->DMA.Input_1
-  write_to_fifo(0x5000, 0x91201fc0, &ctrl_reg);
-  write_to_fifo(0x1100, 0x25900000, &ctrl_reg);
-//zculling_top.Output_1->coloringFB_bot_m.Input_1
-  write_to_fifo(0x4000, 0x95201fc0, &ctrl_reg);
-  write_to_fifo(0x5100, 0x24900000, &ctrl_reg);
+  write_to_fifo(0x4000, 0x91201fc0, &ctrl_reg);
+  write_to_fifo(0x1100, 0x24900000, &ctrl_reg);
+//rasterization2_m.Output_1->zculling_top.Input_1
+  write_to_fifo(0x6000, 0x97201fc0, &ctrl_reg);
+  write_to_fifo(0x7100, 0x26900000, &ctrl_reg);
+//rasterization2_m.Output_3->zculling_top.Input_2
+  write_to_fifo(0x6000, 0xb7301fc0, &ctrl_reg);
+  write_to_fifo(0x7100, 0x36b00000, &ctrl_reg);
+//zculling_bot.Output_1->coloringFB_bot_m.Input_1
+  write_to_fifo(0x5000, 0x94201fc0, &ctrl_reg);
+  write_to_fifo(0x4100, 0x25900000, &ctrl_reg);
+//data_redir_m.Output_1->rasterization2_m.Input_1
+  write_to_fifo(0x3000, 0x96201fc0, &ctrl_reg);
+  write_to_fifo(0x6100, 0x23900000, &ctrl_reg);
+//DMA.Output_1->data_redir_m.Input_1
+  write_to_fifo(0x1000, 0x93201fc0, &ctrl_reg);
+  write_to_fifo(0x3100, 0x21900000, &ctrl_reg);
 	//packet anchor
 
 }

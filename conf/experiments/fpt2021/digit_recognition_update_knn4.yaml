@@ -7,7 +7,6 @@ defaults:
   - override /do_blink/rendering@do_blink.fig.rendering: []
   - override /do_blink/overlay@do_blink.fig.overlay: []
   - override /do_blink/rendering_4_page@do_blink.fig.rendering_4_page: []
-  - override /hydra/launcher: joblib
 
 # hydra:
 #   launcher:
