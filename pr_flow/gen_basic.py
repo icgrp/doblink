@@ -317,7 +317,7 @@ class _verilog:
             "    output wire [" + str(PACKET_BITS) + "-1 : 0] dout_leaf_interface2bft,"
         )
         lines_list.append("    input wire resend,")
-        # lines_list.append('    input wire ap_start,')
+        lines_list.append("    input wire ap_start,")
         lines_list.append("    input wire reset")
         lines_list.append("    );")
         lines_list.append("")
@@ -739,7 +739,7 @@ class _tcl:
             "create_clock -period " + self.prflow_params["clk_user"] + " -name default"
         )
         lines_list.append('#source "./Rendering_hls/colorFB/directives.tcl"')
-        lines_list.append("config_rtl -reset all")
+        #lines_list.append("config_rtl -reset all")
         lines_list.append("csynth_design")
         lines_list.append("#cosim_design -trace_level all -tool xsim")
         # if(fun_name == self.prflow_params['mono_function']):
@@ -943,7 +943,7 @@ class _tcl:
         lines_list.append("#####################")
         lines_list.append("set start_time [clock seconds]")
         lines_list.append("open_checkpoint ./floorplan_static.dcp")
-        for i in range(int(self.prflow_params["nl"])):
+        for i in [2,6,9,10,11,13]:
             if (
                 self.prflow_params["page" + str(i)].replace("riscv", "")
                 != self.prflow_params["page" + str(i)]
@@ -1001,7 +1001,7 @@ class _tcl:
         )
         lines_list.append("set_param bitstream.enablePR 2341")
         lines_list.append("write_bitstream -force -no_partial_bitfile  ./main.bit")
-        for i in range(int(self.prflow_params["nl"])):
+        for i in [2,6,9,10,11,13]:
             if (
                 self.prflow_params["page" + str(i)].replace("riscv", "")
                 != self.prflow_params["page" + str(i)]
@@ -1021,14 +1021,7 @@ class _tcl:
         lines_list.append("#############################################")
         lines_list.append("")
         lines_list.append("set start_time [clock seconds]")
-        lines_list.append("update_design -cell floorplan_static_i/bft0 -black_box")
-        lines_list.append("update_design -cell floorplan_static_i/bft1 -black_box")
-        lines_list.append("update_design -cell floorplan_static_i/bft2 -black_box")
-        lines_list.append("update_design -cell floorplan_static_i/bft3 -black_box")
-        lines_list.append(
-            "update_design -cell floorplan_static_i/bft_center -black_box"
-        )
-        for i in range(int(self.prflow_params["nl"])):
+        for i in [2,6,9,10,11,13]:
             if (
                 self.prflow_params["page" + str(i)].replace("riscv", "")
                 != self.prflow_params["page" + str(i)]
@@ -1046,14 +1039,8 @@ class _tcl:
         lines_list.append("## you add -buffer_ports                   ##")
         lines_list.append("#############################################")
 
-        lines_list.append("update_design -cell floorplan_static_i/bft0 -buffer_ports")
-        lines_list.append("update_design -cell floorplan_static_i/bft1 -buffer_ports")
-        lines_list.append("update_design -cell floorplan_static_i/bft2 -buffer_ports")
-        lines_list.append("update_design -cell floorplan_static_i/bft3 -buffer_ports")
-        lines_list.append(
-            "update_design -cell floorplan_static_i/bft_center -buffer_ports"
-        )
-        for i in range(int(self.prflow_params["nl"])):
+        
+        for i in [2,6,9,10,11,13]:
             if (
                 self.prflow_params["page" + str(i)].replace("riscv", "")
                 != self.prflow_params["page" + str(i)]

@@ -12,6 +12,7 @@ class impl(gen_basic):
 
     # create one directory for each page
     def create_page(self, operator, page_num):
+        page_to_pblock = {'2':'6', '3':'9', '4':'2', '5':'13', '6':'10', '7':'11'}
         self.shell.re_mkdir(self.pr_dir + "/" + operator)
         # self.shell.write_lines(self.pr_dir+'/'+operator+'/impl_'+operator+'.tcl', self.tcl.return_impl_tcl_list(operator, page_num, 'p_'+str(page_num)+'.dcp', False))
         self.shell.cp_file(
@@ -19,21 +20,10 @@ class impl(gen_basic):
             self.pr_dir + "/" + operator + "/impl_" + operator + ".tcl",
         )
         tmp_dict = {
-            "set page_num": "set page_num " + str(page_num),
+            "set page_num": "set page_num " + page_to_pblock[str(page_num)],
             "set operator": "set operator " + operator,
             "set benchmark": "set benchmark " + self.prflow_params["benchmark_name"],
-            "set_property SCOPED_TO_CELLS": "set_property SCOPED_TO_CELLS { level0_i/ulp/ydma_1/inst/page"
-            + str(page_num)
-            + "_inst } [get_files $page_dcp]",
-            "link_design -mode default": "link_design -mode default -reconfig_partitions { level0_i/ulp/ydma_1/inst/page"
-            + str(page_num)
-            + "_inst } -part $part -top level0_wrapper",
         }
-        self.shell.cp_dir(
-            "./common/constraints/" + self.prflow_params["board"] + "/*",
-            self.pr_dir + "/" + operator,
-        )
-        self.shell.mkdir(self.pr_dir + "/" + operator + "/output")
         self.shell.replace_lines(
             self.pr_dir + "/" + operator + "/impl_" + operator + ".tcl", tmp_dict
         )

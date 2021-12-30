@@ -7,17 +7,17 @@
   <spec name = "xrt_dir"         value = "/opt/xilinx/xrt/setup.sh" />
   <!--spec name = "Xilinx_dir"         value = "/scratch/unsafe/SDSoC/SDx/2018.2/settings64.sh" -->
   <!--spec name = "board" value = "zcu102" -->
-  <!--spec name = "board" value = "u96" -->
-  <spec name = "board" value = "au50" />
+  <spec name = "board" value = "nexys_video"/>
+  <!-- <spec name = "board" value = "au50" /> -->
   <!--spec name = "part" value = "xczu9eg-ffvb1156-2-e" -->
-  <!--spec name = "part" value = "xczu3eg-sbva484-1-e" -->
+  <!-- <spec name = "part" value = "xczu3eg-sbva484-1-e"/> -->
   <spec name = "part" value = "xc7a200tsbg484-1" />
   <!--spec name = "device" value = "xczu9_0" -->  
   <!--spec name = "device"             value = "xczu3_0" -->
-  <spec name = "device" value = "xcu50_0" />  
+  <spec name = "device" value = "xc7a200t_0" />  
   <spec name = "p"                  value = "0.5" />
   <spec name = "pks"                value = "49" />
-  <spec name = "nl"                 value = "32" />
+  <spec name = "nl"                 value = "6" />
   <spec name = "email"              value = "youemail@seas.upenn.edu" />
   <spec name = "bft_regen"          value = "1" />
   <spec name = "static_regen"       value = "1" />
@@ -38,7 +38,7 @@
   <spec name = "mem"                value = "7000mb" />
   <spec name = "PR_mode"            value = "noquick" />
   <spec name = "packet_bits"        value = "49" />
-  <spec name = "addr_bits"          value = "5" />
+  <spec name = "addr_bits"          value = "4" />
   <spec name = "port_bits"          value = "4" />
   <spec name = "bram_addr_bits"     value = "7" />
   <spec name = "payload_bits"       value = "32" />
@@ -55,42 +55,18 @@
 
 
   <clock name = 'clk_bft' period = "3.3" />
-  <clock name = 'clk_user' period = "4" />
+  <clock name = 'clk_user' period = "10" />
 
  
 
   <spec name = 'page0' value = "ARM" />
   <spec name = 'page1' value = "DMA" />
-  <spec name = 'page2' value = "DEBUG" />
-  <spec name = 'page3' value = "riscv_16bramI5O5" />
-  <spec name = 'page4' value = "riscv_16bramI5O5" />
-  <spec name = 'page5' value = "riscv_16bramI5O5" />
-  <spec name = 'page6' value = "riscv_16bramI5O5" />
-  <spec name = 'page7' value = "DMA" />
-  <spec name = 'page8' value = "riscv_64bramI5O5" />
-  <spec name = 'page9' value = "riscv_32bramI5O5" />
+  <spec name = 'page2' value = "user_kernel" />
+  <spec name = 'page6' value = "user_kernel" />
+  <spec name = 'page9' value = "user_kernel" />
   <spec name = 'page10' value = "user_kernel" />
-  <spec name = 'page11' value = "riscv_32bramI5O5" />
-  <spec name = 'page12' value = "empty" />
-  <spec name = 'page13' value = "empty" />
-  <spec name = 'page14' value = "empty" />
-  <spec name = 'page15' value = "empty" />
-  <spec name = 'page16' value = "riscv_32bramI5O5" />
-  <spec name = 'page17' value = "riscv_32bramI5O5" />
-  <spec name = 'page18' value = "riscv_32bramI5O5" />
-  <spec name = 'page19' value = "riscv_64bramI5O5" />
-  <spec name = 'page20' value = "riscv_64bramI5O5" />
-  <spec name = 'page21' value = "empty" />
-  <spec name = 'page22' value = "empty" />
-  <spec name = 'page23' value = "empty" />
-  <spec name = 'page24' value = "riscv_16bramI5O5" />
-  <spec name = 'page25' value = "empty" />
-  <spec name = 'page26' value = "riscv_16bramI5O5" />
-  <spec name = 'page27' value = "riscv_16bramI5O5" />
-  <spec name = 'page28' value = "riscv_16bramI5O5" />
-  <spec name = 'page29' value = "riscv_16bramI5O5" />
-  <spec name = 'page30' value = "riscv_16bramI5O5" />
-  <spec name = 'page31' value = "riscv_16bramI5O5" />
+  <spec name = 'page11' value = "user_kernel" />
+  <spec name = 'page13' value = "user_kernel" />
 
 
 </configuration>

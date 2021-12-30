@@ -12,7 +12,7 @@
 prj_name?=spam_filter_tiny
 #prj_name=optical_flow
 #prj_name=optical_flow_final
-#prj_name=rendering
+#prj_name=digit_reg_tiny
 #prj_name=face_detection
 
 
@@ -42,10 +42,10 @@ config_target=$(ws_mbft)/config.cpp
 
 
 #all: $(ws_overlay)/overlay.dcp  
-all: $(operators_hls_targets) 
+#all: $(operators_hls_targets) 
 #all: $(operators_syn_targets) 
 #all: $(operators_bit_targets) 
-#all: $(download_target)
+all: $(download_target)
 #all: $(mono_bft_target)
 #all: $(operators_ip_targets)
 #all: $(download_target) $(mono_bft_target) 
@@ -81,16 +81,13 @@ $(operators_hls_targets):$(ws_hls)/runLog%.log:$(operators_dir)/%.cpp $(operator
 	cd $(ws_hls) && ./main_$(basename $(notdir $<)).sh
 
 
-$(ws_overlay)/overlay.dcp: $(ws_overlay)/src  
-	cp -rf ./common/overlay/riscv_bit_lib ./workspace/F001_overlay
-	cp -rf ./common/verilog_src ./workspace/F001_overlay/src
-	cp -rf ./common/overlay/size_table/* ./workspace/F001_overlay
+$(ws_overlay)/overlay.dcp: $(ws_overlay)/src
 	cp -rf ./common/overlay/dcp_lib/* ./workspace/F001_overlay
 	cp -rf ./common/overlay/main.bit ./workspace/F001_overlay
 	touch ./workspace/F001_overlay/*
 
 
-$(ws_overlay)/src : common/verilog_src/*  common/script_src/project_syn_gen_zcu102.tcl
+$(ws_overlay)/src : common/script_src/project_syn_gen_nexys_video.tcl
 	rm -rf ./workspace/F001_overlay
 	mkdir -p ./workspace/F001_overlay
 	python2 pr_flow.py $(prj_name) -g

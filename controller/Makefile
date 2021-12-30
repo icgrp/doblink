@@ -2,10 +2,10 @@
 
 CPU=vexriscv
 BUS=axi-lite
-#TOOLCHAIN=vivado
+TOOLCHAIN=vivado
 # TOOLCHAIN=vivado --synth-mode yosys
-TOOLCHAIN=symbiflow
-BENCHMARK=digit_recognition
+#TOOLCHAIN=symbiflow
+BENCHMARK=rendering
 
 ifdef DEBUG
 	DEBUG_ARGS=--with-ethernet --csr-csv csr.csv

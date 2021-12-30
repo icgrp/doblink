@@ -77,6 +77,7 @@ class report(gen_basic):
             # process impl timing
             run_time_list = []
             try:
+                #import pdb; pdb.set_trace()
                 file_name = (
                     "./workspace/F004_impl_"
                     + benchmark_name
@@ -92,13 +93,13 @@ class report(gen_basic):
                     run_time_list.append(int(run_time[0]))
                     time_data_dict[fun_name].append(int(run_time[0]))
                 file_in.close()
-                for i in range(6):
+                for i in range(5):
                     time_report_dict[fun_name] += "\t" + str(run_time_list[i])
                 total_time = 0
-                for i in range(8):
+                for i in range(7):
                     total_time += float(time_data_dict[fun_name][i])
                 run_time_list.append(float(total_time))
-                time_report_dict[fun_name] += "\t" + str(run_time_list[6])
+                time_report_dict[fun_name] += "\t" + str(run_time_list[5])
                 # time_report_dict[fun_name] += '\t\t' + str(run_time_list[5])
             except:
                 print("Something is wrong with " + file_name)
@@ -107,12 +108,12 @@ class report(gen_basic):
             "./workspace/report/time_report_" + benchmark_name + ".csv", "w"
         )
         time_report_file.write(
-            "operator                  \ttarget\tpage\thls\tsyn\trdchk\topt\tplace\tpopt\troute\tbitgen\ttotal\n"
+            "operator                  \ttarget\tpage\thls\tsyn\ttrdchk\topt\tplace\troute\tbitgen\ttotal\n"
         )
         for key, value in sorted(time_report_dict.items()):
             time_report_file.write(value + "\n")
         print(
-            "\n                               operator                  \ttarget\tpage\thls\tsyn\trdchk\topt\tplace\tpopt\troute\tbitgen\ttotal"
+            "\n                               operator                  \ttarget\tpage\thls\tsyn\trdchk\topt\tplace\troute\tbitgen\ttotal"
         )
         print(
             "--------------------------------------------------------------------------------------------------------------------------------------------------------------"
@@ -159,7 +160,7 @@ class report(gen_basic):
                         resource_report_dict[fun_name] += "\t" + resource_list[4]
                         bram_num = int(resource_list[5]) * 2 + int(resource_list[6])
                         resource_report_dict[fun_name] += "\t" + str(bram_num)
-                        resource_report_dict[fun_name] += "\t" + resource_list[8]
+                        resource_report_dict[fun_name] += "\t" + resource_list[7]
                 file_in.close()
             except:
                 print("Something is wrong with " + file_name)
