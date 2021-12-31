@@ -123,8 +123,18 @@ static void spam_test(void) {
   for(int i = 0; i < 1025; i++) {
     RxBufferPtr[i] = 0;
   }
+  uint32_t start, end;
+
+  time_init();
+
+  timer0_update_value_write(1);
+  start = timer0_value_read();
+
 
   run_dma(TxBufferPtr, 11523072, RxBufferPtr, 1025);
+	timer0_update_value_write(1);
+	end = timer0_value_read();
+	uint32_t t = (start - end);
 
   printf("Checking Results\n");
   int errors=0;
@@ -137,6 +147,8 @@ static void spam_test(void) {
   }
 
   printf("error rate: %d / 1024\n", errors);
+  printf("No. of clicks %ld clicks.\n", t);
+  printf("No. of clicks %ld clicks.\n", CONFIG_CLOCK_FREQUENCY);
   printf("SUCCESS\n");
 }
 

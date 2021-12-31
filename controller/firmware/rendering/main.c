@@ -167,11 +167,24 @@ static void rendering_test(void) {
   start_start_write(1);
 
   // busy_wait(1000);
-  run_dma(TxBufferPtr, SEND_LEN, RxBufferPtr, RECV_LEN);
+  uint32_t start, end;
 
+  time_init();
+
+  timer0_update_value_write(1);
+  start = timer0_value_read();
+
+  run_dma(TxBufferPtr, SEND_LEN, RxBufferPtr, RECV_LEN);
+  
+  timer0_update_value_write(1);
+	end = timer0_value_read();
+	uint32_t t = (start - end);
+  
   start_start_write(0);
   printf("Checking Results\n");
   check_results((uint32_t *) RxBufferPtr);
+  printf("No. of clicks %ld clicks.\n", t);
+  printf("No. of clicks %ld clicks.\n", CONFIG_CLOCK_FREQUENCY);
 
   // for (int i = 0; i < RECV_LEN; i++) {
   //   printf("%#X\n", RxBufferPtr[i]);

@@ -106,8 +106,17 @@ static void digit_test(void) {
   for(int i = 0; i < RECV_LEN; i++) {
     RxBufferPtr[i] = 0;
   }
+  uint32_t start, end;
+
+  time_init();
+
+  timer0_update_value_write(1);
+  start = timer0_value_read();
 
   run_dma(TxBufferPtr, SEND_LEN, RxBufferPtr, RECV_LEN);
+  timer0_update_value_write(1);
+	end = timer0_value_read();
+	uint32_t t = (start - end);
 
   printf("Checking Results\n");
   int errors=0;
@@ -121,6 +130,8 @@ static void digit_test(void) {
 
   printf("We should get accuracy rate: 1878 / 2000 \n");
   printf("The real accuracy rate: %d / 2000 \n", (2000-errors));
+  printf("No. of clicks %ld clicks.\n", t);
+  printf("No. of clicks %ld clicks.\n", CONFIG_CLOCK_FREQUENCY);
   printf("SUCCESS\n");
 }
 

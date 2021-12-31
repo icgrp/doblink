@@ -55,7 +55,7 @@
 
 
   <clock name = 'clk_bft' period = "3.3" />
-  <clock name = 'clk_user' period = "10" />
+  <clock name = 'clk_user' period = "4" />
 
  
 
